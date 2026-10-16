@@ -116,6 +116,36 @@ export default {
         1,
         'the project chat in chats/',
       );
+
+      // Files off: the project again, its files listed by name only.
+      await stand.settings({ saveAttachments: false });
+      await stand.ev(projects, `location.reload()`);
+      await waitFor(
+        () => stand.ev(projects, `document.querySelectorAll('tbody tr').length === 1`),
+        60000,
+        'the project list again',
+      );
+      await stand.ev(projects, `document.querySelector('tbody input[type=checkbox]').click()`);
+      await runBulkJob(stand, projects);
+      const bare = 'AI Chats/Projects/Exporter Test Project (Claude) (2)';
+      const third = stand.files().filter((f) => f.startsWith(`${bare}/`));
+      assert.ok(!third.some((f) => f.includes('/knowledge/') || f.includes('/files/')), 'no files');
+      assert.match(
+        stand.read(`${bare}/Exporter Test Project (Claude) (2).md`).toString(),
+        /- fruit-prices\.pdf — not saved: saving files is off/,
+      );
+
+      // The popup's clipboard copy: the note without files, nothing written.
+      const before = stand.files().length;
+      const copied = await stand.inExtension(
+        `(async () => { const t = await chrome.tabs.create({ url: 'https://claude.ai/chat/${id(0x11)}', active: false }); await new Promise((r) => setTimeout(r, 2500)); try { return await chrome.runtime.sendMessage({ target: 'background', type: 'export:copy', payload: { tabId: t.id } }); } finally { chrome.tabs.remove(t.id).catch(() => {}); } })()`,
+      );
+      assert.equal(copied?.ok, true, JSON.stringify(copied));
+      const markdown = copied.value.markdown;
+      assert.match(markdown, /^---\ntitle: "File content summary"/);
+      assert.match(markdown, /meeting-notes\.docx/);
+      assert.doesNotMatch(markdown, /\]\(files\//, 'files listed by name, without links');
+      assert.equal(stand.files().length, before, 'nothing saved');
     } finally {
       await stand.close();
     }

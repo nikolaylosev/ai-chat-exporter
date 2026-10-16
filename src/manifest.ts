@@ -29,7 +29,16 @@ export default defineManifest({
     service_worker: 'src/background/index.ts',
     type: 'module',
   },
-  permissions: ['downloads', 'storage', 'offscreen', 'activeTab', 'scripting', 'notifications'],
+  permissions: [
+    'downloads',
+    'storage',
+    'offscreen',
+    'activeTab',
+    'scripting',
+    'notifications',
+    // The popup copies a chat's Markdown once the chat is read, which can outlast the click.
+    'clipboardWrite',
+  ],
   // Gemini files come from Google's content hosts, Grok files from assets.grok.com;
   // they are fetched there only when saving into a chosen folder or a ZIP
   // (chrome.downloads needs no permission).

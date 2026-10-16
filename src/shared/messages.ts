@@ -61,6 +61,11 @@ export type ExportResult =
     }
   | { ok: false; code: ErrorCode; message: string; warning?: SaveDialogSuspected };
 
+/** The open chat's note, without its files, for the clipboard. */
+export type CopyResult =
+  | { ok: true; title: string; messageCount: number; markdown: string }
+  | { ok: false; code: ErrorCode; message: string };
+
 /** What the panel on a chat page shows after the keyboard shortcut. */
 export type PanelView = { state: 'running' } | { state: 'result'; result: ExportResult };
 
@@ -78,6 +83,7 @@ type Empty = Record<string, never>;
 interface Contract {
   background: {
     'export:current': { request: { tabId: number }; response: ExportResult };
+    'export:copy': { request: { tabId: number }; response: CopyResult };
     /**
      * A platform tab with the content script ready, opened in the background if none
      * is open. The caller talks to it directly: a long list (Gemini, minutes) must not

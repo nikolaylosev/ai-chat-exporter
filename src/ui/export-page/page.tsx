@@ -14,6 +14,7 @@ import {
   startExportJob,
   useJob,
   useSettings,
+  FilesCheckbox,
   ZipCheckbox,
 } from '../common';
 import {
@@ -611,6 +612,7 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
             <p class="muted">
               {t('exportSelected', [String(selected.size), String(conversations.length)])}
             </p>
+            {settings && <FilesCheckbox settings={settings} update={updateSettings} />}
             {settings && <ZipCheckbox settings={settings} update={updateSettings} />}
             <button
               type="button"
@@ -817,6 +819,7 @@ function ProjectsTab({ platform, settings, updateSettings, job, showJob, onStart
             <p class="muted">
               {t('exportSelected', [String(selected.size), String(projects.length)])}
             </p>
+            {settings && <FilesCheckbox settings={settings} update={updateSettings} />}
             {settings && <ZipCheckbox settings={settings} update={updateSettings} />}
             <button
               type="button"

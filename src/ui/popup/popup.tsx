@@ -14,6 +14,7 @@ import { isSaveDialogSeen } from '../../shared/save-dialog';
 import {
   ensureFolderAccess,
   FailedFiles,
+  FilesCheckbox,
   openExportPage,
   SaveDialogWarning,
   startExportJob,
@@ -33,7 +34,10 @@ interface ActiveTab {
 }
 
 type ExportState =
-  { status: 'idle' } | { status: 'running' } | { status: 'finished'; result: ExportResult };
+  | { status: 'idle' }
+  | { status: 'running' }
+  | { status: 'finished'; result: ExportResult }
+  | { status: 'copied'; messageCount: number };
 
 function useActiveTab(): ActiveTab | null | undefined {
   const [tab, setTab] = useState<ActiveTab | null | undefined>(undefined);
@@ -148,7 +152,9 @@ export function Popup() {
   const [settings, updateSettings] = useSettings();
   const job = useJob();
   const saveDialogSeen = useSaveDialogSeen();
-  const asksPerFile = settings?.destination === 'downloads' && !settings.saveAsZip;
+  // With files off, the chat can go to the clipboard instead of a file.
+  const clipboard = Boolean(settings && !settings.saveAttachments && settings.copyToClipboard);
+  const asksPerFile = !clipboard && settings?.destination === 'downloads' && !settings.saveAsZip;
   const [state, setState] = useState<ExportState>({ status: 'idle' });
   const project = useTabProject(tab);
   // The export page opens on the platform of the open tab.
@@ -204,6 +210,21 @@ export function Popup() {
     }
   };
 
+  const copyChat = async (tabId: number) => {
+    setState({ status: 'running' });
+    try {
+      const copied = await send('background', 'export:copy', { tabId });
+      if (!copied.ok) return setState({ status: 'finished', result: copied });
+      await navigator.clipboard.writeText(copied.markdown);
+      setState({ status: 'copied', messageCount: copied.messageCount });
+    } catch (error) {
+      setState({
+        status: 'finished',
+        result: { ok: false, code: 'failed', message: t('error_failed', errorMessage(error)) },
+      });
+    }
+  };
+
   return (
     <main>
       <h1>{t('extName')}</h1>
@@ -213,18 +234,38 @@ export function Popup() {
         <SaveDialogWarning earlier />
       )}
 
-      {settings && <ZipCheckbox settings={settings} update={updateSettings} />}
+      {settings && (
+        <>
+          <FilesCheckbox settings={settings} update={updateSettings} />
+          {!settings.saveAttachments && (
+            <label class="check zip">
+              <input
+                type="checkbox"
+                checked={settings.copyToClipboard}
+                onChange={(e) => updateSettings({ copyToClipboard: e.currentTarget.checked })}
+              />
+              <span>{t('copyToClipboard')}</span>
+            </label>
+          )}
+          {!clipboard && <ZipCheckbox settings={settings} update={updateSettings} />}
+        </>
+      )}
 
       <button
         type="button"
         class="primary"
         disabled={!tab?.isChat || !settings || state.status === 'running'}
-        onClick={() => tab && void exportChat(tab.id)}
+        onClick={() => tab && void (clipboard ? copyChat(tab.id) : exportChat(tab.id))}
       >
-        {state.status === 'running' ? t('popupSaving') : t('popupSaveChat')}
+        {state.status === 'running'
+          ? t(clipboard ? 'popupCopying' : 'popupSaving')
+          : t(clipboard ? 'popupCopyChat' : 'popupSaveChat')}
       </button>
 
       {state.status === 'finished' && <Result result={state.result} />}
+      {state.status === 'copied' && (
+        <p class="result ok">{t('popupCopied', String(state.messageCount))}</p>
+      )}
 
       {project && settings && (
         <section class="project">

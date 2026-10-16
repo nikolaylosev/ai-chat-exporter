@@ -1,5 +1,5 @@
 // @vitest-environment happy-dom
-import { cleanup, render, screen } from '@testing-library/preact';
+import { cleanup, fireEvent, render, screen } from '@testing-library/preact';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Popup } from '../../src/ui/popup/popup';
 import { stubChrome } from './fake-chrome';
@@ -72,5 +72,46 @@ describe('popup on a Grok project', () => {
     render(<Popup />);
     await screen.findByText('popupDetected(Grok)');
     await screen.findByText('popupProject(Photo book)');
+  });
+});
+
+describe('popup: files and the clipboard', () => {
+  const chat = 'https://claude.ai/chat/00000000-0000-4000-8000-000000000001';
+
+  it('offers the clipboard only with files off, and hides .zip there', async () => {
+    stubChrome({ activeTab: { id: 3, url: chat } });
+    render(<Popup />);
+    const files = await screen.findByRole<HTMLInputElement>('checkbox', { name: 'saveWithFiles' });
+    expect(files.checked).toBe(true);
+    expect(screen.queryByText('copyToClipboard')).toBeNull();
+    fireEvent.click(files);
+    const clipboard = await screen.findByRole('checkbox', { name: 'copyToClipboard' });
+    expect(screen.getByText('saveAsZip')).toBeTruthy();
+    fireEvent.click(clipboard);
+    await screen.findByRole('button', { name: 'popupCopyChat' });
+    expect(screen.queryByText('saveAsZip')).toBeNull();
+  });
+
+  it('copies the chat as Markdown instead of saving it', async () => {
+    const writeText = vi.fn(() => Promise.resolve());
+    vi.stubGlobal('navigator', { ...navigator, clipboard: { writeText } });
+    const asked: string[] = [];
+    const { local } = stubChrome({
+      activeTab: { id: 3, url: chat },
+      background: (type) => {
+        asked.push(type);
+        return type === 'export:copy'
+          ? { ok: true, title: 'Chat', messageCount: 4, markdown: '# Chat\n' }
+          : null;
+      },
+    });
+    local.settings = { saveAttachments: false, copyToClipboard: true };
+    render(<Popup />);
+    const copy = await screen.findByRole<HTMLButtonElement>('button', { name: 'popupCopyChat' });
+    await vi.waitFor(() => expect(copy.disabled).toBe(false));
+    fireEvent.click(copy);
+    await screen.findByText('popupCopied(4)');
+    expect(writeText).toHaveBeenCalledWith('# Chat\n');
+    expect(asked).not.toContain('export:current');
   });
 });

@@ -2,11 +2,13 @@ import { errorText } from '../shared/error-text';
 import { CodedError, errorCode } from '../shared/errors';
 import { t } from '../shared/i18n';
 import { log } from '../shared/logger';
-import { sendToTab, type ExportResult, type PanelView } from '../shared/messages';
+import { sendToTab, type CopyResult, type ExportResult, type PanelView } from '../shared/messages';
 import { detectPlatform } from '../shared/platform';
 import { setSaveDialogSeen } from '../shared/save-dialog';
 import { loadSettings } from '../shared/settings';
+import { planConversationExport, renderConversationExport } from './conversation-export';
 import { asksPerFile, exportConversation } from './export-conversation';
+import { renderLabels } from './labels';
 import { registry } from './registry';
 import { ensureContentScript } from './tabs';
 
@@ -76,14 +78,19 @@ function failure(error: unknown): ExportResult {
   return result;
 }
 
-async function runExport(tabId: number, trigger: Trigger): Promise<ExportResult> {
+/** The id of the conversation open in a tab, with its content script ready. */
+async function openConversationId(tabId: number): Promise<string> {
   const tab = await chrome.tabs.get(tabId);
   const platform = detectPlatform(tab.url);
   if (!platform) throw new CodedError('unsupported-page', `Unsupported page: ${tab.url ?? ''}`);
-
   await ensureContentScript(tabId, platform);
   const { id } = await sendToTab(tabId, 'conversation:current-id', {});
   if (!id) throw new CodedError('not-a-chat', 'The tab is not a conversation page');
+  return id;
+}
+
+async function runExport(tabId: number, trigger: Trigger): Promise<ExportResult> {
+  const id = await openConversationId(tabId);
   if (running.has(id)) throw new CodedError('busy', `Already exporting ${id}`);
 
   running.add(id);
@@ -155,4 +162,31 @@ export async function exportCurrent(tabId: number, trigger: Trigger): Promise<Ex
     if (!shown) await notify(resultText(result));
   }
   return result;
+}
+
+/**
+ * The note of the conversation open in a tab, as it would be saved without its
+ * files (they are listed by name), for the popup to put on the clipboard. Never
+ * throws; failures come back as a result.
+ */
+export async function copyCurrent(tabId: number): Promise<CopyResult> {
+  try {
+    const id = await openConversationId(tabId);
+    const settings = { ...(await loadSettings()), saveAttachments: false };
+    const conversation = await sendToTab(tabId, 'conversation:get', {
+      id,
+      options: { artifactVersions: settings.artifactVersions },
+    });
+    const ctx = { now: new Date(), labels: renderLabels(conversation.platform) };
+    const plan = planConversationExport(conversation, settings, ctx);
+    return {
+      ok: true,
+      title: conversation.title,
+      messageCount: conversation.messages.length,
+      markdown: renderConversationExport(conversation, settings, ctx, plan),
+    };
+  } catch (error) {
+    log.error('Copy failed', error);
+    return { ok: false, code: errorCode(error), message: errorText(error) };
+  }
 }

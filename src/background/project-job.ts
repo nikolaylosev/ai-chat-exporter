@@ -93,6 +93,11 @@ export async function exportProject(
       note.knowledge.push({ name, info: file.attachment.unavailableReason ?? t('mdFileNotGiven') });
       continue;
     }
+    // "Save with files" is off: the project's files are listed, as a chat's are.
+    if (!settings.saveAttachments) {
+      note.knowledge.push({ name, info: t('mdFileSkipped') });
+      continue;
+    }
     try {
       if (!file.attachment.source) throw new Error('unavailable');
       await sink.writeFile(file.path, file.attachment.source);

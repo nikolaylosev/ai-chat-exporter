@@ -87,6 +87,26 @@
   "saveAsZip": {
     "message": "Save as .zip"
   },
+  "saveWithFiles": {
+    "message": "Save with files"
+  },
+  "copyToClipboard": {
+    "message": "Copy to the clipboard instead of saving"
+  },
+  "popupCopyChat": {
+    "message": "Copy this chat"
+  },
+  "popupCopying": {
+    "message": "Copying…"
+  },
+  "popupCopied": {
+    "message": "Copied to the clipboard: $ARG1$ messages.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
   "panelClose": {
     "message": "Close"
   },
@@ -793,6 +813,9 @@
       }
     }
   },
+  "mdFileSkipped": {
+    "message": "not saved: saving files is off"
+  },
   "mdFileNotGiven": {
     "message": "the service keeps this file without a download, so only its name is here"
   },
@@ -965,12 +988,6 @@
   },
   "optionsSectionContent": {
     "message": "Markdown content"
-  },
-  "optionsSaveAttachments": {
-    "message": "Save files from the chat"
-  },
-  "optionsSaveAttachmentsHint": {
-    "message": "Your uploads, files the model created, and artifacts, into the files/ folder next to the note."
   },
   "optionsArtifactVersions": {
     "message": "Artifact versions"
