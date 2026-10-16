@@ -184,5 +184,7 @@ describe('export page: ChatGPT projects', () => {
     await screen.findByText('Airlines');
     // No "with its chats" box: a project always goes with its chats.
     expect(screen.getByRole('button', { name: 'exportStartProjects(0)' })).toBeTruthy();
+    // Files can be left out here too, next to .zip.
+    expect(screen.getByRole('checkbox', { name: 'saveWithFiles' })).toBeTruthy();
   });
 });

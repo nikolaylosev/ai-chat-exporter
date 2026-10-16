@@ -25,6 +25,32 @@ footer {
   margin-bottom: 10px;
 }
 
+.chat-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.chat-actions .primary {
+  flex: 1;
+  width: auto;
+}
+
+/* As tall as Save, narrower: a quick copy of the note, without its files. */
+.chat-actions .copy {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 10px;
+  font-size: 0.9em;
+}
+
+.chat-actions .copy svg {
+  width: 1.3em;
+  height: 1.3em;
+  flex: none;
+}
+
 .bulk {
   display: flex;
   flex-wrap: wrap;
@@ -32,8 +58,9 @@ footer {
   margin-top: 12px;
 }
 
+/* Equal widths, whatever the labels. */
 .bulk button {
-  flex: 1 1 auto;
+  flex: 1 1 0;
 }
 
 .bulk p {

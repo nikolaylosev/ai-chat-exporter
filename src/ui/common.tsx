@@ -150,6 +150,26 @@ export function FailedFiles({
 }
 
 /** The ZIP choice: shown where an export starts, remembered for the next one and the shortcut. */
+/** "Save with files": off, only the note is written, its files listed by name. */
+export function FilesCheckbox({
+  settings,
+  update,
+}: {
+  settings: Settings;
+  update: (patch: Partial<Settings>) => void;
+}) {
+  return (
+    <label class="check zip">
+      <input
+        type="checkbox"
+        checked={settings.saveAttachments}
+        onChange={(e) => update({ saveAttachments: e.currentTarget.checked })}
+      />
+      <span>{t('saveWithFiles')}</span>
+    </label>
+  );
+}
+
 export function ZipCheckbox({
   settings,
   update,

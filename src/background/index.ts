@@ -1,7 +1,7 @@
 import { log } from '../shared/logger';
 import { handle, sendToTab } from '../shared/messages';
 import { keepDownloadNames } from './downloader';
-import { exportCurrent } from './export-current';
+import { copyCurrent, exportCurrent } from './export-current';
 import { cancelJob, resumeJob, startJob } from './queue';
 import { detectPlatform } from '../shared/platform';
 import { registry } from './registry';
@@ -11,6 +11,7 @@ export const EXPORT_COMMAND = 'export-current-chat';
 
 handle('background', {
   'export:current': ({ tabId }) => exportCurrent(tabId, 'popup'),
+  'export:copy': ({ tabId }) => copyCurrent(tabId),
   'platform:tab': async ({ platform }) => {
     const tab = new WorkerTab(platform);
     const tabId = await tab.get();

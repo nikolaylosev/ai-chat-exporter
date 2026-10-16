@@ -14,6 +14,7 @@ import { isSaveDialogSeen } from '../../shared/save-dialog';
 import {
   ensureFolderAccess,
   FailedFiles,
+  FilesCheckbox,
   openExportPage,
   SaveDialogWarning,
   startExportJob,
@@ -33,7 +34,10 @@ interface ActiveTab {
 }
 
 type ExportState =
-  { status: 'idle' } | { status: 'running' } | { status: 'finished'; result: ExportResult };
+  | { status: 'idle' }
+  | { status: 'running'; copying: boolean }
+  | { status: 'finished'; result: ExportResult }
+  | { status: 'copied'; messageCount: number };
 
 function useActiveTab(): ActiveTab | null | undefined {
   const [tab, setTab] = useState<ActiveTab | null | undefined>(undefined);
@@ -100,6 +104,23 @@ function ProjectJob({ job }: { job: JobState }) {
         </>
       )}
     </p>
+  );
+}
+
+/** Two overlapping sheets: the usual mark for copying. */
+function CopyIcon() {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="5.5" y="5.5" width="8" height="8" rx="1.5" />
+      <path d="M10.5 3V2.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1H3" />
+    </svg>
   );
 }
 
@@ -183,7 +204,7 @@ export function Popup() {
       : null;
 
   const exportChat = async (tabId: number) => {
-    setState({ status: 'running' });
+    setState({ status: 'running', copying: false });
     if (settings?.destination === 'folder') {
       const code = await ensureFolderAccess();
       if (code) {
@@ -204,6 +225,22 @@ export function Popup() {
     }
   };
 
+  /** The chat's note, as saved without its files, onto the clipboard; nothing is saved. */
+  const copyChat = async (tabId: number) => {
+    setState({ status: 'running', copying: true });
+    try {
+      const copied = await send('background', 'export:copy', { tabId });
+      if (!copied.ok) return setState({ status: 'finished', result: copied });
+      await navigator.clipboard.writeText(copied.markdown);
+      setState({ status: 'copied', messageCount: copied.messageCount });
+    } catch (error) {
+      setState({
+        status: 'finished',
+        result: { ok: false, code: 'failed', message: t('error_failed', errorMessage(error)) },
+      });
+    }
+  };
+
   return (
     <main>
       <h1>{t('extName')}</h1>
@@ -213,18 +250,38 @@ export function Popup() {
         <SaveDialogWarning earlier />
       )}
 
-      {settings && <ZipCheckbox settings={settings} update={updateSettings} />}
+      {settings && (
+        <>
+          <FilesCheckbox settings={settings} update={updateSettings} />
+          <ZipCheckbox settings={settings} update={updateSettings} />
+        </>
+      )}
 
-      <button
-        type="button"
-        class="primary"
-        disabled={!tab?.isChat || !settings || state.status === 'running'}
-        onClick={() => tab && void exportChat(tab.id)}
-      >
-        {state.status === 'running' ? t('popupSaving') : t('popupSaveChat')}
-      </button>
+      <div class="chat-actions">
+        <button
+          type="button"
+          class="primary"
+          disabled={!tab?.isChat || !settings || state.status === 'running'}
+          onClick={() => tab && void exportChat(tab.id)}
+        >
+          {state.status === 'running' && !state.copying ? t('popupSaving') : t('popupSaveChat')}
+        </button>
+        <button
+          type="button"
+          class="copy"
+          title={t('popupCopyHint')}
+          disabled={!tab?.isChat || !settings || state.status === 'running'}
+          onClick={() => tab && void copyChat(tab.id)}
+        >
+          <CopyIcon />
+          {state.status === 'running' && state.copying ? t('popupCopying') : t('popupCopyChat')}
+        </button>
+      </div>
 
       {state.status === 'finished' && <Result result={state.result} />}
+      {state.status === 'copied' && (
+        <p class="result ok">{t('popupCopied', String(state.messageCount))}</p>
+      )}
 
       {project && settings && (
         <section class="project">

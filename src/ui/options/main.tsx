@@ -250,12 +250,6 @@ function Options() {
       </Section>
 
       <Section title={t('optionsSectionContent')}>
-        <Check
-          {...common}
-          name="saveAttachments"
-          label={t('optionsSaveAttachments')}
-          hint={t('optionsSaveAttachmentsHint')}
-        />
         <Select
           {...common}
           name="artifactVersions"

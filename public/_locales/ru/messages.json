@@ -87,6 +87,26 @@
   "saveAsZip": {
     "message": "Сохранить в .zip"
   },
+  "saveWithFiles": {
+    "message": "Сохранять с файлами"
+  },
+  "popupCopyChat": {
+    "message": "Копировать"
+  },
+  "popupCopyHint": {
+    "message": "Скопировать чат в буфер обмена как Markdown, без файлов"
+  },
+  "popupCopying": {
+    "message": "Копирую…"
+  },
+  "popupCopied": {
+    "message": "Скопировано в буфер обмена: сообщений $ARG1$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
   "panelClose": {
     "message": "Закрыть"
   },
@@ -793,6 +813,9 @@
       }
     }
   },
+  "mdFileSkipped": {
+    "message": "не сохранён: сохранение файлов выключено"
+  },
   "mdFileNotGiven": {
     "message": "сервис хранит этот файл без возможности скачать, поэтому здесь только его имя"
   },
@@ -965,12 +988,6 @@
   },
   "optionsSectionContent": {
     "message": "Содержимое Markdown"
-  },
-  "optionsSaveAttachments": {
-    "message": "Сохранять файлы из чата"
-  },
-  "optionsSaveAttachmentsHint": {
-    "message": "Ваши загрузки, файлы, созданные моделью, и артефакты — в папку files/ рядом с заметкой."
   },
   "optionsArtifactVersions": {
     "message": "Версии артефактов"
