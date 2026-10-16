@@ -1,0 +1,39 @@
+{
+  "uuid": "00000000-0000-4000-8000-000000000033",
+  "name": "Exporter Test Project",
+  "description": "Test project for AI Chat Exporter reconnaissance.",
+  "is_private": true,
+  "creator": {
+    "uuid": "00000000-0000-4000-8000-0000000000b1",
+    "full_name": "Test User"
+  },
+  "is_starred": true,
+  "is_starter_project": false,
+  "is_harmony_project": false,
+  "type": null,
+  "subtype": null,
+  "settings": {},
+  "archiver": null,
+  "archived_at": null,
+  "created_at": "2026-10-13T09:21:27.035190Z",
+  "updated_at": "2026-10-13T09:21:56.604042Z",
+  "permissions": [
+    "chat_project:chat:create",
+    "chat_project:chat:view",
+    "chat_project:delete",
+    "chat_project:knowledge:edit",
+    "chat_project:knowledge:view",
+    "chat_project:members:manage",
+    "chat_project:owner:manage",
+    "chat_project:settings:edit",
+    "chat_project:view"
+  ],
+  "docs_count": 1,
+  "files_count": 2,
+  "moved_to": null,
+  "prompt_template": "Exporter test instructions: always answer in one short sentence.",
+  "organization_role": "none",
+  "pending_access_request_count": null,
+  "cowork_bound_device": null,
+  "memory_general_enabled": true
+}

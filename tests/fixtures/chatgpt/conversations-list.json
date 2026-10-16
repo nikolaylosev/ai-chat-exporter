@@ -1,0 +1,253 @@
+{
+ "items": [
+  {
+   "id": "00000000-0000-4000-8000-000000000042",
+   "title": "Iceland Population Search",
+   "create_time": "2026-10-15T08:01:13.315769Z",
+   "update_time": "2026-10-15T08:01:31.250101Z",
+   "latest_assistant_turn_created_at": null,
+   "pinned_time": null,
+   "mapping": null,
+   "current_node": null,
+   "conversation_template_id": null,
+   "gizmo_id": null,
+   "is_archived": false,
+   "is_starred": null,
+   "is_temporary_chat": false,
+   "is_do_not_remember": false,
+   "memory_scope": "global_enabled",
+   "context_scopes": null,
+   "context_scopes_v2": {
+    "context_scopes": [
+     {
+      "is_siloed": false,
+      "scope_namespace": "global",
+      "sub_scope": null,
+      "key": null,
+      "key_timestamp": null,
+      "key_scoped_access_claim": null
+     }
+    ]
+   },
+   "workspace_id": null,
+   "async_status": null,
+   "safe_urls": [],
+   "blocked_urls": [],
+   "conversation_origin": null,
+   "trial_conversation_type": null,
+   "is_automation_conversation": false,
+   "snippet": null,
+   "summary_metadata": null,
+   "sugar_item_id": null,
+   "sugar_item_visible": false
+  },
+  {
+   "id": "00000000-0000-4000-8000-00000000003a",
+   "title": "Write Apple Notes",
+   "create_time": "2026-10-15T07:56:48.759421Z",
+   "update_time": "2026-10-15T07:57:42.307277Z",
+   "latest_assistant_turn_created_at": null,
+   "pinned_time": null,
+   "mapping": null,
+   "current_node": null,
+   "conversation_template_id": null,
+   "gizmo_id": null,
+   "is_archived": false,
+   "is_starred": null,
+   "is_temporary_chat": false,
+   "is_do_not_remember": false,
+   "memory_scope": "global_enabled",
+   "context_scopes": null,
+   "context_scopes_v2": {
+    "context_scopes": [
+     {
+      "is_siloed": false,
+      "scope_namespace": "global",
+      "sub_scope": null,
+      "key": null,
+      "key_timestamp": null,
+      "key_scoped_access_claim": null
+     }
+    ]
+   },
+   "workspace_id": null,
+   "async_status": null,
+   "safe_urls": [],
+   "blocked_urls": [],
+   "conversation_origin": null,
+   "trial_conversation_type": null,
+   "is_automation_conversation": false,
+   "snippet": null,
+   "summary_metadata": null,
+   "sugar_item_id": null,
+   "sugar_item_visible": false
+  },
+  {
+   "id": "00000000-0000-4000-8000-00000000002f",
+   "title": "Create CSV File",
+   "create_time": "2026-10-15T07:55:32.697412Z",
+   "update_time": "2026-10-15T07:55:52.702225Z",
+   "latest_assistant_turn_created_at": null,
+   "pinned_time": null,
+   "mapping": null,
+   "current_node": null,
+   "conversation_template_id": null,
+   "gizmo_id": null,
+   "is_archived": false,
+   "is_starred": null,
+   "is_temporary_chat": false,
+   "is_do_not_remember": false,
+   "memory_scope": "global_enabled",
+   "context_scopes": null,
+   "context_scopes_v2": {
+    "context_scopes": [
+     {
+      "is_siloed": false,
+      "scope_namespace": "global",
+      "sub_scope": null,
+      "key": null,
+      "key_timestamp": null,
+      "key_scoped_access_claim": null
+     }
+    ]
+   },
+   "workspace_id": null,
+   "async_status": null,
+   "safe_urls": [],
+   "blocked_urls": [],
+   "conversation_origin": null,
+   "trial_conversation_type": null,
+   "is_automation_conversation": false,
+   "snippet": null,
+   "summary_metadata": null,
+   "sugar_item_id": null,
+   "sugar_item_visible": false
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000027",
+   "title": "Generate Red Circle Image",
+   "create_time": "2026-10-15T07:54:15.563219Z",
+   "update_time": "2026-10-15T07:54:38.982866Z",
+   "latest_assistant_turn_created_at": null,
+   "pinned_time": null,
+   "mapping": null,
+   "current_node": null,
+   "conversation_template_id": null,
+   "gizmo_id": null,
+   "is_archived": false,
+   "is_starred": null,
+   "is_temporary_chat": false,
+   "is_do_not_remember": false,
+   "memory_scope": "global_enabled",
+   "context_scopes": null,
+   "context_scopes_v2": {
+    "context_scopes": [
+     {
+      "is_siloed": false,
+      "scope_namespace": "global",
+      "sub_scope": null,
+      "key": null,
+      "key_timestamp": null,
+      "key_scoped_access_claim": null
+     }
+    ]
+   },
+   "workspace_id": null,
+   "async_status": null,
+   "safe_urls": [],
+   "blocked_urls": [],
+   "conversation_origin": null,
+   "trial_conversation_type": null,
+   "is_automation_conversation": false,
+   "snippet": null,
+   "summary_metadata": null,
+   "sugar_item_id": null,
+   "sugar_item_visible": false
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000013",
+   "title": "Summarize Attached Files",
+   "create_time": "2026-10-15T07:52:54.488915Z",
+   "update_time": "2026-10-15T07:53:16.556160Z",
+   "latest_assistant_turn_created_at": null,
+   "pinned_time": null,
+   "mapping": null,
+   "current_node": null,
+   "conversation_template_id": null,
+   "gizmo_id": null,
+   "is_archived": false,
+   "is_starred": null,
+   "is_temporary_chat": false,
+   "is_do_not_remember": false,
+   "memory_scope": "global_enabled",
+   "context_scopes": null,
+   "context_scopes_v2": {
+    "context_scopes": [
+     {
+      "is_siloed": false,
+      "scope_namespace": "global",
+      "sub_scope": null,
+      "key": null,
+      "key_timestamp": null,
+      "key_scoped_access_claim": null
+     }
+    ]
+   },
+   "workspace_id": null,
+   "async_status": null,
+   "safe_urls": [],
+   "blocked_urls": [],
+   "conversation_origin": null,
+   "trial_conversation_type": null,
+   "is_automation_conversation": false,
+   "snippet": null,
+   "summary_metadata": null,
+   "sugar_item_id": null,
+   "sugar_item_visible": false
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000001",
+   "title": "Fruit List and Code",
+   "create_time": "2026-10-15T07:49:31.176461Z",
+   "update_time": "2026-10-15T07:52:31.706957Z",
+   "latest_assistant_turn_created_at": null,
+   "pinned_time": null,
+   "mapping": null,
+   "current_node": null,
+   "conversation_template_id": null,
+   "gizmo_id": null,
+   "is_archived": false,
+   "is_starred": null,
+   "is_temporary_chat": false,
+   "is_do_not_remember": false,
+   "memory_scope": "global_enabled",
+   "context_scopes": null,
+   "context_scopes_v2": {
+    "context_scopes": [
+     {
+      "is_siloed": false,
+      "scope_namespace": "global",
+      "sub_scope": null,
+      "key": null,
+      "key_timestamp": null,
+      "key_scoped_access_claim": null
+     }
+    ]
+   },
+   "workspace_id": null,
+   "async_status": null,
+   "safe_urls": [],
+   "blocked_urls": [],
+   "conversation_origin": null,
+   "trial_conversation_type": null,
+   "is_automation_conversation": false,
+   "snippet": null,
+   "summary_metadata": null,
+   "sugar_item_id": null,
+   "sugar_item_visible": false
+  }
+ ],
+ "total": 21,
+ "limit": 20,
+ "offset": 0
+}

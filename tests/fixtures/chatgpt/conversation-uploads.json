@@ -1,0 +1,968 @@
+{
+ "title": "Summarize Attached Files",
+ "create_time": 1792050774.488915,
+ "update_time": 1792050800.323476,
+ "moderation_results": [],
+ "plugin_ids": null,
+ "conversation_id": "00000000-0000-4000-8000-000000000013",
+ "conversation_template_id": null,
+ "gizmo_id": null,
+ "gizmo_type": null,
+ "is_archived": false,
+ "is_starred": null,
+ "safe_urls": [
+  "https://www.openai.com"
+ ],
+ "blocked_urls": [],
+ "default_model_slug": "auto",
+ "atlas_mode_enabled": null,
+ "conversation_origin": null,
+ "is_read_only": null,
+ "voice": null,
+ "async_status": null,
+ "disabled_tool_ids": [],
+ "is_temporary_chat": false,
+ "is_do_not_remember": false,
+ "memory_scope": "global_enabled",
+ "context_scopes": null,
+ "sugar_item_id": null,
+ "sugar_item_visible": false,
+ "pinned_time": null,
+ "is_study_mode": false,
+ "owner": null,
+ "sectioned_conversation": null,
+ "mapping": {
+  "client-created-root": {
+   "id": "client-created-root",
+   "message": null,
+   "parent": null,
+   "children": [
+    "00000000-0000-4000-8000-000000000014"
+   ]
+  },
+  "00000000-0000-4000-8000-000000000014": {
+   "id": "00000000-0000-4000-8000-000000000014",
+   "message": {
+    "id": "00000000-0000-4000-8000-000000000014",
+    "author": {
+     "role": "user",
+     "name": null,
+     "metadata": {}
+    },
+    "create_time": 1792050782.333,
+    "update_time": 1792050799.521958,
+    "content": {
+     "content_type": "multimodal_text",
+     "parts": [
+      {
+       "content_type": "image_asset_pointer",
+       "asset_pointer": "sediment://file_00000000000000000000000000000001",
+       "size_bytes": 165,
+       "width": 90,
+       "height": 60,
+       "fovea": null,
+       "metadata": {
+        "dalle": null,
+        "gizmo": null,
+        "generation": null,
+        "segmentation": null,
+        "container_pixel_height": null,
+        "container_pixel_width": null,
+        "emu_omit_glimpse_image": null,
+        "emu_patches_override": null,
+        "lpe_keep_patch_ijhw": null,
+        "lpe_delta_encoding_channel": null,
+        "sanitized": false,
+        "asset_pointer_link": null,
+        "watermarked_asset_pointer": null,
+        "is_no_auth_placeholder": null
+       }
+      },
+      "AI Chat Exporter uploads test. Summarize each attached file in one short line."
+     ]
+    },
+    "status": "finished_successfully",
+    "end_turn": null,
+    "weight": 1.0,
+    "metadata": {
+     "attachments": [
+      {
+       "id": "file_00000000000000000000000000000002",
+       "library_file_id": "libfile_00000000000000000000000000000003",
+       "mime_type": "application/pdf",
+       "name": "fruit-prices.pdf",
+       "size": 414
+      },
+      {
+       "id": "file_00000000000000000000000000000004",
+       "library_file_id": "libfile_00000000000000000000000000000005",
+       "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+       "name": "meeting-notes.docx",
+       "size": 1281
+      },
+      {
+       "height": 60,
+       "id": "file_00000000000000000000000000000001",
+       "library_file_id": "libfile_00000000000000000000000000000006",
+       "mime_type": "image/png",
+       "name": "stripes.png",
+       "size": 165,
+       "width": 90
+      }
+     ],
+     "request_id": "00000000-0000-4000-8000-000000000015",
+     "message_source": null,
+     "turn_exchange_id": "00000000-0000-4000-8000-000000000016",
+     "working_turn_id": "00000000-0000-4000-8000-000000000016",
+     "can_save": false
+    },
+    "recipient": "all",
+    "channel": null
+   },
+   "parent": "client-created-root",
+   "children": [
+    "00000000-0000-4000-8000-000000000017"
+   ]
+  },
+  "00000000-0000-4000-8000-000000000017": {
+   "id": "00000000-0000-4000-8000-000000000017",
+   "message": {
+    "id": "00000000-0000-4000-8000-000000000017",
+    "author": {
+     "role": "tool",
+     "name": "api_tool",
+     "metadata": {}
+    },
+    "create_time": 1792050784.048841,
+    "update_time": 1792050784.048841,
+    "content": {
+     "content_type": "tether_browsing_display",
+     "result": "",
+     "summary": "",
+     "assets": null,
+     "tether_id": null
+    },
+    "status": "finished_successfully",
+    "end_turn": null,
+    "weight": 0.0,
+    "metadata": {
+     "command": "spinner",
+     "status": "running",
+     "resolved_model_slug": "gpt-6",
+     "cot_version": "v5",
+     "request_id": "00000000-0000-4000-8000-000000000015",
+     "message_type": "next",
+     "turn_exchange_id": "00000000-0000-4000-8000-000000000016",
+     "working_turn_id": "00000000-0000-4000-8000-000000000016",
+     "model_slug": "gpt-6",
+     "default_model_slug": "auto",
+     "parent_id": "00000000-0000-4000-8000-000000000018",
+     "can_save": false
+    },
+    "recipient": "all",
+    "channel": null
+   },
+   "parent": "00000000-0000-4000-8000-000000000014",
+   "children": [
+    "00000000-0000-4000-8000-000000000019"
+   ]
+  },
+  "00000000-0000-4000-8000-000000000019": {
+   "id": "00000000-0000-4000-8000-000000000019",
+   "message": {
+    "id": "00000000-0000-4000-8000-000000000019",
+    "author": {
+     "role": "tool",
+     "name": "api_tool",
+     "metadata": {}
+    },
+    "create_time": 1792050785.629438,
+    "update_time": 1792050785.629438,
+    "content": {
+     "content_type": "multimodal_text",
+     "parts": [
+      "[L1] <PARSED TEXT FOR PAGE: 1 / 1>\nUse ref_id \"turn0file0\" to reference this file. For broad questions or unknown locations, retrieve relevant chunks with `files.search` scoped to this file. Use `files.find` only for exact text, and use `files.read` for a known range or to expand relevant results. Full file size: 1 pages, 2 file lines.",
+      "[L2] Fruit prices: apple 3, pear 4, plum 5"
+     ]
+    },
+    "status": "finished_successfully",
+    "end_turn": null,
+    "weight": 1.0,
+    "metadata": {
+     "command": "context_stuff",
+     "is_visually_hidden_from_conversation": false,
+     "resolved_model_slug": "gpt-6",
+     "cot_version": "v5",
+     "request_id": "00000000-0000-4000-8000-000000000015",
+     "message_type": "next",
+     "turn_exchange_id": "00000000-0000-4000-8000-000000000016",
+     "working_turn_id": "00000000-0000-4000-8000-000000000016",
+     "model_slug": "gpt-6",
+     "default_model_slug": "auto",
+     "parent_id": "00000000-0000-4000-8000-000000000017",
+     "can_save": false
+    },
+    "recipient": "all",
+    "channel": null
+   },
+   "parent": "00000000-0000-4000-8000-000000000017",
+   "children": [
+    "00000000-0000-4000-8000-00000000001a"
+   ]
+  },
+  "00000000-0000-4000-8000-00000000001a": {
+   "id": "00000000-0000-4000-8000-00000000001a",
+   "message": {
+    "id": "00000000-0000-4000-8000-00000000001a",
+    "author": {
+     "role": "tool",
+     "name": "api_tool",
+     "metadata": {}
+    },
+    "create_time": 1792050785.648209,
+    "update_time": 1792050785.648209,
+    "content": {
+     "content_type": "multimodal_text",
+     "parts": [
+      "[L1] <PARSED TEXT FOR PAGE: 1 / 1>\nUse ref_id \"turn0file1\" to reference this file. For broad questions or unknown locations, retrieve relevant chunks with `files.search` scoped to this file. Use `files.find` only for exact text, and use `files.read` for a known range or to expand relevant results. Full file size: 1 pages, 3 file lines.",
+      "[L2] Meeting notes: paint the fence green. Next meeting on Friday.\n"
+     ]
+    },
+    "status": "finished_successfully",
+    "end_turn": null,
+    "weight": 1.0,
+    "metadata": {
+     "command": "context_stuff",
+     "is_visually_hidden_from_conversation": false,
+     "resolved_model_slug": "gpt-6",
+     "cot_version": "v5",
+     "request_id": "00000000-0000-4000-8000-000000000015",
+     "message_type": "next",
+     "turn_exchange_id": "00000000-0000-4000-8000-000000000016",
+     "working_turn_id": "00000000-0000-4000-8000-000000000016",
+     "model_slug": "gpt-6",
+     "default_model_slug": "auto",
+     "parent_id": "00000000-0000-4000-8000-000000000019",
+     "can_save": false
+    },
+    "recipient": "all",
+    "channel": null
+   },
+   "parent": "00000000-0000-4000-8000-000000000019",
+   "children": [
+    "00000000-0000-4000-8000-00000000001b"
+   ]
+  },
+  "00000000-0000-4000-8000-00000000001b": {
+   "id": "00000000-0000-4000-8000-00000000001b",
+   "message": {
+    "id": "00000000-0000-4000-8000-00000000001b",
+    "author": {
+     "role": "tool",
+     "name": "api_tool",
+     "metadata": {}
+    },
+    "create_time": 1792050785.693886,
+    "update_time": 1792050785.693886,
+    "content": {
+     "content_type": "text",
+     "parts": [
+      ""
+     ]
+    },
+    "status": "finished_successfully",
+    "end_turn": null,
+    "weight": 1.0,
+    "metadata": {
+     "is_visually_hidden_from_conversation": false,
+     "resolved_model_slug": "gpt-6",
+     "cot_version": "v5",
+     "request_id": "00000000-0000-4000-8000-000000000015",
+     "message_type": "next",
+     "turn_exchange_id": "00000000-0000-4000-8000-000000000016",
+     "working_turn_id": "00000000-0000-4000-8000-000000000016",
+     "model_slug": "gpt-6",
+     "default_model_slug": "auto",
+     "parent_id": "00000000-0000-4000-8000-00000000001a",
+     "can_save": false
+    },
+    "recipient": "all",
+    "channel": null
+   },
+   "parent": "00000000-0000-4000-8000-00000000001a",
+   "children": [
+    "00000000-0000-4000-8000-00000000001c"
+   ]
+  },
+  "00000000-0000-4000-8000-00000000001c": {
+   "id": "00000000-0000-4000-8000-00000000001c",
+   "message": {
+    "id": "00000000-0000-4000-8000-00000000001c",
+    "author": {
+     "role": "assistant",
+     "name": null,
+     "metadata": {}
+    },
+    "create_time": 1792050786.77596,
+    "update_time": 1792050786.77596,
+    "content": {
+     "content_type": "code",
+     "language": "unknown",
+     "response_format_name": null,
+     "text": "from PIL import Image\nimg=Image.open('/mnt/data/stripes.png')\nimg.size, img.mode, img.getpixel((10,10)), img.getpixel((45,10)), img.getpixel((80,10))\n"
+    },
+    "status": "finished_successfully",
+    "end_turn": false,
+    "weight": 1.0,
+    "metadata": {
+     "finish_details": {
+      "type": "stop",
+      "stop_tokens": [
+       200012
+      ]
+     },
+     "is_complete": true,
+     "citations": [],
+     "content_references": [],
+     "resolved_model_slug": "gpt-6",
+     "hide_inline_actions": true,
+     "disable_turn_actions": true,
+     "cot_version": "v5",
+     "request_id": "00000000-0000-4000-8000-000000000015",
+     "message_type": "next",
+     "turn_exchange_id": "00000000-0000-4000-8000-000000000016",
+     "working_turn_id": "00000000-0000-4000-8000-000000000016",
+     "model_slug": "gpt-6",
+     "default_model_slug": "auto",
+     "parent_id": "00000000-0000-4000-8000-00000000001d",
+     "reasoning_titles": [
+      "Inspecting stripe image dimensions and pixels"
+     ],
+     "reasoning_title": "Inspecting stripe image dimensions and pixels",
+     "reasoning_status": "is_reasoning",
+     "tool_icons": [
+      "code"
+     ],
+     "reasoning_start_time": 1792050783.8470268,
+     "model_switcher_deny": [],
+     "can_save": false
+    },
+    "recipient": "python",
+    "channel": null
+   },
+   "parent": "00000000-0000-4000-8000-00000000001b",
+   "children": [
+    "00000000-0000-4000-8000-00000000001e"
+   ]
+  },
+  "00000000-0000-4000-8000-00000000001e": {
+   "id": "00000000-0000-4000-8000-00000000001e",
+   "message": {
+    "id": "00000000-0000-4000-8000-00000000001e",
+    "author": {
+     "role": "tool",
+     "name": "python",
+     "metadata": {}
+    },
+    "create_time": 1792050793.973761,
+    "update_time": 1792050793.973761,
+    "content": {
+     "content_type": "execution_output",
+     "text": "((90, 60), 'RGB', (255, 0, 0), (0, 160, 0), (0, 0, 255))"
+    },
+    "status": "finished_successfully",
+    "end_turn": null,
+    "weight": 1.0,
+    "metadata": {
+     "is_complete": true,
+     "aggregate_result": {
+      "status": "success",
+      "run_id": "00000000-0000-4000-8000-00000000001f",
+      "start_time": 1792050791.6457977,
+      "update_time": 1792050793.1511772,
+      "code": "from PIL import Image\nimg=Image.open('/mnt/data/stripes.png')\nimg.size, img.mode, img.getpixel((10,10)), img.getpixel((45,10)), img.getpixel((80,10))\n",
+      "end_time": 1792050793.1511772,
+      "final_expression_output": "((90, 60), 'RGB', (255, 0, 0), (0, 160, 0), (0, 0, 255))",
+      "in_kernel_exception": null,
+      "system_exception": null,
+      "messages": [],
+      "jupyter_messages": [
+       {
+        "msg_type": "status",
+        "parent_header": {
+         "msg_id": "e9e95ff0-94040d08b7e1a8efa01b6e18_226_8",
+         "version": "5.3"
+        },
+        "content": {
+         "execution_state": "busy"
+        }
+       },
+       {
+        "msg_type": "execute_input",
+        "parent_header": {
+         "msg_id": "e9e95ff0-94040d08b7e1a8efa01b6e18_226_8",
+         "version": "5.3"
+        }
+       },
+       {
+        "parent_header": {
+         "msg_id": "e9e95ff0-94040d08b7e1a8efa01b6e18_226_8",
+         "version": "5.3"
+        },
+        "msg_type": "execute_result",
+        "content": {
+         "data": {
+          "text/plain": "((90, 60), 'RGB', (255, 0, 0), (0, 160, 0), (0, 0, 255))"
+         }
+        }
+       },
+       {
+        "msg_type": "status",
+        "parent_header": {
+         "msg_id": "e9e95ff0-94040d08b7e1a8efa01b6e18_226_8",
+         "version": "5.3"
+        },
+        "content": {
+         "execution_state": "idle"
+        }
+       }
+      ],
+      "timeout_triggered": null
+     },
+     "resolved_model_slug": "gpt-6",
+     "hide_inline_actions": true,
+     "disable_turn_actions": true,
+     "cot_version": "v5",
+     "request_id": "00000000-0000-4000-8000-000000000015",
+     "message_type": "next",
+     "turn_exchange_id": "00000000-0000-4000-8000-000000000016",
+     "working_turn_id": "00000000-0000-4000-8000-000000000016",
+     "model_slug": "gpt-6",
+     "default_model_slug": "auto",
+     "parent_id": "00000000-0000-4000-8000-000000000020",
+     "reasoning_titles": null,
+     "reasoning_title": null,
+     "reasoning_status": "is_reasoning",
+     "tool_icons": [
+      "code"
+     ],
+     "reasoning_start_time": 1792050783.8470268,
+     "can_save": false
+    },
+    "recipient": "all",
+    "channel": null
+   },
+   "parent": "00000000-0000-4000-8000-00000000001c",
+   "children": [
+    "00000000-0000-4000-8000-000000000021"
+   ]
+  },
+  "00000000-0000-4000-8000-000000000021": {
+   "id": "00000000-0000-4000-8000-000000000021",
+   "message": {
+    "id": "00000000-0000-4000-8000-000000000021",
+    "author": {
+     "role": "assistant",
+     "name": null,
+     "metadata": {}
+    },
+    "create_time": 1792050794.310959,
+    "update_time": 1792050794.310959,
+    "content": {
+     "content_type": "thoughts",
+     "thoughts": [
+      {
+       "summary": "Inspecting stripe image dimensions and pixels",
+       "content": "",
+       "chunks": [],
+       "finished": true
+      }
+     ],
+     "source_analysis_msg_id": "00000000-0000-4000-8000-000000000022"
+    },
+    "status": "finished_successfully",
+    "end_turn": false,
+    "weight": 1.0,
+    "metadata": {
+     "inline_cot_expandable_content": {
+      "source_message_ids": [
+       "00000000-0000-4000-8000-00000000001c",
+       "00000000-0000-4000-8000-00000000001e"
+      ]
+     },
+     "reasoning_status": "is_reasoning",
+     "tool_summary_type": "python",
+     "tool_icons": [
+      "code"
+     ],
+     "reasoning_start_time": 1792050783.8470268,
+     "cot_version": "v5",
+     "conversation_followup_suggestions_eligible": false,
+     "request_id": "00000000-0000-4000-8000-000000000015",
+     "message_type": "next",
+     "turn_exchange_id": "00000000-0000-4000-8000-000000000016",
+     "working_turn_id": "00000000-0000-4000-8000-000000000016",
+     "resolved_model_slug": "gpt-6",
+     "model_slug": "gpt-6",
+     "default_model_slug": "auto",
+     "can_save": false,
+     "parent_id": "00000000-0000-4000-8000-00000000001e",
+     "hide_inline_actions": true,
+     "model_switcher_deny": [
+      {
+       "slug": "gpt-5-3-mini",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-5-3-mini",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-5-6-mini",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-5-6-mini",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-6-mini",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-6-mini",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-5-6-t-mini-mini",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-5-6-t-mini-mini",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-6-t-mini-mini",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-6-t-mini-mini",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "auto",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "auto",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      }
+     ]
+    },
+    "recipient": "all",
+    "channel": null
+   },
+   "parent": "00000000-0000-4000-8000-00000000001e",
+   "children": [
+    "00000000-0000-4000-8000-000000000023"
+   ]
+  },
+  "00000000-0000-4000-8000-000000000023": {
+   "id": "00000000-0000-4000-8000-000000000023",
+   "message": {
+    "id": "00000000-0000-4000-8000-000000000023",
+    "author": {
+     "role": "assistant",
+     "name": null,
+     "metadata": {}
+    },
+    "create_time": 1792050794.329777,
+    "update_time": 1792050794.329777,
+    "content": {
+     "content_type": "reasoning_recap",
+     "content": "Worked for 10s"
+    },
+    "status": "finished_successfully",
+    "end_turn": false,
+    "weight": 1.0,
+    "metadata": {
+     "reasoning_status": "reasoning_ended",
+     "finished_duration_sec": 10,
+     "reasoning_start_time": 1792050783.8470268,
+     "reasoning_end_time": 1792050794.2416108,
+     "reasoning_recap_type": "hide_all",
+     "cot_version": "v5",
+     "conversation_followup_suggestions_eligible": false,
+     "request_id": "00000000-0000-4000-8000-000000000015",
+     "message_type": "next",
+     "turn_exchange_id": "00000000-0000-4000-8000-000000000016",
+     "working_turn_id": "00000000-0000-4000-8000-000000000016",
+     "resolved_model_slug": "gpt-6",
+     "model_slug": "gpt-6",
+     "default_model_slug": "auto",
+     "can_save": false,
+     "parent_id": "00000000-0000-4000-8000-000000000021",
+     "hide_inline_actions": true,
+     "model_switcher_deny": [
+      {
+       "slug": "gpt-5-3-mini",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-5-3-mini",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-5-6-mini",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-5-6-mini",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-6-mini",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-6-mini",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-5-6-t-mini-mini",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-5-6-t-mini-mini",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-6-t-mini-mini",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-6-t-mini-mini",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "auto",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "auto",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      }
+     ]
+    },
+    "recipient": "all",
+    "channel": null
+   },
+   "parent": "00000000-0000-4000-8000-000000000021",
+   "children": [
+    "00000000-0000-4000-8000-000000000024"
+   ]
+  },
+  "00000000-0000-4000-8000-000000000024": {
+   "id": "00000000-0000-4000-8000-000000000024",
+   "message": {
+    "id": "00000000-0000-4000-8000-000000000024",
+    "author": {
+     "role": "assistant",
+     "name": null,
+     "metadata": {}
+    },
+    "create_time": 1792050794.586503,
+    "update_time": 1792050797.573965,
+    "content": {
+     "content_type": "text",
+     "parts": [
+      "- **fruit-prices.pdf:** Lists fruit prices: apples 3, pears 4, and plums 5. <FileCite ref_id=\"turn0file0\" />\n- **meeting-notes.docx:** Notes to paint the fence green and hold the next meeting on Friday. <FileCite ref_id=\"turn0file1\" />\n- **stripes.png:** A rectangular image with three vertical stripes: red, green, and blue."
+     ]
+    },
+    "status": "finished_successfully",
+    "end_turn": true,
+    "weight": 1.0,
+    "metadata": {
+     "finish_details": {
+      "type": "stop",
+      "stop_tokens": [
+       200002
+      ]
+     },
+     "is_complete": true,
+     "citations": [],
+     "content_references": [],
+     "model_dil_v2": {
+      "code": "function __dilSafe(evaluate,failureValue){try{return evaluate()}catch{return failureValue}}\n\nDIL.render(__dil.jsx(()=>{const __dilConstants=DIL.useConstants();const __dilModelDataBindings=DIL.useAppData((appData)=>appData.opGenui?.modelDataBindings??{});return __dil.jsx(\"list\",{\"marker\":\"bullet\"},__dil.jsx(\"list-item\",null,__dil.jsx(\"text\",null,__dil.jsx(\"bold\",null,__dilConstants[\"0\"]),__dilConstants[\"1\"],__dilSafe(()=>(__dil.jsx(FileCite,{\"ref_id\":\"turn0file0\",\"__resolutionId\":__dilConstants[\"2\"]})),null))),__dil.jsx(\"list-item\",null,__dil.jsx(\"text\",null,__dil.jsx(\"bold\",null,__dilConstants[\"3\"]),__dilConstants[\"4\"],__dilSafe(()=>(__dil.jsx(FileCite,{\"ref_id\":\"turn0file1\",\"__resolutionId\":__dilConstants[\"5\"]})),null))),__dil.jsx(\"list-item\",null,__dil.jsx(\"text\",null,__dil.jsx(\"bold\",null,__dilConstants[\"6\"]),__dilConstants[\"7\"])));},{\"key\":\"body:0\"}));",
+      "constants": {
+       "0": "fruit-prices.pdf:",
+       "1": " Lists fruit prices: apples 3, pears 4, and plums 5. ",
+       "2": "00000000-0000-4000-8000-000000000025",
+       "3": "meeting-notes.docx:",
+       "4": " Notes to paint the fence green and hold the next meeting on Friday. ",
+       "5": "00000000-0000-4000-8000-000000000026",
+       "6": "stripes.png:",
+       "7": " A rectangular image with three vertical stripes: red, green, and blue."
+      },
+      "fallbackMarkdown": "- **fruit-prices.pdf\\:** Lists fruit prices: apples 3, pears 4, and plums 5. fileciteturn0file0\n- **meeting-notes.docx\\:** Notes to paint the fence green and hold the next meeting on Friday. fileciteturn0file1\n- **stripes.png\\:** A rectangular image with three vertical stripes: red, green, and blue.",
+      "fallbackMarkdownVersion": 1,
+      "requiredComponents": [
+       "FileCite"
+      ],
+      "appData": {
+       "opGenui": {
+        "componentResults": {
+         "00000000-0000-4000-8000-000000000025": {
+          "status": "resolved",
+          "state": {
+           "refid": "turn0file0",
+           "file_id": "file_00000000000000000000000000000002",
+           "safe_file_url": null,
+           "file_name": "fruit-prices.pdf",
+           "file_type_label": "Document",
+           "file_action_payload": {
+            "file_id": "file_00000000000000000000000000000002",
+            "file_name": "fruit-prices.pdf",
+            "page_range_start": null,
+            "page_range_end": null,
+            "snippet": null,
+            "text": null,
+            "fff_metadata": null,
+            "input_pointer": {
+             "message_index": 0,
+             "message_id": "00000000-0000-4000-8000-000000000019",
+             "file_index": 0,
+             "line_range_start": null,
+             "line_range_end": null
+            },
+            "event_name": "file_cite_widget_clicked",
+            "event_data": {
+             "widget_name": "file_cite",
+             "refid": "turn0file0",
+             "file_id": "file_00000000000000000000000000000002"
+            }
+           }
+          },
+          "componentName": "FileCite"
+         },
+         "00000000-0000-4000-8000-000000000026": {
+          "status": "resolved",
+          "state": {
+           "refid": "turn0file1",
+           "file_id": "file_00000000000000000000000000000004",
+           "safe_file_url": null,
+           "file_name": "meeting-notes.docx",
+           "file_type_label": "Document",
+           "file_action_payload": {
+            "file_id": "file_00000000000000000000000000000004",
+            "file_name": "meeting-notes.docx",
+            "page_range_start": null,
+            "page_range_end": null,
+            "snippet": null,
+            "text": null,
+            "fff_metadata": null,
+            "input_pointer": {
+             "message_index": 0,
+             "message_id": "00000000-0000-4000-8000-00000000001a",
+             "file_index": 1,
+             "line_range_start": null,
+             "line_range_end": null
+            },
+            "event_name": "file_cite_widget_clicked",
+            "event_data": {
+             "widget_name": "file_cite",
+             "refid": "turn0file1",
+             "file_id": "file_00000000000000000000000000000004"
+            }
+           }
+          },
+          "componentName": "FileCite"
+         }
+        },
+        "interactionSurface": "mainline",
+        "modelDataBindings": {}
+       }
+      }
+     },
+     "view_state": {},
+     "resolved_model_slug": "gpt-6",
+     "search_result_groups": [],
+     "cot_version": "v5",
+     "conversation_followup_suggestions_eligible": true,
+     "request_id": "00000000-0000-4000-8000-000000000015",
+     "message_type": "next",
+     "turn_exchange_id": "00000000-0000-4000-8000-000000000016",
+     "working_turn_id": "00000000-0000-4000-8000-000000000016",
+     "model_slug": "gpt-6",
+     "default_model_slug": "auto",
+     "can_save": true,
+     "parent_id": "00000000-0000-4000-8000-000000000023",
+     "model_switcher_deny": [
+      {
+       "slug": "gpt-5-3-mini",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-5-3-mini",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-5-6-mini",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-5-6-mini",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-6-mini",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-6-mini",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-5-6-t-mini-mini",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-5-6-t-mini-mini",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-6-t-mini-mini",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-6-t-mini-mini",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "auto",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "auto",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      }
+     ]
+    },
+    "recipient": "all",
+    "channel": "final"
+   },
+   "parent": "00000000-0000-4000-8000-000000000023",
+   "children": []
+  }
+ },
+ "current_node": "00000000-0000-4000-8000-000000000024",
+ "context_truncation_continuation": null
+}

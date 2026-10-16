@@ -1,0 +1,1034 @@
+{
+  "extName": {
+    "message": "CodingCat AI Chat Exporter"
+  },
+  "extDescription": {
+    "message": "Export Claude, Gemini, Grok and ChatGPT chats to Markdown with all attachments."
+  },
+  "commandExportCurrent": {
+    "message": "Save the current chat"
+  },
+  "untitledChat": {
+    "message": "Untitled"
+  },
+  "untitledProject": {
+    "message": "Untitled project"
+  },
+  "untitledNotebook": {
+    "message": "Untitled notebook"
+  },
+  "popupUnsupported": {
+    "message": "Open a chat on claude.ai, gemini.google.com, grok.com or chatgpt.com to export it."
+  },
+  "popupDetected": {
+    "message": "$ARG1$ chat is open.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupNotAChat": {
+    "message": "Open a conversation to save it."
+  },
+  "popupSaveChat": {
+    "message": "Save this chat"
+  },
+  "popupSaving": {
+    "message": "Saving…"
+  },
+  "popupDone": {
+    "message": "Done: $ARG1$ messages, $ARG2$ files.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "popupDonePartial": {
+    "message": "Saved $ARG1$ messages and $ARG2$ files; $ARG3$ files could not be saved (marked in the note).",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      }
+    }
+  },
+  "savedToDownloads": {
+    "message": "Saved to Downloads:"
+  },
+  "savedToFolder": {
+    "message": "Saved to the folder “$ARG1$”:",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "savedTo": {
+    "message": "Saved to:"
+  },
+  "savedToArchive": {
+    "message": "In the archive “$ARG1$”:",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "saveAsZip": {
+    "message": "Save as .zip"
+  },
+  "panelClose": {
+    "message": "Close"
+  },
+  "popupChooseChats": {
+    "message": "Choose chats…"
+  },
+  "popupChooseProjects": {
+    "message": "Choose projects…"
+  },
+  "popupChooseNotebooks": {
+    "message": "Choose notebooks…"
+  },
+  "popupProjectPage": {
+    "message": "Claude project page."
+  },
+  "popupNotebookPage": {
+    "message": "Gemini notebook page."
+  },
+  "popupProject": {
+    "message": "Project: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupNotebook": {
+    "message": "Notebook: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupSaveProject": {
+    "message": "Save project with its chats"
+  },
+  "popupSaveNotebook": {
+    "message": "Save notebook with its chats"
+  },
+  "popupJobRunning": {
+    "message": "Bulk export: $ARG1$ of $ARG2$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "popupJobOpen": {
+    "message": "Open"
+  },
+  "exportTitle": {
+    "message": "Export from $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportPlatform": {
+    "message": "Platform"
+  },
+  "exportUpdatedFrom": {
+    "message": "Updated from"
+  },
+  "exportColGem": {
+    "message": "Gem"
+  },
+  "exportIntro": {
+    "message": "Pick the chats or projects to save. The export goes on in the background if you close this tab."
+  },
+  "exportSearch": {
+    "message": "Search"
+  },
+  "exportSearchPlaceholder": {
+    "message": "Title or project"
+  },
+  "exportFrom": {
+    "message": "Created from"
+  },
+  "exportTo": {
+    "message": "to"
+  },
+  "exportLoading": {
+    "message": "Loading the chat list…"
+  },
+  "exportSearchMore": {
+    "message": "Find more chats with Gemini search"
+  },
+  "exportSearchHint": {
+    "message": "Gemini's list stops at about 800 chats. Its search reaches older ones, 20 per query, so this takes a few minutes and may still miss some."
+  },
+  "exportSearchRunning": {
+    "message": "Searching Gemini… $ARG1$ more chats found, $ARG2$ queries.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "exportSearchStop": {
+    "message": "Stop"
+  },
+  "exportSearchDone": {
+    "message": "Search found $ARG1$ more chats ($ARG2$ queries).",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "exportSearchAgain": {
+    "message": "Search more"
+  },
+  "exportSearchRemembered": {
+    "message": "$ARG1$ chats found by an earlier search are in the list.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportSearchForget": {
+    "message": "Forget them"
+  },
+  "exportFoundBySearch": {
+    "message": "found by search"
+  },
+  "exportArchived": {
+    "message": "archived"
+  },
+  "exportLoadingCount": {
+    "message": "Loading the chat list… $ARG1$ so far. A long list can take a few minutes.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportRetry": {
+    "message": "Try again"
+  },
+  "exportSelectAll": {
+    "message": "Select all shown chats"
+  },
+  "exportSelectAllProjects": {
+    "message": "Select all shown projects"
+  },
+  "exportSelectAllNotebooks": {
+    "message": "Select all shown notebooks"
+  },
+  "exportTabChats": {
+    "message": "Chats"
+  },
+  "exportTabProjects": {
+    "message": "Projects"
+  },
+  "exportTabNotebooks": {
+    "message": "Notebooks"
+  },
+  "exportProjectSearchPlaceholder": {
+    "message": "Name or description"
+  },
+  "exportProjectsLoading": {
+    "message": "Loading projects…"
+  },
+  "exportNotebooksLoading": {
+    "message": "Loading notebooks…"
+  },
+  "exportNoProjects": {
+    "message": "No projects in this account."
+  },
+  "exportNoNotebooks": {
+    "message": "No notebooks in this account."
+  },
+  "exportColName": {
+    "message": "Name"
+  },
+  "exportColFiles": {
+    "message": "Files"
+  },
+  "exportStartProjects": {
+    "message": "Save selected projects with their chats ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportStartNotebooks": {
+    "message": "Save selected notebooks with their chats ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportColTitle": {
+    "message": "Title"
+  },
+  "exportColCreated": {
+    "message": "Created"
+  },
+  "exportColUpdated": {
+    "message": "Updated"
+  },
+  "exportColProject": {
+    "message": "Project"
+  },
+  "exportColStatus": {
+    "message": "Status"
+  },
+  "exportNothingFound": {
+    "message": "No chats match the search."
+  },
+  "exportSelected": {
+    "message": "Selected: $ARG1$ of $ARG2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "exportStart": {
+    "message": "Save selected ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportBusy": {
+    "message": "Another export is running."
+  },
+  "jobRunning": {
+    "message": "Saving…"
+  },
+  "jobCancelling": {
+    "message": "Stopping after the current chat…"
+  },
+  "jobCancelled": {
+    "message": "Export cancelled"
+  },
+  "jobStopped": {
+    "message": "Export stopped"
+  },
+  "jobFinished": {
+    "message": "Export finished"
+  },
+  "jobCancel": {
+    "message": "Cancel"
+  },
+  "jobNew": {
+    "message": "Hide"
+  },
+  "jobCounts": {
+    "message": "$ARG1$ of $ARG2$ · saved $ARG3$ · with warnings $ARG4$ · errors $ARG5$ · skipped $ARG6$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      },
+      "arg4": {
+        "content": "$4"
+      },
+      "arg5": {
+        "content": "$5"
+      },
+      "arg6": {
+        "content": "$6"
+      }
+    }
+  },
+  "jobCurrent": {
+    "message": "Now: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "jobReport": {
+    "message": "Report:"
+  },
+  "jobParts": {
+    "message": "The archive is saved in $ARG1$ parts, about 500 MB each. Unpack them into one folder.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "jobFailedList": {
+    "message": "Chats that failed ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "jobStatus_pending": {
+    "message": "Waiting"
+  },
+  "jobStatus_running": {
+    "message": "Saving"
+  },
+  "jobStatus_done": {
+    "message": "Saved"
+  },
+  "failedFilesMore": {
+    "message": "and $ARG1$ more",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "jobRecovered": {
+    "message": "The unsaved part of the archive was lost from memory (the extension restarted or ran out of memory), so its chats are saved again. Times: $ARG1$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "jobStatus_warning": {
+    "message": "Saved, some files missing"
+  },
+  "jobStatus_error": {
+    "message": "Failed"
+  },
+  "jobStatus_skipped": {
+    "message": "Skipped: not changed"
+  },
+  "jobNotifyDone": {
+    "message": "Export finished: $ARG1$ chats saved ($ARG2$ with warnings), $ARG3$ errors, $ARG4$ skipped.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      },
+      "arg4": {
+        "content": "$4"
+      }
+    }
+  },
+  "jobNotifyStopped": {
+    "message": "Export stopped: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "reportTitle": {
+    "message": "Export report: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "reportStarted": {
+    "message": "Started"
+  },
+  "reportFinished": {
+    "message": "Finished"
+  },
+  "reportSummary": {
+    "message": "Saved $ARG1$ (with warnings $ARG2$), errors $ARG3$, skipped $ARG4$, of $ARG5$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      },
+      "arg4": {
+        "content": "$4"
+      },
+      "arg5": {
+        "content": "$5"
+      }
+    }
+  },
+  "reportCancelled": {
+    "message": "The export was cancelled."
+  },
+  "reportStopped": {
+    "message": "The export stopped: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "reportErrors": {
+    "message": "Errors"
+  },
+  "reportWarnings": {
+    "message": "Saved with missing files"
+  },
+  "reportFailedFiles": {
+    "message": "files not saved: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "reportSkipped": {
+    "message": "Skipped: not changed since the last export"
+  },
+  "reportNotReached": {
+    "message": "Not reached"
+  },
+  "reportSaved": {
+    "message": "Saved"
+  },
+  "popupShortcut": {
+    "message": "Shortcut: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupShortcutNotSet": {
+    "message": "Keyboard shortcut is not set."
+  },
+  "saveDialogWarning": {
+    "message": "Chrome asks where to save each file. Turn off “Ask where to save each file before downloading” in Chrome settings, otherwise every exported file opens a dialog. Or save to a folder you choose (extension settings) or tick “Save as .zip” when saving."
+  },
+  "saveDialogWarningEarlier": {
+    "message": "Last time Chrome asked where to save a file, and the export stopped. Turn off “Ask where to save each file before downloading” in Chrome settings, or save to a folder you choose (extension settings) or tick “Save as .zip” below. If the Chrome setting is already off, just save the chat."
+  },
+  "openDownloadSettings": {
+    "message": "Open download settings"
+  },
+  "openSettings": {
+    "message": "Settings"
+  },
+  "notifyDone": {
+    "message": "Saved: $ARG1$ messages, $ARG2$ files.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "notifyPartial": {
+    "message": "Saved $ARG1$ messages and $ARG2$ files; $ARG3$ files could not be saved.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      }
+    }
+  },
+  "error_unsupported_page": {
+    "message": "Open a Claude, Gemini, Grok or ChatGPT chat first."
+  },
+  "error_tab_not_loaded": {
+    "message": "The site did not open in a background tab. Open it in a tab, wait until it loads, and try again."
+  },
+  "error_rate_limited": {
+    "message": "The service limits how often it can be asked and kept refusing for several minutes, so the export stopped. Start it again in 10–15 minutes; with “skip unchanged chats” on, it goes on from where it stopped."
+  },
+  "error_chat_not_found": {
+    "message": "The chat is not on the service any more: it was deleted."
+  },
+  "error_platform_busy": {
+    "message": "The service keeps answering with a server error. Try again later."
+  },
+  "exportListStop": {
+    "message": "Stop and use these"
+  },
+  "exportListStopping": {
+    "message": "Stopping after this page…"
+  },
+  "exportListStopped": {
+    "message": "Loading was stopped at $ARG1$ chats: the list shows the newest ones.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportListLoadAll": {
+    "message": "Load the whole list"
+  },
+  "exportListIncomplete": {
+    "message": "$ARG1$ returned $ARG2$ chats and then stopped answering, so older chats are not listed. Try again later to load the rest.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "error_platform_not_ready": {
+    "message": "This is not available on this site yet."
+  },
+  "error_not_a_chat": {
+    "message": "This page is not a conversation. Open a chat first."
+  },
+  "error_not_signed_in": {
+    "message": "Sign in to the chat service and try again."
+  },
+  "error_format_changed": {
+    "message": "The service changed its data format. Update the extension."
+  },
+  "error_format_changed_at": {
+    "message": "The service changed its data format (field $ARG1$). Update the extension, or report the field name.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "error_busy": {
+    "message": "This chat is already being saved."
+  },
+  "error_save_dialog": {
+    "message": "Export stopped: Chrome asks where to save each file."
+  },
+  "error_save_cancelled": {
+    "message": "Saving was cancelled."
+  },
+  "error_archive_lost": {
+    "message": "The ZIP archive being built was lost (the extension was reloaded or ran out of memory)."
+  },
+  "error_folder_not_chosen": {
+    "message": "No folder is chosen. Choose one in the extension settings."
+  },
+  "error_folder_permission": {
+    "message": "No access to the chosen folder. Click “Save chat” in the extension window and allow access."
+  },
+  "error_folder_missing": {
+    "message": "The chosen folder is not available. It may have been deleted or moved. Choose it again in the extension settings."
+  },
+  "error_failed": {
+    "message": "Could not save the chat: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdUser": {
+    "message": "User"
+  },
+  "mdThinking": {
+    "message": "Thinking"
+  },
+  "mdWebSearch": {
+    "message": "Web search: “$ARG1$”",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdWebSearchNoQuery": {
+    "message": "Web search"
+  },
+  "mdNoResults": {
+    "message": "No results"
+  },
+  "mdTools": {
+    "message": "Tools ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdToolError": {
+    "message": "error"
+  },
+  "mdAttachments": {
+    "message": "Attachments"
+  },
+  "mdAttachmentFailed": {
+    "message": "could not download: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdExtractedOnly": {
+    "message": "extracted text only"
+  },
+  "mdExtractedPartial": {
+    "message": "only the beginning of the extracted text: the service keeps no more"
+  },
+  "mdRebuiltFromChat": {
+    "message": "rebuilt from the chat"
+  },
+  "failUnavailable": {
+    "message": "the service does not provide this file"
+  },
+  "failForbidden": {
+    "message": "access denied"
+  },
+  "failNotFound": {
+    "message": "not found on the server"
+  },
+  "failNetwork": {
+    "message": "network or server error"
+  },
+  "failFile": {
+    "message": "could not write the file ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "failOther": {
+    "message": "$ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdOtherBranches": {
+    "message": "Other branches"
+  },
+  "mdRecompressed": {
+    "message": "re-encoded by the service, full size"
+  },
+  "mdUnreadable": {
+    "message": "A part of this message could not be read ($ARG1$). The rest of the chat is saved.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdProjectDescription": {
+    "message": "Description"
+  },
+  "mdProjectInstructions": {
+    "message": "Project instructions"
+  },
+  "mdProjectKnowledge": {
+    "message": "Knowledge base files"
+  },
+  "mdProjectChats": {
+    "message": "Chats"
+  },
+  "mdProjectNoKnowledge": {
+    "message": "No files."
+  },
+  "mdNotebookSources": {
+    "message": "Sources"
+  },
+  "mdNotebookNoSources": {
+    "message": "No sources."
+  },
+  "mdNotebookSourcesElsewhere": {
+    "message": "The source files stay in NotebookLM: [open the notebook]($ARG1$).",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdFileNotGiven": {
+    "message": "the service keeps this file without a download, so only its name is here"
+  },
+  "mdProjectNoChats": {
+    "message": "No chats."
+  },
+  "mdProjectChatFailed": {
+    "message": "could not save: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdBranchFromStart": {
+    "message": "Branch $ARG1$, from the start",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdBranchAfter": {
+    "message": "Branch $ARG1$, after message $ARG2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "mdBranchAfterIn": {
+    "message": "Branch $ARG1$, after message $ARG2$ of branch $ARG3$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      }
+    }
+  },
+  "optionsTitle": {
+    "message": "CodingCat AI Chat Exporter settings"
+  },
+  "optionsSectionSaving": {
+    "message": "Saving"
+  },
+  "optionsDestination": {
+    "message": "Save to"
+  },
+  "optionsDestinationDownloads": {
+    "message": "Chrome's Downloads folder"
+  },
+  "optionsDestinationFolder": {
+    "message": "A folder you choose"
+  },
+  "optionsDestinationFolderHint": {
+    "message": "Files are written straight into the folder, with no Save As dialogs, whatever Chrome's download settings are. An Obsidian vault folder works too."
+  },
+  "optionsChooseFolder": {
+    "message": "Choose folder…"
+  },
+  "optionsChangeFolder": {
+    "message": "Choose another folder…"
+  },
+  "optionsFolderChosen": {
+    "message": "Folder: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsFolderNotChosen": {
+    "message": "No folder chosen yet."
+  },
+  "optionsFolderPickerHint": {
+    "message": "Chrome may not let you pick Documents, Downloads or Desktop themselves: create a folder inside them, for example “AI Chats”."
+  },
+  "optionsFolderNeedsAccess": {
+    "message": "Chrome will ask for permission to write to this folder on the next save. You can allow it now."
+  },
+  "optionsFolderDenied": {
+    "message": "Access to the folder is blocked. Choose the folder again."
+  },
+  "optionsGrantAccess": {
+    "message": "Allow access"
+  },
+  "optionsFolderError": {
+    "message": "Could not open the folder: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsRootFolder": {
+    "message": "Folder inside Downloads"
+  },
+  "optionsSectionBulk": {
+    "message": "Repeated and bulk exports"
+  },
+  "optionsFolderExists": {
+    "message": "When a chat was saved before"
+  },
+  "optionsFolderExistsCopy": {
+    "message": "Save a new copy: “Chat (2)”"
+  },
+  "optionsFolderExistsOverwrite": {
+    "message": "Overwrite the earlier copy"
+  },
+  "optionsSkipUnchanged": {
+    "message": "Skip chats that have not changed"
+  },
+  "optionsSkipUnchangedHint": {
+    "message": "In bulk exports, a chat saved before and not updated since is skipped."
+  },
+  "optionsDelay": {
+    "message": "Pause between chats, ms"
+  },
+  "optionsDelayHint": {
+    "message": "Keeps the load on the service low. 800 ms is enough for most accounts."
+  },
+  "optionsReport": {
+    "message": "Export report in _reports/"
+  },
+  "optionsReportOnErrors": {
+    "message": "Only when something failed"
+  },
+  "optionsReportAlways": {
+    "message": "Always"
+  },
+  "optionsReportNever": {
+    "message": "Never"
+  },
+  "optionsRegistry": {
+    "message": "Export registry"
+  },
+  "optionsRegistryCount": {
+    "message": "Chats in the export registry: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsRegistryClear": {
+    "message": "Clear"
+  },
+  "optionsRegistryConfirm": {
+    "message": "Forget which chats were saved and which folder names were used?"
+  },
+  "optionsRegistryHint": {
+    "message": "The extension cannot see your Downloads folder, so it remembers what it saved: to name copies and to skip unchanged chats."
+  },
+  "optionsRootFolderHint": {
+    "message": "Leave empty to save straight to Downloads. Use / for nested folders."
+  },
+  "optionsIncludePlatform": {
+    "message": "Add the platform name to folder names"
+  },
+  "optionsIncludePlatformHint": {
+    "message": "Example: “Notes - 2026-10-13 (Claude)”."
+  },
+  "optionsSectionContent": {
+    "message": "Markdown content"
+  },
+  "optionsSaveAttachments": {
+    "message": "Save files from the chat"
+  },
+  "optionsSaveAttachmentsHint": {
+    "message": "Your uploads, files the model created, and artifacts, into the files/ folder next to the note."
+  },
+  "optionsArtifactVersions": {
+    "message": "Artifact versions"
+  },
+  "optionsArtifactVersionsLatest": {
+    "message": "Latest only"
+  },
+  "optionsArtifactVersionsAll": {
+    "message": "All versions"
+  },
+  "optionsSaveThinking": {
+    "message": "Save the model's thinking"
+  },
+  "optionsSaveToolCalls": {
+    "message": "Save web searches and tool calls"
+  },
+  "optionsSaveToolCallsHint": {
+    "message": "Shown as collapsed blocks in Obsidian."
+  },
+  "optionsToolCallDetail": {
+    "message": "Tool calls"
+  },
+  "optionsToolCallDetailCompact": {
+    "message": "One line per call"
+  },
+  "optionsToolCallDetailFull": {
+    "message": "With input and output"
+  },
+  "optionsClaudeBranches": {
+    "message": "Branches (Claude, Grok, ChatGPT)"
+  },
+  "optionsClaudeBranchesActive": {
+    "message": "Only the branch you see"
+  },
+  "optionsClaudeBranchesAll": {
+    "message": "All branches"
+  },
+  "optionsSectionShortcut": {
+    "message": "Keyboard shortcut"
+  },
+  "optionsShortcutCurrent": {
+    "message": "Save the current chat: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsShortcutChange": {
+    "message": "Change in Chrome settings"
+  },
+  "optionsShowNotifications": {
+    "message": "Show the result of saving with the shortcut (a panel on the chat page)"
+  },
+  "optionsSaved": {
+    "message": "Saved"
+  },
+  "optionsMoreLater": {
+    "message": "“Save as .zip” is chosen where you save: in the extension window, on the export page, or in the panel after the shortcut."
+  }
+}

@@ -1,0 +1,444 @@
+{
+ "title": "Fruit List and Code",
+ "create_time": 1792050571.176461,
+ "update_time": 1792050752.852705,
+ "moderation_results": [],
+ "plugin_ids": null,
+ "conversation_id": "00000000-0000-4000-8000-000000000001",
+ "conversation_template_id": null,
+ "gizmo_id": null,
+ "gizmo_type": null,
+ "is_archived": false,
+ "is_starred": null,
+ "safe_urls": [
+  "https://www.openai.com"
+ ],
+ "blocked_urls": [],
+ "default_model_slug": "auto",
+ "atlas_mode_enabled": null,
+ "conversation_origin": null,
+ "is_read_only": null,
+ "voice": null,
+ "async_status": null,
+ "disabled_tool_ids": [],
+ "is_temporary_chat": false,
+ "is_do_not_remember": false,
+ "memory_scope": "global_enabled",
+ "context_scopes": null,
+ "sugar_item_id": null,
+ "sugar_item_visible": false,
+ "pinned_time": null,
+ "is_study_mode": false,
+ "owner": null,
+ "sectioned_conversation": null,
+ "mapping": {
+  "client-created-root": {
+   "id": "client-created-root",
+   "message": null,
+   "parent": null,
+   "children": [
+    "00000000-0000-4000-8000-000000000002",
+    "00000000-0000-4000-8000-000000000003"
+   ]
+  },
+  "00000000-0000-4000-8000-000000000002": {
+   "id": "00000000-0000-4000-8000-000000000002",
+   "message": {
+    "id": "00000000-0000-4000-8000-000000000002",
+    "author": {
+     "role": "user",
+     "name": null,
+     "metadata": {}
+    },
+    "create_time": 1792050625.394,
+    "update_time": 1792050722.264065,
+    "content": {
+     "content_type": "text",
+     "parts": [
+      "AI Chat Exporter test 1. Name three fruits in a numbered list, then one sentence with **bold** text and a short Python code block."
+     ]
+    },
+    "status": "finished_successfully",
+    "end_turn": null,
+    "weight": 1.0,
+    "metadata": {
+     "request_id": "00000000-0000-4000-8000-000000000004",
+     "message_source": null,
+     "turn_exchange_id": "00000000-0000-4000-8000-000000000005",
+     "working_turn_id": "00000000-0000-4000-8000-000000000005",
+     "can_save": false
+    },
+    "recipient": "all",
+    "channel": null
+   },
+   "parent": "client-created-root",
+   "children": [
+    "00000000-0000-4000-8000-000000000006",
+    "00000000-0000-4000-8000-000000000007"
+   ]
+  },
+  "00000000-0000-4000-8000-000000000003": {
+   "id": "00000000-0000-4000-8000-000000000003",
+   "message": {
+    "id": "00000000-0000-4000-8000-000000000003",
+    "author": {
+     "role": "user",
+     "name": null,
+     "metadata": {}
+    },
+    "create_time": 1792050747.18,
+    "update_time": 1792050752.74813,
+    "content": {
+     "content_type": "text",
+     "parts": [
+      "AI Chat Exporter test 1 (edited). Name two vegetables in a bulleted list."
+     ]
+    },
+    "status": "finished_successfully",
+    "end_turn": null,
+    "weight": 1.0,
+    "metadata": {
+     "serialization_metadata": {
+      "custom_symbol_offsets": []
+     },
+     "request_id": "00000000-0000-4000-8000-000000000008",
+     "message_source": null,
+     "turn_exchange_id": "00000000-0000-4000-8000-000000000009",
+     "working_turn_id": "00000000-0000-4000-8000-000000000009",
+     "can_save": false
+    },
+    "recipient": "all",
+    "channel": null
+   },
+   "parent": "client-created-root",
+   "children": [
+    "00000000-0000-4000-8000-00000000000a"
+   ]
+  },
+  "00000000-0000-4000-8000-000000000007": {
+   "id": "00000000-0000-4000-8000-000000000007",
+   "message": {
+    "id": "00000000-0000-4000-8000-000000000007",
+    "author": {
+     "role": "assistant",
+     "name": null,
+     "metadata": {}
+    },
+    "create_time": 1792050719.549427,
+    "update_time": 1792050719.549427,
+    "content": {
+     "content_type": "reasoning_recap",
+     "content": "Worked for 10s"
+    },
+    "status": "finished_successfully",
+    "end_turn": false,
+    "weight": 1.0,
+    "metadata": {
+     "reasoning_status": "reasoning_ended",
+     "finished_duration_sec": 10,
+     "reasoning_start_time": 1792050709.287686,
+     "reasoning_end_time": 1792050719.5436711,
+     "reasoning_recap_type": "hide_all",
+     "cot_version": "v5",
+     "conversation_followup_suggestions_eligible": false,
+     "request_id": "00000000-0000-4000-8000-00000000000b",
+     "message_type": "variant",
+     "turn_exchange_id": "00000000-0000-4000-8000-00000000000c",
+     "working_turn_id": "00000000-0000-4000-8000-00000000000c",
+     "resolved_model_slug": "gpt-6-t-mini",
+     "model_slug": "gpt-6-t-mini",
+     "default_model_slug": "auto",
+     "can_save": false,
+     "parent_id": "00000000-0000-4000-8000-00000000000d",
+     "hide_inline_actions": true,
+     "model_switcher_deny": []
+    },
+    "recipient": "all",
+    "channel": null
+   },
+   "parent": "00000000-0000-4000-8000-000000000002",
+   "children": [
+    "00000000-0000-4000-8000-00000000000e"
+   ]
+  },
+  "00000000-0000-4000-8000-000000000006": {
+   "id": "00000000-0000-4000-8000-000000000006",
+   "message": {
+    "id": "00000000-0000-4000-8000-000000000006",
+    "author": {
+     "role": "assistant",
+     "name": null,
+     "metadata": {}
+    },
+    "create_time": 1792050628.633968,
+    "update_time": 1792050631.827864,
+    "content": {
+     "content_type": "text",
+     "parts": [
+      "1. Apple\n2. Banana\n3. Mango\n\nFruit is a **delicious and nutritious** part of a balanced diet.\n\n```python\nfruits = [\"apple\", \"banana\", \"mango\"]\nprint(fruits)\n```"
+     ]
+    },
+    "status": "finished_successfully",
+    "end_turn": true,
+    "weight": 1.0,
+    "metadata": {
+     "finish_details": {
+      "type": "stop",
+      "stop_tokens": [
+       200002
+      ]
+     },
+     "is_complete": true,
+     "citations": [],
+     "content_references": [
+      {
+       "type": "client_defined_widget",
+       "category": "code_block",
+       "data": {
+        "content": "fruits = [\"apple\", \"banana\", \"mango\"]\nprint(fruits)",
+        "language": "python",
+        "widget_type": "code_block"
+       },
+       "matched_text": "```python\nfruits = [\"apple\", \"banana\", \"mango\"]\nprint(fruits)\n```",
+       "start_idx": 95,
+       "end_idx": 160,
+       "safe_urls": [],
+       "refs": [],
+       "alt": null,
+       "prompt_text": null
+      }
+     ],
+     "model_dil_v2": {
+      "code": "DIL.render(__dil.jsx(()=>{const __dilConstants=DIL.useConstants();const __dilModelDataBindings=DIL.useAppData((appData)=>appData.opGenui?.modelDataBindings??{});return __dil.jsx(__dil.Fragment,null,__dil.jsx(\"list\",{\"marker\":\"number\"},__dil.jsx(\"list-item\",null,__dil.jsx(\"text\",null,__dilConstants[\"0\"])),__dil.jsx(\"list-item\",null,__dil.jsx(\"text\",null,__dilConstants[\"1\"])),__dil.jsx(\"list-item\",null,__dil.jsx(\"text\",null,__dilConstants[\"2\"]))),__dil.jsx(\"text\",null,__dilConstants[\"3\"],__dil.jsx(\"bold\",null,__dilConstants[\"4\"]),__dilConstants[\"5\"]),(__dilConstants[\"7\"]==null?__dil.jsx(\"__chatgptClientDefinedWidget\",{\"key\":\"cdw:0\",\"invocationId\":__dilConstants[\"6\"]}):__dilConstants[\"7\"].type===\"math\"?__dil.jsx(\"math\",{\"key\":\"cdw:0\",\"value\":__dilConstants[\"7\"].value}):__dilConstants[\"7\"].type===\"text\"?__dil.jsx(\"text\",{\"key\":\"cdw:0\"},__dilConstants[\"7\"].value):null));},{\"key\":\"body:0\"}));",
+      "constants": {
+       "0": "Apple",
+       "1": "Banana",
+       "2": "Mango",
+       "3": "Fruit is a ",
+       "4": "delicious and nutritious",
+       "5": " part of a balanced diet.",
+       "6": "00000000-0000-4000-8000-00000000000f",
+       "7": null
+      },
+      "fallbackMarkdown": "1. Apple\n2. Banana\n3. Mango\n\nFruit is a **delicious and nutritious** part of a balanced diet.\n\n```python\nfruits = [\"apple\", \"banana\", \"mango\"]\nprint(fruits)\n```",
+      "fallbackMarkdownVersion": 1,
+      "clientDefinedWidgets": {
+       "00000000-0000-4000-8000-00000000000f": {
+        "status": "resolved",
+        "refIndex": 0,
+        "isStreaming": false
+       }
+      },
+      "appData": {
+       "opGenui": {
+        "componentResults": {},
+        "interactionSurface": "mainline",
+        "modelDataBindings": {}
+       }
+      }
+     },
+     "view_state": {},
+     "resolved_model_slug": "gpt-6",
+     "search_result_groups": [],
+     "code_blocks": {
+      "0": {
+       "id": "a33eja",
+       "edited": false,
+       "previewable": false,
+       "preview_language": null
+      }
+     },
+     "cot_version": "v5",
+     "conversation_followup_suggestions_eligible": true,
+     "request_id": "00000000-0000-4000-8000-000000000004",
+     "message_type": "next",
+     "turn_exchange_id": "00000000-0000-4000-8000-000000000005",
+     "working_turn_id": "00000000-0000-4000-8000-000000000005",
+     "model_slug": "gpt-6",
+     "default_model_slug": "auto",
+     "can_save": true,
+     "parent_id": "00000000-0000-4000-8000-000000000010",
+     "model_switcher_deny": []
+    },
+    "recipient": "all",
+    "channel": "final"
+   },
+   "parent": "00000000-0000-4000-8000-000000000002",
+   "children": []
+  },
+  "00000000-0000-4000-8000-00000000000e": {
+   "id": "00000000-0000-4000-8000-00000000000e",
+   "message": {
+    "id": "00000000-0000-4000-8000-00000000000e",
+    "author": {
+     "role": "assistant",
+     "name": null,
+     "metadata": {}
+    },
+    "create_time": 1792050719.806417,
+    "update_time": 1792050722.12196,
+    "content": {
+     "content_type": "text",
+     "parts": [
+      "1. Apple\n2. Banana\n3. Orange\n\nFruits are **delicious and nutritious** snacks.\n\n```python\nprint(\"Hello, fruits!\")\n```"
+     ]
+    },
+    "status": "finished_successfully",
+    "end_turn": true,
+    "weight": 1.0,
+    "metadata": {
+     "finish_details": {
+      "type": "stop",
+      "stop_tokens": [
+       200002
+      ]
+     },
+     "is_complete": true,
+     "citations": [],
+     "content_references": [
+      {
+       "type": "client_defined_widget",
+       "category": "code_block",
+       "data": {
+        "content": "print(\"Hello, fruits!\")",
+        "language": "python",
+        "widget_type": "code_block"
+       },
+       "matched_text": "```python\nprint(\"Hello, fruits!\")\n```",
+       "start_idx": 79,
+       "end_idx": 116,
+       "safe_urls": [],
+       "refs": [],
+       "alt": null,
+       "prompt_text": null
+      }
+     ],
+     "model_dil_v2": {
+      "code": "DIL.render(__dil.jsx(()=>{const __dilConstants=DIL.useConstants();const __dilModelDataBindings=DIL.useAppData((appData)=>appData.opGenui?.modelDataBindings??{});return __dil.jsx(__dil.Fragment,null,__dil.jsx(\"list\",{\"marker\":\"number\"},__dil.jsx(\"list-item\",null,__dil.jsx(\"text\",null,__dilConstants[\"0\"])),__dil.jsx(\"list-item\",null,__dil.jsx(\"text\",null,__dilConstants[\"1\"])),__dil.jsx(\"list-item\",null,__dil.jsx(\"text\",null,__dilConstants[\"2\"]))),__dil.jsx(\"text\",null,__dilConstants[\"3\"],__dil.jsx(\"bold\",null,__dilConstants[\"4\"]),__dilConstants[\"5\"]),(__dilConstants[\"7\"]==null?__dil.jsx(\"__chatgptClientDefinedWidget\",{\"key\":\"cdw:0\",\"invocationId\":__dilConstants[\"6\"]}):__dilConstants[\"7\"].type===\"math\"?__dil.jsx(\"math\",{\"key\":\"cdw:0\",\"value\":__dilConstants[\"7\"].value}):__dilConstants[\"7\"].type===\"text\"?__dil.jsx(\"text\",{\"key\":\"cdw:0\"},__dilConstants[\"7\"].value):null));},{\"key\":\"body:0\"}));",
+      "constants": {
+       "0": "Apple",
+       "1": "Banana",
+       "2": "Orange",
+       "3": "Fruits are ",
+       "4": "delicious and nutritious",
+       "5": " snacks.",
+       "6": "00000000-0000-4000-8000-000000000011",
+       "7": null
+      },
+      "fallbackMarkdown": "1. Apple\n2. Banana\n3. Orange\n\nFruits are **delicious and nutritious** snacks.\n\n```python\nprint(\"Hello, fruits!\")\n```",
+      "fallbackMarkdownVersion": 1,
+      "clientDefinedWidgets": {
+       "00000000-0000-4000-8000-000000000011": {
+        "status": "resolved",
+        "refIndex": 0,
+        "isStreaming": false
+       }
+      },
+      "appData": {
+       "opGenui": {
+        "componentResults": {},
+        "interactionSurface": "mainline",
+        "modelDataBindings": {}
+       }
+      }
+     },
+     "view_state": {},
+     "resolved_model_slug": "gpt-6-t-mini",
+     "search_result_groups": [],
+     "code_blocks": {
+      "0": {
+       "id": "gx1rpj",
+       "edited": false,
+       "previewable": false,
+       "preview_language": null
+      }
+     },
+     "cot_version": "v5",
+     "conversation_followup_suggestions_eligible": true,
+     "request_id": "00000000-0000-4000-8000-00000000000b",
+     "message_type": "variant",
+     "turn_exchange_id": "00000000-0000-4000-8000-00000000000c",
+     "working_turn_id": "00000000-0000-4000-8000-00000000000c",
+     "model_slug": "gpt-6-t-mini",
+     "default_model_slug": "auto",
+     "can_save": true,
+     "parent_id": "00000000-0000-4000-8000-000000000007",
+     "model_switcher_deny": []
+    },
+    "recipient": "all",
+    "channel": "final"
+   },
+   "parent": "00000000-0000-4000-8000-000000000007",
+   "children": []
+  },
+  "00000000-0000-4000-8000-00000000000a": {
+   "id": "00000000-0000-4000-8000-00000000000a",
+   "message": {
+    "id": "00000000-0000-4000-8000-00000000000a",
+    "author": {
+     "role": "assistant",
+     "name": null,
+     "metadata": {}
+    },
+    "create_time": 1792050750.965292,
+    "update_time": 1792050752.575492,
+    "content": {
+     "content_type": "text",
+     "parts": [
+      "- Carrot\n- Broccoli"
+     ]
+    },
+    "status": "finished_successfully",
+    "end_turn": true,
+    "weight": 1.0,
+    "metadata": {
+     "finish_details": {
+      "type": "stop",
+      "stop_tokens": [
+       200002
+      ]
+     },
+     "is_complete": true,
+     "citations": [],
+     "content_references": [],
+     "model_dil_v2": {
+      "code": "DIL.render(__dil.jsx(()=>{const __dilConstants=DIL.useConstants();const __dilModelDataBindings=DIL.useAppData((appData)=>appData.opGenui?.modelDataBindings??{});return __dil.jsx(\"list\",{\"marker\":\"bullet\"},__dil.jsx(\"list-item\",null,__dil.jsx(\"text\",null,__dilConstants[\"0\"])),__dil.jsx(\"list-item\",null,__dil.jsx(\"text\",null,__dilConstants[\"1\"])));},{\"key\":\"body:0\"}));",
+      "constants": {
+       "0": "Carrot",
+       "1": "Broccoli"
+      },
+      "fallbackMarkdown": "- Carrot\n- Broccoli",
+      "fallbackMarkdownVersion": 1,
+      "appData": {
+       "opGenui": {
+        "componentResults": {},
+        "interactionSurface": "mainline",
+        "modelDataBindings": {}
+       }
+      }
+     },
+     "view_state": {},
+     "resolved_model_slug": "gpt-6",
+     "search_result_groups": [],
+     "cot_version": "v5",
+     "conversation_followup_suggestions_eligible": true,
+     "request_id": "00000000-0000-4000-8000-000000000008",
+     "message_type": "next",
+     "turn_exchange_id": "00000000-0000-4000-8000-000000000009",
+     "working_turn_id": "00000000-0000-4000-8000-000000000009",
+     "model_slug": "gpt-6",
+     "default_model_slug": "auto",
+     "can_save": true,
+     "parent_id": "00000000-0000-4000-8000-000000000012",
+     "model_switcher_deny": []
+    },
+    "recipient": "all",
+    "channel": "final"
+   },
+   "parent": "00000000-0000-4000-8000-000000000003",
+   "children": []
+  }
+ },
+ "current_node": "00000000-0000-4000-8000-00000000000a",
+ "context_truncation_continuation": null
+}

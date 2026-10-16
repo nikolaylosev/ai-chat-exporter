@@ -1,0 +1,238 @@
+main {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 32px 16px 120px;
+}
+
+h1 {
+  font-size: 20px;
+}
+
+.platforms {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.platforms button {
+  border: none;
+  border-radius: 0;
+  background: none;
+  padding: 6px 14px;
+  color: var(--muted);
+}
+
+.platforms button + button {
+  border-left: 1px solid var(--border);
+}
+
+.platforms button.active {
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  font-weight: 500;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.filters .field {
+  margin-bottom: 12px;
+}
+
+.filters .search {
+  flex: 1 1 260px;
+}
+
+input[type='search'],
+input[type='date'] {
+  font: inherit;
+  padding: 7px 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  width: 100%;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 6px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+thead th {
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+tr.selected td {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+td a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+td a:hover {
+  text-decoration: underline;
+}
+
+.select {
+  width: 1%;
+}
+
+.date {
+  white-space: nowrap;
+  color: var(--muted);
+}
+
+button.sort {
+  border: none;
+  background: none;
+  padding: 0;
+  font-weight: 500;
+}
+
+.status {
+  width: 1%;
+  text-align: center;
+  font-weight: 600;
+}
+
+.status.done {
+  color: var(--ok);
+}
+
+.status.warning {
+  color: var(--warn-text);
+}
+
+.status.error {
+  color: var(--error);
+}
+
+.empty {
+  padding: 12px;
+  margin: 0;
+}
+
+.actions {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 12px max(16px, calc((100vw - 1040px) / 2 + 16px));
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+}
+
+.actions p {
+  margin: 0;
+}
+
+.actions .muted:first-child {
+  margin-right: auto;
+}
+
+.actions .zip {
+  margin: 0;
+}
+
+.actions button.primary {
+  width: auto;
+}
+
+.progress {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  background: var(--surface);
+}
+
+.progress-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.progress h2 {
+  margin: 0;
+}
+
+.progress progress {
+  width: 100%;
+  margin: 10px 0 6px;
+}
+
+.progress ul {
+  margin: 6px 0 0;
+  padding-left: 20px;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin: 8px 0 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tabs button {
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: none;
+  padding: 8px 12px;
+  color: var(--muted);
+}
+
+.tabs button.active {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+  font-weight: 500;
+}
+
+td .hint {
+  margin-top: 2px;
+}
+
+.search-more {
+  margin: 0 0 12px;
+}
+
+.search-more .hint {
+  display: block;
+  margin-top: 4px;
+}

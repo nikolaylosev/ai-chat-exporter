@@ -1,0 +1,67 @@
+{
+  "session": {
+    "external_metadata": {
+      "artifacts": [
+        {
+          "artifact_id": "00000000-0000-4000-8000-000000000026",
+          "kind": "frame",
+          "title": "Exporter Test",
+          "updated_at": "2026-10-13T09:15:15.835Z",
+          "url": "https://claude.ai/artifact/AAAAAAAAAAAAAAAAAAAAA1"
+        }
+      ]
+    }
+  },
+  "frame": {
+    "viewerPath": "/artifact/AAAAAAAAAAAAAAAAAAAAA1",
+    "kind": "authed",
+    "ver": "1791882915-2e7b",
+    "files": [
+      {
+        "path": "index.html",
+        "contentType": "text/html"
+      }
+    ],
+    "title": "Exporter Test",
+    "created_at": "2026-10-13T09:14:36Z",
+    "updated_at": "2026-10-13T09:15:15Z",
+    "live": "1791882915-2e7b",
+    "history": [
+      "1791882915-2e7b",
+      "1791882876-61ba"
+    ]
+  },
+  "versions": {
+    "live": "1791882915-2e7b",
+    "shared": "",
+    "history": [
+      "1791882915-2e7b",
+      "1791882876-61ba"
+    ],
+    "versions": {
+      "1791882876-61ba": {
+        "title": "Exporter Test",
+        "favicon": "",
+        "author": "00000000-0000-4000-8000-0000000000b1",
+        "created_at": "2026-10-13T09:14:36Z",
+        "seq": 1,
+        "icon": "Beaker",
+        "thumb_img_url": "<redacted>"
+      },
+      "1791882915-2e7b": {
+        "title": "Exporter Test",
+        "favicon": "",
+        "author": "00000000-0000-4000-8000-0000000000b1",
+        "created_at": "2026-10-13T09:15:15Z",
+        "seq": 2,
+        "icon": "Beaker",
+        "thumb_img_url": "<redacted>"
+      }
+    },
+    "last_edit": {
+      "cowork": [
+        "cse_00000000000000000000000001"
+      ]
+    }
+  }
+}

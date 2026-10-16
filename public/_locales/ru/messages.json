@@ -1,0 +1,1034 @@
+{
+  "extName": {
+    "message": "CodingCat AI Chat Exporter"
+  },
+  "extDescription": {
+    "message": "Экспорт чатов Claude, Gemini, Grok и ChatGPT в Markdown со всеми вложениями."
+  },
+  "commandExportCurrent": {
+    "message": "Сохранить текущий чат"
+  },
+  "untitledChat": {
+    "message": "Без названия"
+  },
+  "untitledProject": {
+    "message": "Проект без названия"
+  },
+  "untitledNotebook": {
+    "message": "Блокнот без названия"
+  },
+  "popupUnsupported": {
+    "message": "Откройте чат на claude.ai, gemini.google.com, grok.com или chatgpt.com, чтобы сохранить его."
+  },
+  "popupDetected": {
+    "message": "Открыт чат $ARG1$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupNotAChat": {
+    "message": "Откройте разговор, чтобы сохранить его."
+  },
+  "popupSaveChat": {
+    "message": "Сохранить этот чат"
+  },
+  "popupSaving": {
+    "message": "Сохраняю…"
+  },
+  "popupDone": {
+    "message": "Готово: сообщений $ARG1$, файлов $ARG2$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "popupDonePartial": {
+    "message": "Сохранено сообщений $ARG1$ и файлов $ARG2$; файлов не удалось сохранить: $ARG3$ (помечены в заметке).",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      }
+    }
+  },
+  "savedToDownloads": {
+    "message": "Сохранено в Загрузки:"
+  },
+  "savedToFolder": {
+    "message": "Сохранено в папку «$ARG1$»:",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "savedTo": {
+    "message": "Сохранено:"
+  },
+  "savedToArchive": {
+    "message": "В архиве «$ARG1$»:",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "saveAsZip": {
+    "message": "Сохранить в .zip"
+  },
+  "panelClose": {
+    "message": "Закрыть"
+  },
+  "popupChooseChats": {
+    "message": "Выбрать чаты…"
+  },
+  "popupChooseProjects": {
+    "message": "Выбрать проекты…"
+  },
+  "popupChooseNotebooks": {
+    "message": "Выбрать блокноты…"
+  },
+  "popupProjectPage": {
+    "message": "Открыта страница проекта Claude."
+  },
+  "popupNotebookPage": {
+    "message": "Открыт блокнот Gemini."
+  },
+  "popupProject": {
+    "message": "Проект: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupNotebook": {
+    "message": "Блокнот: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupSaveProject": {
+    "message": "Сохранить проект с чатами"
+  },
+  "popupSaveNotebook": {
+    "message": "Сохранить блокнот с чатами"
+  },
+  "popupJobRunning": {
+    "message": "Массовый экспорт: $ARG1$ из $ARG2$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "popupJobOpen": {
+    "message": "Открыть"
+  },
+  "exportTitle": {
+    "message": "Экспорт из $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportPlatform": {
+    "message": "Платформа"
+  },
+  "exportUpdatedFrom": {
+    "message": "Изменён с"
+  },
+  "exportColGem": {
+    "message": "Gem"
+  },
+  "exportIntro": {
+    "message": "Отметьте чаты или проекты для сохранения. Экспорт продолжится в фоне, даже если закрыть эту вкладку."
+  },
+  "exportSearch": {
+    "message": "Поиск"
+  },
+  "exportSearchPlaceholder": {
+    "message": "Заголовок или проект"
+  },
+  "exportFrom": {
+    "message": "Создан с"
+  },
+  "exportTo": {
+    "message": "по"
+  },
+  "exportLoading": {
+    "message": "Загружаю список чатов…"
+  },
+  "exportSearchMore": {
+    "message": "Найти больше чатов через поиск Gemini"
+  },
+  "exportSearchHint": {
+    "message": "Список Gemini обрывается примерно на 800 чатах. Его поиск достаёт и более старые, по 20 за запрос: это займёт несколько минут, и часть чатов всё равно может не найтись."
+  },
+  "exportSearchRunning": {
+    "message": "Ищу через поиск Gemini… найдено ещё $ARG1$, запросов $ARG2$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "exportSearchStop": {
+    "message": "Стоп"
+  },
+  "exportSearchDone": {
+    "message": "Поиск нашёл ещё $ARG1$ чатов (запросов: $ARG2$).",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "exportSearchAgain": {
+    "message": "Искать ещё"
+  },
+  "exportSearchRemembered": {
+    "message": "В списке $ARG1$ чатов, найденных прошлым поиском.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportSearchForget": {
+    "message": "Забыть их"
+  },
+  "exportFoundBySearch": {
+    "message": "найден поиском"
+  },
+  "exportArchived": {
+    "message": "в архиве"
+  },
+  "exportLoadingCount": {
+    "message": "Загружаю список чатов… пока $ARG1$. Длинный список может грузиться несколько минут.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportRetry": {
+    "message": "Повторить"
+  },
+  "exportSelectAll": {
+    "message": "Выбрать все показанные чаты"
+  },
+  "exportSelectAllProjects": {
+    "message": "Выбрать все показанные проекты"
+  },
+  "exportSelectAllNotebooks": {
+    "message": "Выбрать все показанные блокноты"
+  },
+  "exportTabChats": {
+    "message": "Чаты"
+  },
+  "exportTabProjects": {
+    "message": "Проекты"
+  },
+  "exportTabNotebooks": {
+    "message": "Блокноты"
+  },
+  "exportProjectSearchPlaceholder": {
+    "message": "Название или описание"
+  },
+  "exportProjectsLoading": {
+    "message": "Загружаю проекты…"
+  },
+  "exportNotebooksLoading": {
+    "message": "Загружаю блокноты…"
+  },
+  "exportNoProjects": {
+    "message": "В аккаунте нет проектов."
+  },
+  "exportNoNotebooks": {
+    "message": "В аккаунте нет блокнотов."
+  },
+  "exportColName": {
+    "message": "Название"
+  },
+  "exportColFiles": {
+    "message": "Файлов"
+  },
+  "exportStartProjects": {
+    "message": "Сохранить выбранные проекты с чатами ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportStartNotebooks": {
+    "message": "Сохранить выбранные блокноты с чатами ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportColTitle": {
+    "message": "Заголовок"
+  },
+  "exportColCreated": {
+    "message": "Создан"
+  },
+  "exportColUpdated": {
+    "message": "Изменён"
+  },
+  "exportColProject": {
+    "message": "Проект"
+  },
+  "exportColStatus": {
+    "message": "Статус"
+  },
+  "exportNothingFound": {
+    "message": "Нет чатов, подходящих под условия."
+  },
+  "exportSelected": {
+    "message": "Выбрано: $ARG1$ из $ARG2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "exportStart": {
+    "message": "Сохранить выбранные ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportBusy": {
+    "message": "Идёт другой экспорт."
+  },
+  "jobRunning": {
+    "message": "Сохраняю…"
+  },
+  "jobCancelling": {
+    "message": "Останавливаю после текущего чата…"
+  },
+  "jobCancelled": {
+    "message": "Экспорт отменён"
+  },
+  "jobStopped": {
+    "message": "Экспорт остановлен"
+  },
+  "jobFinished": {
+    "message": "Экспорт завершён"
+  },
+  "jobCancel": {
+    "message": "Отменить"
+  },
+  "jobNew": {
+    "message": "Скрыть"
+  },
+  "jobCounts": {
+    "message": "$ARG1$ из $ARG2$ · сохранено $ARG3$ · с предупреждениями $ARG4$ · ошибок $ARG5$ · пропущено $ARG6$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      },
+      "arg4": {
+        "content": "$4"
+      },
+      "arg5": {
+        "content": "$5"
+      },
+      "arg6": {
+        "content": "$6"
+      }
+    }
+  },
+  "jobCurrent": {
+    "message": "Сейчас: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "jobReport": {
+    "message": "Отчёт:"
+  },
+  "jobParts": {
+    "message": "Архив сохранён частями ($ARG1$), примерно по 500 МБ. Распакуйте их в одну папку.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "jobFailedList": {
+    "message": "Чаты с ошибками ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "jobStatus_pending": {
+    "message": "Ожидает"
+  },
+  "jobStatus_running": {
+    "message": "Сохраняется"
+  },
+  "jobStatus_done": {
+    "message": "Сохранён"
+  },
+  "failedFilesMore": {
+    "message": "и ещё $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "jobRecovered": {
+    "message": "Несохранённая часть архива пропала из памяти (расширение перезапустилось или ему не хватило памяти), поэтому её чаты сохраняются заново. Раз: $ARG1$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "jobStatus_warning": {
+    "message": "Сохранён, не все файлы"
+  },
+  "jobStatus_error": {
+    "message": "Ошибка"
+  },
+  "jobStatus_skipped": {
+    "message": "Пропущен: не изменился"
+  },
+  "jobNotifyDone": {
+    "message": "Экспорт завершён: сохранено чатов $ARG1$ (с предупреждениями $ARG2$), ошибок $ARG3$, пропущено $ARG4$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      },
+      "arg4": {
+        "content": "$4"
+      }
+    }
+  },
+  "jobNotifyStopped": {
+    "message": "Экспорт остановлен: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "reportTitle": {
+    "message": "Отчёт об экспорте: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "reportStarted": {
+    "message": "Начало"
+  },
+  "reportFinished": {
+    "message": "Конец"
+  },
+  "reportSummary": {
+    "message": "Сохранено $ARG1$ (с предупреждениями $ARG2$), ошибок $ARG3$, пропущено $ARG4$, всего $ARG5$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      },
+      "arg4": {
+        "content": "$4"
+      },
+      "arg5": {
+        "content": "$5"
+      }
+    }
+  },
+  "reportCancelled": {
+    "message": "Экспорт отменён."
+  },
+  "reportStopped": {
+    "message": "Экспорт остановлен: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "reportErrors": {
+    "message": "Ошибки"
+  },
+  "reportWarnings": {
+    "message": "Сохранены не со всеми файлами"
+  },
+  "reportFailedFiles": {
+    "message": "файлов не сохранено: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "reportSkipped": {
+    "message": "Пропущены: не изменились с прошлого экспорта"
+  },
+  "reportNotReached": {
+    "message": "Не обработаны"
+  },
+  "reportSaved": {
+    "message": "Сохранены"
+  },
+  "popupShortcut": {
+    "message": "Горячая клавиша: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupShortcutNotSet": {
+    "message": "Горячая клавиша не назначена."
+  },
+  "saveDialogWarning": {
+    "message": "Chrome спрашивает, куда сохранять каждый файл. Отключите «Всегда указывать место для скачивания» в настройках Chrome, иначе каждый файл экспорта откроет диалог. Или выберите сохранение в свою папку (настройки расширения) или отметьте «Сохранить в .zip» при сохранении."
+  },
+  "saveDialogWarningEarlier": {
+    "message": "В прошлый раз Chrome спросил, куда сохранить файл, и экспорт остановился. Отключите «Всегда указывать место для скачивания» в настройках Chrome или выберите сохранение в свою папку (настройки расширения) или отметьте «Сохранить в .zip» ниже. Если настройка Chrome уже отключена, просто сохраните чат."
+  },
+  "openDownloadSettings": {
+    "message": "Открыть настройки скачивания"
+  },
+  "openSettings": {
+    "message": "Настройки"
+  },
+  "notifyDone": {
+    "message": "Сохранено: сообщений $ARG1$, файлов $ARG2$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "notifyPartial": {
+    "message": "Сохранено сообщений $ARG1$ и файлов $ARG2$; не удалось сохранить файлов: $ARG3$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      }
+    }
+  },
+  "error_unsupported_page": {
+    "message": "Сначала откройте чат Claude, Gemini, Grok или ChatGPT."
+  },
+  "error_tab_not_loaded": {
+    "message": "Сайт не открылся в фоновой вкладке. Откройте его во вкладке, дождитесь загрузки и повторите."
+  },
+  "error_rate_limited": {
+    "message": "Сервис ограничивает частоту запросов и несколько минут отказывал, поэтому экспорт остановлен. Запустите его снова через 10–15 минут; с включённым «пропускать неизменённые» он продолжит с места остановки."
+  },
+  "error_chat_not_found": {
+    "message": "Этого чата на сервисе больше нет: он удалён."
+  },
+  "error_platform_busy": {
+    "message": "Сервис отвечает внутренней ошибкой. Попробуйте позже."
+  },
+  "exportListStop": {
+    "message": "Остановить и взять эти"
+  },
+  "exportListStopping": {
+    "message": "Останавливаю после этой страницы…"
+  },
+  "exportListStopped": {
+    "message": "Загрузка остановлена на $ARG1$ чатах: в списке самые новые.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportListLoadAll": {
+    "message": "Загрузить весь список"
+  },
+  "exportListIncomplete": {
+    "message": "$ARG1$ отдал $ARG2$ чатов и перестал отвечать, поэтому более старых чатов в списке нет. Попробуйте позже, чтобы загрузить остальные.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "error_platform_not_ready": {
+    "message": "На этом сайте это пока недоступно."
+  },
+  "error_not_a_chat": {
+    "message": "Эта страница не разговор. Сначала откройте чат."
+  },
+  "error_not_signed_in": {
+    "message": "Войдите в сервис и попробуйте снова."
+  },
+  "error_format_changed": {
+    "message": "Сервис изменил формат данных. Обновите расширение."
+  },
+  "error_format_changed_at": {
+    "message": "Сервис изменил формат данных (поле $ARG1$). Обновите расширение или сообщите название поля.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "error_busy": {
+    "message": "Этот чат уже сохраняется."
+  },
+  "error_save_dialog": {
+    "message": "Экспорт остановлен: Chrome спрашивает, куда сохранять каждый файл."
+  },
+  "error_save_cancelled": {
+    "message": "Сохранение отменено."
+  },
+  "error_archive_lost": {
+    "message": "Собираемый ZIP-архив потерян (расширение перезагрузилось или не хватило памяти)."
+  },
+  "error_folder_not_chosen": {
+    "message": "Папка для сохранения не выбрана. Выберите её в настройках расширения."
+  },
+  "error_folder_permission": {
+    "message": "Нет доступа к выбранной папке. Нажмите «Сохранить чат» в окне расширения и разрешите доступ."
+  },
+  "error_folder_missing": {
+    "message": "Выбранная папка недоступна: возможно, её удалили или переместили. Выберите её заново в настройках расширения."
+  },
+  "error_failed": {
+    "message": "Не удалось сохранить чат: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdUser": {
+    "message": "Пользователь"
+  },
+  "mdThinking": {
+    "message": "Рассуждения"
+  },
+  "mdWebSearch": {
+    "message": "Веб-поиск: «$ARG1$»",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdWebSearchNoQuery": {
+    "message": "Веб-поиск"
+  },
+  "mdNoResults": {
+    "message": "Нет результатов"
+  },
+  "mdTools": {
+    "message": "Инструменты ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdToolError": {
+    "message": "ошибка"
+  },
+  "mdAttachments": {
+    "message": "Вложения"
+  },
+  "mdAttachmentFailed": {
+    "message": "не удалось скачать: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdExtractedOnly": {
+    "message": "только извлечённый текст"
+  },
+  "mdExtractedPartial": {
+    "message": "только начало извлечённого текста: больше сервис не хранит"
+  },
+  "mdRebuiltFromChat": {
+    "message": "восстановлено по истории чата"
+  },
+  "failUnavailable": {
+    "message": "сервис не отдаёт этот файл"
+  },
+  "failForbidden": {
+    "message": "доступ запрещён"
+  },
+  "failNotFound": {
+    "message": "не найден на сервере"
+  },
+  "failNetwork": {
+    "message": "ошибка сети или сервера"
+  },
+  "failFile": {
+    "message": "не удалось записать файл ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "failOther": {
+    "message": "$ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdOtherBranches": {
+    "message": "Другие ветки"
+  },
+  "mdRecompressed": {
+    "message": "пережато сервисом, полный размер"
+  },
+  "mdUnreadable": {
+    "message": "Часть этого сообщения не удалось прочитать ($ARG1$). Остальной чат сохранён.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdProjectDescription": {
+    "message": "Описание"
+  },
+  "mdProjectInstructions": {
+    "message": "Инструкции проекта"
+  },
+  "mdProjectKnowledge": {
+    "message": "Файлы базы знаний"
+  },
+  "mdProjectChats": {
+    "message": "Чаты"
+  },
+  "mdProjectNoKnowledge": {
+    "message": "Файлов нет."
+  },
+  "mdNotebookSources": {
+    "message": "Источники"
+  },
+  "mdNotebookNoSources": {
+    "message": "Источников нет."
+  },
+  "mdNotebookSourcesElsewhere": {
+    "message": "Файлы источников остаются в NotebookLM: [открыть блокнот]($ARG1$).",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdFileNotGiven": {
+    "message": "сервис хранит этот файл без возможности скачать, поэтому здесь только его имя"
+  },
+  "mdProjectNoChats": {
+    "message": "Чатов нет."
+  },
+  "mdProjectChatFailed": {
+    "message": "не удалось сохранить: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdBranchFromStart": {
+    "message": "Ветка $ARG1$, с начала",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdBranchAfter": {
+    "message": "Ветка $ARG1$, после сообщения $ARG2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "mdBranchAfterIn": {
+    "message": "Ветка $ARG1$, после сообщения $ARG2$ ветки $ARG3$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      }
+    }
+  },
+  "optionsTitle": {
+    "message": "Настройки CodingCat AI Chat Exporter"
+  },
+  "optionsSectionSaving": {
+    "message": "Сохранение"
+  },
+  "optionsDestination": {
+    "message": "Куда сохранять"
+  },
+  "optionsDestinationDownloads": {
+    "message": "Папка «Загрузки» Chrome"
+  },
+  "optionsDestinationFolder": {
+    "message": "Выбранная вами папка"
+  },
+  "optionsDestinationFolderHint": {
+    "message": "Файлы записываются прямо в папку, без диалогов «Сохранить как», при любых настройках скачивания Chrome. Подойдёт и папка хранилища Obsidian."
+  },
+  "optionsChooseFolder": {
+    "message": "Выбрать папку…"
+  },
+  "optionsChangeFolder": {
+    "message": "Выбрать другую папку…"
+  },
+  "optionsFolderChosen": {
+    "message": "Папка: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsFolderNotChosen": {
+    "message": "Папка ещё не выбрана."
+  },
+  "optionsFolderPickerHint": {
+    "message": "Chrome может не дать выбрать сами «Документы», «Загрузки» или рабочий стол: создайте внутри отдельную папку, например «AI Chats»."
+  },
+  "optionsFolderNeedsAccess": {
+    "message": "Chrome спросит разрешение на запись в эту папку при следующем сохранении. Можно разрешить сейчас."
+  },
+  "optionsFolderDenied": {
+    "message": "Доступ к папке запрещён. Выберите папку заново."
+  },
+  "optionsGrantAccess": {
+    "message": "Разрешить доступ"
+  },
+  "optionsFolderError": {
+    "message": "Не удалось открыть папку: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsRootFolder": {
+    "message": "Папка внутри Загрузок"
+  },
+  "optionsSectionBulk": {
+    "message": "Повторный и массовый экспорт"
+  },
+  "optionsFolderExists": {
+    "message": "Если чат уже сохранялся"
+  },
+  "optionsFolderExistsCopy": {
+    "message": "Сохранить новую копию: «Чат (2)»"
+  },
+  "optionsFolderExistsOverwrite": {
+    "message": "Перезаписать прежнюю копию"
+  },
+  "optionsSkipUnchanged": {
+    "message": "Пропускать неизменённые чаты"
+  },
+  "optionsSkipUnchangedHint": {
+    "message": "При массовом экспорте чат, который уже сохранялся и с тех пор не менялся, пропускается."
+  },
+  "optionsDelay": {
+    "message": "Пауза между чатами, мс"
+  },
+  "optionsDelayHint": {
+    "message": "Снижает нагрузку на сервис. Для большинства аккаунтов достаточно 800 мс."
+  },
+  "optionsReport": {
+    "message": "Отчёт об экспорте в _reports/"
+  },
+  "optionsReportOnErrors": {
+    "message": "Только если были ошибки"
+  },
+  "optionsReportAlways": {
+    "message": "Всегда"
+  },
+  "optionsReportNever": {
+    "message": "Никогда"
+  },
+  "optionsRegistry": {
+    "message": "Реестр экспортов"
+  },
+  "optionsRegistryCount": {
+    "message": "Чатов в реестре экспортов: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsRegistryClear": {
+    "message": "Очистить"
+  },
+  "optionsRegistryConfirm": {
+    "message": "Забыть, какие чаты сохранялись и какие имена папок использовались?"
+  },
+  "optionsRegistryHint": {
+    "message": "Расширение не видит папку «Загрузки», поэтому запоминает, что сохраняло: чтобы называть копии и пропускать неизменённые чаты."
+  },
+  "optionsRootFolderHint": {
+    "message": "Оставьте пустым, чтобы сохранять прямо в Загрузки. Вложенные папки через /."
+  },
+  "optionsIncludePlatform": {
+    "message": "Добавлять название платформы в имя папки"
+  },
+  "optionsIncludePlatformHint": {
+    "message": "Пример: «Заметки - 2026-10-13 (Claude)»."
+  },
+  "optionsSectionContent": {
+    "message": "Содержимое Markdown"
+  },
+  "optionsSaveAttachments": {
+    "message": "Сохранять файлы из чата"
+  },
+  "optionsSaveAttachmentsHint": {
+    "message": "Ваши загрузки, файлы, созданные моделью, и артефакты — в папку files/ рядом с заметкой."
+  },
+  "optionsArtifactVersions": {
+    "message": "Версии артефактов"
+  },
+  "optionsArtifactVersionsLatest": {
+    "message": "Только последняя"
+  },
+  "optionsArtifactVersionsAll": {
+    "message": "Все версии"
+  },
+  "optionsSaveThinking": {
+    "message": "Сохранять рассуждения модели"
+  },
+  "optionsSaveToolCalls": {
+    "message": "Сохранять веб-поиск и вызовы инструментов"
+  },
+  "optionsSaveToolCallsHint": {
+    "message": "В Obsidian отображаются свёрнутыми блоками."
+  },
+  "optionsToolCallDetail": {
+    "message": "Вызовы инструментов"
+  },
+  "optionsToolCallDetailCompact": {
+    "message": "Одна строка на вызов"
+  },
+  "optionsToolCallDetailFull": {
+    "message": "С входными данными и результатом"
+  },
+  "optionsClaudeBranches": {
+    "message": "Ветки (Claude, Grok, ChatGPT)"
+  },
+  "optionsClaudeBranchesActive": {
+    "message": "Только видимая ветка"
+  },
+  "optionsClaudeBranchesAll": {
+    "message": "Все ветки"
+  },
+  "optionsSectionShortcut": {
+    "message": "Горячая клавиша"
+  },
+  "optionsShortcutCurrent": {
+    "message": "Сохранить текущий чат: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsShortcutChange": {
+    "message": "Изменить в настройках Chrome"
+  },
+  "optionsShowNotifications": {
+    "message": "Показывать результат сохранения по горячей клавише (панель на странице чата)"
+  },
+  "optionsSaved": {
+    "message": "Сохранено"
+  },
+  "optionsMoreLater": {
+    "message": "«Сохранить в .zip» выбирается там, где вы сохраняете: в окне расширения, на странице экспорта или в панели после горячей клавиши."
+  }
+}

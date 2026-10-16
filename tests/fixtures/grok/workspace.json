@@ -1,0 +1,15 @@
+{
+ "workspaceId": "00000000-0000-4000-8000-0000000000c0",
+ "name": "Photo book",
+ "createTime": "2026-10-16T07:46:16.263051Z",
+ "lastUseTime": "2026-10-16T07:48:15.787924Z",
+ "isPublic": false,
+ "isReadonly": false,
+ "accessLevel": "ACCESS_LEVEL_OWNER",
+ "conversationStarters": [],
+ "viewCount": "0",
+ "conversationsCreatedCount": "0",
+ "cloneCount": "0",
+ "kind": "WORKSPACE_KIND_UNIFIED",
+ "shareDecisionTime": null
+}

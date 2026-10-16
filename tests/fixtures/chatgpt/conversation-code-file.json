@@ -1,0 +1,442 @@
+{
+ "title": "Create CSV File",
+ "create_time": 1792050932.697412,
+ "update_time": 1792050958.216458,
+ "moderation_results": [],
+ "plugin_ids": null,
+ "conversation_id": "00000000-0000-4000-8000-00000000002f",
+ "conversation_template_id": null,
+ "gizmo_id": null,
+ "gizmo_type": null,
+ "is_archived": false,
+ "is_starred": null,
+ "safe_urls": [
+  "https://www.openai.com"
+ ],
+ "blocked_urls": [],
+ "default_model_slug": "auto",
+ "atlas_mode_enabled": null,
+ "conversation_origin": null,
+ "is_read_only": null,
+ "voice": null,
+ "async_status": null,
+ "disabled_tool_ids": [],
+ "is_temporary_chat": false,
+ "is_do_not_remember": false,
+ "memory_scope": "global_enabled",
+ "context_scopes": null,
+ "sugar_item_id": null,
+ "sugar_item_visible": false,
+ "pinned_time": null,
+ "is_study_mode": false,
+ "owner": null,
+ "sectioned_conversation": null,
+ "mapping": {
+  "client-created-root": {
+   "id": "client-created-root",
+   "message": null,
+   "parent": null,
+   "children": [
+    "00000000-0000-4000-8000-000000000030"
+   ]
+  },
+  "00000000-0000-4000-8000-000000000030": {
+   "id": "00000000-0000-4000-8000-000000000030",
+   "message": {
+    "id": "00000000-0000-4000-8000-000000000030",
+    "author": {
+     "role": "user",
+     "name": null,
+     "metadata": {}
+    },
+    "create_time": 1792050931.6,
+    "update_time": 1792050958.065371,
+    "content": {
+     "content_type": "text",
+     "parts": [
+      "AI Chat Exporter code test. Use Python to create a CSV file fruits.csv with three rows (name, price): apple 3, pear 4, plum 5, and give me a download link to it."
+     ]
+    },
+    "status": "finished_successfully",
+    "end_turn": null,
+    "weight": 1.0,
+    "metadata": {
+     "request_id": "00000000-0000-4000-8000-000000000031",
+     "message_source": null,
+     "turn_exchange_id": "00000000-0000-4000-8000-000000000032",
+     "working_turn_id": "00000000-0000-4000-8000-000000000032",
+     "can_save": false
+    },
+    "recipient": "all",
+    "channel": null
+   },
+   "parent": "client-created-root",
+   "children": [
+    "00000000-0000-4000-8000-000000000033"
+   ]
+  },
+  "00000000-0000-4000-8000-000000000033": {
+   "id": "00000000-0000-4000-8000-000000000033",
+   "message": {
+    "id": "00000000-0000-4000-8000-000000000033",
+    "author": {
+     "role": "assistant",
+     "name": null,
+     "metadata": {}
+    },
+    "create_time": 1792050934.750445,
+    "update_time": 1792050935.646555,
+    "content": {
+     "content_type": "code",
+     "language": "unknown",
+     "response_format_name": null,
+     "text": "import pandas as pd\n\ndf = pd.DataFrame({\n    \"name\": [\"apple\", \"pear\", \"plum\"],\n    \"price\": [3, 4, 5],\n})\npath = \"/mnt/data/fruits.csv\"\ndf.to_csv(path, index=False)\nprint(f\"Created {path}\")\n"
+    },
+    "status": "finished_successfully",
+    "end_turn": false,
+    "weight": 1.0,
+    "metadata": {
+     "finish_details": {
+      "type": "stop",
+      "stop_tokens": [
+       200012
+      ]
+     },
+     "is_complete": true,
+     "citations": [],
+     "content_references": [],
+     "resolved_model_slug": "gpt-6",
+     "cot_version": "v5",
+     "request_id": "00000000-0000-4000-8000-000000000031",
+     "message_type": "next",
+     "turn_exchange_id": "00000000-0000-4000-8000-000000000032",
+     "working_turn_id": "00000000-0000-4000-8000-000000000032",
+     "model_slug": "gpt-6",
+     "default_model_slug": "auto",
+     "parent_id": "00000000-0000-4000-8000-000000000034",
+     "model_switcher_deny": [],
+     "can_save": false
+    },
+    "recipient": "python",
+    "channel": "commentary"
+   },
+   "parent": "00000000-0000-4000-8000-000000000030",
+   "children": [
+    "00000000-0000-4000-8000-000000000035"
+   ]
+  },
+  "00000000-0000-4000-8000-000000000035": {
+   "id": "00000000-0000-4000-8000-000000000035",
+   "message": {
+    "id": "00000000-0000-4000-8000-000000000035",
+    "author": {
+     "role": "tool",
+     "name": "python",
+     "metadata": {}
+    },
+    "create_time": 1792050938.3182,
+    "update_time": 1792050944.143784,
+    "content": {
+     "content_type": "execution_output",
+     "text": "Created /mnt/data/fruits.csv\n"
+    },
+    "status": "finished_successfully",
+    "end_turn": null,
+    "weight": 1.0,
+    "metadata": {
+     "is_complete": true,
+     "aggregate_result": {
+      "status": "success",
+      "run_id": "00000000-0000-4000-8000-000000000036",
+      "start_time": 1792050938.00482,
+      "update_time": 1792050939.5458262,
+      "code": "import pandas as pd\n\ndf = pd.DataFrame({\n    \"name\": [\"apple\", \"pear\", \"plum\"],\n    \"price\": [3, 4, 5],\n})\npath = \"/mnt/data/fruits.csv\"\ndf.to_csv(path, index=False)\nprint(f\"Created {path}\")\n",
+      "end_time": 1792050939.5458262,
+      "final_expression_output": null,
+      "in_kernel_exception": null,
+      "system_exception": null,
+      "messages": [
+       {
+        "message_type": "stream",
+        "time": 1792050939.2318313,
+        "stream_name": "stdout",
+        "sender": "server",
+        "text": "Created /mnt/data/fruits.csv\n"
+       }
+      ],
+      "jupyter_messages": [
+       {
+        "msg_type": "status",
+        "parent_header": {
+         "msg_id": "ae67784a-82cca74d0ac061ab7aa55dc2_226_6",
+         "version": "5.3"
+        },
+        "content": {
+         "execution_state": "busy"
+        }
+       },
+       {
+        "msg_type": "execute_input",
+        "parent_header": {
+         "msg_id": "ae67784a-82cca74d0ac061ab7aa55dc2_226_6",
+         "version": "5.3"
+        }
+       },
+       {
+        "msg_type": "stream",
+        "parent_header": {
+         "msg_id": "ae67784a-82cca74d0ac061ab7aa55dc2_226_6",
+         "version": "5.3"
+        },
+        "content": {
+         "name": "stdout",
+         "text": "Created /mnt/data/fruits.csv\n"
+        }
+       },
+       {
+        "msg_type": "status",
+        "parent_header": {
+         "msg_id": "ae67784a-82cca74d0ac061ab7aa55dc2_226_6",
+         "version": "5.3"
+        },
+        "content": {
+         "execution_state": "idle"
+        }
+       }
+      ],
+      "timeout_triggered": null
+     },
+     "resolved_model_slug": "gpt-6",
+     "cot_version": "v5",
+     "request_id": "00000000-0000-4000-8000-000000000031",
+     "message_type": "next",
+     "turn_exchange_id": "00000000-0000-4000-8000-000000000032",
+     "working_turn_id": "00000000-0000-4000-8000-000000000032",
+     "model_slug": "gpt-6",
+     "default_model_slug": "auto",
+     "parent_id": "00000000-0000-4000-8000-000000000033",
+     "can_save": false
+    },
+    "recipient": "all",
+    "channel": "commentary"
+   },
+   "parent": "00000000-0000-4000-8000-000000000033",
+   "children": [
+    "00000000-0000-4000-8000-000000000037"
+   ]
+  },
+  "00000000-0000-4000-8000-000000000037": {
+   "id": "00000000-0000-4000-8000-000000000037",
+   "message": {
+    "id": "00000000-0000-4000-8000-000000000037",
+    "author": {
+     "role": "assistant",
+     "name": null,
+     "metadata": {}
+    },
+    "create_time": 1792050948.973315,
+    "update_time": 1792050956.702527,
+    "content": {
+     "content_type": "text",
+     "parts": [
+      "Created `fruits.csv` using Python with the three fruit rows you requested.\n\n[**Download fruits.csv**](sandbox:/mnt/data/fruits.csv)\n\nFile contents:\n\n```csv\nname,price\napple,3\npear,4\nplum,5\n```"
+     ]
+    },
+    "status": "finished_successfully",
+    "end_turn": true,
+    "weight": 1.0,
+    "metadata": {
+     "finish_details": {
+      "type": "stop",
+      "stop_tokens": [
+       200002
+      ]
+     },
+     "is_complete": true,
+     "citations": [],
+     "content_references": [
+      {
+       "type": "client_defined_widget",
+       "category": "code_block",
+       "data": {
+        "content": "name,price\napple,3\npear,4\nplum,5",
+        "language": "csv",
+        "widget_type": "code_block"
+       },
+       "matched_text": "```csv\nname,price\napple,3\npear,4\nplum,5\n```",
+       "start_idx": 146,
+       "end_idx": 189,
+       "safe_urls": [],
+       "refs": [],
+       "alt": null,
+       "prompt_text": null
+      }
+     ],
+     "model_dil_v2": {
+      "code": "function __dilSafe(evaluate,failureValue){try{return evaluate()}catch{return failureValue}}\n\nDIL.render(__dil.jsx(()=>{const __dilConstants=DIL.useConstants();const __dilModelDataBindings=DIL.useAppData((appData)=>appData.opGenui?.modelDataBindings??{});return __dil.jsx(__dil.Fragment,null,__dil.jsx(\"text\",null,__dilConstants[\"0\"],__dil.jsx(\"code\",null,__dilConstants[\"1\"]),__dilConstants[\"2\"]),__dil.jsx(\"text\",null,__dilSafe(()=>(__dil.jsx(Link,{\"url\":\"sandbox:/mnt/data/fruits.csv\",\"title\":__dilConstants[\"3\"],\"__resolutionId\":__dilConstants[\"4\"]})),null)),__dil.jsx(\"text\",null,__dilConstants[\"5\"]),(__dilConstants[\"7\"]==null?__dil.jsx(\"__chatgptClientDefinedWidget\",{\"key\":\"cdw:0\",\"invocationId\":__dilConstants[\"6\"]}):__dilConstants[\"7\"].type===\"math\"?__dil.jsx(\"math\",{\"key\":\"cdw:0\",\"value\":__dilConstants[\"7\"].value}):__dilConstants[\"7\"].type===\"text\"?__dil.jsx(\"text\",{\"key\":\"cdw:0\"},__dilConstants[\"7\"].value):null));},{\"key\":\"body:0\"}));",
+      "constants": {
+       "0": "Created ",
+       "1": "fruits.csv",
+       "2": " using Python with the three fruit rows you requested.",
+       "3": "Download fruits.csv",
+       "4": "00000000-0000-4000-8000-000000000038",
+       "5": "File contents:",
+       "6": "00000000-0000-4000-8000-000000000039",
+       "7": null
+      },
+      "fallbackMarkdown": "Created `fruits.csv` using Python with the three fruit rows you requested.\n\n[Download fruits.csv](sandbox:/mnt/data/fruits.csv)\n\nFile contents\\:\n\n```csv\nname,price\napple,3\npear,4\nplum,5\n```",
+      "fallbackMarkdownVersion": 1,
+      "validationWarnings": [
+       {
+        "code": "sandbox_download_unverified",
+        "reason": "missing_context",
+        "message": "sandbox_download_unverified at line 3, column 1: File existence has not been established; this is not proof of a missing file. Source: \"[**Download fruits.csv**](sandbox:/mnt/data/fruits.csv)\"",
+        "removed": false,
+        "line": 3,
+        "column": 1
+       }
+      ],
+      "requiredComponents": [
+       "Link"
+      ],
+      "clientDefinedWidgets": {
+       "00000000-0000-4000-8000-000000000039": {
+        "status": "resolved",
+        "refIndex": 0,
+        "isStreaming": false
+       }
+      },
+      "appData": {
+       "opGenui": {
+        "componentResults": {
+         "00000000-0000-4000-8000-000000000038": {
+          "status": "resolved",
+          "state": {
+           "url": "sandbox:/mnt/data/fruits.csv",
+           "title": "Download fruits.csv",
+           "source_label": "sandbox:/mnt/data/fruits.csv",
+           "domain": null,
+           "snippet": null,
+           "metadata_label": null,
+           "refid": null,
+           "title_before_last_word": "Download",
+           "title_last_word": "fruits.csv"
+          },
+          "componentName": "Link"
+         }
+        },
+        "interactionSurface": "mainline",
+        "modelDataBindings": {}
+       }
+      }
+     },
+     "view_state": {},
+     "resolved_model_slug": "gpt-6",
+     "search_result_groups": [],
+     "cot_version": "v5",
+     "conversation_followup_suggestions_eligible": true,
+     "request_id": "00000000-0000-4000-8000-000000000031",
+     "message_type": "next",
+     "turn_exchange_id": "00000000-0000-4000-8000-000000000032",
+     "working_turn_id": "00000000-0000-4000-8000-000000000032",
+     "model_slug": "gpt-6",
+     "default_model_slug": "auto",
+     "can_save": true,
+     "parent_id": "00000000-0000-4000-8000-000000000035",
+     "model_switcher_deny": [
+      {
+       "slug": "gpt-5-3-mini",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-5-3-mini",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-5-6-mini",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-5-6-mini",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-6-mini",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-6-mini",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-5-6-t-mini-mini",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-5-6-t-mini-mini",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-6-t-mini-mini",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "gpt-6-t-mini-mini",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "auto",
+       "context": "regenerate",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      },
+      {
+       "slug": "auto",
+       "context": "conversation",
+       "reason": "unsupported_python",
+       "is_available": false,
+       "description": "This model doesn't support data analysis."
+      }
+     ]
+    },
+    "recipient": "all",
+    "channel": "final"
+   },
+   "parent": "00000000-0000-4000-8000-000000000035",
+   "children": []
+  }
+ },
+ "current_node": "00000000-0000-4000-8000-000000000037",
+ "context_truncation_continuation": null
+}

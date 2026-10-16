@@ -1,0 +1,55 @@
+body {
+  width: 320px;
+}
+
+main {
+  padding: 16px;
+}
+
+.result {
+  margin-top: 10px;
+}
+
+footer {
+  margin-top: 16px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.hint {
+  margin-top: 12px;
+  font-size: 12px;
+}
+
+.zip {
+  margin-bottom: 10px;
+}
+
+.bulk {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.bulk button {
+  flex: 1 1 auto;
+}
+
+.bulk p {
+  margin: 0;
+}
+
+.project {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.project .check {
+  margin-bottom: 8px;
+}
+
+.project button {
+  width: 100%;
+}

@@ -1,0 +1,31 @@
+{
+ "assets": [
+  {
+   "assetId": "00000000-0000-4000-8000-0000000000c1",
+   "mimeType": "application/pdf",
+   "name": "contest-rules.pdf",
+   "sizeBytes": 2048,
+   "createTime": "2026-10-16T07:47:00.000Z",
+   "lastUseTime": "2026-10-16T07:47:00.000Z",
+   "summary": "",
+   "previewImageKey": "",
+   "key": "users/00000000-0000-4000-8000-0000000000d0/00000000-0000-4000-8000-0000000000c1/content",
+   "auxKeys": {},
+   "isDeleted": false,
+   "fileSource": "SELF_UPLOAD_FILE_SOURCE",
+   "isModelGenerated": false,
+   "isLatest": true,
+   "sharedWithTeam": false,
+   "sharedWithUserIds": [],
+   "isPublic": false
+  },
+  {
+   "assetId": "00000000-0000-4000-8000-0000000000c2",
+   "mimeType": "text/plain",
+   "name": "removed.txt",
+   "sizeBytes": 10,
+   "key": "users/00000000-0000-4000-8000-0000000000d0/00000000-0000-4000-8000-0000000000c2/content",
+   "isDeleted": true
+  }
+ ]
+}

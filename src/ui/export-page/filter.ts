@@ -1,0 +1,90 @@
+import type { ProjectSummary } from '../../model/project';
+import type { ConversationSummary } from '../../model/conversation';
+
+export type SortKey = 'title' | 'createdAt' | 'updatedAt' | 'project';
+
+export interface ListFilter {
+  query: string;
+  /** YYYY-MM-DD, inclusive; empty for no limit. Compared with the creation date, or the last update where there is none. */
+  from: string;
+  to: string;
+  sort: SortKey;
+  descending: boolean;
+}
+
+export const DEFAULT_FILTER: ListFilter = {
+  query: '',
+  from: '',
+  to: '',
+  sort: 'updatedAt',
+  descending: true,
+};
+
+/** Local calendar date of an ISO timestamp, to compare with date inputs. */
+function day(iso: string | null, timeZone?: string): string {
+  if (!iso) return '';
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toLocaleDateString('sv-SE', timeZone ? { timeZone } : {});
+}
+
+/** Conversations matching the search and date range, sorted. */
+export function filterConversations(
+  list: readonly ConversationSummary[],
+  filter: ListFilter,
+  timeZone?: string,
+): ConversationSummary[] {
+  const words = filter.query.toLocaleLowerCase().split(/\s+/).filter(Boolean);
+  const matches = list.filter((c) => {
+    const text = `${c.title} ${c.project ?? ''}`.toLocaleLowerCase();
+    if (!words.every((w) => text.includes(w))) return false;
+    // A platform without creation dates in its list (Gemini) is filtered by the last update.
+    const created = day(c.createdAt ?? c.updatedAt, timeZone);
+    if (filter.from && (!created || created < filter.from)) return false;
+    if (filter.to && (!created || created > filter.to)) return false;
+    return true;
+  });
+  const value = (c: ConversationSummary) =>
+    filter.sort === 'title'
+      ? c.title
+      : filter.sort === 'project'
+        ? (c.project ?? '')
+        : (c[filter.sort] ?? '');
+  const direction = filter.descending ? -1 : 1;
+  return [...matches].sort((a, b) => value(a).localeCompare(value(b)) * direction);
+}
+
+export type ProjectSortKey = 'name' | 'updatedAt' | 'knowledgeCount';
+
+export interface ProjectFilter {
+  query: string;
+  sort: ProjectSortKey;
+  descending: boolean;
+}
+
+export const DEFAULT_PROJECT_FILTER: ProjectFilter = {
+  query: '',
+  sort: 'updatedAt',
+  descending: true,
+};
+
+/** Projects matching the search (name and description), sorted. */
+export function filterProjects(
+  list: readonly ProjectSummary[],
+  filter: ProjectFilter,
+): ProjectSummary[] {
+  const words = filter.query.toLocaleLowerCase().split(/\s+/).filter(Boolean);
+  const matches = list.filter((p) => {
+    const text = `${p.name} ${p.description}`.toLocaleLowerCase();
+    return words.every((w) => text.includes(w));
+  });
+  const direction = filter.descending ? -1 : 1;
+  return [...matches].sort((a, b) => {
+    if (filter.sort === 'knowledgeCount') {
+      return ((a.knowledgeCount ?? -1) - (b.knowledgeCount ?? -1)) * direction;
+    }
+    const x = filter.sort === 'name' ? a.name : (a.updatedAt ?? '');
+    const y = filter.sort === 'name' ? b.name : (b.updatedAt ?? '');
+    return x.localeCompare(y) * direction;
+  });
+}

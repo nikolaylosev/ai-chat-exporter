@@ -1,0 +1,20 @@
+{
+ "conversations": [
+  {
+   "conversationId": "00000000-0000-4000-8000-000000000006",
+   "title": "AI Chat Exporter Test File Summaries",
+   "starred": false,
+   "createTime": "2026-10-13T20:10:02.262Z",
+   "modifyTime": "2026-10-13T20:12:02.262Z",
+   "systemPromptName": "",
+   "temporary": false,
+   "mediaTypes": [],
+   "workspaces": [],
+   "taskResult": {},
+   "latestAssetMetadata": null,
+   "kind": "CONVERSATION_KIND_DEFAULT",
+   "hasUnreadCheckin": false
+  }
+ ],
+ "textSearchMatches": []
+}

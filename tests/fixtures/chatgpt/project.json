@@ -1,0 +1,33 @@
+{
+ "gizmo": {
+  "id": "g-p-00000000000000000000000000000a01",
+  "organization_id": "org-00000000000000000000000000",
+  "short_url": "g-p-00000000000000000000000000000a01-airlines",
+  "author": { "user_id": "user-00000000000000000000000000", "display_name": "Test user", "is_verified": false },
+  "workspace_id": "00000000-0000-4000-8000-000000000a02",
+  "model": null,
+  "instructions": "Answer in one short sentence.",
+  "display": {
+   "name": "Airlines",
+   "description": "Lists of airlines for the exporter test.",
+   "prompt_starters": [],
+   "profile_pic_id": null,
+   "emoji": null,
+   "theme": null
+  },
+  "share_recipient": "private",
+  "created_at": "2026-10-16T07:30:00.000000+00:00",
+  "updated_at": "2026-10-16T07:40:00.000000+00:00",
+  "last_interacted_at": "2026-10-16T07:40:00.000000+00:00",
+  "tags": ["private"],
+  "gizmo_type": "snorlax",
+  "is_archived": false,
+  "memory_scope": "global"
+ },
+ "tools": [],
+ "files": [],
+ "product_features": {},
+ "has_tpp_conversation": false,
+ "project_file_limits": {},
+ "project_connector_scope_limits": {}
+}

@@ -1,0 +1,77 @@
+{
+  "uuid": "00000000-0000-4000-8000-000000000032",
+  "name": "Widget glossary definition",
+  "summary": "",
+  "model": "claude-opus-5-5",
+  "created_at": "2026-10-13T09:22:11.915235Z",
+  "updated_at": "2026-10-13T09:22:14.352641Z",
+  "settings": {
+    "enabled_web_search": true,
+    "paprika_mode": "auto",
+    "enabled_monkeys_in_a_barrel": false,
+    "enabled_saffron": true,
+    "tool_search_mode": "auto",
+    "thinking_mode": "auto",
+    "effort_level": "medium",
+    "chat_memory_mode": "enabled",
+    "preview_feature_uses_artifacts": true,
+    "enabled_turmeric": true
+  },
+  "is_starred": false,
+  "is_archived": false,
+  "is_temporary": false,
+  "project_uuid": "00000000-0000-4000-8000-000000000033",
+  "workspace_upgraded": false,
+  "is_multiplayer": false,
+  "platform": "CLAUDE_AI",
+  "is_wiggle_enabled": false,
+  "effective_thinking_mode": "auto",
+  "current_leaf_message_uuid": "00000000-0000-4000-8000-000000000034",
+  "chat_messages": [
+    {
+      "uuid": "00000000-0000-4000-8000-000000000035",
+      "text": "",
+      "content": [
+        {
+          "start_timestamp": "2026-10-13T09:22:12.123604Z",
+          "stop_timestamp": "2026-10-13T09:22:12.123604Z",
+          "type": "text",
+          "text": "Exporter test chat inside the project. What is a Widget according to the glossary?",
+          "citations": []
+        }
+      ],
+      "sender": "human",
+      "index": 0,
+      "created_at": "2026-10-13T09:22:12.123604Z",
+      "updated_at": "2026-10-13T09:22:12.341353Z",
+      "truncated": false,
+      "attachments": [],
+      "files": [],
+      "sync_sources": [],
+      "parent_message_uuid": "00000000-0000-4000-8000-000000000000"
+    },
+    {
+      "uuid": "00000000-0000-4000-8000-000000000034",
+      "text": "",
+      "content": [
+        {
+          "start_timestamp": "2026-10-13T09:22:14.352641Z",
+          "stop_timestamp": "2026-10-13T09:22:14.352641Z",
+          "type": "text",
+          "text": "According to the glossary, a Widget is a small blue box.",
+          "citations": []
+        }
+      ],
+      "sender": "assistant",
+      "index": 1,
+      "created_at": "2026-10-13T09:22:14.352641Z",
+      "updated_at": "2026-10-13T09:22:14.352641Z",
+      "truncated": false,
+      "stop_reason": "end_turn",
+      "attachments": [],
+      "files": [],
+      "sync_sources": [],
+      "parent_message_uuid": "00000000-0000-4000-8000-000000000035"
+    }
+  ]
+}

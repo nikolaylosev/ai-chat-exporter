@@ -1,0 +1,15 @@
+node_modules/
+dist/
+coverage/
+*.log
+.DS_Store
+.env
+.env.*
+*.har
+*.crx
+*.pem
+.vite/
+
+# Local-only working docs
+docs/spec.md
+docs/TODO.md

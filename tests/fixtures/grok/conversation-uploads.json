@@ -1,0 +1,307 @@
+{
+ "meta": {
+  "conversation": {
+   "conversationId": "00000000-0000-4000-8000-000000000006",
+   "title": "AI Chat Exporter Test File Summaries",
+   "starred": false,
+   "createTime": "2026-10-13T20:19:42.993Z",
+   "modifyTime": "2026-10-13T20:19:48.113Z",
+   "systemPromptName": "",
+   "temporary": false,
+   "mediaTypes": [],
+   "workspaces": [],
+   "taskResult": {},
+   "latestAssetMetadata": null,
+   "viewerIsOwner": true,
+   "kind": "CONVERSATION_KIND_UNSPECIFIED",
+   "hasUnreadCheckin": false
+  }
+ },
+ "nodes": {
+  "responseNodes": [
+   {
+    "responseId": "00000000-0000-4000-8000-000000000007",
+    "sender": "human",
+    "parentResponseId": "00000000-0000-4000-8000-000000000008"
+   },
+   {
+    "responseId": "00000000-0000-4000-8000-000000000009",
+    "sender": "assistant",
+    "parentResponseId": "00000000-0000-4000-8000-000000000007"
+   }
+  ],
+  "inflightResponses": []
+ },
+ "responses": {
+  "responses": [
+   {
+    "responseId": "00000000-0000-4000-8000-000000000007",
+    "message": "AI Chat Exporter uploads test. Summarize each attached file in one short line.",
+    "sender": "human",
+    "createTime": "2026-10-13T20:19:47.703Z",
+    "parentResponseId": "00000000-0000-4000-8000-000000000008",
+    "manual": false,
+    "partial": false,
+    "shared": false,
+    "query": "",
+    "queryType": "",
+    "webSearchResults": [],
+    "xpostIds": [],
+    "xposts": [],
+    "generatedImageUrls": [],
+    "imageAttachments": [],
+    "fileAttachments": [
+     "00000000-0000-4000-8000-000000000010",
+     "00000000-0000-4000-8000-000000000011",
+     "00000000-0000-4000-8000-000000000012"
+    ],
+    "cardAttachmentsJson": [],
+    "fileUris": [
+     "00000000-0000-4000-8000-000000000010",
+     "00000000-0000-4000-8000-000000000011",
+     "00000000-0000-4000-8000-000000000012"
+    ],
+    "fileAttachmentsMetadata": [
+     {
+      "fileMetadataId": "00000000-0000-4000-8000-000000000010",
+      "fileMimeType": "application/pdf",
+      "fileName": "fruit-prices.pdf",
+      "fileUri": "users/00000000-0000-4000-8000-000000000013/00000000-0000-4000-8000-000000000010/content",
+      "parsedFileUri": "",
+      "createTime": "2026-10-13T20:19:34.623Z",
+      "fileSource": "SELF_UPLOAD_FILE_SOURCE"
+     },
+     {
+      "fileMetadataId": "00000000-0000-4000-8000-000000000011",
+      "fileMimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "fileName": "meeting-notes.docx",
+      "fileUri": "users/00000000-0000-4000-8000-000000000013/00000000-0000-4000-8000-000000000011/content",
+      "parsedFileUri": "",
+      "createTime": "2026-10-13T20:19:34.642Z",
+      "fileSource": "SELF_UPLOAD_FILE_SOURCE"
+     },
+     {
+      "fileMetadataId": "00000000-0000-4000-8000-000000000012",
+      "fileMimeType": "image/png",
+      "fileName": "stripes.png",
+      "fileUri": "users/00000000-0000-4000-8000-000000000013/00000000-0000-4000-8000-000000000012/content",
+      "parsedFileUri": "",
+      "createTime": "2026-10-13T20:19:34.850Z",
+      "fileSource": "SELF_UPLOAD_FILE_SOURCE"
+     }
+    ],
+    "isControl": false,
+    "steps": [],
+    "imageEditUris": [],
+    "mediaTypes": [],
+    "webpageUrls": [],
+    "metadata": {},
+    "citedWebSearchResults": [],
+    "toolResponses": [],
+    "model": "",
+    "ragResults": [],
+    "citedRagResults": [],
+    "searchProductResults": [],
+    "connectorSearchResults": [],
+    "collectionSearchResults": [],
+    "streamErrors": [],
+    "citedXposts": [],
+    "citedConnectorSearchResults": [],
+    "citedCollectionSearchResults": [],
+    "inputChunks": [],
+    "outputChunks": [],
+    "fileAttachmentAssetMetadata": [
+     {
+      "assetId": "00000000-0000-4000-8000-000000000010",
+      "mimeType": "application/pdf",
+      "name": "fruit-prices.pdf",
+      "sizeBytes": 621,
+      "createTime": "2026-10-13T20:19:34.623Z",
+      "lastUseTime": "2026-10-13T20:19:34.623Z",
+      "summary": "",
+      "previewImageKey": "",
+      "key": "users/00000000-0000-4000-8000-000000000013/00000000-0000-4000-8000-000000000010/content",
+      "auxKeys": {
+       "image_edit_is_root_user_uploaded": "true"
+      },
+      "isDeleted": false,
+      "fileSource": "SELF_UPLOAD_FILE_SOURCE",
+      "currentConversationId": "00000000-0000-4000-8000-000000000006",
+      "rootAssetId": "00000000-0000-4000-8000-000000000010",
+      "sourceConversationId": "00000000-0000-4000-8000-000000000006",
+      "isModelGenerated": false,
+      "updateTime": "2026-10-13T20:19:34.623Z",
+      "isLatest": true,
+      "inlineStatus": "DEFAULT_ARTIFACT_INLINE_STATUS",
+      "isRootAssetCreatedByModel": false,
+      "rootAssetSourceConversationId": "00000000-0000-4000-8000-000000000006",
+      "sharedWithTeam": false,
+      "sharedWithUserIds": [],
+      "ownerUserId": "00000000-0000-4000-8000-000000000013"
+     },
+     {
+      "assetId": "00000000-0000-4000-8000-000000000011",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "name": "meeting-notes.docx",
+      "sizeBytes": 1317,
+      "createTime": "2026-10-13T20:19:34.642Z",
+      "lastUseTime": "2026-10-13T20:19:34.642Z",
+      "summary": "",
+      "previewImageKey": "",
+      "key": "users/00000000-0000-4000-8000-000000000013/00000000-0000-4000-8000-000000000011/content",
+      "auxKeys": {
+       "image_edit_is_root_user_uploaded": "true"
+      },
+      "isDeleted": false,
+      "fileSource": "SELF_UPLOAD_FILE_SOURCE",
+      "currentConversationId": "00000000-0000-4000-8000-000000000006",
+      "rootAssetId": "00000000-0000-4000-8000-000000000011",
+      "sourceConversationId": "00000000-0000-4000-8000-000000000006",
+      "isModelGenerated": false,
+      "updateTime": "2026-10-13T20:19:34.642Z",
+      "isLatest": true,
+      "inlineStatus": "DEFAULT_ARTIFACT_INLINE_STATUS",
+      "isRootAssetCreatedByModel": false,
+      "rootAssetSourceConversationId": "00000000-0000-4000-8000-000000000006",
+      "sharedWithTeam": false,
+      "sharedWithUserIds": [],
+      "ownerUserId": "00000000-0000-4000-8000-000000000013"
+     },
+     {
+      "assetId": "00000000-0000-4000-8000-000000000012",
+      "mimeType": "image/png",
+      "name": "stripes.png",
+      "sizeBytes": 198,
+      "createTime": "2026-10-13T20:19:34.850Z",
+      "lastUseTime": "2026-10-13T20:19:34.850Z",
+      "summary": "",
+      "previewImageKey": "users/00000000-0000-4000-8000-000000000013/00000000-0000-4000-8000-000000000012/preview-image",
+      "key": "users/00000000-0000-4000-8000-000000000013/00000000-0000-4000-8000-000000000012/content",
+      "auxKeys": {
+       "image_edit_is_root_user_uploaded": "true",
+       "preview-image": "users/00000000-0000-4000-8000-000000000013/00000000-0000-4000-8000-000000000012/preview-image",
+       "r_rated": "false",
+       "thumbhash": "1fcB3bSp+fWymGqZh3aHWE94yI+I"
+      },
+      "isDeleted": false,
+      "fileSource": "SELF_UPLOAD_FILE_SOURCE",
+      "currentConversationId": "00000000-0000-4000-8000-000000000006",
+      "rootAssetId": "00000000-0000-4000-8000-000000000012",
+      "sourceConversationId": "00000000-0000-4000-8000-000000000006",
+      "isModelGenerated": false,
+      "updateTime": "2026-10-13T20:19:34.850Z",
+      "isLatest": true,
+      "inlineStatus": "DEFAULT_ARTIFACT_INLINE_STATUS",
+      "isRootAssetCreatedByModel": false,
+      "rootAssetSourceConversationId": "00000000-0000-4000-8000-000000000006",
+      "sharedWithTeam": false,
+      "sharedWithUserIds": [],
+      "thumbhash": "1fcB3bSp+fWymGqZh3aHWE94yI+I",
+      "ownerUserId": "00000000-0000-4000-8000-000000000013"
+     }
+    ],
+    "fileIds": []
+   },
+   {
+    "responseId": "00000000-0000-4000-8000-000000000009",
+    "message": "**fruit-prices.pdf:** Test document listing fruit prices (apple 3, pear 4, plum 5).\n\n**meeting-notes.docx:** Brief notes deciding to paint the fence green, with the next meeting on Friday.\n\n**stripes.png:** Simple image of three vertical stripes in red, green, and blue.",
+    "sender": "assistant",
+    "createTime": "2026-10-13T20:19:47.747Z",
+    "parentResponseId": "00000000-0000-4000-8000-000000000007",
+    "manual": false,
+    "partial": false,
+    "shared": false,
+    "query": "",
+    "queryType": "",
+    "webSearchResults": [],
+    "xpostIds": [],
+    "xposts": [],
+    "generatedImageUrls": [],
+    "imageAttachments": [],
+    "fileAttachments": [],
+    "cardAttachmentsJson": [],
+    "fileUris": [],
+    "fileAttachmentsMetadata": [],
+    "isControl": false,
+    "steps": [
+     {
+      "text": [
+       "Thinking about your request"
+      ],
+      "tags": [
+       "header"
+      ],
+      "webSearchResults": [],
+      "xpostIds": [],
+      "xposts": [],
+      "toolUsageResults": [],
+      "ragResults": [],
+      "connectorSearchResults": [],
+      "collectionSearchResults": [],
+      "toolUsageCards": []
+     },
+     {
+      "text": [
+       "Summarizing the attached files"
+      ],
+      "tags": [
+       "header"
+      ],
+      "webSearchResults": [],
+      "xpostIds": [],
+      "xposts": [],
+      "toolUsageResults": [],
+      "ragResults": [],
+      "connectorSearchResults": [],
+      "collectionSearchResults": [],
+      "toolUsageCards": []
+     }
+    ],
+    "imageEditUris": [],
+    "mediaTypes": [],
+    "webpageUrls": [],
+    "metadata": {
+     "request_metadata": {
+      "effort": "auto",
+      "model": "fast",
+      "source": "Web"
+     },
+     "ui_layout": {
+      "effort": null,
+      "reasoning_ui_layout": "UNIFIED",
+      "rollout_ids": [],
+      "steer_model_id": null,
+      "will_think_long": false
+     }
+    },
+    "uiLayout": {
+     "reasoningUiLayout": "UNIFIED",
+     "willThinkLong": false,
+     "rolloutIds": []
+    },
+    "thinkingStartTime": "2026-10-13T20:19:43.125Z",
+    "thinkingEndTime": "2026-10-13T20:19:47.703Z",
+    "citedWebSearchResults": [],
+    "toolResponses": [],
+    "model": "grok-3",
+    "requestMetadata": {
+     "model": "fast",
+     "effort": "AUTO"
+    },
+    "ragResults": [],
+    "citedRagResults": [],
+    "searchProductResults": [],
+    "connectorSearchResults": [],
+    "collectionSearchResults": [],
+    "streamErrors": [],
+    "citedXposts": [],
+    "citedConnectorSearchResults": [],
+    "citedCollectionSearchResults": [],
+    "inputChunks": [],
+    "outputChunks": [],
+    "fileAttachmentAssetMetadata": [],
+    "fileIds": []
+   }
+  ]
+ }
+}

@@ -1,0 +1,243 @@
+{
+ "title": "Write Apple Notes",
+ "create_time": 1792051008.759421,
+ "update_time": 1792051062.473314,
+ "moderation_results": [],
+ "plugin_ids": null,
+ "conversation_id": "00000000-0000-4000-8000-00000000003a",
+ "conversation_template_id": null,
+ "gizmo_id": null,
+ "gizmo_type": null,
+ "is_archived": false,
+ "is_starred": null,
+ "safe_urls": [
+  "https://www.openai.com"
+ ],
+ "blocked_urls": [],
+ "default_model_slug": "auto",
+ "atlas_mode_enabled": null,
+ "conversation_origin": null,
+ "is_read_only": null,
+ "voice": null,
+ "async_status": null,
+ "disabled_tool_ids": [],
+ "is_temporary_chat": false,
+ "is_do_not_remember": false,
+ "memory_scope": "global_enabled",
+ "context_scopes": null,
+ "sugar_item_id": null,
+ "sugar_item_visible": false,
+ "pinned_time": null,
+ "is_study_mode": false,
+ "owner": null,
+ "sectioned_conversation": null,
+ "mapping": {
+  "client-created-root": {
+   "id": "client-created-root",
+   "message": null,
+   "parent": null,
+   "children": [
+    "00000000-0000-4000-8000-00000000003b"
+   ]
+  },
+  "00000000-0000-4000-8000-00000000003b": {
+   "id": "00000000-0000-4000-8000-00000000003b",
+   "message": {
+    "id": "00000000-0000-4000-8000-00000000003b",
+    "author": {
+     "role": "user",
+     "name": null,
+     "metadata": {}
+    },
+    "create_time": 1792051007.538,
+    "update_time": 1792051015.724092,
+    "content": {
+     "content_type": "text",
+     "parts": [
+      "AI Chat Exporter canvas test. Open a canvas and write a short document titled Apple Notes with two sentences about apples."
+     ]
+    },
+    "status": "finished_successfully",
+    "end_turn": null,
+    "weight": 1.0,
+    "metadata": {
+     "request_id": "00000000-0000-4000-8000-00000000003c",
+     "message_source": null,
+     "turn_exchange_id": "00000000-0000-4000-8000-00000000003d",
+     "working_turn_id": "00000000-0000-4000-8000-00000000003d",
+     "can_save": false
+    },
+    "recipient": "all",
+    "channel": null
+   },
+   "parent": "client-created-root",
+   "children": [
+    "00000000-0000-4000-8000-00000000003e"
+   ]
+  },
+  "00000000-0000-4000-8000-00000000003e": {
+   "id": "00000000-0000-4000-8000-00000000003e",
+   "message": {
+    "id": "00000000-0000-4000-8000-00000000003e",
+    "author": {
+     "role": "assistant",
+     "name": null,
+     "metadata": {}
+    },
+    "create_time": 1792051012.163192,
+    "update_time": 1792051012.163192,
+    "content": {
+     "content_type": "reasoning_recap",
+     "content": "Worked for a couple of seconds"
+    },
+    "status": "finished_successfully",
+    "end_turn": false,
+    "weight": 1.0,
+    "metadata": {
+     "reasoning_status": "reasoning_ended",
+     "finished_duration_sec": 2,
+     "reasoning_start_time": 1792051009.8505518,
+     "reasoning_end_time": 1792051012.1446729,
+     "reasoning_recap_type": "hide_all",
+     "cot_version": "v5",
+     "conversation_followup_suggestions_eligible": false,
+     "request_id": "00000000-0000-4000-8000-00000000003c",
+     "message_type": "next",
+     "turn_exchange_id": "00000000-0000-4000-8000-00000000003d",
+     "working_turn_id": "00000000-0000-4000-8000-00000000003d",
+     "resolved_model_slug": "gpt-6",
+     "model_slug": "gpt-6",
+     "default_model_slug": "auto",
+     "can_save": false,
+     "parent_id": "00000000-0000-4000-8000-00000000003f",
+     "hide_inline_actions": true,
+     "model_switcher_deny": []
+    },
+    "recipient": "all",
+    "channel": null
+   },
+   "parent": "00000000-0000-4000-8000-00000000003b",
+   "children": [
+    "00000000-0000-4000-8000-000000000040"
+   ]
+  },
+  "00000000-0000-4000-8000-000000000040": {
+   "id": "00000000-0000-4000-8000-000000000040",
+   "message": {
+    "id": "00000000-0000-4000-8000-000000000040",
+    "author": {
+     "role": "assistant",
+     "name": null,
+     "metadata": {}
+    },
+    "create_time": 1792051012.352863,
+    "update_time": 1792051062.305673,
+    "content": {
+     "content_type": "text",
+     "parts": [
+      "<WritingBlock id=\"58321\" variant=\"document\"># Apple Notes\n\nApples are crisp, juicy fruits that come in many colors, including red, green, and yellow. They are rich in fiber and vitamin C, making them a nutritious and delicious snack.</WritingBlock>"
+     ]
+    },
+    "status": "finished_successfully",
+    "end_turn": true,
+    "weight": 1.0,
+    "metadata": {
+     "finish_details": {
+      "type": "stop",
+      "stop_tokens": [
+       200002
+      ]
+     },
+     "is_complete": true,
+     "citations": [],
+     "content_references": [
+      {
+       "type": "client_defined_widget",
+       "category": "writing_block",
+       "data": {
+        "content": "# Apple Notes\n\nApples are crisp, juicy fruits that come in many colors, including red, green, and yellow. They are rich in fiber and vitamin C, making them a nutritious and delicious snack.",
+        "id": "58321",
+        "variant": "document",
+        "widget_type": "writing_block"
+       },
+       "matched_text": ":::writing{variant=\"document\" id=\"58321\"}\n# Apple Notes\n\nApples are crisp, juicy fruits that come in many colors, including red, green, and yellow. They are rich in fiber and vitamin C, making them a nutritious and delicious snack.\n:::",
+       "start_idx": 0,
+       "end_idx": 235,
+       "safe_urls": [],
+       "refs": [],
+       "alt": null,
+       "prompt_text": null
+      }
+     ],
+     "model_dil_v2": {
+      "code": "DIL.render(__dil.jsx(()=>{const __dilConstants=DIL.useConstants();const __dilModelDataBindings=DIL.useAppData((appData)=>appData.opGenui?.modelDataBindings??{});return (__dilConstants[\"1\"]==null?__dil.jsx(\"__chatgptClientDefinedWidget\",{\"key\":\"cdw:0\",\"invocationId\":__dilConstants[\"0\"]}):__dilConstants[\"1\"].type===\"math\"?__dil.jsx(\"math\",{\"key\":\"cdw:0\",\"value\":__dilConstants[\"1\"].value}):__dilConstants[\"1\"].type===\"text\"?__dil.jsx(\"text\",{\"key\":\"cdw:0\"},__dilConstants[\"1\"].value):null);},{\"key\":\"body:0\"}));",
+      "constants": {
+       "0": "00000000-0000-4000-8000-000000000041",
+       "1": null
+      },
+      "fallbackMarkdown": ":::writing{variant=\"document\" id=\"58321\"}\n# Apple Notes\n\nApples are crisp, juicy fruits that come in many colors, including red, green, and yellow. They are rich in fiber and vitamin C, making them a nutritious and delicious snack.\n:::",
+      "fallbackMarkdownVersion": 1,
+      "clientDefinedWidgets": {
+       "00000000-0000-4000-8000-000000000041": {
+        "status": "resolved",
+        "refIndex": 0,
+        "isStreaming": false
+       }
+      },
+      "appData": {
+       "opGenui": {
+        "componentResults": {},
+        "interactionSurface": "mainline",
+        "modelDataBindings": {}
+       }
+      }
+     },
+     "view_state": {},
+     "resolved_model_slug": "gpt-6",
+     "search_result_groups": [],
+     "cot_version": "v5",
+     "conversation_followup_suggestions_eligible": false,
+     "request_id": "00000000-0000-4000-8000-00000000003c",
+     "message_type": "next",
+     "turn_exchange_id": "00000000-0000-4000-8000-00000000003d",
+     "working_turn_id": "00000000-0000-4000-8000-00000000003d",
+     "model_slug": "gpt-6",
+     "default_model_slug": "auto",
+     "can_save": true,
+     "parent_id": "00000000-0000-4000-8000-00000000003e",
+     "writing_blocks": {
+      "58321": {
+       "variant": "document",
+       "content": "# Now open a code canvas with a tiny Python function add(a, b) that returns a + b.Apple Notes\n\nApples are crisp, juicy fruits that come in many colors, including red, green, and yellow. They are rich in fiber and vitamin C, making them a nutritious and delicious snack.\n",
+       "index": "0",
+       "title": null,
+       "id": "58321",
+       "metadata": {
+        "suggested_followups": [
+         {
+          "title": "Make the apple facts more vivid",
+          "prompt": "Make the apple facts more vivid"
+         },
+         {
+          "title": "Use a more playful tone",
+          "prompt": "Use a more playful tone"
+         }
+        ]
+       },
+       "edited": true,
+       "edited_at": "2026-10-15T07:57:39.646000Z",
+       "updated_at": "2026-10-15T07:57:39.646000Z"
+      }
+     },
+     "model_switcher_deny": []
+    },
+    "recipient": "all",
+    "channel": "final"
+   },
+   "parent": "00000000-0000-4000-8000-00000000003e",
+   "children": []
+  }
+ },
+ "current_node": "00000000-0000-4000-8000-000000000040",
+ "context_truncation_continuation": null
+}

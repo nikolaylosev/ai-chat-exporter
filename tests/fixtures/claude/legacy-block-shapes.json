@@ -1,0 +1,83 @@
+{
+  "searchUse": {
+    "query": "<str 40>",
+    "mode": "standard"
+  },
+  "search": {
+    "content": [
+      {
+        "type": "knowledge",
+        "title": "Example page title",
+        "url": "https://example.com/page",
+        "metadata": {
+          "type": "webpage_metadata",
+          "site_domain": "example.com",
+          "favicon_url": "https://example.com/favicon.ico",
+          "site_name": "example"
+        },
+        "is_missing": false
+      },
+      {
+        "type": "knowledge",
+        "title": "Example page title",
+        "url": "https://example.com/page",
+        "metadata": {
+          "type": "webpage_metadata",
+          "site_domain": "example.com",
+          "favicon_url": "https://example.com/favicon.ico",
+          "site_name": "example"
+        },
+        "is_missing": false
+      }
+    ],
+    "is_error": false,
+    "name": "web_search",
+    "start_timestamp": "<str 27>",
+    "stop_timestamp": "<str 27>",
+    "tool_use_id": "<str 30>",
+    "type": "tool_result"
+  },
+  "attach": {
+    "id": "00000000-0000-4000-8000-000000000039",
+    "file_name": "",
+    "file_size": 28658,
+    "file_type": "txt",
+    "extracted_content": "<str 15568>",
+    "created_at": "<str 27>"
+  },
+  "presentUse": {
+    "filepaths": [
+      "<str 56>"
+    ]
+  },
+  "present": {
+    "start_timestamp": "<str 27>",
+    "stop_timestamp": "<str 27>",
+    "type": "tool_result",
+    "tool_use_id": "<str 30>",
+    "name": "present_files",
+    "content": [
+      {
+        "type": "local_resource",
+        "file_path": "<str 56>",
+        "name": "<str 30>",
+        "mime_type": "text/markdown",
+        "artifact_publishable": true
+      }
+    ],
+    "is_error": false,
+    "meta": {
+      "output_format_category": "md"
+    },
+    "message": "Presented file",
+    "integration_name": "File Creation",
+    "icon_name": "file",
+    "tool_origin": "first_party"
+  },
+  "createFile": {
+    "description": "<str 80>",
+    "path": "<str 51>",
+    "file_text": "<str 2722>"
+  },
+  "_note": "Redacted shapes from real legacy chats: long strings are replaced with \"<str N>\" (N = original length). Only keys and short service values are real."
+}

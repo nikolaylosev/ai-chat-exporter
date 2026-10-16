@@ -1,0 +1,287 @@
+{
+ "meta": {
+  "conversation": {
+   "conversationId": "00000000-0000-4000-8000-000000000001",
+   "title": "AI Chat Exporter test request with fruits list and Python code",
+   "starred": false,
+   "createTime": "2026-10-13T20:19:14.730Z",
+   "modifyTime": "2026-10-13T20:19:26.199Z",
+   "systemPromptName": "",
+   "temporary": false,
+   "mediaTypes": [],
+   "workspaces": [],
+   "taskResult": {},
+   "latestAssetMetadata": null,
+   "viewerIsOwner": true,
+   "kind": "CONVERSATION_KIND_UNSPECIFIED",
+   "hasUnreadCheckin": false
+  }
+ },
+ "nodes": {
+  "responseNodes": [
+   {
+    "responseId": "00000000-0000-4000-8000-000000000002",
+    "sender": "human",
+    "parentResponseId": "00000000-0000-4000-8000-000000000003"
+   },
+   {
+    "responseId": "00000000-0000-4000-8000-000000000004",
+    "sender": "assistant",
+    "parentResponseId": "00000000-0000-4000-8000-000000000002"
+   },
+   {
+    "responseId": "00000000-0000-4000-8000-000000000005",
+    "sender": "assistant",
+    "parentResponseId": "00000000-0000-4000-8000-000000000002"
+   }
+  ],
+  "inflightResponses": []
+ },
+ "responses": {
+  "responses": [
+   {
+    "responseId": "00000000-0000-4000-8000-000000000002",
+    "message": "AI Chat Exporter test 1. Name three fruits in a numbered list, then one sentence with **bold** text and a short Python code block.",
+    "sender": "human",
+    "createTime": "2026-10-13T20:19:19.215Z",
+    "parentResponseId": "00000000-0000-4000-8000-000000000003",
+    "manual": false,
+    "partial": false,
+    "shared": false,
+    "query": "",
+    "queryType": "",
+    "webSearchResults": [],
+    "xpostIds": [],
+    "xposts": [],
+    "generatedImageUrls": [],
+    "imageAttachments": [],
+    "fileAttachments": [],
+    "cardAttachmentsJson": [],
+    "fileUris": [],
+    "fileAttachmentsMetadata": [],
+    "isControl": false,
+    "steps": [],
+    "imageEditUris": [],
+    "mediaTypes": [],
+    "webpageUrls": [],
+    "metadata": {},
+    "citedWebSearchResults": [],
+    "toolResponses": [],
+    "model": "",
+    "ragResults": [],
+    "citedRagResults": [],
+    "searchProductResults": [],
+    "connectorSearchResults": [],
+    "collectionSearchResults": [],
+    "streamErrors": [],
+    "citedXposts": [],
+    "citedConnectorSearchResults": [],
+    "citedCollectionSearchResults": [],
+    "inputChunks": [],
+    "outputChunks": [],
+    "fileAttachmentAssetMetadata": [],
+    "fileIds": []
+   },
+   {
+    "responseId": "00000000-0000-4000-8000-000000000004",
+    "message": "1. Apple  \n2. Banana  \n3. Orange  \n\nThe **bold** text highlights the key point in this sentence.\n\n```python\nprint(\"Hello from the exporter test\")\n```",
+    "sender": "assistant",
+    "createTime": "2026-10-13T20:19:19.228Z",
+    "parentResponseId": "00000000-0000-4000-8000-000000000002",
+    "manual": false,
+    "partial": false,
+    "shared": false,
+    "query": "",
+    "queryType": "",
+    "webSearchResults": [],
+    "xpostIds": [],
+    "xposts": [],
+    "generatedImageUrls": [],
+    "imageAttachments": [],
+    "fileAttachments": [],
+    "cardAttachmentsJson": [],
+    "fileUris": [],
+    "fileAttachmentsMetadata": [],
+    "isControl": false,
+    "steps": [
+     {
+      "text": [
+       "Thinking about your request"
+      ],
+      "tags": [
+       "header"
+      ],
+      "webSearchResults": [],
+      "xpostIds": [],
+      "xposts": [],
+      "toolUsageResults": [],
+      "ragResults": [],
+      "connectorSearchResults": [],
+      "collectionSearchResults": [],
+      "toolUsageCards": []
+     },
+     {
+      "text": [
+       "Generating the requested response"
+      ],
+      "tags": [
+       "header"
+      ],
+      "webSearchResults": [],
+      "xpostIds": [],
+      "xposts": [],
+      "toolUsageResults": [],
+      "ragResults": [],
+      "connectorSearchResults": [],
+      "collectionSearchResults": [],
+      "toolUsageCards": []
+     }
+    ],
+    "imageEditUris": [],
+    "mediaTypes": [],
+    "webpageUrls": [],
+    "metadata": {
+     "request_metadata": {
+      "effort": "auto",
+      "model": "fast",
+      "source": "Web"
+     },
+     "ui_layout": {
+      "effort": null,
+      "reasoning_ui_layout": "UNIFIED",
+      "rollout_ids": [],
+      "steer_model_id": null,
+      "will_think_long": false
+     }
+    },
+    "uiLayout": {
+     "reasoningUiLayout": "UNIFIED",
+     "willThinkLong": false,
+     "rolloutIds": []
+    },
+    "thinkingStartTime": "2026-10-13T20:19:14.812Z",
+    "thinkingEndTime": "2026-10-13T20:19:19.215Z",
+    "citedWebSearchResults": [],
+    "toolResponses": [],
+    "model": "grok-3",
+    "requestMetadata": {
+     "model": "fast",
+     "effort": "AUTO"
+    },
+    "ragResults": [],
+    "citedRagResults": [],
+    "searchProductResults": [],
+    "connectorSearchResults": [],
+    "collectionSearchResults": [],
+    "streamErrors": [],
+    "citedXposts": [],
+    "citedConnectorSearchResults": [],
+    "citedCollectionSearchResults": [],
+    "inputChunks": [],
+    "outputChunks": [],
+    "fileAttachmentAssetMetadata": [],
+    "fileIds": []
+   },
+   {
+    "responseId": "00000000-0000-4000-8000-000000000005",
+    "message": "1. Apple  \n2. Banana  \n3. Cherry  \n\nThis is a sentence with **bold** text for testing.\n\n```python\nprint(\"Hello, AI Chat Exporter!\")\n```",
+    "sender": "assistant",
+    "createTime": "2026-10-13T20:19:26.199Z",
+    "parentResponseId": "00000000-0000-4000-8000-000000000002",
+    "manual": false,
+    "partial": false,
+    "shared": false,
+    "query": "",
+    "queryType": "",
+    "webSearchResults": [],
+    "xpostIds": [],
+    "xposts": [],
+    "generatedImageUrls": [],
+    "imageAttachments": [],
+    "fileAttachments": [],
+    "cardAttachmentsJson": [],
+    "fileUris": [],
+    "fileAttachmentsMetadata": [],
+    "isControl": false,
+    "steps": [
+     {
+      "text": [
+       "Thinking about your request"
+      ],
+      "tags": [
+       "header"
+      ],
+      "webSearchResults": [],
+      "xpostIds": [],
+      "xposts": [],
+      "toolUsageResults": [],
+      "ragResults": [],
+      "connectorSearchResults": [],
+      "collectionSearchResults": [],
+      "toolUsageCards": []
+     },
+     {
+      "text": [
+       "Generating the requested response with formatting"
+      ],
+      "tags": [
+       "header"
+      ],
+      "webSearchResults": [],
+      "xpostIds": [],
+      "xposts": [],
+      "toolUsageResults": [],
+      "ragResults": [],
+      "connectorSearchResults": [],
+      "collectionSearchResults": [],
+      "toolUsageCards": []
+     }
+    ],
+    "imageEditUris": [],
+    "mediaTypes": [],
+    "webpageUrls": [],
+    "metadata": {
+     "request_metadata": {
+      "effort": "auto",
+      "model": "fast",
+      "source": "Web"
+     },
+     "ui_layout": {
+      "effort": null,
+      "reasoning_ui_layout": "UNIFIED",
+      "rollout_ids": [],
+      "steer_model_id": null,
+      "will_think_long": false
+     }
+    },
+    "uiLayout": {
+     "reasoningUiLayout": "UNIFIED",
+     "willThinkLong": false,
+     "rolloutIds": []
+    },
+    "thinkingStartTime": "2026-10-13T20:19:23.588Z",
+    "thinkingEndTime": "2026-10-13T20:19:26.199Z",
+    "citedWebSearchResults": [],
+    "toolResponses": [],
+    "model": "grok-3",
+    "requestMetadata": {
+     "model": "fast",
+     "effort": "AUTO"
+    },
+    "ragResults": [],
+    "citedRagResults": [],
+    "searchProductResults": [],
+    "connectorSearchResults": [],
+    "collectionSearchResults": [],
+    "streamErrors": [],
+    "citedXposts": [],
+    "citedConnectorSearchResults": [],
+    "citedCollectionSearchResults": [],
+    "inputChunks": [],
+    "outputChunks": [],
+    "fileAttachmentAssetMetadata": [],
+    "fileIds": []
+   }
+  ]
+ }
+}

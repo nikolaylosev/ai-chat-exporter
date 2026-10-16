@@ -1,0 +1,12 @@
+[
+  {
+    "uuid": "00000000-0000-4000-8000-000000000036",
+    "file_name": "project-glossary.md",
+    "content": "# Glossary (test)\n\n- **Widget**: a small blue box.\n- **Gadget**: a large red box.\n",
+    "created_at": "2026-10-13T09:21:56.564586Z",
+    "project_uuid": "00000000-0000-4000-8000-000000000033",
+    "estimated_token_count": 30,
+    "content_length": 82,
+    "cleaned_content": null
+  }
+]

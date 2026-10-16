@@ -1,0 +1,51 @@
+{
+ "conversations": [
+  {
+   "conversationId": "00000000-0000-4000-8000-000000000014",
+   "title": "AI Chat Exporter Image Test",
+   "starred": false,
+   "createTime": "2026-10-13T20:20:02.262Z",
+   "modifyTime": "2026-10-13T20:20:13.618Z",
+   "systemPromptName": "",
+   "temporary": false,
+   "mediaTypes": [],
+   "workspaces": [],
+   "taskResult": {},
+   "latestAssetMetadata": null,
+   "kind": "CONVERSATION_KIND_UNSPECIFIED",
+   "hasUnreadCheckin": false
+  },
+  {
+   "conversationId": "00000000-0000-4000-8000-000000000006",
+   "title": "AI Chat Exporter Test File Summaries",
+   "starred": false,
+   "createTime": "2026-10-13T20:19:42.993Z",
+   "modifyTime": "2026-10-13T20:19:48.113Z",
+   "systemPromptName": "",
+   "temporary": false,
+   "mediaTypes": [],
+   "workspaces": [],
+   "taskResult": {},
+   "latestAssetMetadata": null,
+   "kind": "CONVERSATION_KIND_UNSPECIFIED",
+   "hasUnreadCheckin": false
+  },
+  {
+   "conversationId": "00000000-0000-4000-8000-000000000001",
+   "title": "AI Chat Exporter test request with fruits list and Python code",
+   "starred": false,
+   "createTime": "2026-10-13T20:19:14.730Z",
+   "modifyTime": "2026-10-13T20:19:26.199Z",
+   "systemPromptName": "",
+   "temporary": false,
+   "mediaTypes": [],
+   "workspaces": [],
+   "taskResult": {},
+   "latestAssetMetadata": null,
+   "kind": "CONVERSATION_KIND_UNSPECIFIED",
+   "hasUnreadCheckin": false
+  }
+ ],
+ "nextPageToken": "NEXT_PAGE_TOKEN",
+ "textSearchMatches": []
+}

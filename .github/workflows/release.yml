@@ -1,0 +1,48 @@
+name: Release
+
+# Push a tag such as v0.2.0 on main: the extension is checked, built and
+# attached to a GitHub release as a ZIP to load or upload to the Chrome Web Store.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Check the tag against package.json
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          # Chrome accepts only dot-separated numbers as an extension version.
+          if ! [[ "$version" =~ ^[0-9]+(\.[0-9]+){0,3}$ ]]; then
+            echo "::error::Tag $GITHUB_REF_NAME is not vX.Y.Z"; exit 1
+          fi
+          package=$(node -p "require('./package.json').version")
+          if [ "$version" != "$package" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match package.json version $package"; exit 1
+          fi
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm test
+      - run: npm run build
+      - name: Pack the extension
+        run: cd dist && zip -r -X "../ai-chat-exporter-$VERSION.zip" .
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >
+          gh release create "$GITHUB_REF_NAME" "ai-chat-exporter-$VERSION.zip"
+          --title "CodingCat AI Chat Exporter $VERSION"
+          --generate-notes
+          --verify-tag

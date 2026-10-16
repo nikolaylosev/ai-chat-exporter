@@ -1,0 +1,231 @@
+{
+ "meta": {
+  "conversation": {
+   "conversationId": "00000000-0000-4000-8000-000000000014",
+   "title": "AI Chat Exporter Image Test",
+   "starred": false,
+   "createTime": "2026-10-13T20:20:02.262Z",
+   "modifyTime": "2026-10-13T20:20:13.618Z",
+   "systemPromptName": "",
+   "temporary": false,
+   "mediaTypes": [],
+   "workspaces": [],
+   "taskResult": {},
+   "latestAssetMetadata": null,
+   "viewerIsOwner": true,
+   "kind": "CONVERSATION_KIND_UNSPECIFIED",
+   "hasUnreadCheckin": false
+  }
+ },
+ "nodes": {
+  "responseNodes": [
+   {
+    "responseId": "00000000-0000-4000-8000-000000000015",
+    "sender": "human",
+    "parentResponseId": "00000000-0000-4000-8000-000000000016"
+   },
+   {
+    "responseId": "00000000-0000-4000-8000-000000000017",
+    "sender": "assistant",
+    "parentResponseId": "00000000-0000-4000-8000-000000000015"
+   }
+  ],
+  "inflightResponses": []
+ },
+ "responses": {
+  "responses": [
+   {
+    "responseId": "00000000-0000-4000-8000-000000000015",
+    "message": "AI Chat Exporter image test. Generate an image: a simple red circle on a plain white background.",
+    "sender": "human",
+    "createTime": "2026-10-13T20:20:13.149Z",
+    "parentResponseId": "00000000-0000-4000-8000-000000000016",
+    "manual": false,
+    "partial": false,
+    "shared": false,
+    "query": "",
+    "queryType": "",
+    "webSearchResults": [],
+    "xpostIds": [],
+    "xposts": [],
+    "generatedImageUrls": [],
+    "imageAttachments": [],
+    "fileAttachments": [],
+    "cardAttachmentsJson": [],
+    "fileUris": [],
+    "fileAttachmentsMetadata": [],
+    "isControl": false,
+    "steps": [],
+    "imageEditUris": [],
+    "mediaTypes": [],
+    "webpageUrls": [],
+    "metadata": {},
+    "citedWebSearchResults": [],
+    "toolResponses": [],
+    "model": "",
+    "ragResults": [],
+    "citedRagResults": [],
+    "searchProductResults": [],
+    "connectorSearchResults": [],
+    "collectionSearchResults": [],
+    "streamErrors": [],
+    "citedXposts": [],
+    "citedConnectorSearchResults": [],
+    "citedCollectionSearchResults": [],
+    "inputChunks": [],
+    "outputChunks": [],
+    "fileAttachmentAssetMetadata": [],
+    "fileIds": []
+   },
+   {
+    "responseId": "00000000-0000-4000-8000-000000000017",
+    "message": "<grok:render card_id=\"LN5lK\" card_type=\"generated_image_card\" type=\"render_generated_image\"></grok:render>",
+    "sender": "assistant",
+    "createTime": "2026-10-13T20:20:13.160Z",
+    "parentResponseId": "00000000-0000-4000-8000-000000000015",
+    "manual": false,
+    "partial": false,
+    "shared": false,
+    "query": "",
+    "queryType": "",
+    "webSearchResults": [],
+    "xpostIds": [],
+    "xposts": [],
+    "generatedImageUrls": [],
+    "imageAttachments": [],
+    "fileAttachments": [
+     "00000000-0000-4000-8000-000000000018"
+    ],
+    "cardAttachmentsJson": [
+     "{\"id\":\"LN5lK\",\"type\":\"render_generated_image\",\"cardType\":\"generated_image_card\",\"prompt\":\"A simple solid red circle perfectly centered on a plain pure white background, minimalist flat design, no shadows, no gradients, no other elements, clean high-resolution digital graphic\",\"image_chunk\":{\"imageUuid\":\"00000000-0000-4000-8000-000000000018\",\"imageUrl\":\"users/00000000-0000-4000-8000-000000000013/generated/00000000-0000-4000-8000-000000000018/image.jpg\",\"seq\":1,\"progress\":100,\"moderated\":false,\"mediaId\":\"00000000-0000-4000-8000-000000000018\",\"imageTitle\":\"Generated Image\",\"imageIndex\":0,\"imageModel\":\"imagine_x_1\",\"rRated\":false,\"resolution\":{\"height\":784,\"width\":1176},\"isRootUserUploaded\":false,\"isRootCelebrity\":false,\"imageReferences\":[],\"mimeType\":\"image/jpeg\"}}"
+    ],
+    "fileUris": [
+     "00000000-0000-4000-8000-000000000018"
+    ],
+    "fileAttachmentsMetadata": [
+     {
+      "fileMetadataId": "00000000-0000-4000-8000-000000000018",
+      "fileMimeType": "image/jpeg",
+      "fileName": "image.jpg",
+      "fileUri": "users/00000000-0000-4000-8000-000000000013/generated/00000000-0000-4000-8000-000000000018/image.jpg",
+      "parsedFileUri": "",
+      "createTime": "2026-10-13T20:20:12.858Z",
+      "fileSource": "SELF_UPLOAD_FILE_SOURCE"
+     }
+    ],
+    "isControl": false,
+    "steps": [
+     {
+      "text": [
+       "Thinking about your request"
+      ],
+      "tags": [
+       "header"
+      ],
+      "webSearchResults": [],
+      "xpostIds": [],
+      "xposts": [],
+      "toolUsageResults": [],
+      "ragResults": [],
+      "connectorSearchResults": [],
+      "collectionSearchResults": [],
+      "toolUsageCards": []
+     },
+     {
+      "text": [
+       "Generating a simple red circle image"
+      ],
+      "tags": [
+       "header"
+      ],
+      "webSearchResults": [],
+      "xpostIds": [],
+      "xposts": [],
+      "toolUsageResults": [],
+      "ragResults": [],
+      "connectorSearchResults": [],
+      "collectionSearchResults": [],
+      "toolUsageCards": []
+     }
+    ],
+    "imageEditUris": [],
+    "mediaTypes": [],
+    "webpageUrls": [],
+    "metadata": {
+     "request_metadata": {
+      "effort": "auto",
+      "model": "fast",
+      "source": "Web"
+     },
+     "ui_layout": {
+      "effort": null,
+      "reasoning_ui_layout": "UNIFIED",
+      "rollout_ids": [],
+      "steer_model_id": null,
+      "will_think_long": false
+     }
+    },
+    "uiLayout": {
+     "reasoningUiLayout": "UNIFIED",
+     "willThinkLong": false,
+     "rolloutIds": []
+    },
+    "thinkingStartTime": "2026-10-13T20:20:02.336Z",
+    "thinkingEndTime": "2026-10-13T20:20:13.149Z",
+    "citedWebSearchResults": [],
+    "toolResponses": [],
+    "model": "grok-3",
+    "requestMetadata": {
+     "model": "fast",
+     "effort": "AUTO"
+    },
+    "ragResults": [],
+    "citedRagResults": [],
+    "searchProductResults": [],
+    "connectorSearchResults": [],
+    "collectionSearchResults": [],
+    "streamErrors": [],
+    "citedXposts": [],
+    "citedConnectorSearchResults": [],
+    "citedCollectionSearchResults": [],
+    "inputChunks": [],
+    "outputChunks": [],
+    "fileAttachmentAssetMetadata": [
+     {
+      "assetId": "00000000-0000-4000-8000-000000000018",
+      "mimeType": "image/jpeg",
+      "name": "image.jpg",
+      "sizeBytes": 78058,
+      "createTime": "2026-10-13T20:20:12.858Z",
+      "lastUseTime": "2026-10-13T20:20:12.858Z",
+      "summary": "",
+      "previewImageKey": "",
+      "key": "users/00000000-0000-4000-8000-000000000013/generated/00000000-0000-4000-8000-000000000018/image.jpg",
+      "auxKeys": {
+       "original-image": "users/00000000-0000-4000-8000-000000000013/generated/00000000-0000-4000-8000-000000000018/original_image.jpg",
+       "thumbhash": "9WgSLZb3WHeHeIeNdIh3iAiIgoAo"
+      },
+      "isDeleted": false,
+      "fileSource": "IMAGINE_GENERATED_FILE_SOURCE",
+      "currentConversationId": "00000000-0000-4000-8000-000000000014",
+      "sourceConversationId": "00000000-0000-4000-8000-000000000014",
+      "isModelGenerated": true,
+      "updateTime": "2026-10-13T20:20:12.858Z",
+      "isLatest": true,
+      "inlineStatus": "DEFAULT_ARTIFACT_INLINE_STATUS",
+      "isRootAssetCreatedByModel": true,
+      "rootAssetSourceConversationId": "00000000-0000-4000-8000-000000000014",
+      "sharedWithTeam": false,
+      "sharedWithUserIds": [],
+      "width": 1176,
+      "height": 784,
+      "rRated": false,
+      "thumbhash": "9WgSLZb3WHeHeIeNdIh3iAiIgoAo",
+      "ownerUserId": "00000000-0000-4000-8000-000000000013"
+     }
+    ],
+    "fileIds": []
+   }
+  ]
+ }
+}

@@ -1,0 +1,291 @@
+{
+  "uuid": "00000000-0000-4000-8000-000000000020",
+  "name": "Exporter test artifact",
+  "summary": "",
+  "model": "claude-opus-5-5",
+  "created_at": "2026-10-13T09:14:18.819233Z",
+  "updated_at": "2026-10-13T09:15:18.086732Z",
+  "settings": {
+    "enabled_web_search": true,
+    "paprika_mode": "auto",
+    "enabled_monkeys_in_a_barrel": false,
+    "enabled_saffron": true,
+    "chat_memory_mode": "enabled",
+    "tool_search_mode": "auto",
+    "preview_feature_uses_artifacts": true,
+    "enabled_turmeric": true,
+    "thinking_mode": "auto",
+    "effort_level": "medium"
+  },
+  "is_starred": false,
+  "is_archived": false,
+  "is_wiggle_enabled": false,
+  "has_assistant_outputs": true,
+  "workspace_upgraded": true,
+  "is_multiplayer": false,
+  "effective_thinking_mode": "auto",
+  "is_temporary": false,
+  "platform": "CLAUDE_AI",
+  "current_leaf_message_uuid": "00000000-0000-4000-8000-000000000021",
+  "chat_messages": [
+    {
+      "uuid": "00000000-0000-4000-8000-000000000022",
+      "text": "",
+      "content": [
+        {
+          "citations": [],
+          "start_timestamp": "2026-10-13T09:14:18.952380Z",
+          "stop_timestamp": "2026-10-13T09:14:18.952380Z",
+          "text": "Exporter test chat (artifact). Create a tiny HTML page as an artifact: a heading 'Exporter test' and one paragraph. Keep it under 20 lines.",
+          "type": "text"
+        }
+      ],
+      "sender": "human",
+      "index": 0,
+      "created_at": "2026-10-13T09:14:18.952380Z",
+      "updated_at": "2026-10-13T09:14:19.130585Z",
+      "truncated": false,
+      "attachments": [],
+      "files": [],
+      "sync_sources": [],
+      "parent_message_uuid": "00000000-0000-4000-8000-000000000000"
+    },
+    {
+      "uuid": "00000000-0000-4000-8000-000000000023",
+      "text": "",
+      "content": [
+        {
+          "citations": [],
+          "start_timestamp": "2026-10-13T09:14:21.639078Z",
+          "stop_timestamp": "2026-10-13T09:14:21.639078Z",
+          "text": "I'll make that tiny test page and publish it.",
+          "type": "text"
+        },
+        {
+          "id": "toolu_01Q3aeAq5Gui7MNj1EgikmrM",
+          "input": {
+            "skill": "artifact-design"
+          },
+          "message": "Loaded a skill",
+          "name": "Skill",
+          "start_timestamp": "2026-10-13T09:14:21.639078Z",
+          "stop_timestamp": "2026-10-13T09:14:21.639078Z",
+          "type": "tool_use"
+        },
+        {
+          "content": [
+            {
+              "text": "Launching skill: artifact-design",
+              "type": "text"
+            }
+          ],
+          "integration_name": "Claude Code",
+          "is_error": false,
+          "name": "Skill",
+          "start_timestamp": "2026-10-13T09:14:21.639078Z",
+          "stop_timestamp": "2026-10-13T09:14:21.639078Z",
+          "tool_use_id": "toolu_01Q3aeAq5Gui7MNj1EgikmrM",
+          "type": "tool_result"
+        },
+        {
+          "cut_off": false,
+          "hidden": false,
+          "start_timestamp": "2026-10-13T09:14:29.285210Z",
+          "stop_timestamp": "2026-10-13T09:14:30.026389Z",
+          "summaries": [],
+          "thinking": "",
+          "thinking_hidden": false,
+          "truncated": false,
+          "type": "thinking"
+        },
+        {
+          "id": "toolu_01EW9vQ9mfKzeVedAQc1Ttf5",
+          "input": {
+            "content": "<title>Exporter Test</title>\n<style>\n:root { --bg: #f6f7f9; --fg: #1d232b; --muted: #55606e; --accent: #2f6fb3 }\n@media (prefers-color-scheme: dark) { :root:not([data-theme=\"light\"]) { --bg: #14181d; --fg: #e6eaef; --muted: #9aa5b2; --accent: #7fb0e6; color-scheme: dark } }\n:root[data-theme=\"dark\"] { --bg: #14181d; --fg: #e6eaef; --muted: #9aa5b2; --accent: #7fb0e6; color-scheme: dark }\nbody { background: var(--bg); color: var(--fg); font: 16px/1.6 system-ui, sans-serif; padding: 32px 16px }\nmain { max-width: 60ch; margin: 0 auto }\nh1 { margin: 0 0 12px; font-size: 1.75rem; color: var(--accent); text-wrap: balance }\np { margin: 0; color: var(--muted) }\n</style>\n<main>\n  <h1>Exporter test</h1>\n  <p>This is a small test page for checking how AI Chat Exporter captures an artifact from a Claude chat.</p>\n</main>\n",
+            "file_path": "/tmp/claude-0/-home-claude/00000000-0000-4000-8000-000000000024/scratchpad/exporter-test.html"
+          },
+          "integration_name": "Claude Code",
+          "message": "Created a file",
+          "name": "Write",
+          "start_timestamp": "2026-10-13T09:14:21.639078Z",
+          "stop_timestamp": "2026-10-13T09:14:21.639078Z",
+          "type": "tool_use"
+        },
+        {
+          "content": [
+            {
+              "text": "File created successfully at: /tmp/claude-0/-home-claude/00000000-0000-4000-8000-000000000024/scratchpad/exporter-test.html (file state is current in your context — no need to Read it back)",
+              "type": "text"
+            }
+          ],
+          "integration_name": "Claude Code",
+          "is_error": false,
+          "name": "Write",
+          "start_timestamp": "2026-10-13T09:14:21.639078Z",
+          "stop_timestamp": "2026-10-13T09:14:21.639078Z",
+          "tool_use_id": "toolu_01EW9vQ9mfKzeVedAQc1Ttf5",
+          "type": "tool_result"
+        },
+        {
+          "id": "toolu_0188S4QNGE5C4pZFfvnwzuTq",
+          "input": {
+            "icon": "test",
+            "file_path": "/tmp/claude-0/-home-claude/00000000-0000-4000-8000-000000000024/scratchpad/exporter-test.html",
+            "description": "A minimal test page with a heading and one paragraph for checking chat export."
+          },
+          "integration_name": "Claude Code",
+          "message": "Used artifacts",
+          "name": "Artifact",
+          "start_timestamp": "2026-10-13T09:14:21.639078Z",
+          "stop_timestamp": "2026-10-13T09:14:21.639078Z",
+          "type": "tool_use"
+        },
+        {
+          "content": [
+            {
+              "text": "Published /tmp/claude-0/-home-claude/00000000-0000-4000-8000-000000000024/scratchpad/exporter-test.html at https://claude.ai/artifact/AAAAAAAAAAAAAAAAAAAAA1 (Version 1, version id 1791882876-61ba) Icon: \"test\".\n\nLive subscription: not supported yet from remote sessions — nothing notifies this session of new versions or of comments sent to Claude; re-read the artifact (and its comments) when the user asks.\n\nTo update: publish the same file path here (keeps this URL); from another conversation pass the URL as `url`, or that publish creates a separate artifact. This artifact is private: only its owner and the people the owner has given access can open the link. You cannot change sharing; that is done from the page's Share menu. If the page is meant for someone else, tell the user when you present the page that those people cannot open it until it is shared with them. The user's app shows this publish as a card with the page's title and link: say in a sentence what the page is, and do not paste the URL into your reply unless the user asks for it.\n\nThe files you sent are still on disk. For a small, specific change to a file whose text is in this conversation, send the Edit call(s) and an Artifact publish of the same file_path together in one response, with no Read and no shell command that edits the file: these calls run one after another in the order given, so the publish sends the edited file. If an Edit reports that it did not apply, correct it and publish again. If the file's text is no longer in this conversation, or you cannot place the change exactly from the text you have, Read it first.",
+              "type": "text"
+            }
+          ],
+          "integration_name": "Claude Code",
+          "is_error": false,
+          "name": "Artifact",
+          "start_timestamp": "2026-10-13T09:14:21.639078Z",
+          "stop_timestamp": "2026-10-13T09:14:21.639078Z",
+          "tool_use_id": "toolu_0188S4QNGE5C4pZFfvnwzuTq",
+          "type": "tool_result"
+        },
+        {
+          "citations": [],
+          "start_timestamp": "2026-10-13T09:14:21.639078Z",
+          "stop_timestamp": "2026-10-13T09:14:21.639078Z",
+          "text": "The \"Exporter Test\" page is published. It's 16 lines, with the heading and one short paragraph, and it works in both light and dark themes. You can use it to check how your exporter handles an artifact.",
+          "type": "text"
+        }
+      ],
+      "sender": "assistant",
+      "index": 1,
+      "created_at": "2026-10-13T09:14:21.639078Z",
+      "updated_at": "2026-10-13T09:14:39.199427Z",
+      "truncated": false,
+      "stop_reason": "end_turn",
+      "attachments": [],
+      "files": [],
+      "sync_sources": [],
+      "parent_message_uuid": "00000000-0000-4000-8000-000000000022"
+    },
+    {
+      "uuid": "00000000-0000-4000-8000-000000000025",
+      "text": "",
+      "content": [
+        {
+          "citations": [],
+          "start_timestamp": "2026-10-13T09:15:11.685620Z",
+          "stop_timestamp": "2026-10-13T09:15:11.685620Z",
+          "text": "Change the heading text to 'Exporter test v2' in the same artifact.",
+          "type": "text"
+        }
+      ],
+      "sender": "human",
+      "index": 2,
+      "created_at": "2026-10-13T09:15:11.685620Z",
+      "updated_at": "2026-10-13T09:15:11.685620Z",
+      "truncated": false,
+      "attachments": [],
+      "files": [],
+      "sync_sources": [],
+      "parent_message_uuid": "00000000-0000-4000-8000-000000000023"
+    },
+    {
+      "uuid": "00000000-0000-4000-8000-000000000021",
+      "text": "",
+      "content": [
+        {
+          "id": "toolu_01Md9vRaqiQaWQx3Qp6G4aCS",
+          "input": {
+            "file_path": "/tmp/claude-0/-home-claude/00000000-0000-4000-8000-000000000024/scratchpad/exporter-test.html",
+            "new_string": "<h1>Exporter test v2</h1>",
+            "old_string": "<h1>Exporter test</h1>",
+            "replace_all": false
+          },
+          "integration_name": "Claude Code",
+          "message": "Edited a file",
+          "name": "Edit",
+          "start_timestamp": "2026-10-13T09:15:17.455137Z",
+          "stop_timestamp": "2026-10-13T09:15:17.455137Z",
+          "type": "tool_use"
+        },
+        {
+          "content": [
+            {
+              "text": "The file /tmp/claude-0/-home-claude/00000000-0000-4000-8000-000000000024/scratchpad/exporter-test.html has been updated successfully. (file state is current in your context — no need to Read it back)",
+              "type": "text"
+            }
+          ],
+          "integration_name": "Claude Code",
+          "is_error": false,
+          "name": "Edit",
+          "start_timestamp": "2026-10-13T09:15:17.455137Z",
+          "stop_timestamp": "2026-10-13T09:15:17.455137Z",
+          "tool_use_id": "toolu_01Md9vRaqiQaWQx3Qp6G4aCS",
+          "type": "tool_result"
+        },
+        {
+          "id": "toolu_01CxHikkH9B57WwxEGJweZSG",
+          "input": {
+            "file_path": "/tmp/claude-0/-home-claude/00000000-0000-4000-8000-000000000024/scratchpad/exporter-test.html"
+          },
+          "integration_name": "Claude Code",
+          "message": "Used artifacts",
+          "name": "Artifact",
+          "start_timestamp": "2026-10-13T09:15:17.455137Z",
+          "stop_timestamp": "2026-10-13T09:15:17.455137Z",
+          "type": "tool_use"
+        },
+        {
+          "content": [
+            {
+              "text": "Published /tmp/claude-0/-home-claude/00000000-0000-4000-8000-000000000024/scratchpad/exporter-test.html at https://claude.ai/artifact/AAAAAAAAAAAAAAAAAAAAA1 (Version 2, version id 1791882915-2e7b)\n\nLive subscription: not supported yet from remote sessions — nothing notifies this session of new versions or of comments sent to Claude; re-read the artifact (and its comments) when the user asks.\n\nTo update: publish the same file path here (keeps this URL); from another conversation pass the URL as `url`, or that publish creates a separate artifact. This artifact is private: only its owner and the people the owner has given access can open the link. You cannot change sharing; that is done from the page's Share menu. If the page is meant for someone else, tell the user when you present the page that those people cannot open it until it is shared with them. The user's app shows this publish as a card with the page's title and link: say in a sentence what the page is, and do not paste the URL into your reply unless the user asks for it.\n\nThe files you sent are still on disk. For a small, specific change to a file whose text is in this conversation, send the Edit call(s) and an Artifact publish of the same file_path together in one response, with no Read and no shell command that edits the file: these calls run one after another in the order given, so the publish sends the edited file. If an Edit reports that it did not apply, correct it and publish again. If the file's text is no longer in this conversation, or you cannot place the change exactly from the text you have, Read it first.",
+              "type": "text"
+            }
+          ],
+          "integration_name": "Claude Code",
+          "is_error": false,
+          "name": "Artifact",
+          "start_timestamp": "2026-10-13T09:15:17.455137Z",
+          "stop_timestamp": "2026-10-13T09:15:17.455137Z",
+          "tool_use_id": "toolu_01CxHikkH9B57WwxEGJweZSG",
+          "type": "tool_result"
+        },
+        {
+          "cut_off": false,
+          "hidden": false,
+          "start_timestamp": "2026-10-13T09:15:16.822748Z",
+          "stop_timestamp": "2026-10-13T09:15:17.371260Z",
+          "summaries": [],
+          "thinking": "",
+          "thinking_hidden": false,
+          "truncated": false,
+          "type": "thinking"
+        },
+        {
+          "citations": [],
+          "start_timestamp": "2026-10-13T09:15:17.455137Z",
+          "stop_timestamp": "2026-10-13T09:15:17.455137Z",
+          "text": "The heading now reads \"Exporter test v2.\" The change is published as version 2 of the same artifact, so the link hasn't changed.",
+          "type": "text"
+        }
+      ],
+      "sender": "assistant",
+      "index": 3,
+      "created_at": "2026-10-13T09:15:17.455137Z",
+      "updated_at": "2026-10-13T09:15:17.455137Z",
+      "truncated": false,
+      "stop_reason": "end_turn",
+      "attachments": [],
+      "files": [],
+      "sync_sources": [],
+      "parent_message_uuid": "00000000-0000-4000-8000-000000000025"
+    }
+  ]
+}
