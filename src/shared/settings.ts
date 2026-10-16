@@ -3,8 +3,6 @@ export interface Settings {
   destination: 'downloads' | 'folder';
   /** One ZIP archive per export instead of separate files. */
   saveAsZip: boolean;
-  /** With files off, the popup copies the chat's Markdown instead of saving it. */
-  copyToClipboard: boolean;
   /** Subfolder inside Downloads. Empty string means the Downloads root. Not used for `folder`. */
   rootFolder: string;
   includePlatformInFolderName: boolean;
@@ -25,7 +23,6 @@ export interface Settings {
 export const DEFAULT_SETTINGS: Settings = {
   destination: 'downloads',
   saveAsZip: false,
-  copyToClipboard: false,
   rootFolder: 'AI Chats',
   includePlatformInFolderName: true,
   saveAttachments: true,

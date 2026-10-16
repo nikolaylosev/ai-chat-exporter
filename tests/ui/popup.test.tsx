@@ -78,25 +78,24 @@ describe('popup on a Grok project', () => {
 describe('popup: files and the clipboard', () => {
   const chat = 'https://claude.ai/chat/00000000-0000-4000-8000-000000000001';
 
-  it('offers the clipboard only with files off, and hides .zip there', async () => {
+  it('has "Save with files" and .zip, and a Copy button next to Save', async () => {
     stubChrome({ activeTab: { id: 3, url: chat } });
     render(<Popup />);
     const files = await screen.findByRole<HTMLInputElement>('checkbox', { name: 'saveWithFiles' });
     expect(files.checked).toBe(true);
-    expect(screen.queryByText('copyToClipboard')).toBeNull();
     fireEvent.click(files);
-    const clipboard = await screen.findByRole('checkbox', { name: 'copyToClipboard' });
+    // Both stay whatever the files setting: copying is a separate action.
     expect(screen.getByText('saveAsZip')).toBeTruthy();
-    fireEvent.click(clipboard);
-    await screen.findByRole('button', { name: 'popupCopyChat' });
-    expect(screen.queryByText('saveAsZip')).toBeNull();
+    const copy = screen.getByRole<HTMLButtonElement>('button', { name: 'popupCopyChat' });
+    expect(copy.title).toBe('popupCopyHint');
+    expect(screen.getByRole('button', { name: 'popupSaveChat' })).toBeTruthy();
   });
 
-  it('copies the chat as Markdown instead of saving it', async () => {
+  it('copies the chat as Markdown, saving nothing', async () => {
     const writeText = vi.fn(() => Promise.resolve());
     vi.stubGlobal('navigator', { ...navigator, clipboard: { writeText } });
     const asked: string[] = [];
-    const { local } = stubChrome({
+    stubChrome({
       activeTab: { id: 3, url: chat },
       background: (type) => {
         asked.push(type);
@@ -105,7 +104,6 @@ describe('popup: files and the clipboard', () => {
           : null;
       },
     });
-    local.settings = { saveAttachments: false, copyToClipboard: true };
     render(<Popup />);
     const copy = await screen.findByRole<HTMLButtonElement>('button', { name: 'popupCopyChat' });
     await vi.waitFor(() => expect(copy.disabled).toBe(false));

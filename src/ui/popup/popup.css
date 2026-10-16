@@ -25,6 +25,24 @@ footer {
   margin-bottom: 10px;
 }
 
+.chat-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.chat-actions .primary {
+  flex: 1;
+  width: auto;
+}
+
+/* Smaller than Save: a quick copy of the note, without its files. */
+.chat-actions .copy {
+  flex: none;
+  align-self: center;
+  padding: 5px 9px;
+  font-size: 0.9em;
+}
+
 .bulk {
   display: flex;
   flex-wrap: wrap;

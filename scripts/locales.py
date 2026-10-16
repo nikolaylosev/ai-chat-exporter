@@ -43,11 +43,11 @@ STRINGS = {
     "savedToArchive": ("In the archive “$1”:", "В архиве «$1»:"),
     "saveAsZip": ("Save as .zip", "Сохранить в .zip"),
     "saveWithFiles": ("Save with files", "Сохранять с файлами"),
-    "copyToClipboard": (
-        "Copy to the clipboard instead of saving",
-        "Копировать в буфер обмена вместо сохранения",
+    "popupCopyChat": ("Copy", "Копировать"),
+    "popupCopyHint": (
+        "Copy the chat to the clipboard as Markdown, without its files",
+        "Скопировать чат в буфер обмена как Markdown, без файлов",
     ),
-    "popupCopyChat": ("Copy this chat", "Скопировать этот чат"),
     "popupCopying": ("Copying…", "Копирую…"),
     "popupCopied": ("Copied to the clipboard: $1 messages.", "Скопировано в буфер обмена: сообщений $1."),
     "panelClose": ("Close", "Закрыть"),

@@ -90,11 +90,11 @@
   "saveWithFiles": {
     "message": "Сохранять с файлами"
   },
-  "copyToClipboard": {
-    "message": "Копировать в буфер обмена вместо сохранения"
-  },
   "popupCopyChat": {
-    "message": "Скопировать этот чат"
+    "message": "Копировать"
+  },
+  "popupCopyHint": {
+    "message": "Скопировать чат в буфер обмена как Markdown, без файлов"
   },
   "popupCopying": {
     "message": "Копирую…"

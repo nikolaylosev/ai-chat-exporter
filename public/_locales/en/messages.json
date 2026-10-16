@@ -90,11 +90,11 @@
   "saveWithFiles": {
     "message": "Save with files"
   },
-  "copyToClipboard": {
-    "message": "Copy to the clipboard instead of saving"
-  },
   "popupCopyChat": {
-    "message": "Copy this chat"
+    "message": "Copy"
+  },
+  "popupCopyHint": {
+    "message": "Copy the chat to the clipboard as Markdown, without its files"
   },
   "popupCopying": {
     "message": "Copying…"
