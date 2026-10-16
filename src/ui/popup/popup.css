@@ -35,12 +35,20 @@ footer {
   width: auto;
 }
 
-/* Smaller than Save: a quick copy of the note, without its files. */
+/* As tall as Save, narrower: a quick copy of the note, without its files. */
 .chat-actions .copy {
   flex: none;
-  align-self: center;
-  padding: 5px 9px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 10px;
   font-size: 0.9em;
+}
+
+.chat-actions .copy svg {
+  width: 1.3em;
+  height: 1.3em;
+  flex: none;
 }
 
 .bulk {

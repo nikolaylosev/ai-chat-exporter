@@ -107,6 +107,23 @@ function ProjectJob({ job }: { job: JobState }) {
   );
 }
 
+/** Two overlapping sheets: the usual mark for copying. */
+function CopyIcon() {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="5.5" y="5.5" width="8" height="8" rx="1.5" />
+      <path d="M10.5 3V2.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1H3" />
+    </svg>
+  );
+}
+
 function useSaveDialogSeen(): boolean {
   const [seen, setSeen] = useState(false);
   useEffect(() => {
@@ -256,6 +273,7 @@ export function Popup() {
           disabled={!tab?.isChat || !settings || state.status === 'running'}
           onClick={() => tab && void copyChat(tab.id)}
         >
+          <CopyIcon />
           {state.status === 'running' && state.copying ? t('popupCopying') : t('popupCopyChat')}
         </button>
       </div>
