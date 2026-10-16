@@ -1,0 +1,17 @@
+name: Idea or request
+description: A new service, format or option
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: Do not paste the content of your chats or account details here; this issue is public.
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like the extension to do?
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why, and how do you do it today?
