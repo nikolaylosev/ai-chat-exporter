@@ -58,8 +58,9 @@ footer {
   margin-top: 12px;
 }
 
+/* Equal widths, whatever the labels. */
 .bulk button {
-  flex: 1 1 auto;
+  flex: 1 1 0;
 }
 
 .bulk p {
