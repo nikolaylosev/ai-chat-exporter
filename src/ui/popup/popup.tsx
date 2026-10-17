@@ -155,7 +155,9 @@ function Result({ result }: { result: ExportResult }) {
           <span class="path">{result.location.path}</span>
         </p>
       ) : (
-        <p class="error result">{result.message}</p>
+        <p class={`${result.code === 'save-cancelled' ? 'muted' : 'error'} result`}>
+          {result.message}
+        </p>
       )}
       {result.ok && <FailedFiles failures={result.failures} total={result.failedAttachmentCount} />}
       {result.warning === 'save-dialog-suspected' && <SaveDialogWarning />}

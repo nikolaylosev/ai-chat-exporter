@@ -113,3 +113,22 @@ describe('popup: files and the clipboard', () => {
     expect(asked).not.toContain('export:current');
   });
 });
+
+describe('popup: a cancelled save', () => {
+  it('says so quietly, not as an error', async () => {
+    stubChrome({
+      activeTab: { id: 3, url: 'https://claude.ai/chat/00000000-0000-4000-8000-000000000001' },
+      background: (type) =>
+        type === 'export:current'
+          ? { ok: false, code: 'save-cancelled', message: 'error_save_cancelled' }
+          : null,
+    });
+    render(<Popup />);
+    const save = await screen.findByRole<HTMLButtonElement>('button', { name: 'popupSaveChat' });
+    await vi.waitFor(() => expect(save.disabled).toBe(false));
+    fireEvent.click(save);
+    const message = await screen.findByText('error_save_cancelled');
+    expect(message.className).toContain('muted');
+    expect(message.className).not.toContain('error');
+  });
+});
