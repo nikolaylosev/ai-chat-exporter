@@ -39,6 +39,7 @@ p { margin: 0 0 6px; }
 .ok { color: var(--ok); }
 .warn { color: var(--warn); }
 .error { color: var(--error); }
+.muted { color: var(--muted); }
 .failures { margin: 0 0 8px; padding-left: 18px; font-size: 12px; color: var(--warn); overflow-wrap: anywhere; }
 .failures code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; }
 .path { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; word-break: break-all; color: var(--muted); }
@@ -50,7 +51,8 @@ label { display: flex; gap: 6px; align-items: center; margin-top: 8px; padding-t
 `;
 
 function needsAttention(result: ExportResult): boolean {
-  return !result.ok || result.failedAttachmentCount > 0;
+  if (!result.ok) return result.code !== 'save-cancelled';
+  return result.failedAttachmentCount > 0;
 }
 
 function ResultView({ result }: { result: ExportResult }) {
@@ -58,7 +60,7 @@ function ResultView({ result }: { result: ExportResult }) {
     const folderProblem = result.code.startsWith('folder-');
     return (
       <>
-        <p class="error">{result.message}</p>
+        <p class={result.code === 'save-cancelled' ? 'muted' : 'error'}>{result.message}</p>
         {result.warning === 'save-dialog-suspected' && (
           <p>
             {t('saveDialogWarning')}{' '}

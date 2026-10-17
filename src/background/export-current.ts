@@ -1,5 +1,5 @@
 import { errorText } from '../shared/error-text';
-import { CodedError, errorCode } from '../shared/errors';
+import { CodedError, errorCode, isUserOutcome } from '../shared/errors';
 import { t } from '../shared/i18n';
 import { log } from '../shared/logger';
 import { sendToTab, type CopyResult, type ExportResult, type PanelView } from '../shared/messages';
@@ -149,14 +149,19 @@ export async function exportCurrent(tabId: number, trigger: Trigger): Promise<Ex
   try {
     result = await runExport(tabId, trigger);
   } catch (error) {
-    log.error('Export failed', error);
+    (isUserOutcome(errorCode(error)) ? log.info : log.error)('Export failed', error);
     result = failure(error);
   }
 
   // A repeated trigger is ignored silently: the first export is still running.
   if (!result.ok && result.code === 'busy') return result;
   await rememberSaveDialog(result);
-  await setBadge(tabId, !result.ok ? 'failed' : result.failedAttachmentCount ? 'partial' : 'done');
+  // Cancelling the Save As dialog is the user's choice: no mark on the icon.
+  const cancelled = !result.ok && result.code === 'save-cancelled';
+  await setBadge(
+    tabId,
+    cancelled ? null : !result.ok ? 'failed' : result.failedAttachmentCount ? 'partial' : 'done',
+  );
   if (trigger === 'command' && (await loadSettings()).showNotifications) {
     const shown = await showFeedback(tabId, { state: 'result', result });
     if (!shown) await notify(resultText(result));
@@ -186,7 +191,8 @@ export async function copyCurrent(tabId: number): Promise<CopyResult> {
       markdown: renderConversationExport(conversation, settings, ctx, plan),
     };
   } catch (error) {
-    log.error('Copy failed', error);
-    return { ok: false, code: errorCode(error), message: errorText(error) };
+    const code = errorCode(error);
+    (isUserOutcome(code) ? log.info : log.error)('Copy failed', error);
+    return { ok: false, code, message: errorText(error) };
   }
 }

@@ -42,3 +42,18 @@ export function userMessage(error: unknown): string {
   const message = error instanceof Error ? error.message : String(error);
   return message.replace(/ for https?:\/\/\S+/g, '');
 }
+
+/**
+ * Outcomes of what the user did, not failures: they are logged as information,
+ * so Chrome does not list them on the extension's Errors page.
+ */
+const USER_OUTCOMES: ReadonlySet<ErrorCode> = new Set([
+  'save-cancelled',
+  'not-a-chat',
+  'unsupported-page',
+  'busy',
+]);
+
+export function isUserOutcome(code: ErrorCode): boolean {
+  return USER_OUTCOMES.has(code);
+}
