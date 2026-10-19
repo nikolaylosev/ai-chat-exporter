@@ -135,7 +135,10 @@ STRINGS = {
     "exportNothingFound": ("No chats match the search.", "Нет чатов, подходящих под условия."),
     "exportSelected": ("Selected: $1 of $2", "Выбрано: $1 из $2"),
     "exportStart": ("Save selected ($1)", "Сохранить выбранные ($1)"),
-    "exportBusy": ("Another export is running.", "Идёт другой экспорт."),
+    "exportBusy": (
+        "An export is in progress; a new one can start when it ends.",
+        "Экспорт идёт, новый можно начать после его окончания.",
+    ),
     "jobRunning": ("Saving…", "Сохраняю…"),
     "jobCancelling": ("Stopping after the current chat…", "Останавливаю после текущего чата…"),
     "jobCancelled": ("Export cancelled", "Экспорт отменён"),
