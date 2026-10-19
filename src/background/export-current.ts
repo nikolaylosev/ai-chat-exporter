@@ -7,6 +7,7 @@ import { detectPlatform } from '../shared/platform';
 import { setSaveDialogSeen } from '../shared/save-dialog';
 import { loadSettings } from '../shared/settings';
 import { planConversationExport, renderConversationExport } from './conversation-export';
+import { setBadge as setTabBadge, type BadgeState } from './badge';
 import { asksPerFile, exportConversation } from './export-conversation';
 import { renderLabels } from './labels';
 import { registry } from './registry';
@@ -17,25 +18,9 @@ export type Trigger = 'popup' | 'command';
 /** Conversations being exported right now; a repeated trigger for the same one is ignored. */
 const running = new Set<string>();
 
-const BADGE = {
-  working: { text: '…', color: '#2563eb' },
-  done: { text: '✓', color: '#15803d' },
-  partial: { text: '!', color: '#b45309' },
-  failed: { text: '!', color: '#b91c1c' },
-} as const;
-
-async function setBadge(tabId: number, state: keyof typeof BADGE | null): Promise<void> {
-  try {
-    if (!state) {
-      await chrome.action.setBadgeText({ tabId, text: '' });
-      return;
-    }
-    await chrome.action.setBadgeBackgroundColor({ tabId, color: BADGE[state].color });
-    await chrome.action.setBadgeText({ tabId, text: BADGE[state].text });
-    if (state !== 'working') setTimeout(() => void setBadge(tabId, null), 5000);
-  } catch {
-    // The tab may have been closed.
-  }
+/** The mark on the chat tab's icon: one chat's result stays 5 s. */
+function setBadge(tabId: number, state: BadgeState | null): Promise<void> {
+  return setTabBadge(state, { tabId, clearAfterMs: 5000 });
 }
 
 async function notify(message: string): Promise<void> {
