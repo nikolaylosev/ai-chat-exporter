@@ -10,6 +10,7 @@ import {
   type JobState,
 } from '../shared/job';
 import { log } from '../shared/logger';
+import { setBadge as setIconBadge, type BadgeState } from './badge';
 import { sendToTab, type JobStartItem, type SavedLocation } from '../shared/messages';
 import { PLATFORM_LABEL, type Platform } from '../shared/platform';
 import { setSaveDialogSeen } from '../shared/save-dialog';
@@ -457,23 +458,9 @@ function reportSink(job: JobState, root: string[]) {
   );
 }
 
-const BADGE = {
-  working: { text: '…', color: '#2563eb' },
-  done: { text: '✓', color: '#15803d' },
-  partial: { text: '!', color: '#b45309' },
-  failed: { text: '!', color: '#b91c1c' },
-} as const;
-
-async function setBadge(state: keyof typeof BADGE): Promise<void> {
-  try {
-    await chrome.action.setBadgeBackgroundColor({ color: BADGE[state].color });
-    await chrome.action.setBadgeText({ text: BADGE[state].text });
-    if (state !== 'working') {
-      setTimeout(() => void chrome.action.setBadgeText({ text: '' }).catch(() => undefined), 8000);
-    }
-  } catch {
-    // The badge is a hint only.
-  }
+/** The mark on every tab's icon: a bulk export's result stays 8 s. */
+function setBadge(state: BadgeState): Promise<void> {
+  return setIconBadge(state, { clearAfterMs: 8000 });
 }
 
 async function notifyFinished(job: JobState): Promise<void> {
