@@ -199,6 +199,24 @@ function promoTile(icon) {
   <p>Claude, Gemini, Grok and ChatGPT chats to Markdown, with every file</p></div>`;
 }
 
+/** The marquee promo tile, for the store's carousel: the preview card, wider. */
+function marqueeTile(icon) {
+  return `<!doctype html><meta charset="utf-8"><style>
+    html, body { margin: 0; width: 1400px; height: 560px; overflow: hidden; }
+    body { background: radial-gradient(circle at 18% 50%, #262b3b, ${COLORS.panel} 45%, ${COLORS.bg});
+      font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; color: ${COLORS.text};
+      display: flex; align-items: center; gap: 56px; padding: 0 110px; box-sizing: border-box; }
+    img { width: 380px; height: 380px; flex: none; }
+    .brand { color: ${COLORS.yellow}; font-size: 30px; font-weight: 700; letter-spacing: .12em; }
+    h1 { margin: 10px 0 18px; font-size: 84px; line-height: 1; font-weight: 800; letter-spacing: -0.02em; }
+    p { margin: 0 0 24px; font-size: 32px; line-height: 1.3; color: rgba(242,242,238,.82); max-width: 760px; }
+    .chips { display: flex; gap: 14px; }
+    .chip { border: 2px solid rgba(255,176,0,.75); color: ${COLORS.yellow}; border-radius: 999px; padding: 8px 22px; font-size: 26px; font-weight: 600; }
+  </style><img src="${icon}"><div><div class="brand">CODINGCAT</div><h1>AI Chat Exporter</h1>
+  <p>Save your chats and projects as Markdown, with every file in its original format.</p>
+  <div class="chips"><span class="chip">Claude</span><span class="chip">Gemini</span><span class="chip">Grok</span><span class="chip">ChatGPT</span></div></div>`;
+}
+
 const build = mkdtempSync(join(tmpdir(), 'ai-chat-exporter-store-'));
 const work = mkdtempSync(join(tmpdir(), 'ai-chat-exporter-shots-'));
 mkdirSync(OUT, { recursive: true });
@@ -334,6 +352,15 @@ try {
       440,
       280,
       join(OUT, 'promo-small-440x280.png'),
+    );
+    await htmlShot(
+      stand,
+      work,
+      'marquee',
+      marqueeTile(icon),
+      1400,
+      560,
+      join(OUT, 'promo-marquee-1400x560.png'),
     );
   } finally {
     await stand.close();

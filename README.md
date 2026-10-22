@@ -28,6 +28,7 @@ Files are saved to `Downloads/AI Chats/<Title> - <YYYY-MM-DD> (<Platform>)/`.
 - Everything stays on your computer. The extension has no server, no analytics and no telemetry.
 - It talks only to claude.ai, gemini.google.com, grok.com, chatgpt.com and the file and script domains those sites use.
 - It uses your existing browser session. It never sees or stores your password. On ChatGPT it asks the open session for its access token, as the web app does, and keeps it only in memory while the tab is open.
+- The full [privacy policy](PRIVACY.md) says what is read, what is stored in Chrome and where it goes.
 
 ## Installation
 
