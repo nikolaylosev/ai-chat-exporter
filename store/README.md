@@ -15,7 +15,7 @@ Upload `ai-chat-exporter-<version>.zip` from the [release](https://github.com/ni
 | Description            | [description.en.txt](description.en.txt); for Russian, [description.ru.txt](description.ru.txt)                          |
 | Category               | Productivity › Tools (a category is chosen inside a group; Workflow & Planning would be the second choice)               |
 | Language               | English; add Russian as a second language with its description                                                           |
-| Store icon             | From the package (`icons/icon-128.png`)                                                                                  |
+| Store icon             | `store-icon-128.png`: the package's `icons/icon-128.png`, 96×96 artwork in 16 px of padding with a faint glow            |
 | Screenshots (1280×800) | `screenshot-1-popup.png`, `screenshot-2-choose.png`, `screenshot-3-progress.png`, `screenshot-4-note.png`, in this order |
 | Small promo tile       | `promo-small-440x280.png` (required)                                                                                     |
 | Marquee promo tile     | `promo-marquee-1400x560.png` (optional: shown only if the store features the extension)                                  |

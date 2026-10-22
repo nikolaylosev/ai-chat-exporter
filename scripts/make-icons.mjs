@@ -1,11 +1,19 @@
 // Makes the extension icons from the logo (assets/logo.png): the app icon on a
 // transparent background, cropped to what it draws and scaled down to each size.
-// No image library: PNG is decoded and encoded here. Run: npm run icons
+// The 128 one follows the Chrome Web Store's rules: 96×96 artwork in 16 px of
+// transparent padding, with a faint light glow so the dark square shows on dark
+// backgrounds. The toolbar sizes stay full-bleed. No image library: PNG is
+// decoded and encoded here. Run: npm run icons
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { deflateSync, inflateSync } from 'node:zlib';
 
 const SOURCE = 'assets/logo.png';
 const SIZES = [16, 32, 48, 128];
+/** Transparent padding on each side, by icon size. */
+const PADDING = { 128: 16 };
+/** The glow: how far it reaches (box blur radius, twice) and how light it is. */
+const GLOW_RADIUS = 3;
+const GLOW_STRENGTH = 0.45;
 
 function decode(buffer) {
   let width = 0;
@@ -150,9 +158,61 @@ function encode(size, rgba) {
   ]);
 }
 
+/** One pass of a box blur over a size×size map, along x then y. */
+function blur(map, size, r) {
+  const along = (src, horizontal) => {
+    const out = new Float64Array(size * size);
+    for (let a = 0; a < size; a++) {
+      for (let b = 0; b < size; b++) {
+        let sum = 0;
+        for (let d = -r; d <= r; d++) {
+          const c = b + d;
+          if (c < 0 || c >= size) continue;
+          sum += src[horizontal ? a * size + c : c * size + a];
+        }
+        out[horizontal ? a * size + b : b * size + a] = sum / (2 * r + 1);
+      }
+    }
+    return out;
+  };
+  return along(along(map, true), false);
+}
+
+/** The artwork centred on a larger transparent canvas, over a faint white glow. */
+function padded(art, inner, size) {
+  const pad = (size - inner) / 2;
+  const alpha = new Float64Array(size * size);
+  for (let y = 0; y < inner; y++) {
+    for (let x = 0; x < inner; x++)
+      alpha[(y + pad) * size + x + pad] = art[(y * inner + x) * 4 + 3] / 255;
+  }
+  const glow = blur(blur(alpha, size, GLOW_RADIUS), size, GLOW_RADIUS);
+  const out = Buffer.alloc(size * size * 4);
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const inside = x >= pad && y >= pad && x < pad + inner && y < pad + inner;
+      const i = inside ? ((y - pad) * inner + (x - pad)) * 4 : -1;
+      const a = alpha[y * size + x];
+      const g = Math.min(1, glow[y * size + x] * GLOW_STRENGTH) * (1 - a);
+      const total = a + g;
+      const o = (y * size + x) * 4;
+      if (total <= 0) continue;
+      for (let k = 0; k < 3; k++) {
+        const c = inside ? art[i + k] : 0;
+        out[o + k] = Math.round((c * a + 255 * g) / total);
+      }
+      out[o + 3] = Math.round(total * 255);
+    }
+  }
+  return out;
+}
+
 const cut = prepare(decode(readFileSync(SOURCE)));
 mkdirSync('public/icons', { recursive: true });
 for (const size of SIZES) {
-  writeFileSync(`public/icons/icon-${size}.png`, encode(size, icon(cut, size)));
+  const pad = PADDING[size] ?? 0;
+  const inner = size - 2 * pad;
+  const pixels = pad ? padded(icon(cut, inner), inner, size) : icon(cut, size);
+  writeFileSync(`public/icons/icon-${size}.png`, encode(size, pixels));
   console.log(`public/icons/icon-${size}.png`);
 }
