@@ -18,7 +18,7 @@ Upload `ai-chat-exporter-<version>.zip` from the [release](https://github.com/ni
 | Store icon             | From the package (`icons/icon-128.png`)                                                                                  |
 | Screenshots (1280×800) | `screenshot-1-popup.png`, `screenshot-2-choose.png`, `screenshot-3-progress.png`, `screenshot-4-note.png`, in this order |
 | Small promo tile       | `promo-small-440x280.png` (required)                                                                                     |
-| Marquee promo tile     | Not needed                                                                                                               |
+| Marquee promo tile     | `promo-marquee-1400x560.png` (optional: shown only if the store features the extension)                                  |
 | Homepage URL           | https://github.com/nikolaylosev/ai-chat-exporter                                                                         |
 | Support URL            | https://github.com/nikolaylosev/ai-chat-exporter/issues                                                                  |
 | Mature content         | No                                                                                                                       |
