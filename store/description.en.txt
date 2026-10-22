@@ -1,5 +1,10 @@
 Save your AI conversations to your own computer: Claude, Gemini, Grok and ChatGPT chats become Markdown notes, with every file from the chat in its original format.
 
+WHY
+• Keep your own copy: chats can be deleted, lost with an account, or hidden behind a plan change.
+• Search and reuse them where you keep notes, with the files next to them, instead of scrolling through each service.
+• Move your history between services, or back it up before you clean up old chats.
+
 WHAT IT SAVES
 • The whole conversation as a Markdown note with YAML properties (title, dates, model, project), ready to drop into an Obsidian vault or any notes app.
 • Every file: your uploads, files the model created (documents, spreadsheets, code), Claude artifacts, ChatGPT canvases, generated images at full size.
