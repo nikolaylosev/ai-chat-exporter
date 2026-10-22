@@ -13,7 +13,7 @@ Upload `ai-chat-exporter-<version>.zip` from the [release](https://github.com/ni
 | Name                   | From the package: "CodingCat AI Chat Exporter" (both languages)                                                          |
 | Summary                | From the package (`extDescription` in `scripts/locales.py`), English and Russian                                         |
 | Description            | [description.en.txt](description.en.txt); for Russian, [description.ru.txt](description.ru.txt)                          |
-| Category               | Productivity (Tools fits too)                                                                                            |
+| Category               | Productivity › Tools (a category is chosen inside a group; Workflow & Planning would be the second choice)               |
 | Language               | English; add Russian as a second language with its description                                                           |
 | Store icon             | From the package (`icons/icon-128.png`)                                                                                  |
 | Screenshots (1280×800) | `screenshot-1-popup.png`, `screenshot-2-choose.png`, `screenshot-3-progress.png`, `screenshot-4-note.png`, in this order |
