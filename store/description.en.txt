@@ -1,0 +1,26 @@
+Save your AI conversations to your own computer: Claude, Gemini, Grok and ChatGPT chats become Markdown notes, with every file from the chat in its original format.
+
+WHAT IT SAVES
+• The whole conversation as a Markdown note with YAML properties (title, dates, model, project), ready to drop into an Obsidian vault or any notes app.
+• Every file: your uploads, files the model created (documents, spreadsheets, code), Claude artifacts, ChatGPT canvases, generated images at full size.
+• Thinking, web searches and tool calls as collapsible blocks, and other branches of a chat if you want them.
+• Projects with their instructions, their files and all their chats (Claude, ChatGPT, Grok), and Gemini notebooks with their chats.
+
+HOW YOU USE IT
+• The chat you are reading: click the icon and "Save this chat", or press Alt+Shift+S (Option+Shift+S on a Mac). "Copy" puts the chat on the clipboard as Markdown instead.
+• Many chats: open the export page, filter by date, project or title, tick the ones you want or all of them, and save. It runs in the background, can be cancelled, and writes a report of anything that failed.
+• Save into Downloads, into a folder you choose, or as one .zip archive; with or without the files.
+• Saving again can skip chats that have not changed since the last time.
+
+PRIVACY
+• Everything stays on your computer. The extension has no server and sends your conversations nowhere.
+• It reads your chats through your existing session on each service, the same way the service's own web page does. It never stores your passwords or access tokens.
+• No analytics, no tracking, no ads.
+• Open source (MIT): https://github.com/nikolaylosev/ai-chat-exporter
+
+SUPPORTED SERVICES
+claude.ai, gemini.google.com, grok.com, chatgpt.com.
+
+Interface in English and Russian.
+
+This is an unofficial, independent project. It is not affiliated with, endorsed by, or sponsored by Anthropic, Google, xAI or OpenAI. Claude, Gemini, Grok and ChatGPT are trademarks of their owners. The extension uses the services' internal web interfaces, which can change at any time; you are responsible for using it in line with each service's terms.
