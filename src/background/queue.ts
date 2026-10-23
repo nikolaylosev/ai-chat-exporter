@@ -47,6 +47,7 @@ const STOP_CODES = new Set<ErrorCode>([
   // Asking again at once only prolongs the limit; a later run continues (skip unchanged).
   'rate-limited',
   'save-dialog',
+  'download-cancelled',
   'save-cancelled',
   'folder-not-chosen',
   'folder-permission',

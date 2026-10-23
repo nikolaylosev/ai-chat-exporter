@@ -11,6 +11,7 @@ export type ErrorCode =
   | 'tab-not-loaded'
   | 'busy'
   | 'save-dialog'
+  | 'download-cancelled'
   | 'save-cancelled'
   | 'archive-lost'
   | 'folder-not-chosen'
@@ -49,8 +50,9 @@ export function userMessage(error: unknown): string {
  */
 const USER_OUTCOMES: ReadonlySet<ErrorCode> = new Set([
   'save-cancelled',
-  // A cancelled file download: Chrome does not say whether a Save As dialog was shown.
+  // A file saved elsewhere after a Save As dialog, or a cancelled file download.
   'save-dialog',
+  'download-cancelled',
   'not-a-chat',
   'unsupported-page',
   'busy',

@@ -58,7 +58,7 @@ The extension is not in the Chrome Web Store. You load it as an unpacked extensi
 - in the extension settings, save to **a folder you choose**: the extension writes straight into it, with no dialogs;
 - tick **Save as .zip** when saving: one download, so at most one dialog.
 
-The extension cannot read Chrome's setting. In the default mode it stops the export at the first dialog, then warns you in the popup until an export succeeds.
+The extension cannot read Chrome's setting. In the default mode it stops the export when the first file goes to another folder than it asked for (you picked one in the dialog) or when you cancel a download, and offers **Save as one .zip**: the same chat again as one archive, so Chrome asks only once.
 
 To update, replace the folder with a newer build (or pull and run `npm run build` again) and click the reload button on the extension card.
 

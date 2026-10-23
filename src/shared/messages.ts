@@ -85,10 +85,14 @@ type Empty = Record<string, never>;
 
 interface Contract {
   background: {
-    'export:current': { request: { tabId: number }; response: ExportResult };
+    /** `zip`: this export as one archive, whatever the setting (after a Save As dialog). */
+    'export:current': { request: { tabId: number; zip?: boolean }; response: ExportResult };
     'export:copy': { request: { tabId: number }; response: CopyResult };
     /** The page button: the chat of the tab that asks, as the shortcut saves it. */
-    'export:this-tab': { request: { withFiles: boolean }; response: ExportResult };
+    'export:this-tab': {
+      request: { withFiles?: boolean; zip?: boolean };
+      response: ExportResult;
+    };
     /** The page button's Copy: the asking tab's chat onto the clipboard. */
     'copy:this-tab': { request: Record<string, never>; response: CopyResult };
     /**

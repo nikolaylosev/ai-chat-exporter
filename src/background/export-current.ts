@@ -58,7 +58,9 @@ async function showFeedback(tabId: number, view: PanelView): Promise<boolean> {
 function failure(error: unknown): ExportResult {
   const code = errorCode(error);
   const result: ExportResult = { ok: false, code, message: errorText(error) };
-  if (code === 'save-dialog') result.warning = 'save-dialog-suspected';
+  if (code === 'save-dialog' || code === 'download-cancelled') {
+    result.warning = 'save-dialog-suspected';
+  }
   return result;
 }
 
@@ -134,7 +136,10 @@ export async function exportCurrent(
   if (!result.ok && result.code === 'busy') return result;
   // Cancelling the Save As dialog is the user's choice: no mark on the icon.
   const cancelled =
-    !result.ok && (result.code === 'save-cancelled' || result.code === 'save-dialog');
+    !result.ok &&
+    (result.code === 'save-cancelled' ||
+      result.code === 'save-dialog' ||
+      result.code === 'download-cancelled');
   await setBadge(
     tabId,
     cancelled ? null : !result.ok ? 'failed' : result.failedAttachmentCount ? 'partial' : 'done',

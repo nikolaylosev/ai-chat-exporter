@@ -63,7 +63,9 @@ function ResultView({ result }: { result: ExportResult }) {
       <>
         <p
           class={
-            result.code === 'save-cancelled' || result.code === 'save-dialog' ? 'muted' : 'error'
+            ['save-cancelled', 'save-dialog', 'download-cancelled'].includes(result.code)
+              ? 'muted'
+              : 'error'
           }
         >
           {result.message}
@@ -71,6 +73,14 @@ function ResultView({ result }: { result: ExportResult }) {
         {result.warning === 'save-dialog-suspected' && (
           <p>
             {t('saveDialogWarning')}{' '}
+            <button
+              type="button"
+              class="link"
+              onClick={() => void send('background', 'export:this-tab', { zip: true })}
+            >
+              {t('saveAsZipInstead')}
+            </button>
+            {' · '}
             <button
               type="button"
               class="link"

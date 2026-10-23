@@ -18,10 +18,14 @@ function senderTab(sender: chrome.runtime.MessageSender): number {
 }
 
 handle('background', {
-  'export:current': ({ tabId }) => exportCurrent(tabId, 'popup'),
+  'export:current': ({ tabId, zip }) =>
+    exportCurrent(tabId, 'popup', zip ? { saveAsZip: true } : {}),
   'export:copy': ({ tabId }) => copyCurrent(tabId),
-  'export:this-tab': ({ withFiles }, sender) =>
-    exportCurrent(senderTab(sender), 'command', { saveAttachments: withFiles }),
+  'export:this-tab': ({ withFiles, zip }, sender) =>
+    exportCurrent(senderTab(sender), 'command', {
+      ...(withFiles === undefined ? {} : { saveAttachments: withFiles }),
+      ...(zip ? { saveAsZip: true } : {}),
+    }),
   'copy:this-tab': async (_payload, sender) => {
     const copied = await copyCurrent(senderTab(sender));
     if (copied.ok) await writeClipboard(copied.markdown);
@@ -44,11 +48,18 @@ handle('background', {
       await tab.release();
     }
   },
+  // An extra line in the popup: a tab that cannot answer (reloading, an old copy of
+  // the script) just has no project shown.
   'project:of-tab': async ({ tabId }) => {
-    const platform = detectPlatform((await chrome.tabs.get(tabId)).url);
-    if (!platform) return null;
-    await ensureContentScript(tabId, platform);
-    return sendToTab(tabId, 'project:current', {});
+    try {
+      const platform = detectPlatform((await chrome.tabs.get(tabId)).url);
+      if (!platform) return null;
+      await ensureContentScript(tabId, platform);
+      return await sendToTab(tabId, 'project:current', {});
+    } catch (error) {
+      log.info('No project for the tab', error);
+      return null;
+    }
   },
   'job:start': async ({ platform, items }) => {
     await startJob(platform, items);

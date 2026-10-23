@@ -218,7 +218,7 @@ describe('writeConversation', () => {
     expect(markdownOf(sink)).toContain('**Attachments:**\n- report.pdf\n');
   });
 
-  it('stops at the first sign of a Save As dialog', async () => {
+  it('stops when a file download is cancelled', async () => {
     const sink = new FakeSink({ 'a.pdf': new DownloadInterruptedError('USER_CANCELED') });
     await expect(
       writeConversation(
@@ -227,11 +227,11 @@ describe('writeConversation', () => {
         ctx,
         () => sink,
       ),
-    ).rejects.toMatchObject({ code: 'save-dialog' });
+    ).rejects.toMatchObject({ code: 'download-cancelled' });
     expect(sink.writes).toEqual([]);
   });
 
-  it('stops when a file landed somewhere else', async () => {
+  it('stops when a file landed in another folder: Chrome asks about each file', async () => {
     const sink = new FakeSink();
     const original = sink.writeFile.bind(sink);
     sink.writeFile = async (path, source) => {

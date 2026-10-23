@@ -575,7 +575,7 @@
     "message": "Keyboard shortcut is not set."
   },
   "saveDialogWarning": {
-    "message": "If Chrome asked where to save the file: turn off “Ask where to save each file before downloading” in Chrome settings, otherwise every exported file opens a dialog. Or save to a folder you choose (extension settings) or tick “Save as .zip” when saving."
+    "message": "To save without being asked about every file: turn off “Ask where to save each file before downloading” in Chrome settings, choose a folder in the extension settings, or save the chat as one .zip (one question for the whole chat)."
   },
   "openDownloadSettings": {
     "message": "Open download settings"
@@ -675,10 +675,16 @@
     "message": "This chat is already being saved."
   },
   "error_save_dialog": {
-    "message": "Saving was cancelled, so the export stopped."
+    "message": "Chrome asked where to save a file, so the export stopped: otherwise it would ask about every file."
   },
   "error_save_cancelled": {
     "message": "Saving was cancelled."
+  },
+  "error_download_cancelled": {
+    "message": "Saving was cancelled, so the export stopped."
+  },
+  "saveAsZipInstead": {
+    "message": "Save as one .zip"
   },
   "error_archive_lost": {
     "message": "The ZIP archive being built was lost (the extension was reloaded or ran out of memory)."

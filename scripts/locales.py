@@ -196,8 +196,8 @@ STRINGS = {
     "popupShortcut": ("Shortcut: $1", "Горячая клавиша: $1"),
     "popupShortcutNotSet": ("Keyboard shortcut is not set.", "Горячая клавиша не назначена."),
     "saveDialogWarning": (
-        "If Chrome asked where to save the file: turn off “Ask where to save each file before downloading” in Chrome settings, otherwise every exported file opens a dialog. Or save to a folder you choose (extension settings) or tick “Save as .zip” when saving.",
-        "Если Chrome спрашивал, куда сохранить файл: отключите «Всегда указывать место для скачивания» в настройках Chrome, иначе каждый файл экспорта откроет диалог. Или выберите сохранение в свою папку (настройки расширения) или отметьте «Сохранить в .zip» при сохранении.",
+        "To save without being asked about every file: turn off “Ask where to save each file before downloading” in Chrome settings, choose a folder in the extension settings, or save the chat as one .zip (one question for the whole chat).",
+        "Чтобы Chrome не спрашивал про каждый файл: отключите «Всегда указывать место для скачивания» в настройках Chrome, выберите папку в настройках расширения или сохраните чат одним .zip (один вопрос на весь чат).",
     ),
     "openDownloadSettings": ("Open download settings", "Открыть настройки скачивания"),
     "openSettings": ("Settings", "Настройки"),
@@ -261,10 +261,12 @@ STRINGS = {
     ),
     "error_busy": ("This chat is already being saved.", "Этот чат уже сохраняется."),
     "error_save_dialog": (
-        "Saving was cancelled, so the export stopped.",
-        "Сохранение отменено, экспорт остановлен.",
+        "Chrome asked where to save a file, so the export stopped: otherwise it would ask about every file.",
+        "Chrome спросил, куда сохранить файл, и экспорт остановлен, иначе он спрашивал бы про каждый файл.",
     ),
     "error_save_cancelled": ("Saving was cancelled.", "Сохранение отменено."),
+    "error_download_cancelled": ("Saving was cancelled, so the export stopped.", "Сохранение отменено, экспорт остановлен."),
+    "saveAsZipInstead": ("Save as one .zip", "Сохранить одним .zip"),
     "error_archive_lost": (
         "The ZIP archive being built was lost (the extension was reloaded or ran out of memory).",
         "Собираемый ZIP-архив потерян (расширение перезагрузилось или не хватило памяти).",

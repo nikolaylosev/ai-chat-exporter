@@ -93,15 +93,19 @@ function isSaveDialog(error: unknown): boolean {
   return error instanceof DownloadInterruptedError && error.saveDialogSuspected;
 }
 
+/** A file went to another folder: Chrome asks where to save each file. */
+const askedWhere = () => new CodedError('save-dialog', 'Chrome asks where to save each file');
+/** A file download was cancelled: in its Save As dialog or in the downloads list. */
+const cancelled = () => new CodedError('download-cancelled', 'A file download was cancelled');
+
 /**
  * Rethrows errors that should stop an export instead of marking one file: a
  * probable Save As dialog, and coded errors from the sink (no folder access, the
  * folder is gone).
  */
 export function rethrowIfFatal(error: unknown, sink: WritableSink): void {
-  if (isSaveDialog(error) || sink.saveDialogSuspected) {
-    throw new CodedError('save-dialog', 'Chrome asks where to save each file');
-  }
+  if (isSaveDialog(error)) throw cancelled();
+  if (sink.saveDialogSuspected) throw askedWhere();
   if (error instanceof CodedError) throw error;
 }
 
@@ -124,10 +128,10 @@ export async function writeConversation(
   const failed = new Map<string, string>();
   let missingFiles = 0;
   const stopForDialog = () => {
-    throw new CodedError('save-dialog', 'Chrome asks where to save each file');
+    throw askedWhere();
   };
   const stopIfFatal = (error: unknown) => {
-    if (isSaveDialog(error)) stopForDialog();
+    if (isSaveDialog(error)) throw cancelled();
     if (error instanceof CodedError) throw error;
   };
 
