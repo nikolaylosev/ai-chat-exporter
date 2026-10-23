@@ -1,3 +1,12 @@
+export type NoteFormat = 'markdown' | 'html' | 'json';
+
+/** The note's file extension for each format. */
+export const NOTE_EXTENSION: Record<NoteFormat, string> = {
+  markdown: 'md',
+  html: 'html',
+  json: 'json',
+};
+
 export interface Settings {
   /** downloads: through chrome.downloads; folder: into the folder the user picked (File System Access). */
   destination: 'downloads' | 'folder';
@@ -6,6 +15,8 @@ export interface Settings {
   /** Subfolder inside Downloads. Empty string means the Downloads root. Not used for `folder`. */
   rootFolder: string;
   includePlatformInFolderName: boolean;
+  /** The note: Markdown, an HTML page (opens anywhere, prints to PDF) or JSON. */
+  noteFormat: NoteFormat;
   saveAttachments: boolean;
   saveThinking: boolean;
   saveToolCalls: boolean;
@@ -25,6 +36,7 @@ export const DEFAULT_SETTINGS: Settings = {
   saveAsZip: false,
   rootFolder: 'AI Chats',
   includePlatformInFolderName: true,
+  noteFormat: 'markdown',
   saveAttachments: true,
   saveThinking: false,
   saveToolCalls: true,
@@ -42,6 +54,7 @@ const STORAGE_KEY = 'settings';
 
 const ALLOWED_VALUES: Partial<Record<keyof Settings, readonly unknown[]>> = {
   destination: ['downloads', 'folder'],
+  noteFormat: ['markdown', 'html', 'json'],
   toolCallDetail: ['compact', 'full'],
   claudeBranches: ['active', 'all'],
   artifactVersions: ['latest', 'all'],

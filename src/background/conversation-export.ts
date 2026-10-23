@@ -1,7 +1,9 @@
 import type { Attachment, Conversation, Message } from '../model/conversation';
+import { renderHtml } from '../render/html';
+import { renderJson } from '../render/json';
 import { renderMarkdown, type RenderLabels, type RenderOptions } from '../render/markdown';
 import { PLATFORM_LABEL } from '../shared/platform';
-import { exportRootFolder, type Settings } from '../shared/settings';
+import { exportRootFolder, NOTE_EXTENSION, type Settings } from '../shared/settings';
 import { localDate } from '../util/dates';
 import {
   MIN_TITLE_LENGTH,
@@ -97,6 +99,7 @@ export function planConversationExport(
       date: localDate(created.date, ctx.timeZone),
       platformLabel: settings.includePlatformInFolderName ? PLATFORM_LABEL[c.platform] : null,
       fallbackTitle: ctx.labels.untitled,
+      noteExtension: NOTE_EXTENSION[settings.noteFormat],
       longestInnerPath: innerLength,
     });
 
@@ -132,9 +135,10 @@ export function moveToFolder(plan: ExportPlan, folderPath: string): ExportPlan {
   const move = (path: string) => folderPath + path.slice(plan.folderPath.length);
   const base = (path: string) => path.slice(path.lastIndexOf('/') + 1);
   const markdownName = base(plan.markdownPath);
+  const extension = markdownName.slice(markdownName.lastIndexOf('.'));
   const markdownPath =
-    markdownName === `${base(plan.folderPath)}.md`
-      ? `${folderPath}/${base(folderPath)}.md`
+    markdownName === `${base(plan.folderPath)}${extension}`
+      ? `${folderPath}/${base(folderPath)}${extension}`
       : move(plan.markdownPath);
   return {
     ...plan,
@@ -163,4 +167,28 @@ export function renderConversationExport(
     attachmentErrors: results.failed,
     ...(ctx.timeZone ? { timeZone: ctx.timeZone } : {}),
   });
+}
+
+/** The note in the format the settings ask for: Markdown, its HTML page, or JSON. */
+export function renderNote(
+  c: Conversation,
+  settings: Settings,
+  ctx: BuildContext,
+  plan: ExportPlan,
+  results: DownloadResults = { saved: new Map(), failed: new Map() },
+): string {
+  if (settings.noteFormat === 'json') {
+    return renderJson(c, {
+      includeThinking: settings.saveThinking,
+      includeToolCalls: settings.saveToolCalls,
+      includeBranches: settings.claudeBranches === 'all',
+      exportedAt: ctx.now,
+      attachmentPaths: results.saved,
+      attachmentErrors: results.failed,
+    });
+  }
+  const markdown = renderConversationExport(c, settings, ctx, plan, results);
+  return settings.noteFormat === 'html'
+    ? renderHtml(markdown, c.title || ctx.labels.untitled)
+    : markdown;
 }

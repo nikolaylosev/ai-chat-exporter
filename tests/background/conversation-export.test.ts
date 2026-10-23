@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { normalizeConversation } from '../../src/adapters/claude/normalize';
 import {
   creationDate,
+  moveToFolder,
   planConversationExport,
   renderConversationExport,
 } from '../../src/background/conversation-export';
@@ -181,5 +182,28 @@ describe('renderConversationExport', () => {
       }
     }
     expect(((body ?? '').match(/^`{3,}/gm) ?? []).length % 2).toBe(0);
+  });
+});
+
+describe('the note format', () => {
+  const c = fixture('conversation-attachments.json');
+
+  it('names the note after its format', () => {
+    for (const [noteFormat, ext] of [
+      ['markdown', 'md'],
+      ['html', 'html'],
+      ['json', 'json'],
+    ] as const) {
+      const plan = planConversationExport(c, { ...DEFAULT_SETTINGS, noteFormat }, ctx);
+      expect(plan.markdownPath.endsWith(`(Claude).${ext}`)).toBe(true);
+    }
+  });
+
+  it('keeps the extension when the folder becomes a copy', () => {
+    const plan = planConversationExport(c, { ...DEFAULT_SETTINGS, noteFormat: 'html' }, ctx);
+    const moved = moveToFolder(plan, `${plan.folderPath} (2)`);
+    expect(moved.markdownPath).toBe(
+      `${plan.folderPath} (2)/${plan.folderPath.split('/').at(-1)} (2).html`,
+    );
   });
 });

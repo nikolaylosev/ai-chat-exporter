@@ -14,3 +14,10 @@ export interface ExportSink {
   writeText(path: string, content: string): Promise<void>;
   writeFile(path: string, source: FileSource): Promise<void>;
 }
+
+/** The type of a note or report the sinks write as text, by its extension. */
+export function textMime(path: string): string {
+  if (path.endsWith('.html')) return 'text/html';
+  if (path.endsWith('.json')) return 'application/json';
+  return 'text/markdown';
+}

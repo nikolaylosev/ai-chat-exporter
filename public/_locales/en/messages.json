@@ -989,6 +989,18 @@
   "optionsSectionContent": {
     "message": "Markdown content"
   },
+  "optionsNoteFormat": {
+    "message": "Note format"
+  },
+  "optionsNoteFormatMarkdown": {
+    "message": "Markdown (.md), for Obsidian and notes apps"
+  },
+  "optionsNoteFormatHtml": {
+    "message": "HTML page (.html): opens in any browser, prints to PDF"
+  },
+  "optionsNoteFormatJson": {
+    "message": "JSON (.json), for processing by programs"
+  },
   "optionsArtifactVersions": {
     "message": "Artifact versions"
   },

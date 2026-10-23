@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "fflate": "~0.8.3",
+    "marked": "18.1.0",
     "preact": "^10.29.8",
     "zod": "~4.6.5"
   },

@@ -146,6 +146,25 @@ export default {
       assert.match(markdown, /meeting-notes\.docx/);
       assert.doesNotMatch(markdown, /\]\(files\//, 'files listed by name, without links');
       assert.equal(stand.files().length, before, 'nothing saved');
+
+      // The note as an HTML page and as JSON, next to the same files.
+      await stand.settings({ saveAttachments: true, noteFormat: 'html' });
+      await stand.exportTab(`https://claude.ai/chat/${id(0x11)}`);
+      const htmlNote = stand.files().find((f) => /File content summary.*\.html$/.test(f));
+      assert.ok(htmlNote, 'an HTML note');
+      const pageText = stand.read(htmlNote).toString();
+      assert.match(pageText, /^<!doctype html>/);
+      assert.match(pageText, /<img src="files\/stripes\.png"/, 'the image shown');
+      assert.doesNotMatch(pageText, /<script/);
+      await stand.settings({ noteFormat: 'json' });
+      await stand.exportTab(`https://claude.ai/chat/${id(0x11)}`);
+      const data = stand.files().find((f) => /File content summary.*\.json$/.test(f));
+      assert.ok(data, 'a JSON note');
+      const doc = JSON.parse(stand.read(data).toString());
+      assert.equal(doc.format, 'ai-chat-exporter/conversation@1');
+      const savedPaths = doc.conversation.messages.flatMap((m) => m.attachments).map((a) => a.path);
+      assert.ok(savedPaths.includes('files/meeting-notes.docx'), JSON.stringify(savedPaths));
+      assert.doesNotMatch(stand.read(data).toString(), /\/contents"/, 'no download links');
     } finally {
       await stand.close();
     }
