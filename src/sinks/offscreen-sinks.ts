@@ -6,7 +6,7 @@ import {
 import { CodedError } from '../shared/errors';
 import type { SavedLocation, WriteReply } from '../shared/messages';
 import { FileWriteError, type TransferableSource } from './source';
-import type { FileSource } from './types';
+import { textMime, type FileSource } from './types';
 
 /** What the service worker asks of the offscreen document (see offscreen-client.ts). */
 export interface OffscreenFiles {
@@ -54,7 +54,7 @@ export class FolderSink {
   }
 
   writeText(path: string, content: string): Promise<void> {
-    return this.writeFile(path, { kind: 'text', text: content, mime: 'text/markdown' });
+    return this.writeFile(path, { kind: 'text', text: content, mime: textMime(path) });
   }
 
   async writeFile(path: string, source: FileSource): Promise<void> {
@@ -239,7 +239,7 @@ export class ZipSink {
   }
 
   writeText(path: string, content: string): Promise<void> {
-    return this.writeFile(path, { kind: 'text', text: content, mime: 'text/markdown' });
+    return this.writeFile(path, { kind: 'text', text: content, mime: textMime(path) });
   }
 
   writeFile(path: string, source: FileSource): Promise<void> {

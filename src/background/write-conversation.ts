@@ -7,7 +7,7 @@ import type { ExportSink } from '../sinks/types';
 import {
   moveToFolder,
   planConversationExport,
-  renderConversationExport,
+  renderNote,
   type BuildContext,
   type ExportPlan,
 } from './conversation-export';
@@ -166,12 +166,9 @@ export async function writeConversation(
       if (sink.saveDialogSuspected) stopForDialog();
     }
 
-    const markdown = renderConversationExport(conversation, settings, ctx, plan, {
-      saved,
-      failed,
-    });
+    const note = renderNote(conversation, settings, ctx, plan, { saved, failed });
     try {
-      await sink.writeText(plan.markdownPath, markdown);
+      await sink.writeText(plan.markdownPath, note);
     } catch (error) {
       stopIfFatal(error);
       throw error;

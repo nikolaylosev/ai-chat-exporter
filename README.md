@@ -14,7 +14,7 @@ A Chrome extension that saves your conversations from **claude.ai**, **gemini.go
 ## Features
 
 - Export the current chat, all chats, or a selected set (search, date filter, checkboxes).
-- Save the conversation as Markdown with YAML frontmatter and collapsible callouts for thinking, web search and tool calls.
+- Save the conversation as Markdown with YAML frontmatter and collapsible callouts for thinking, web search and tool calls; or as an HTML page (opens in any browser, prints to PDF) or JSON.
 - Save every file from the chat: your uploads, files the model generated, artifacts, canvases and images.
 - Export projects from Claude, ChatGPT and Grok: instructions, the project's own files and all its chats.
 - Export Gemini notebooks with all their chats. Their sources are listed by name: Gemini keeps them in NotebookLM and gives no download for them.
@@ -75,7 +75,7 @@ To update, replace the folder with a newer build (or pull and run `npm run build
 - **Files** from the chat go into `files/` next to the note: your uploads in their original format, files the model created, artifacts with their real extension (`artifact-<title>.html`, `.jsx`, `.svg`…) and ChatGPT canvases (`canvas-<title>.md`). When a service keeps only text extracted from a file (a long text pasted into ChatGPT, an old Claude upload), that text is saved as `<name>.extracted.txt` and marked in the note; Gemini's re-encoded images are marked too, and get the extension of their real format. A file that could not be saved is marked ⚠️ in the note with the reason, and the icon shows an orange !.
 - **Where to save:** Chrome's Downloads folder (default), or a folder you choose in the settings, for example `Documents/AI Chats` or a folder in your Obsidian vault. Chrome may not let you pick Documents, Downloads or Desktop themselves; create a folder inside them. Chrome may ask again for access to the folder after a restart: click **Save chat** in the popup and allow it.
 - **Saving a chat again** makes a new copy, `Chat (2)`, or overwrites the earlier one, as set in the settings. The extension remembers what it saved; the settings page can clear that memory. With **skip unchanged chats**, a bulk export skips chats that have not changed since they were saved, unless a file was missing last time: such a chat is saved again into its earlier folder, which gets the missing files.
-- **Settings** (right-click the icon → Options): where to save, folder inside Downloads, platform name in folder names, artifact versions (latest or all), thinking blocks, web searches and tool calls (one line per call or full input and output), branches in Claude, Grok and ChatGPT (only the one you see, or all), saving a chat again, skipping unchanged chats, pause between chats, the report, the shortcut panel.
+- **Settings** (right-click the icon → Options): where to save, folder inside Downloads, platform name in folder names, note format (Markdown, HTML or JSON), artifact versions (latest or all), thinking blocks, web searches and tool calls (one line per call or full input and output), branches in Claude, Grok and ChatGPT (only the one you see, or all), saving a chat again, skipping unchanged chats, pause between chats, the report, the shortcut panel.
 
 ## Permissions
 

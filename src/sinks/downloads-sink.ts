@@ -1,6 +1,6 @@
 import type { DownloadRequest, DownloadResult } from '../background/downloader';
 import type { SavedLocation } from '../shared/messages';
-import type { ExportSink, FileSource } from './types';
+import { textMime, type ExportSink, type FileSource } from './types';
 
 export interface DownloadsSinkDeps {
   download(request: DownloadRequest): Promise<DownloadResult>;
@@ -55,7 +55,7 @@ export class DownloadsSink implements ExportSink {
   }
 
   writeText(path: string, content: string): Promise<void> {
-    return this.writeFile(path, { kind: 'text', text: content, mime: 'text/markdown' });
+    return this.writeFile(path, { kind: 'text', text: content, mime: textMime(path) });
   }
 
   async writeFile(path: string, source: FileSource): Promise<void> {

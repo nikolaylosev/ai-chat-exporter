@@ -43,7 +43,12 @@ function Check(props: {
 
 function Select<
   K extends
-    'toolCallDetail' | 'claudeBranches' | 'artifactVersions' | 'onFolderExists' | 'writeReport',
+    | 'noteFormat'
+    | 'toolCallDetail'
+    | 'claudeBranches'
+    | 'artifactVersions'
+    | 'onFolderExists'
+    | 'writeReport',
 >(props: {
   settings: Settings;
   name: K;
@@ -250,6 +255,16 @@ function Options() {
       </Section>
 
       <Section title={t('optionsSectionContent')}>
+        <Select
+          {...common}
+          name="noteFormat"
+          label={t('optionsNoteFormat')}
+          options={[
+            ['markdown', t('optionsNoteFormatMarkdown')],
+            ['html', t('optionsNoteFormatHtml')],
+            ['json', t('optionsNoteFormatJson')],
+          ]}
+        />
         <Select
           {...common}
           name="artifactVersions"

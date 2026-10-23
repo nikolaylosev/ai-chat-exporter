@@ -158,6 +158,8 @@ export interface ConversationFolderInput {
   platformLabel: string | null;
   /** 1 for the first folder with this name, 2 for ` (2)`, and so on. */
   copyIndex?: number;
+  /** The note's extension: `md` (the default), `html` or `json`. */
+  noteExtension?: string;
   /** Length of the longest path inside the folder other than the Markdown file, e.g. `files/report.pdf`. */
   longestInnerPath?: number;
   fallbackTitle: string;
@@ -166,7 +168,7 @@ export interface ConversationFolderInput {
 
 export interface ConversationFolderPlan {
   folder: string;
-  /** Markdown file path relative to the export root. */
+  /** The note's path relative to the export root (named for Markdown, whatever its format). */
   markdownPath: string;
   /** Folder path relative to the export root. */
   folderPath: string;
@@ -194,9 +196,14 @@ export function planConversationFolder(input: ConversationFolderInput): Conversa
   const prefix = input.parents.length ? `${input.parents.join('/')}/` : '';
   const rootLength = input.rootPath ? input.rootPath.length + 1 : 0;
   const inner = input.longestInnerPath ?? 0;
+  const extension = `.${input.noteExtension ?? 'md'}`;
 
   const measure = (folder: string) =>
-    rootLength + prefix.length + folder.length + 1 + Math.max(folder.length + '.md'.length, inner);
+    rootLength +
+    prefix.length +
+    folder.length +
+    1 +
+    Math.max(folder.length + extension.length, inner);
   const build = (title: string) =>
     conversationFolderName(title, input.date, input.platformLabel, input.copyIndex);
 
@@ -225,7 +232,7 @@ export function planConversationFolder(input: ConversationFolderInput): Conversa
   return {
     folder,
     folderPath,
-    markdownPath: `${folderPath}/${folder}.md`,
+    markdownPath: `${folderPath}/${folder}${extension}`,
     overBudget,
   };
 }

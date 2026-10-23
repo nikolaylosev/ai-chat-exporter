@@ -989,6 +989,18 @@
   "optionsSectionContent": {
     "message": "Содержимое Markdown"
   },
+  "optionsNoteFormat": {
+    "message": "Формат заметки"
+  },
+  "optionsNoteFormatMarkdown": {
+    "message": "Markdown (.md) — для Obsidian и приложений заметок"
+  },
+  "optionsNoteFormatHtml": {
+    "message": "Страница HTML (.html): открывается в любом браузере, печатается в PDF"
+  },
+  "optionsNoteFormatJson": {
+    "message": "JSON (.json) — для обработки программами"
+  },
   "optionsArtifactVersions": {
     "message": "Версии артефактов"
   },

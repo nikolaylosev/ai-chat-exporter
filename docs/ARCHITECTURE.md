@@ -120,6 +120,8 @@ src/
     project.ts              Claude Project: instructions, knowledge base, chats
   render/
     markdown.ts             Conversation -> Markdown
+    html.ts                 the Markdown as an HTML page (marked; the chat's HTML escaped, links checked)
+    json.ts                 Conversation -> JSON, without download links
   sinks/
     types.ts                ExportSink interface
     downloads-sink.ts       separate files into Downloads (chrome.downloads)
@@ -595,3 +597,4 @@ Every new dependency is justified in its commit message.
 | 62  | ChatGPT and Grok projects exported like Claude's, with the project names on their chats                         | Both services keep project chats and their files; Grok's list does not name a chat's project                                    |
 | 63  | A project always goes with its chats; the popup has no "Save all chats"                                         | The chats are what a project holds; "Select all" on the export page does the same                                               |
 | 64  | "Save with files" next to .zip; a small Copy button next to Save in the popup                                   | A choice made per export, not once in the settings; a chat is often wanted as text                                              |
+| 65  | HTML and JSON notes besides Markdown; HTML made from the Markdown with marked                                   | Asked for by users of other exporters; one source of layout, printing gives PDF                                                 |
