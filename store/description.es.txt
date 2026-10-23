@@ -1,0 +1,32 @@
+Guarda tus conversaciones con IA en tu propio ordenador, con todos sus archivos. Los chats de Claude, Gemini, Grok y ChatGPT se convierten en notas Markdown, y los archivos de cada chat se guardan junto a la nota en su formato original.
+
+POR QUÉ ESTA
+• Todos los archivos, no solo el texto: tus subidas, documentos y código que creó el modelo, artefactos de Claude, canvas de ChatGPT e imágenes generadas, tal como son.
+• Proyectos de Claude, ChatGPT y Grok con sus instrucciones, archivos y chats, y cuadernos de Gemini con sus chats.
+• Grok además de Claude, Gemini y ChatGPT.
+• Cientos de chats a la vez, en segundo plano, saltando los que ya están guardados.
+• Sin cuenta, sin servidor, sin rastreo. Gratis y de código abierto.
+
+POR QUÉ GUARDAR UNA COPIA
+• Los chats pueden borrarse, perderse con una cuenta o quedar ocultos tras un cambio de plan.
+• Búscalos y reutilízalos donde guardas tus notas, con sus archivos, en lugar de desplazarte por cada servicio.
+• Lleva tu historial de un servicio a otro, o haz una copia antes de limpiar chats antiguos.
+
+QUÉ CONTIENE UNA NOTA
+• Toda la conversación en Markdown con propiedades YAML (título, fechas, modelo, proyecto), lista para una bóveda de Obsidian o cualquier app de notas.
+• Razonamiento, búsquedas web y llamadas a herramientas como bloques plegables, y otras ramas del chat si las quieres.
+
+CÓMO SE USA
+• El chat que estás leyendo: haz clic en el icono y en «Save this chat», o pulsa Alt+Mayús+S (Opción+Mayús+S en Mac). «Copy» pone el chat en el portapapeles como Markdown.
+• Muchos chats o proyectos: abre la página de exportación, filtra por fecha, proyecto o título, marca los que quieras o todos, y guarda. Funciona en segundo plano, se puede cancelar y escribe un informe de lo que falló.
+• Guarda en Descargas, en una carpeta que elijas o en un solo archivo .zip; con o sin los archivos.
+
+PRIVACIDAD
+• Todo se queda en tu ordenador. La extensión no tiene servidor y no envía tus conversaciones a ningún sitio.
+• Lee tus chats a través de tu sesión ya iniciada en cada servicio, igual que su propia página web. Nunca guarda tus contraseñas ni tokens de acceso.
+• Código abierto (MIT): https://github.com/nikolaylosev/ai-chat-exporter
+
+SERVICIOS COMPATIBLES
+claude.ai, gemini.google.com, grok.com, chatgpt.com. Interfaz en inglés y ruso.
+
+Este es un proyecto no oficial e independiente. No está afiliado, respaldado ni patrocinado por Anthropic, Google, xAI ni OpenAI. Claude, Gemini, Grok y ChatGPT son marcas de sus propietarios. La extensión usa interfaces web internas de los servicios, que pueden cambiar en cualquier momento; eres responsable de usarla de acuerdo con los términos de cada servicio.

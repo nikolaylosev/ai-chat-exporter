@@ -1,0 +1,8 @@
+{
+  "extName": {
+    "message": "CodingCat AI Chat Exporter"
+  },
+  "extDescription": {
+    "message": "Claude・Gemini・Grok・ChatGPT のチャットとプロジェクトを、すべてのファイルごと Markdown で保存。アカウント不要、サーバーなし、オープンソース。"
+  }
+}

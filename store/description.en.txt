@@ -1,31 +1,32 @@
-Save your AI conversations to your own computer: Claude, Gemini, Grok and ChatGPT chats become Markdown notes, with every file from the chat in its original format.
+Save your AI conversations to your own computer, with every file in them. Claude, Gemini, Grok and ChatGPT chats become Markdown notes, and the files of each chat are saved next to the note in their original format.
 
-WHY
-• Keep your own copy: chats can be deleted, lost with an account, or hidden behind a plan change.
-• Search and reuse them where you keep notes, with the files next to them, instead of scrolling through each service.
+WHY THIS ONE
+• Every file, not only the text: your uploads, documents and code the model wrote, Claude artifacts, ChatGPT canvases and generated images, saved as they are.
+• Projects of Claude, ChatGPT and Grok with their instructions, files and chats, and Gemini notebooks with their chats.
+• Grok as well as Claude, Gemini and ChatGPT.
+• Hundreds of chats at once, in the background, skipping the ones already saved.
+• No account, no server, no tracking. Free and open source.
+
+WHY KEEP A COPY
+• Chats can be deleted, lost with an account, or hidden behind a plan change.
+• Search and reuse them where you keep your notes, with their files, instead of scrolling through each service.
 • Move your history between services, or back it up before you clean up old chats.
 
-WHAT IT SAVES
-• The whole conversation as a Markdown note with YAML properties (title, dates, model, project), ready to drop into an Obsidian vault or any notes app.
-• Every file: your uploads, files the model created (documents, spreadsheets, code), Claude artifacts, ChatGPT canvases, generated images at full size.
+WHAT A NOTE HOLDS
+• The whole conversation as Markdown with YAML properties (title, dates, model, project), ready for an Obsidian vault or any notes app.
 • Thinking, web searches and tool calls as collapsible blocks, and other branches of a chat if you want them.
-• Projects with their instructions, their files and all their chats (Claude, ChatGPT, Grok), and Gemini notebooks with their chats.
 
 HOW YOU USE IT
 • The chat you are reading: click the icon and "Save this chat", or press Alt+Shift+S (Option+Shift+S on a Mac). "Copy" puts the chat on the clipboard as Markdown instead.
-• Many chats: open the export page, filter by date, project or title, tick the ones you want or all of them, and save. It runs in the background, can be cancelled, and writes a report of anything that failed.
+• Many chats or projects: open the export page, filter by date, project or title, tick the ones you want or all of them, and save. It runs in the background, can be cancelled, and writes a report of anything that failed.
 • Save into Downloads, into a folder you choose, or as one .zip archive; with or without the files.
-• Saving again can skip chats that have not changed since the last time.
 
 PRIVACY
 • Everything stays on your computer. The extension has no server and sends your conversations nowhere.
 • It reads your chats through your existing session on each service, the same way the service's own web page does. It never stores your passwords or access tokens.
-• No analytics, no tracking, no ads.
 • Open source (MIT): https://github.com/nikolaylosev/ai-chat-exporter
 
 SUPPORTED SERVICES
-claude.ai, gemini.google.com, grok.com, chatgpt.com.
-
-Interface in English and Russian.
+claude.ai, gemini.google.com, grok.com, chatgpt.com. Interface in English and Russian.
 
 This is an unofficial, independent project. It is not affiliated with, endorsed by, or sponsored by Anthropic, Google, xAI or OpenAI. Claude, Gemini, Grok and ChatGPT are trademarks of their owners. The extension uses the services' internal web interfaces, which can change at any time; you are responsible for using it in line with each service's terms.
