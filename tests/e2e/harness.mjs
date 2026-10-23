@@ -13,10 +13,41 @@ import {
   writeFileSync,
 } from 'node:fs';
 import { createServer } from 'node:https';
+import { createRequire } from 'node:module';
 import { homedir, tmpdir } from 'node:os';
 import { join } from 'node:path';
 
+const { unzipSync } = createRequire(import.meta.url)('fflate');
+
 export const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
+ * The downloads folder as if every archive were unpacked next to itself: a chat
+ * with files comes as one .zip, and its entries are listed under the archive's
+ * folder (the archive is listed too). Returns the paths and a reader.
+ */
+function downloadsView(dir) {
+  const entries = new Map();
+  const paths = listFiles(dir);
+  for (const path of paths) {
+    if (!path.endsWith('.zip')) continue;
+    const base = path.includes('/') ? path.slice(0, path.lastIndexOf('/') + 1) : '';
+    let unpacked;
+    try {
+      unpacked = unzipSync(readFileSync(join(dir, path)));
+    } catch {
+      continue; // still being written
+    }
+    for (const [name, bytes] of Object.entries(unpacked)) {
+      if (!name.endsWith('/')) entries.set(base + name, Buffer.from(bytes));
+    }
+  }
+  return {
+    paths: [...paths, ...entries.keys()],
+    read: (path) =>
+      existsSync(join(dir, path)) ? readFileSync(join(dir, path)) : entries.get(path),
+  };
+}
 
 /** Chrome for Testing: CHROME_PATH, or the newest one Playwright installed. */
 export function findChrome() {
@@ -225,8 +256,15 @@ export async function startStand({ extDir, hosts, handler }) {
         extPage,
         `chrome.storage.session.get(null).then((d) => { const j = Object.values(d).find((v) => v && v.items); if (!j) return null; const c = {}; for (const i of j.items) c[i.status] = (c[i.status] ?? 0) + 1; return { status: j.status, started: j.startedAt, counts: c }; })`,
       ),
-    files: () => listFiles(downloads),
-    read: (path) => readFileSync(join(downloads, path)),
+    /** The files Chrome saved in Downloads, archives as archives. */
+    downloaded: () => listFiles(downloads),
+    /** Files in Downloads, the entries of its archives included (see downloadsView). */
+    files: () => downloadsView(downloads).paths,
+    read: (path) => {
+      const bytes = downloadsView(downloads).read(path);
+      if (!bytes) throw new Error(`Not in Downloads: ${path}`);
+      return bytes;
+    },
     async close() {
       chrome.kill();
       server.close();

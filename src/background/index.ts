@@ -18,14 +18,14 @@ function senderTab(sender: chrome.runtime.MessageSender): number {
 }
 
 handle('background', {
-  'export:current': ({ tabId, zip }) =>
-    exportCurrent(tabId, 'popup', zip ? { saveAsZip: true } : {}),
+  'export:current': ({ tabId }) => exportCurrent(tabId, 'popup'),
   'export:copy': ({ tabId }) => copyCurrent(tabId),
-  'export:this-tab': ({ withFiles, zip }, sender) =>
-    exportCurrent(senderTab(sender), 'command', {
-      ...(withFiles === undefined ? {} : { saveAttachments: withFiles }),
-      ...(zip ? { saveAsZip: true } : {}),
-    }),
+  'export:this-tab': ({ withFiles }, sender) =>
+    exportCurrent(
+      senderTab(sender),
+      'command',
+      withFiles === undefined ? {} : { saveAttachments: withFiles },
+    ),
   'folder:pick': async ({ tabId, withFiles }, sender) => {
     const query = new URLSearchParams({ tab: String(tabId ?? senderTab(sender)) });
     if (withFiles !== undefined) query.set('files', withFiles ? '1' : '0');
@@ -93,10 +93,6 @@ handle('background', {
   },
   'open:options': async () => {
     await chrome.runtime.openOptionsPage();
-    return null;
-  },
-  'open:download-settings': async () => {
-    await chrome.tabs.create({ url: 'chrome://settings/downloads' });
     return null;
   },
 });

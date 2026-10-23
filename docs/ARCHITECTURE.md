@@ -31,7 +31,7 @@ This document describes how the extension is built and why. It is meant for anyo
 
 - Export the current conversation, all conversations, or a selected set (search, date filter, checkboxes).
 - Save the conversation text as Markdown and every file from the conversation: user uploads, model-generated files, artifacts, images.
-- Save into Chrome's Downloads folder or into a folder the user picks, as separate files or as one ZIP archive.
+- Save into Chrome's Downloads folder (a chat with files, and any bulk export, as one ZIP archive; a note alone as one file) or into a folder the user picks (separate files).
 - Export projects of Claude, ChatGPT and Grok: instructions, the project's own files and all its chats.
 - Export Gemini notebooks with all their chats; their sources are listed by name.
 - Show progress, allow cancellation, and write an error report for bulk exports.
@@ -193,7 +193,7 @@ service worker ──── chrome.tabs.sendMessage ────► content scri
         │ plan paths (folder name, unique attachment names, path budget)
         │ render Markdown
         ▼
-ExportSink, chosen by the "Save to" and "ZIP" settings
+ExportSink, chosen by the destination and exportsAsZip (settings.ts)
         DownloadsSink (Downloads, separate files)
         ├─ writeText(.md)  → offscreen document → blob URL → chrome.downloads
         └─ writeFile(url)  → chrome.downloads (browser fetches with user cookies)
@@ -208,9 +208,9 @@ The content script returns plain JSON. Binary files never cross the message chan
 
 ### Destinations
 
-- **Downloads, separate files** (default). Each file is one `chrome.downloads` call. With Chrome's "Ask where to save each file" on, each one opens a dialog; see [section 11](#11-manifest-v3-constraints).
-- **A folder the user picks.** The options page calls `showDirectoryPicker()`; the handle is stored in IndexedDB, which every extension page and the offscreen document share. Files are written with `createWritable()`, so no Save As dialog ever appears. Write access is checked when an export starts. When it has lapsed (Chrome may ask again after a restart), the popup asks for it from the click on "Save chat"; an export from the keyboard shortcut cannot ask and stops with a message. If the conversation folder exists and the mode is not "overwrite", the sink picks `name (2)`, `name (3)` and so on.
-- **ZIP archive** (in either destination). The archive is named after the conversation folder and holds that folder, so unpacking gives the usual layout. Already compressed formats (images, pdf, Office files, archives) are stored; text is deflated. In Downloads it is one download, so Chrome asks where to save at most once. A bulk export puts all its conversations into one archive, `<Platform> - <YYYY-MM-DD HH-mm>.zip`, with the report inside. "Save as .zip" is chosen where an export starts (popup, export page, shortcut panel), not in the settings, and the choice is remembered.
+- **Downloads.** One `chrome.downloads` call per export: a chat with files, a bulk export or a project goes as one ZIP (below), a chat's note alone as one file. So with Chrome's "Ask where to save each file" on, it asks once. Separate files into Downloads are not offered: Chrome writes them only inside Downloads and asks about each one elsewhere (decision 68).
+- **A folder the user picks.** The options page, the "Save to a folder…" window and the export page's "To a folder…" call `showDirectoryPicker()`; the handle is stored in IndexedDB, which every extension page and the offscreen document share. Files are written with `createWritable()`, so no Save As dialog ever appears. Write access is checked when an export starts. When it has lapsed (Chrome may ask again after a restart), the popup asks for it from the click on "Save this chat".
+- **ZIP archive** (Downloads: always for a chat with files and for a bulk export; `exportsAsZip`). The archive is named after the conversation folder and holds that folder, so unpacking gives the usual layout. Already compressed formats (images, pdf, Office files, archives) are stored; text is deflated. In Downloads it is one download, so Chrome asks where to save at most once. A bulk export puts all its conversations into one archive, `<Platform> - <YYYY-MM-DD HH-mm>.zip`, with the report inside. "Save as .zip" is chosen where an export starts (popup, export page, shortcut panel), not in the settings, and the choice is remembered.
 
 ### Bulk export
 
@@ -469,7 +469,7 @@ The queue lives in the service worker.
 - **Skip unchanged:** a chat is skipped when its list update time equals the recorded one and the earlier export missed no file it could have saved ([registry](#export-registry)).
 - **Report:** `_reports/export-report-<YYYY-MM-DD-HHmm>.md` in the export root (inside the archive for ZIP), when something failed or always, as set. It lists errors, conversations saved with missing files, skipped ones, ones not reached, and links to every saved note.
 - **Progress** is shown on the export page (counters, the current conversation, a status column) and on the extension badge (…, then ✓ or !). A system notification reports the end of a bulk export.
-- **Keyboard shortcut:** a panel on the chat page shows progress, the result, where it went, and the "Save as .zip" choice. Pages without the content script get a system notification instead. Both can be turned off.
+- **Keyboard shortcut:** a panel on the chat page shows progress, the result and where it went. Pages without the content script get a system notification instead. Both can be turned off.
 - **Duplicate trigger:** pressing the shortcut again while the same chat is exporting is ignored.
 
 ## 11. Manifest V3 constraints
@@ -601,3 +601,4 @@ Every new dependency is justified in its commit message.
 | 65  | HTML and JSON notes besides Markdown; HTML made from the Markdown with marked                                   | Asked for by users of other exporters; one source of layout, printing gives PDF                                                 |
 | 66  | A floating button with a menu on chat pages, not one inside the site's toolbar                                  | Sites change their layout; the menu says what a click saves, unlike a bare button                                               |
 | 67  | "Save to a folder…" (one chat) and "To a folder…" (export page) with the folder destination                     | chrome.downloads writes only inside Downloads; elsewhere Chrome asks about each file                                            |
+| 68  | Into Downloads, a chat with files and any bulk export as one ZIP; no ZIP setting                                | One download, so Chrome asks at most once; separate files go to a chosen folder                                                 |

@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { userMessage } from '../../src/shared/errors';
-import { DEFAULT_SETTINGS, exportRootFolder, normalizeSettings } from '../../src/shared/settings';
+import {
+  DEFAULT_SETTINGS,
+  exportRootFolder,
+  exportsAsZip,
+  normalizeSettings,
+} from '../../src/shared/settings';
 
 describe('normalizeSettings', () => {
   it.each([[undefined], [null], ['string'], [42]])('returns defaults for %j', (stored) => {
@@ -21,7 +26,8 @@ describe('normalizeSettings', () => {
   it('validates the destination', () => {
     expect(normalizeSettings({ destination: 'folder' }).destination).toBe('folder');
     expect(normalizeSettings({ destination: 'cloud' }).destination).toBe('downloads');
-    expect(normalizeSettings({ saveAsZip: 'yes' }).saveAsZip).toBe(false);
+    // A setting the extension no longer has is dropped.
+    expect('saveAsZip' in normalizeSettings({ saveAsZip: true })).toBe(false);
   });
 
   it('uses the chosen folder itself as the export root', () => {
@@ -50,5 +56,22 @@ describe('userMessage', () => {
   it('drops request URLs', () => {
     expect(userMessage(new Error('HTTP 500 for https://claude.ai/api/x?y=1'))).toBe('HTTP 500');
     expect(userMessage('plain')).toBe('plain');
+  });
+});
+
+describe('exportsAsZip', () => {
+  const downloads = { destination: 'downloads' as const, saveAttachments: true };
+  it('makes one .zip into Downloads for a bulk export or a chat with files', () => {
+    expect(exportsAsZip(downloads, { bulk: true, hasFiles: false })).toBe(true);
+    expect(exportsAsZip(downloads, { bulk: false, hasFiles: true })).toBe(true);
+  });
+  it('saves a note alone as one file, and separate files into a chosen folder', () => {
+    expect(exportsAsZip(downloads, { bulk: false, hasFiles: false })).toBe(false);
+    expect(
+      exportsAsZip({ ...downloads, saveAttachments: false }, { bulk: false, hasFiles: true }),
+    ).toBe(false);
+    expect(
+      exportsAsZip({ ...downloads, destination: 'folder' }, { bulk: true, hasFiles: true }),
+    ).toBe(false);
   });
 });

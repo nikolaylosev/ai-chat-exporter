@@ -16,7 +16,6 @@ import {
   useSettings,
   FilesCheckbox,
   pickExportFolder,
-  ZipCheckbox,
 } from '../common';
 import {
   DEFAULT_FILTER,
@@ -201,8 +200,8 @@ function useConversations(platform: Platform) {
 
 const formatDate = (iso: string | null) => (iso ? localDateTime(iso) : '');
 
-/** Stops caused by Chrome asking where to save: what the user did, with a way round. */
-const ASKED = new Set<string>(['save-dialog', 'download-cancelled']);
+/** Stops the user caused (a Save As dialog closed): shown in grey, not as errors. */
+const QUIET = new Set<string>(['save-cancelled', 'save-dialog', 'download-cancelled']);
 
 function Progress({ job, onDismiss }: { job: JobState; onDismiss: () => void }) {
   const counts = jobCounts(job);
@@ -252,10 +251,7 @@ function Progress({ job, onDismiss }: { job: JobState; onDismiss: () => void }) 
       </p>
       {current && <p class="muted">{t('jobCurrent', current.title || t('untitledChat'))}</p>}
       {job.stopReason && (
-        <p class={ASKED.has(job.stopReason.code) ? 'muted' : 'error'}>{job.stopReason.message}</p>
-      )}
-      {job.stopReason && ASKED.has(job.stopReason.code) && (
-        <p class="muted">{t('exportAskedHint')}</p>
+        <p class={QUIET.has(job.stopReason.code) ? 'muted' : 'error'}>{job.stopReason.message}</p>
       )}
       {job.recoveries ? <p class="warn">{t('jobRecovered', String(job.recoveries))}</p> : null}
       {job.parts && job.parts.length > 0 && (
@@ -627,7 +623,6 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
               {t('exportSelected', [String(selected.size), String(conversations.length)])}
             </p>
             {settings && <FilesCheckbox settings={settings} update={updateSettings} />}
-            {settings && <ZipCheckbox settings={settings} update={updateSettings} />}
             <button
               type="button"
               class="primary"
@@ -847,7 +842,6 @@ function ProjectsTab({ platform, settings, updateSettings, job, showJob, onStart
               {t('exportSelected', [String(selected.size), String(projects.length)])}
             </p>
             {settings && <FilesCheckbox settings={settings} update={updateSettings} />}
-            {settings && <ZipCheckbox settings={settings} update={updateSettings} />}
             <button
               type="button"
               class="primary"

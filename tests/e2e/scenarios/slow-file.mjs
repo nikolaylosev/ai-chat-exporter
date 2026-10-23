@@ -1,6 +1,5 @@
-// A file whose server answers only after several seconds is saved, and the
-// export goes on: a download without a name yet is not taken for a Save As
-// dialog until its bytes arrive.
+// A file whose server answers only after several seconds is saved in the chat's
+// .zip, and the export goes on.
 import assert from 'node:assert/strict';
 import { startStand } from '../harness.mjs';
 import { chatgptChats, chatgptFile, chatgptFiles, fakeChatgpt, uuid } from '../fakes.mjs';

@@ -30,6 +30,8 @@ export class DownloadsSink implements ExportSink {
   readonly id = 'downloads';
   /** Set when any write looked like it hit a Save As dialog. */
   saveDialogSuspected = false;
+  /** Where the last file went when Chrome asked and the user chose another place. */
+  private movedTo: string | null = null;
 
   constructor(
     private readonly deps: DownloadsSinkDeps,
@@ -78,7 +80,11 @@ export class DownloadsSink implements ExportSink {
   }
 
   finish(markdownPath: string): Promise<SavedLocation> {
-    return Promise.resolve({ kind: 'downloads', path: this.resolve(markdownPath) });
+    return Promise.resolve(
+      this.movedTo
+        ? { kind: 'absolute', path: this.movedTo }
+        : { kind: 'downloads', path: this.resolve(markdownPath) },
+    );
   }
 
   private async download(path: string, url: string): Promise<void> {
@@ -87,6 +93,7 @@ export class DownloadsSink implements ExportSink {
       filename: this.resolve(path),
       conflictAction: this.options.conflictAction,
     });
+    this.movedTo = result.saveDialogSuspected ? result.finalPath : null;
     if (result.saveDialogSuspected) this.saveDialogSuspected = true;
   }
 }

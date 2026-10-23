@@ -13,7 +13,7 @@ import { log } from '../shared/logger';
 import { setBadge as setIconBadge, type BadgeState } from './badge';
 import { sendToTab, type JobStartItem, type SavedLocation } from '../shared/messages';
 import { PLATFORM_LABEL, type Platform } from '../shared/platform';
-import { exportRootFolder, loadSettings, type Settings } from '../shared/settings';
+import { exportRootFolder, exportsAsZip, loadSettings, type Settings } from '../shared/settings';
 import { DownloadsSink } from '../sinks/downloads-sink';
 import { FolderSink, ZipArchive } from '../sinks/offscreen-sinks';
 import { sanitizeRelativeDir } from '../util/filename';
@@ -204,7 +204,7 @@ async function run(job: JobState): Promise<void> {
 }
 
 async function runJob(job: JobState): Promise<void> {
-  const archive = job.settings.saveAsZip
+  const archive = exportsAsZip(job.settings, { bulk: true, hasFiles: true })
     ? new ZipArchive(
         offscreenFiles,
         zipTarget(job.settings, exportRoot(job)),

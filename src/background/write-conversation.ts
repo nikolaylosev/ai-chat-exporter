@@ -177,7 +177,8 @@ export async function writeConversation(
       stopIfFatal(error);
       throw error;
     }
-    if (sink.saveDialogSuspected) stopForDialog();
+    // The note is the last file: if Chrome asked and the user put it elsewhere, it is
+    // saved there, and the sink reports where (DownloadsSink.finish).
 
     // A file the chat no longer has, left by the export this one replaces.
     const planned = new Set([...plan.files.map((f) => f.path), plan.markdownPath]);

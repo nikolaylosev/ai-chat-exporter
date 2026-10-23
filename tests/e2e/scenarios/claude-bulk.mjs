@@ -3,10 +3,12 @@
 // for byte; then a project with its knowledge base and its chat.
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { join } from 'node:path';
 import { runBulkJob, startStand, waitFor } from '../harness.mjs';
 import { FIXTURES, fakeClaude, fixture } from '../fakes.mjs';
 
+const { unzipSync } = createRequire(import.meta.url)('fflate');
 const id = (n) => `00000000-0000-4000-8000-${n.toString(16).padStart(12, '0')}`;
 const bytes = (head, size) => Buffer.concat([Buffer.from(head, 'latin1'), Buffer.alloc(size, 7)]);
 
@@ -126,12 +128,19 @@ export default {
         'the project list again',
       );
       await stand.ev(projects, `document.querySelector('tbody input[type=checkbox]').click()`);
+      const zipsBefore = stand.downloaded().filter((f) => f.endsWith('.zip'));
       await runBulkJob(stand, projects);
-      const bare = 'AI Chats/Projects/Exporter Test Project (Claude) (2)';
-      const third = stand.files().filter((f) => f.startsWith(`${bare}/`));
-      assert.ok(!third.some((f) => f.includes('/knowledge/') || f.includes('/files/')), 'no files');
+      // A project into Downloads is one archive; this one is new.
+      const again = stand.downloaded().find((f) => f.endsWith('.zip') && !zipsBefore.includes(f));
+      assert.ok(again, 'the project again as one .zip');
+      const entries = Object.keys(unzipSync(stand.read(again)));
+      assert.ok(
+        !entries.some((f) => f.includes('/knowledge/') || f.includes('/files/')),
+        'no files',
+      );
+      const projectNote = entries.find((f) => /Exporter Test Project \(Claude\)\.md$/.test(f));
       assert.match(
-        stand.read(`${bare}/Exporter Test Project (Claude) (2).md`).toString(),
+        Buffer.from(unzipSync(stand.read(again))[projectNote]).toString(),
         /- fruit-prices\.pdf — not saved: saving files is off/,
       );
 

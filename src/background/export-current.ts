@@ -58,9 +58,6 @@ async function showFeedback(tabId: number, view: PanelView): Promise<boolean> {
 function failure(error: unknown): ExportResult {
   const code = errorCode(error);
   const result: ExportResult = { ok: false, code, message: errorText(error) };
-  if (code === 'save-dialog' || code === 'download-cancelled') {
-    result.warning = 'save-dialog-suspected';
-  }
   return result;
 }
 

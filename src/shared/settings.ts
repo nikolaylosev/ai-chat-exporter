@@ -7,11 +7,22 @@ export const NOTE_EXTENSION: Record<NoteFormat, string> = {
   json: 'json',
 };
 
+/**
+ * Whether an export goes as one .zip: into Downloads, a bulk export always and
+ * one chat when it has files to save, so Chrome makes one download and asks at
+ * most once. A folder the user chose gets separate files (no questions there);
+ * a chat's note alone is one file anyway.
+ */
+export function exportsAsZip(
+  settings: Pick<Settings, 'destination' | 'saveAttachments'>,
+  { bulk, hasFiles }: { bulk: boolean; hasFiles: boolean },
+): boolean {
+  return settings.destination === 'downloads' && (bulk || (settings.saveAttachments && hasFiles));
+}
+
 export interface Settings {
   /** downloads: through chrome.downloads; folder: into the folder the user picked (File System Access). */
   destination: 'downloads' | 'folder';
-  /** One ZIP archive per export instead of separate files. */
-  saveAsZip: boolean;
   /** Subfolder inside Downloads. Empty string means the Downloads root. Not used for `folder`. */
   rootFolder: string;
   includePlatformInFolderName: boolean;
@@ -35,7 +46,6 @@ export interface Settings {
 
 export const DEFAULT_SETTINGS: Settings = {
   destination: 'downloads',
-  saveAsZip: false,
   rootFolder: 'AI Chats',
   includePlatformInFolderName: true,
   noteFormat: 'markdown',

@@ -56,7 +56,7 @@ export default {
     });
     const stand = await startStand({ extDir, ...fake });
     try {
-      await stand.settings({ saveAsZip: true, skipUnchanged: true, delayBetweenChatsMs: 0 });
+      await stand.settings({ skipUnchanged: true, delayBetweenChatsMs: 0 });
       await stand.openTab('https://chatgpt.com/');
       const page = await stand.openTab(
         `chrome-extension://${stand.extensionId}/src/ui/export-page/index.html?platform=chatgpt`,

@@ -78,14 +78,14 @@ describe('popup on a Grok project', () => {
 describe('popup: files and the clipboard', () => {
   const chat = 'https://claude.ai/chat/00000000-0000-4000-8000-000000000001';
 
-  it('has "Save with files" and .zip, and a Copy button next to Save', async () => {
+  it('has "Save with files", no .zip choice, and a Copy button next to Save', async () => {
     stubChrome({ activeTab: { id: 3, url: chat } });
     render(<Popup />);
     const files = await screen.findByRole<HTMLInputElement>('checkbox', { name: 'saveWithFiles' });
     expect(files.checked).toBe(true);
     fireEvent.click(files);
-    // Both stay whatever the files setting: copying is a separate action.
-    expect(screen.getByText('saveAsZip')).toBeTruthy();
+    // With files into Downloads a chat is always one .zip: nothing to choose.
+    expect(screen.queryByText('saveAsZip')).toBeNull();
     const copy = screen.getByRole<HTMLButtonElement>('button', { name: 'popupCopyChat' });
     expect(copy.title).toBe('popupCopyHint');
     expect(screen.getByRole('button', { name: 'popupSaveChat' })).toBeTruthy();
@@ -145,43 +145,5 @@ describe('popup: note format', () => {
     await vi.waitFor(() =>
       expect((local.settings as { noteFormat?: string } | undefined)?.noteFormat).toBe('html'),
     );
-  });
-});
-
-describe('popup: Chrome asked where to save', () => {
-  it('says so quietly and offers the chat as one .zip', async () => {
-    const asked: unknown[] = [];
-    stubChrome({
-      activeTab: { id: 3, url: 'https://claude.ai/chat/00000000-0000-4000-8000-000000000001' },
-      background: (type, payload) => {
-        if (type !== 'export:current') return null;
-        asked.push(payload);
-        return asked.length === 1
-          ? {
-              ok: false,
-              code: 'save-dialog',
-              message: 'error_save_dialog',
-              warning: 'save-dialog-suspected',
-            }
-          : {
-              ok: true,
-              title: 'Chat',
-              messageCount: 2,
-              attachmentCount: 0,
-              failedAttachmentCount: 0,
-              location: { kind: 'downloads', path: 'AI Chats/Chat.zip' },
-            };
-      },
-    });
-    render(<Popup />);
-    const save = await screen.findByRole<HTMLButtonElement>('button', { name: 'popupSaveChat' });
-    await vi.waitFor(() => expect(save.disabled).toBe(false));
-    fireEvent.click(save);
-    const message = await screen.findByText('error_save_dialog');
-    expect(message.className).toContain('muted');
-    fireEvent.click(screen.getByRole('button', { name: 'saveAsZipInstead' }));
-    await vi.waitFor(() => expect(asked).toHaveLength(2));
-    expect(asked[1]).toEqual({ tabId: 3, zip: true });
-    await screen.findByText('AI Chats/Chat.zip');
   });
 });
