@@ -3,7 +3,7 @@
     "message": "CodingCat AI Chat Exporter"
   },
   "extDescription": {
-    "message": "Export Claude, Gemini, Grok and ChatGPT chats to Markdown with all attachments."
+    "message": "Save Claude, Gemini, Grok and ChatGPT chats and projects as Markdown with every file. No account, no server, open source."
   },
   "commandExportCurrent": {
     "message": "Save the current chat"

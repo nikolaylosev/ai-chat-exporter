@@ -1,0 +1,8 @@
+{
+  "extName": {
+    "message": "CodingCat AI Chat Exporter"
+  },
+  "extDescription": {
+    "message": "将 Claude、Gemini、Grok 和 ChatGPT 的聊天与项目连同所有文件保存为 Markdown。无需账号，无服务器，开源。"
+  }
+}

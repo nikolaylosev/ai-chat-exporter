@@ -1,4 +1,6 @@
-"""Source of truth for UI strings. Writes public/_locales/{en,ru}/messages.json.
+"""Source of truth for UI strings. Writes public/_locales/{en,ru}/messages.json,
+and for the Chrome Web Store listing's other languages only the name and the
+summary (LISTING); Chrome shows English for every other string there.
 
 Run: python3 scripts/locales.py
 
@@ -13,8 +15,8 @@ from pathlib import Path
 STRINGS = {
     "extName": ("CodingCat AI Chat Exporter", "CodingCat AI Chat Exporter"),
     "extDescription": (
-        "Export Claude, Gemini, Grok and ChatGPT chats to Markdown with all attachments.",
-        "Экспорт чатов Claude, Gemini, Grok и ChatGPT в Markdown со всеми вложениями.",
+        "Save Claude, Gemini, Grok and ChatGPT chats and projects as Markdown with every file. No account, no server, open source.",
+        "Сохраняет чаты и проекты Claude, Gemini, Grok и ChatGPT в Markdown со всеми файлами. Без аккаунта и сервера, открытый код.",
     ),
     "commandExportCurrent": ("Save the current chat", "Сохранить текущий чат"),
     "untitledChat": ("Untitled", "Без названия"),
@@ -446,9 +448,28 @@ def entry(text: str) -> dict:
     }
 
 
-root = Path(__file__).resolve().parent.parent / "public" / "_locales"
-for index, locale in enumerate(("en", "ru")):
-    data = {key: entry(pair[index]) for key, pair in STRINGS.items()}
+# The store listing's other languages: the summary only (at most 132 characters).
+LISTING = {
+    "de": "Speichert Chats und Projekte aus Claude, Gemini, Grok und ChatGPT als Markdown mit allen Dateien. Ohne Konto, Open Source.",
+    "es": "Guarda chats y proyectos de Claude, Gemini, Grok y ChatGPT en Markdown con todos sus archivos. Sin cuenta ni servidor.",
+    "fr": "Enregistre les chats et projets Claude, Gemini, Grok et ChatGPT en Markdown avec tous les fichiers. Sans compte ni serveur.",
+    "pt_BR": "Salva chats e projetos do Claude, Gemini, Grok e ChatGPT em Markdown com todos os arquivos. Sem conta nem servidor.",
+    "ja": "Claude・Gemini・Grok・ChatGPT のチャットとプロジェクトを、すべてのファイルごと Markdown で保存。アカウント不要、サーバーなし、オープンソース。",
+    "zh_CN": "将 Claude、Gemini、Grok 和 ChatGPT 的聊天与项目连同所有文件保存为 Markdown。无需账号，无服务器，开源。",
+}
+
+
+def write(locale: str, data: dict) -> None:
     path = root / locale / "messages.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"{path.relative_to(root.parent.parent)}: {len(data)} strings")
+
+
+root = Path(__file__).resolve().parent.parent / "public" / "_locales"
+for index, locale in enumerate(("en", "ru")):
+    write(locale, {key: entry(pair[index]) for key, pair in STRINGS.items()})
+for locale, summary in LISTING.items():
+    assert len(summary) <= 132, (locale, len(summary))
+    write(locale, {"extName": entry(STRINGS["extName"][0]), "extDescription": entry(summary)})
+assert all(len(pair[0]) <= 132 and len(pair[1]) <= 132 for pair in [STRINGS["extDescription"]])
