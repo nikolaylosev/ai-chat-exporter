@@ -23,6 +23,7 @@ import {
   useShortcut,
   ZipCheckbox,
 } from '../common';
+import type { Settings } from '../../shared/settings';
 import '../styles.css';
 import './popup.css';
 
@@ -332,6 +333,22 @@ export function Popup() {
         <p class="muted hint">
           {shortcut ? t('popupShortcut', shortcut) : t('popupShortcutNotSet')}
         </p>
+      )}
+
+      {settings && (
+        <label class="note-format">
+          <span>{t('noteFormat')}</span>
+          <select
+            value={settings.noteFormat}
+            onChange={(e) =>
+              updateSettings({ noteFormat: e.currentTarget.value as Settings['noteFormat'] })
+            }
+          >
+            <option value="markdown">{t('noteFormatMarkdown')}</option>
+            <option value="html">{t('noteFormatHtml')}</option>
+            <option value="json">{t('noteFormatJson')}</option>
+          </select>
+        </label>
       )}
 
       <footer>

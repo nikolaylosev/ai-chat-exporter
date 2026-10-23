@@ -35,6 +35,21 @@ export default {
         'Copy as Markdown',
       ]);
 
+      // The .zip choice in the menu changes what the saves make, and stays a setting.
+      const zip = `${root}?.querySelector('.menu input[type=checkbox]')`;
+      await stand.ev(chat, `${zip}.click()`);
+      await waitFor(
+        () => stand.ev(chat, `${items}[0]?.textContent === 'Save chat with files.zip'`),
+        5000,
+        'the menu says .zip',
+      );
+      await stand.ev(chat, `${zip}.click()`);
+      await waitFor(
+        () => stand.ev(chat, `${items}[0]?.textContent === 'Save chat with files.md'`),
+        5000,
+        'back to .md',
+      );
+
       // With files: the note and the uploads.
       await stand.ev(chat, `${items}[0].click()`);
       await waitFor(() => notes().length === 1, 30000, 'the chat saved with files');

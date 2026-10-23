@@ -70,6 +70,34 @@ export function isExpectedLocation(finalPath: string, requested: string): boolea
  * an onDeterminingFilename suggestion does not prevent it (checked in Chrome for
  * Testing 1248).
  */
+/**
+ * Whether a download that still has no file name a few seconds after it started
+ * is waiting for a Save As dialog. Chrome names a download once the response
+ * starts, so a slow server looks the same at first; but behind a dialog the bytes
+ * already arrive, and a file we made ourselves (`blob:`, `data:`) has no server to
+ * wait for. A slow download is not taken for a dialog.
+ */
+export function waitsForSaveDialog(
+  item: Pick<chrome.downloads.DownloadItem, 'state' | 'filename' | 'bytesReceived' | 'totalBytes'>,
+  url: string,
+): boolean {
+  if (item.state !== 'in_progress' || item.filename !== '') return false;
+  return /^(blob|data):/.test(url) || item.bytesReceived > 0 || item.totalBytes > 0;
+}
+
+/**
+ * Whether the file ended up in the folder it was meant for, whatever its name.
+ * Chrome may change characters of a name; only a Save As dialog moves a file to
+ * another folder.
+ */
+export function isInExpectedFolder(finalPath: string, requested: string): boolean {
+  const normalize = (p: string) => p.normalize('NFC').replace(/\\/g, '/');
+  const dir = (p: string) => p.slice(0, p.lastIndexOf('/') + 1);
+  const expected = dir(normalize(requested));
+  const actual = dir(normalize(finalPath));
+  return expected === '' || actual.endsWith(`/${expected}`);
+}
+
 export function isExtensionChangedOnly(finalPath: string, requested: string): boolean {
   const normalize = (p: string) => p.normalize('NFC').replace(/\\/g, '/');
   const stem = (p: string) => {
@@ -216,10 +244,13 @@ export function downloadAndWait(
         return;
       }
       const renamed = isExtensionChangedOnly(item.filename, request.filename);
-      const misplaced = !isExpectedLocation(item.filename, request.filename) && !renamed;
+      const unexpected = !isExpectedLocation(item.filename, request.filename) && !renamed;
+      // Another folder means a Save As dialog; the same folder, a name Chrome changed.
+      const elsewhere = unexpected && !isInExpectedFolder(item.filename, request.filename);
       if (renamed) log.warn('Chrome changed the file extension', item.filename);
-      if (misplaced) log.warn('File saved outside the expected path', item.filename);
-      resolve({ finalPath: item.filename, saveDialogSuspected: dialogSuspected || misplaced });
+      if (unexpected && !elsewhere) log.warn('Chrome changed the file name', item.filename);
+      if (elsewhere) log.warn('File saved outside the expected folder', item.filename);
+      resolve({ finalPath: item.filename, saveDialogSuspected: dialogSuspected || elsewhere });
     };
 
     const check = async () => {
@@ -253,7 +284,7 @@ export function downloadAndWait(
         timer = setTimeout(() => {
           void findItem(id).then((item) => {
             // While the Save As dialog is open, the item has no target file name yet.
-            if (item?.state === 'in_progress' && item.filename === '') {
+            if (item && waitsForSaveDialog(item, request.url)) {
               dialogSuspected = true;
               log.warn('Download is waiting for a Save As dialog');
               onSaveDialogSuspected?.();

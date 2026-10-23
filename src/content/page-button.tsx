@@ -2,7 +2,7 @@ import { render } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { t } from '../shared/i18n';
 import { send } from '../shared/messages';
-import { loadSettings, NOTE_EXTENSION, type Settings } from '../shared/settings';
+import { loadSettings, NOTE_EXTENSION, saveSettings, type Settings } from '../shared/settings';
 import { showPanel } from './panel';
 
 /**
@@ -45,6 +45,9 @@ const STYLE = `
 }
 .menu button:hover { background: rgba(255, 255, 255, 0.08); }
 .menu .ext { color: #9aa0ad; font-size: 12px; }
+.menu hr { border: none; border-top: 1px solid rgba(255, 255, 255, 0.12); margin: 6px 4px; }
+.menu label { display: flex; align-items: center; gap: 8px; padding: 6px 10px; color: #c9cbd3; cursor: pointer; }
+.menu input { accent-color: #ffb000; margin: 0; }
 @media (prefers-reduced-motion: reduce) { .round { transition: none; } }
 `;
 
@@ -149,6 +152,16 @@ function PageButton({ isChat }: { isChat: () => boolean }) {
           <button type="button" role="menuitem" onClick={() => pick(copy)}>
             <span>{t('pageMenuCopy')}</span>
           </button>
+          <hr />
+          {/* The same choice as in the popup and the panel: it stays for the next saves. */}
+          <label>
+            <input
+              type="checkbox"
+              checked={settings.saveAsZip}
+              onChange={(e) => void saveSettings({ saveAsZip: e.currentTarget.checked })}
+            />
+            {t('saveAsZip')}
+          </label>
         </div>
       )}
       <button

@@ -90,6 +90,18 @@
   "saveWithFiles": {
     "message": "Save with files"
   },
+  "noteFormat": {
+    "message": "Note format"
+  },
+  "noteFormatMarkdown": {
+    "message": "Markdown (.md)"
+  },
+  "noteFormatHtml": {
+    "message": "HTML page (.html)"
+  },
+  "noteFormatJson": {
+    "message": "JSON (.json)"
+  },
   "popupCopyChat": {
     "message": "Copy"
   },
@@ -988,18 +1000,6 @@
   },
   "optionsSectionContent": {
     "message": "Markdown content"
-  },
-  "optionsNoteFormat": {
-    "message": "Note format"
-  },
-  "optionsNoteFormatMarkdown": {
-    "message": "Markdown (.md), for Obsidian and notes apps"
-  },
-  "optionsNoteFormatHtml": {
-    "message": "HTML page (.html): opens in any browser, prints to PDF"
-  },
-  "optionsNoteFormatJson": {
-    "message": "JSON (.json), for processing by programs"
   },
   "pageButtonTitle": {
     "message": "Save or copy this chat (CodingCat AI Chat Exporter)"

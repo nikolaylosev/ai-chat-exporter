@@ -90,6 +90,18 @@
   "saveWithFiles": {
     "message": "Сохранять с файлами"
   },
+  "noteFormat": {
+    "message": "Формат заметки"
+  },
+  "noteFormatMarkdown": {
+    "message": "Markdown (.md)"
+  },
+  "noteFormatHtml": {
+    "message": "Страница HTML (.html)"
+  },
+  "noteFormatJson": {
+    "message": "JSON (.json)"
+  },
   "popupCopyChat": {
     "message": "Копировать"
   },
@@ -988,18 +1000,6 @@
   },
   "optionsSectionContent": {
     "message": "Содержимое Markdown"
-  },
-  "optionsNoteFormat": {
-    "message": "Формат заметки"
-  },
-  "optionsNoteFormatMarkdown": {
-    "message": "Markdown (.md) — для Obsidian и приложений заметок"
-  },
-  "optionsNoteFormatHtml": {
-    "message": "Страница HTML (.html): открывается в любом браузере, печатается в PDF"
-  },
-  "optionsNoteFormatJson": {
-    "message": "JSON (.json) — для обработки программами"
   },
   "pageButtonTitle": {
     "message": "Сохранить или скопировать этот чат (CodingCat AI Chat Exporter)"

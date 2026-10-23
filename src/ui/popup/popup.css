@@ -80,3 +80,23 @@ footer {
 .project button {
   width: 100%;
 }
+
+/* The note format, above the link to the settings. */
+.note-format {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.note-format span {
+  white-space: nowrap;
+}
+
+.note-format select {
+  flex: 0 1 auto;
+  width: auto;
+  min-width: 0;
+  font: inherit;
+}

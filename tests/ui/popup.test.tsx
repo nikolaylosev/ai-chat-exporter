@@ -132,3 +132,18 @@ describe('popup: a cancelled save', () => {
     expect(message.className).not.toContain('error');
   });
 });
+
+describe('popup: note format', () => {
+  it('chooses the note format above the settings link', async () => {
+    const { local } = stubChrome({
+      activeTab: { id: 3, url: 'https://claude.ai/chat/00000000-0000-4000-8000-000000000001' },
+    });
+    render(<Popup />);
+    const select = await screen.findByRole<HTMLSelectElement>('combobox', { name: 'noteFormat' });
+    expect(select.value).toBe('markdown');
+    fireEvent.change(select, { target: { value: 'html' } });
+    await vi.waitFor(() =>
+      expect((local.settings as { noteFormat?: string } | undefined)?.noteFormat).toBe('html'),
+    );
+  });
+});
