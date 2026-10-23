@@ -59,6 +59,8 @@ export default {
         'its files',
       );
       assert.equal(await stand.ev(chat, `${items}.length`), 0, 'the menu closes');
+      // The panel shows the result once the export has finished, record and all.
+      await waitFor(() => stand.ev(chat, `${panel}.includes('AI Chats')`), 20000, 'the result');
 
       // Text only: a second note, no more files.
       const filesBefore = stand.files().filter((f) => f.includes('/files/')).length;

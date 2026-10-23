@@ -11,11 +11,6 @@ import { createBlobUrl, offscreenFiles, revokeBlobUrl, sniffImageType } from './
 import type { ExportRecord, RecordDestination, Registry } from './registry';
 import { writeConversation, type WritableSink, type WriteOutcome } from './write-conversation';
 
-/** Separate files into Downloads: the only mode where Chrome may ask about every file. */
-export function asksPerFile(settings: Settings): boolean {
-  return settings.destination === 'downloads' && !settings.saveAsZip;
-}
-
 export function recordDestination(settings: Settings): RecordDestination {
   return settings.saveAsZip ? 'zip' : settings.destination;
 }

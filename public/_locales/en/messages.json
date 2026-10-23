@@ -577,9 +577,6 @@
   "saveDialogWarning": {
     "message": "If Chrome asked where to save the file: turn off “Ask where to save each file before downloading” in Chrome settings, otherwise every exported file opens a dialog. Or save to a folder you choose (extension settings) or tick “Save as .zip” when saving."
   },
-  "saveDialogWarningEarlier": {
-    "message": "Last time Chrome asked where to save a file, and the export stopped. Turn off “Ask where to save each file before downloading” in Chrome settings, or save to a folder you choose (extension settings) or tick “Save as .zip” below. If the Chrome setting is already off, just save the chat."
-  },
   "openDownloadSettings": {
     "message": "Open download settings"
   },

@@ -10,7 +10,6 @@ import { jobCounts, isJobActive, type JobState } from '../../shared/job';
 import { locationLabel } from '../../shared/location';
 import { send, type ExportResult } from '../../shared/messages';
 import { detectPlatform, PLATFORM_LABEL, type Platform } from '../../shared/platform';
-import { isSaveDialogSeen } from '../../shared/save-dialog';
 import {
   ensureFolderAccess,
   FailedFiles,
@@ -125,14 +124,6 @@ function CopyIcon() {
   );
 }
 
-function useSaveDialogSeen(): boolean {
-  const [seen, setSeen] = useState(false);
-  useEffect(() => {
-    void isSaveDialogSeen().then(setSeen, () => setSeen(false));
-  }, []);
-  return seen;
-}
-
 function statusText(tab: ActiveTab): string {
   if (!tab.platform) return t('popupUnsupported');
   if (tab.isProject) return t(tab.platform === 'gemini' ? 'popupNotebookPage' : 'popupProjectPage');
@@ -173,8 +164,6 @@ export function Popup() {
   const shortcut = useShortcut();
   const [settings, updateSettings] = useSettings();
   const job = useJob();
-  const saveDialogSeen = useSaveDialogSeen();
-  const asksPerFile = settings?.destination === 'downloads' && !settings.saveAsZip;
   const [state, setState] = useState<ExportState>({ status: 'idle' });
   const project = useTabProject(tab);
   // The export page opens on the platform of the open tab.
@@ -251,9 +240,6 @@ export function Popup() {
       <h1>{t('extName')}</h1>
       {tab && <p class="muted">{statusText(tab)}</p>}
       {tab === null && <p class="muted">{t('popupUnsupported')}</p>}
-      {asksPerFile && saveDialogSeen && tab?.isChat && state.status !== 'finished' && (
-        <SaveDialogWarning earlier />
-      )}
 
       {settings && (
         <>

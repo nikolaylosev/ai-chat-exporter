@@ -87,6 +87,8 @@ chrome.commands.onCommand.addListener((command, tab) => {
 
 chrome.runtime.onInstalled.addListener(({ reason }) => {
   log.info(`Installed (${reason}), version ${chrome.runtime.getManifest().version}`);
+  // Up to 0.2.16 the popup kept warning about a past Save As dialog; the flag is gone.
+  void chrome.storage.local.remove('saveDialogSeen').catch(() => undefined);
 });
 
 // A bulk export outlives the service worker: pick it up when the worker starts again.

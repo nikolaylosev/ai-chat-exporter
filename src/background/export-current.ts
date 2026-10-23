@@ -4,11 +4,10 @@ import { t } from '../shared/i18n';
 import { log } from '../shared/logger';
 import { sendToTab, type CopyResult, type ExportResult, type PanelView } from '../shared/messages';
 import { detectPlatform } from '../shared/platform';
-import { setSaveDialogSeen } from '../shared/save-dialog';
 import { loadSettings, type Settings } from '../shared/settings';
 import { planConversationExport, renderConversationExport } from './conversation-export';
 import { setBadge as setTabBadge, type BadgeState } from './badge';
-import { asksPerFile, exportConversation } from './export-conversation';
+import { exportConversation } from './export-conversation';
 import { renderLabels } from './labels';
 import { registry } from './registry';
 import { ensureContentScript } from './tabs';
@@ -116,22 +115,6 @@ async function runExport(
   }
 }
 
-/**
- * A stop at a Save As dialog is remembered so the popup can warn before the next
- * export; a successful export means the dialog no longer appears.
- */
-async function rememberSaveDialog(result: ExportResult): Promise<void> {
-  const seen = !result.ok && result.code === 'save-dialog';
-  if (!seen && !result.ok) return;
-  try {
-    // A folder or ZIP export says nothing about Chrome's per-file question.
-    if (!seen && !asksPerFile(await loadSettings())) return;
-    await setSaveDialogSeen(seen);
-  } catch (error) {
-    log.warn('Could not store the Save As dialog flag', error);
-  }
-}
-
 /** Exports the conversation open in a tab. Never throws; failures come back as a result. */
 /** `overrides` change the settings for this export only, e.g. the page button's "text only". */
 export async function exportCurrent(
@@ -149,7 +132,6 @@ export async function exportCurrent(
 
   // A repeated trigger is ignored silently: the first export is still running.
   if (!result.ok && result.code === 'busy') return result;
-  await rememberSaveDialog(result);
   // Cancelling the Save As dialog is the user's choice: no mark on the icon.
   const cancelled =
     !result.ok && (result.code === 'save-cancelled' || result.code === 'save-dialog');

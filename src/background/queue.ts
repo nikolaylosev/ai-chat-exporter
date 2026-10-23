@@ -13,7 +13,6 @@ import { log } from '../shared/logger';
 import { setBadge as setIconBadge, type BadgeState } from './badge';
 import { sendToTab, type JobStartItem, type SavedLocation } from '../shared/messages';
 import { PLATFORM_LABEL, type Platform } from '../shared/platform';
-import { setSaveDialogSeen } from '../shared/save-dialog';
 import { exportRootFolder, loadSettings } from '../shared/settings';
 import { DownloadsSink } from '../sinks/downloads-sink';
 import { FolderSink, ZipArchive } from '../sinks/offscreen-sinks';
@@ -270,7 +269,6 @@ async function runJob(job: JobState): Promise<void> {
       const code = errorCode(error);
       job.stopReason = { code, message: describeError(error) };
       log.warn('Bulk export stopped', error);
-      if (code === 'save-dialog') await setSaveDialogSeen(true).catch(() => undefined);
     }
 
     if ((await finish(job, archive, tab, lastLocation, projectLocation)) !== 'again') break;

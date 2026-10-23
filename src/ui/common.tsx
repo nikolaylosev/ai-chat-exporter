@@ -36,11 +36,11 @@ export function useShortcut(): string | undefined {
   return shortcut;
 }
 
-/** `earlier`: shown before an export, because the previous one stopped at the dialog. */
-export function SaveDialogWarning({ earlier = false }: { earlier?: boolean }) {
+/** After a cancelled file: what to change if Chrome asks where to save each file. */
+export function SaveDialogWarning() {
   return (
     <div class="notice" role="alert">
-      <p>{t(earlier ? 'saveDialogWarningEarlier' : 'saveDialogWarning')}</p>
+      <p>{t('saveDialogWarning')}</p>
       <p>
         <button type="button" class="link" onClick={openDownloadSettings}>
           {t('openDownloadSettings')}

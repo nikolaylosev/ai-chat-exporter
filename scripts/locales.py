@@ -199,10 +199,6 @@ STRINGS = {
         "If Chrome asked where to save the file: turn off “Ask where to save each file before downloading” in Chrome settings, otherwise every exported file opens a dialog. Or save to a folder you choose (extension settings) or tick “Save as .zip” when saving.",
         "Если Chrome спрашивал, куда сохранить файл: отключите «Всегда указывать место для скачивания» в настройках Chrome, иначе каждый файл экспорта откроет диалог. Или выберите сохранение в свою папку (настройки расширения) или отметьте «Сохранить в .zip» при сохранении.",
     ),
-    "saveDialogWarningEarlier": (
-        "Last time Chrome asked where to save a file, and the export stopped. Turn off “Ask where to save each file before downloading” in Chrome settings, or save to a folder you choose (extension settings) or tick “Save as .zip” below. If the Chrome setting is already off, just save the chat.",
-        "В прошлый раз Chrome спросил, куда сохранить файл, и экспорт остановился. Отключите «Всегда указывать место для скачивания» в настройках Chrome или выберите сохранение в свою папку (настройки расширения) или отметьте «Сохранить в .zip» ниже. Если настройка Chrome уже отключена, просто сохраните чат.",
-    ),
     "openDownloadSettings": ("Open download settings", "Открыть настройки скачивания"),
     "openSettings": ("Settings", "Настройки"),
     # Notifications
