@@ -411,6 +411,15 @@ STRINGS = {
     "pageMenuTextOnly": ("Save text only", "Сохранить только текст"),
     "pageMenuCopy": ("Copy as Markdown", "Копировать как Markdown"),
     "pageMenuToFolder": ("Save to a folder…", "Сохранить в папку…"),
+    "exportToFolder": ("To a folder…", "В папку…"),
+    "exportAskedHint": (
+        "To save into another folder without Chrome asking about each file, use “To a folder…” next to “Save selected”.",
+        "Чтобы сохранить в другую папку без вопроса Chrome про каждый файл, нажмите «В папку…» рядом с «Сохранить выбранные».",
+    ),
+    "exportToFolderHint": (
+        "Choose a folder: the selected chats and their files go straight into it, without Chrome asking about each file.",
+        "Выбрать папку: выбранные чаты с файлами запишутся прямо в неё, без вопроса Chrome про каждый файл.",
+    ),
     "pickFolderTitle": ("Save this chat to a folder", "Сохранить чат в папку"),
     "pickFolderHint": (
         "The chat and its files go straight into the folder you choose; Chrome does not ask about each file.",

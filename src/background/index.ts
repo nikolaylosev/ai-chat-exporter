@@ -78,8 +78,8 @@ handle('background', {
       return null;
     }
   },
-  'job:start': async ({ platform, items }) => {
-    await startJob(platform, items);
+  'job:start': async ({ platform, items, toFolder }) => {
+    await startJob(platform, items, toFolder ? { destination: 'folder' } : {});
     return null;
   },
   'job:cancel': async () => {
