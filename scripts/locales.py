@@ -416,6 +416,10 @@ STRINGS = {
     ),
     "pickFolderChoose": ("Choose a folder…", "Выбрать папку…"),
     "pickFolderLast": ("Save to “$1”", "Сохранить в «$1»"),
+    "pickFolderSaving": (
+        "Saving to “$1”… Keep this window open: it closes when the chat is saved.",
+        "Сохраняю в «$1»… Не закрывайте это окно: оно закроется, когда чат сохранится.",
+    ),
     "panelCopied": ("Copied to the clipboard: $1 messages.", "Скопировано в буфер обмена: сообщений $1."),
     "panelCopying": ("Copying…", "Копирую…"),
     "optionsShowPageButton": ("Save button on chat pages", "Кнопка сохранения на страницах чатов"),

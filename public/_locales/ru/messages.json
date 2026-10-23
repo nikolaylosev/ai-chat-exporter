@@ -1030,6 +1030,14 @@
       }
     }
   },
+  "pickFolderSaving": {
+    "message": "Сохраняю в «$ARG1$»… Не закрывайте это окно: оно закроется, когда чат сохранится.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
   "panelCopied": {
     "message": "Скопировано в буфер обмена: сообщений $ARG1$.",
     "placeholders": {

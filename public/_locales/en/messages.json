@@ -1030,6 +1030,14 @@
       }
     }
   },
+  "pickFolderSaving": {
+    "message": "Saving to “$ARG1$”… Keep this window open: it closes when the chat is saved.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
   "panelCopied": {
     "message": "Copied to the clipboard: $ARG1$ messages.",
     "placeholders": {
