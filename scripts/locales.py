@@ -403,23 +403,6 @@ STRINGS = {
     "pageMenuWithFiles": ("Save chat with files", "Сохранить чат с файлами"),
     "pageMenuTextOnly": ("Save text only", "Сохранить только текст"),
     "pageMenuCopy": ("Copy as Markdown", "Копировать как Markdown"),
-    "pageMenuToFolder": ("Save to a folder…", "Сохранить в папку…"),
-    "exportToFolder": ("To a folder…", "В папку…"),
-    "exportToFolderHint": (
-        "Choose a folder: the selected chats and their files go straight into it, without Chrome asking about each file.",
-        "Выбрать папку: выбранные чаты с файлами запишутся прямо в неё, без вопроса Chrome про каждый файл.",
-    ),
-    "pickFolderTitle": ("Save this chat to a folder", "Сохранить чат в папку"),
-    "pickFolderHint": (
-        "The chat and its files go straight into the folder you choose; Chrome does not ask about each file.",
-        "Чат и его файлы запишутся прямо в выбранную папку; Chrome не будет спрашивать про каждый файл.",
-    ),
-    "pickFolderChoose": ("Choose a folder…", "Выбрать папку…"),
-    "pickFolderLast": ("Save to “$1”", "Сохранить в «$1»"),
-    "pickFolderSaving": (
-        "Saving to “$1”… Keep this window open: it closes when the chat is saved.",
-        "Сохраняю в «$1»… Не закрывайте это окно: оно закроется, когда чат сохранится.",
-    ),
     "panelCopied": ("Copied to the clipboard: $1 messages.", "Скопировано в буфер обмена: сообщений $1."),
     "panelCopying": ("Copying…", "Копирую…"),
     "optionsShowPageButton": ("Save button on chat pages", "Кнопка сохранения на страницах чатов"),

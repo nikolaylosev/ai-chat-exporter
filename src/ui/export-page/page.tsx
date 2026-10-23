@@ -15,7 +15,6 @@ import {
   useJob,
   useSettings,
   FilesCheckbox,
-  pickExportFolder,
 } from '../common';
 import {
   DEFAULT_FILTER,
@@ -413,19 +412,14 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
       return next;
     });
 
-  const start = async (toFolder = false) => {
+  const start = async () => {
     if (!settings) return;
     setStartError('');
-    if (toFolder) {
-      const picked = await pickExportFolder();
-      if (picked === 'closed') return;
-      if (picked) return setStartError(picked);
-    }
     // Keep the list's order, newest first, whatever the current sort.
     const items = conversations
       .filter((c) => selected.has(c.id))
       .map((c) => ({ id: c.id, title: c.title, updatedAt: c.updatedAt }));
-    const error = await startExportJob(settings, items, platform, toFolder);
+    const error = await startExportJob(settings, items, platform);
     if (error) setStartError(error);
     else onStarted();
   };
@@ -631,14 +625,6 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
             >
               {t('exportStart', String(selected.size))}
             </button>
-            <button
-              type="button"
-              title={t('exportToFolderHint')}
-              disabled={selected.size === 0 || busy || !settings}
-              onClick={() => void start(true)}
-            >
-              {t('exportToFolder')}
-            </button>
             {startError && <p class="error">{startError}</p>}
             {busy && <p class="muted">{t('exportBusy')}</p>}
           </div>
@@ -697,14 +683,9 @@ function ProjectsTab({ platform, settings, updateSettings, job, showJob, onStart
       return next;
     });
 
-  const start = async (toFolder = false) => {
+  const start = async () => {
     if (!settings) return;
     setStartError('');
-    if (toFolder) {
-      const picked = await pickExportFolder();
-      if (picked === 'closed') return;
-      if (picked) return setStartError(picked);
-    }
     const items = projects
       .filter((p) => selected.has(p.id))
       .map((p) => ({
@@ -714,7 +695,7 @@ function ProjectsTab({ platform, settings, updateSettings, job, showJob, onStart
         updatedAt: p.updatedAt,
         withChats: true,
       }));
-    const error = await startExportJob(settings, items, platform, toFolder);
+    const error = await startExportJob(settings, items, platform);
     if (error) setStartError(error);
     else onStarted();
   };
@@ -849,14 +830,6 @@ function ProjectsTab({ platform, settings, updateSettings, job, showJob, onStart
               onClick={() => void start()}
             >
               {t(notebooks ? 'exportStartNotebooks' : 'exportStartProjects', String(selected.size))}
-            </button>
-            <button
-              type="button"
-              title={t('exportToFolderHint')}
-              disabled={selected.size === 0 || busy || !settings}
-              onClick={() => void start(true)}
-            >
-              {t('exportToFolder')}
             </button>
             {startError && <p class="error">{startError}</p>}
             {busy && <p class="muted">{t('exportBusy')}</p>}

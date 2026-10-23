@@ -1004,40 +1004,6 @@
   "pageMenuCopy": {
     "message": "Копировать как Markdown"
   },
-  "pageMenuToFolder": {
-    "message": "Сохранить в папку…"
-  },
-  "exportToFolder": {
-    "message": "В папку…"
-  },
-  "exportToFolderHint": {
-    "message": "Выбрать папку: выбранные чаты с файлами запишутся прямо в неё, без вопроса Chrome про каждый файл."
-  },
-  "pickFolderTitle": {
-    "message": "Сохранить чат в папку"
-  },
-  "pickFolderHint": {
-    "message": "Чат и его файлы запишутся прямо в выбранную папку; Chrome не будет спрашивать про каждый файл."
-  },
-  "pickFolderChoose": {
-    "message": "Выбрать папку…"
-  },
-  "pickFolderLast": {
-    "message": "Сохранить в «$ARG1$»",
-    "placeholders": {
-      "arg1": {
-        "content": "$1"
-      }
-    }
-  },
-  "pickFolderSaving": {
-    "message": "Сохраняю в «$ARG1$»… Не закрывайте это окно: оно закроется, когда чат сохранится.",
-    "placeholders": {
-      "arg1": {
-        "content": "$1"
-      }
-    }
-  },
   "panelCopied": {
     "message": "Скопировано в буфер обмена: сообщений $ARG1$.",
     "placeholders": {
