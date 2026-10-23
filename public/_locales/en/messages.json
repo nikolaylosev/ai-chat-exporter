@@ -1001,6 +1001,15 @@
   "optionsNoteFormatJson": {
     "message": "JSON (.json), for processing by programs"
   },
+  "pageButtonTitle": {
+    "message": "Save this chat (CodingCat AI Chat Exporter)"
+  },
+  "optionsShowPageButton": {
+    "message": "Save button on chat pages"
+  },
+  "optionsShowPageButtonHint": {
+    "message": "A small round button in the bottom right corner of a chat; it saves the chat like the keyboard shortcut."
+  },
   "optionsArtifactVersions": {
     "message": "Artifact versions"
   },

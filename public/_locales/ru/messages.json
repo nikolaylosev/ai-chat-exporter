@@ -1001,6 +1001,15 @@
   "optionsNoteFormatJson": {
     "message": "JSON (.json) — для обработки программами"
   },
+  "pageButtonTitle": {
+    "message": "Сохранить этот чат (CodingCat AI Chat Exporter)"
+  },
+  "optionsShowPageButton": {
+    "message": "Кнопка сохранения на страницах чатов"
+  },
+  "optionsShowPageButtonHint": {
+    "message": "Маленькая круглая кнопка в правом нижнем углу чата; сохраняет чат, как горячая клавиша."
+  },
   "optionsArtifactVersions": {
     "message": "Версии артефактов"
   },

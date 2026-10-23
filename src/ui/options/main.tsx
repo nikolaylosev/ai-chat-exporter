@@ -360,6 +360,12 @@ function Options() {
           </button>
         </p>
         <Check {...common} name="showNotifications" label={t('optionsShowNotifications')} />
+        <Check
+          {...common}
+          name="showPageButton"
+          label={t('optionsShowPageButton')}
+          hint={t('optionsShowPageButtonHint')}
+        />
       </Section>
 
       <p class="muted">{t('optionsMoreLater')}</p>

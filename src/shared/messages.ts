@@ -84,6 +84,8 @@ interface Contract {
   background: {
     'export:current': { request: { tabId: number }; response: ExportResult };
     'export:copy': { request: { tabId: number }; response: CopyResult };
+    /** The page button: the chat of the tab that asks, as the shortcut saves it. */
+    'export:this-tab': { request: Record<string, never>; response: ExportResult };
     /**
      * A platform tab with the content script ready, opened in the background if none
      * is open. The caller talks to it directly: a long list (Gemini, minutes) must not

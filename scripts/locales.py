@@ -406,6 +406,12 @@ STRINGS = {
     "optionsNoteFormatMarkdown": ("Markdown (.md), for Obsidian and notes apps", "Markdown (.md) — для Obsidian и приложений заметок"),
     "optionsNoteFormatHtml": ("HTML page (.html): opens in any browser, prints to PDF", "Страница HTML (.html): открывается в любом браузере, печатается в PDF"),
     "optionsNoteFormatJson": ("JSON (.json), for processing by programs", "JSON (.json) — для обработки программами"),
+    "pageButtonTitle": ("Save this chat (CodingCat AI Chat Exporter)", "Сохранить этот чат (CodingCat AI Chat Exporter)"),
+    "optionsShowPageButton": ("Save button on chat pages", "Кнопка сохранения на страницах чатов"),
+    "optionsShowPageButtonHint": (
+        "A small round button in the bottom right corner of a chat; it saves the chat like the keyboard shortcut.",
+        "Маленькая круглая кнопка в правом нижнем углу чата; сохраняет чат, как горячая клавиша.",
+    ),
     "optionsArtifactVersions": ("Artifact versions", "Версии артефактов"),
     "optionsArtifactVersionsLatest": ("Latest only", "Только последняя"),
     "optionsArtifactVersionsAll": ("All versions", "Все версии"),

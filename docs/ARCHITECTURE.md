@@ -83,6 +83,7 @@ src/
   content/
     claude.ts               content script for claude.ai (isolated world)
     panel.tsx               result panel on the chat page after the keyboard shortcut
+    page-button.tsx         save button in the corner of a chat page (shadow root, setting to hide)
     gemini.ts               content script for gemini.google.com (isolated world)
     common.ts               shared by the content scripts: error codes, liveness check
     grok.ts                 content script for grok.com (isolated world)
@@ -598,3 +599,4 @@ Every new dependency is justified in its commit message.
 | 63  | A project always goes with its chats; the popup has no "Save all chats"                                         | The chats are what a project holds; "Select all" on the export page does the same                                               |
 | 64  | "Save with files" next to .zip; a small Copy button next to Save in the popup                                   | A choice made per export, not once in the settings; a chat is often wanted as text                                              |
 | 65  | HTML and JSON notes besides Markdown; HTML made from the Markdown with marked                                   | Asked for by users of other exporters; one source of layout, printing gives PDF                                                 |
+| 66  | A floating save button on chat pages, not one inside the site's toolbar                                         | The sites change their layout often; a button over the page needs no selectors                                                  |

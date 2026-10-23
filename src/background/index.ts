@@ -12,6 +12,11 @@ export const EXPORT_COMMAND = 'export-current-chat';
 handle('background', {
   'export:current': ({ tabId }) => exportCurrent(tabId, 'popup'),
   'export:copy': ({ tabId }) => copyCurrent(tabId),
+  'export:this-tab': (_payload, sender) => {
+    const tabId = sender.tab?.id;
+    if (tabId === undefined) throw new Error('export:this-tab comes from a tab');
+    return exportCurrent(tabId, 'command');
+  },
   'platform:tab': async ({ platform }) => {
     const tab = new WorkerTab(platform);
     const tabId = await tab.get();
