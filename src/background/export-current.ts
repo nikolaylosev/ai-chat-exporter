@@ -5,7 +5,7 @@ import { log } from '../shared/logger';
 import { sendToTab, type CopyResult, type ExportResult, type PanelView } from '../shared/messages';
 import { detectPlatform } from '../shared/platform';
 import { setSaveDialogSeen } from '../shared/save-dialog';
-import { loadSettings } from '../shared/settings';
+import { loadSettings, type Settings } from '../shared/settings';
 import { planConversationExport, renderConversationExport } from './conversation-export';
 import { setBadge as setTabBadge, type BadgeState } from './badge';
 import { asksPerFile, exportConversation } from './export-conversation';
@@ -74,14 +74,18 @@ async function openConversationId(tabId: number): Promise<string> {
   return id;
 }
 
-async function runExport(tabId: number, trigger: Trigger): Promise<ExportResult> {
+async function runExport(
+  tabId: number,
+  trigger: Trigger,
+  overrides: Partial<Settings>,
+): Promise<ExportResult> {
   const id = await openConversationId(tabId);
   if (running.has(id)) throw new CodedError('busy', `Already exporting ${id}`);
 
   running.add(id);
   try {
     await setBadge(tabId, 'working');
-    const settings = await loadSettings();
+    const settings = { ...(await loadSettings()), ...overrides };
     if (trigger === 'command' && settings.showNotifications) {
       await showFeedback(tabId, { state: 'running' });
     }
@@ -129,10 +133,15 @@ async function rememberSaveDialog(result: ExportResult): Promise<void> {
 }
 
 /** Exports the conversation open in a tab. Never throws; failures come back as a result. */
-export async function exportCurrent(tabId: number, trigger: Trigger): Promise<ExportResult> {
+/** `overrides` change the settings for this export only, e.g. the page button's "text only". */
+export async function exportCurrent(
+  tabId: number,
+  trigger: Trigger,
+  overrides: Partial<Settings> = {},
+): Promise<ExportResult> {
   let result: ExportResult;
   try {
-    result = await runExport(tabId, trigger);
+    result = await runExport(tabId, trigger, overrides);
   } catch (error) {
     (isUserOutcome(errorCode(error)) ? log.info : log.error)('Export failed', error);
     result = failure(error);
@@ -142,7 +151,8 @@ export async function exportCurrent(tabId: number, trigger: Trigger): Promise<Ex
   if (!result.ok && result.code === 'busy') return result;
   await rememberSaveDialog(result);
   // Cancelling the Save As dialog is the user's choice: no mark on the icon.
-  const cancelled = !result.ok && result.code === 'save-cancelled';
+  const cancelled =
+    !result.ok && (result.code === 'save-cancelled' || result.code === 'save-dialog');
   await setBadge(
     tabId,
     cancelled ? null : !result.ok ? 'failed' : result.failedAttachmentCount ? 'partial' : 'done',

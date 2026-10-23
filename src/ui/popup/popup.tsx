@@ -155,7 +155,9 @@ function Result({ result }: { result: ExportResult }) {
           <span class="path">{result.location.path}</span>
         </p>
       ) : (
-        <p class={`${result.code === 'save-cancelled' ? 'muted' : 'error'} result`}>
+        <p
+          class={`${result.code === 'save-cancelled' || result.code === 'save-dialog' ? 'muted' : 'error'} result`}
+        >
           {result.message}
         </p>
       )}

@@ -2,6 +2,7 @@ import { log } from '../shared/logger';
 import { handle, sendToTab } from '../shared/messages';
 import { keepDownloadNames } from './downloader';
 import { copyCurrent, exportCurrent } from './export-current';
+import { writeClipboard } from './offscreen-client';
 import { cancelJob, resumeJob, startJob } from './queue';
 import { detectPlatform } from '../shared/platform';
 import { registry } from './registry';
@@ -9,13 +10,22 @@ import { ensureContentScript, WorkerTab } from './tabs';
 
 export const EXPORT_COMMAND = 'export-current-chat';
 
+/** The tab a page's content script talks from. */
+function senderTab(sender: chrome.runtime.MessageSender): number {
+  const tabId = sender.tab?.id;
+  if (tabId === undefined) throw new Error('The message must come from a tab');
+  return tabId;
+}
+
 handle('background', {
   'export:current': ({ tabId }) => exportCurrent(tabId, 'popup'),
   'export:copy': ({ tabId }) => copyCurrent(tabId),
-  'export:this-tab': (_payload, sender) => {
-    const tabId = sender.tab?.id;
-    if (tabId === undefined) throw new Error('export:this-tab comes from a tab');
-    return exportCurrent(tabId, 'command');
+  'export:this-tab': ({ withFiles }, sender) =>
+    exportCurrent(senderTab(sender), 'command', { saveAttachments: withFiles }),
+  'copy:this-tab': async (_payload, sender) => {
+    const copied = await copyCurrent(senderTab(sender));
+    if (copied.ok) await writeClipboard(copied.markdown);
+    return copied;
   },
   'platform:tab': async ({ platform }) => {
     const tab = new WorkerTab(platform);

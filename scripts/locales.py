@@ -192,8 +192,8 @@ STRINGS = {
     "popupShortcut": ("Shortcut: $1", "Горячая клавиша: $1"),
     "popupShortcutNotSet": ("Keyboard shortcut is not set.", "Горячая клавиша не назначена."),
     "saveDialogWarning": (
-        "Chrome asks where to save each file. Turn off “Ask where to save each file before downloading” in Chrome settings, otherwise every exported file opens a dialog. Or save to a folder you choose (extension settings) or tick “Save as .zip” when saving.",
-        "Chrome спрашивает, куда сохранять каждый файл. Отключите «Всегда указывать место для скачивания» в настройках Chrome, иначе каждый файл экспорта откроет диалог. Или выберите сохранение в свою папку (настройки расширения) или отметьте «Сохранить в .zip» при сохранении.",
+        "If Chrome asked where to save the file: turn off “Ask where to save each file before downloading” in Chrome settings, otherwise every exported file opens a dialog. Or save to a folder you choose (extension settings) or tick “Save as .zip” when saving.",
+        "Если Chrome спрашивал, куда сохранить файл: отключите «Всегда указывать место для скачивания» в настройках Chrome, иначе каждый файл экспорта откроет диалог. Или выберите сохранение в свою папку (настройки расширения) или отметьте «Сохранить в .zip» при сохранении.",
     ),
     "saveDialogWarningEarlier": (
         "Last time Chrome asked where to save a file, and the export stopped. Turn off “Ask where to save each file before downloading” in Chrome settings, or save to a folder you choose (extension settings) or tick “Save as .zip” below. If the Chrome setting is already off, just save the chat.",
@@ -261,8 +261,8 @@ STRINGS = {
     ),
     "error_busy": ("This chat is already being saved.", "Этот чат уже сохраняется."),
     "error_save_dialog": (
-        "Export stopped: Chrome asks where to save each file.",
-        "Экспорт остановлен: Chrome спрашивает, куда сохранять каждый файл.",
+        "Saving was cancelled, so the export stopped.",
+        "Сохранение отменено, экспорт остановлен.",
     ),
     "error_save_cancelled": ("Saving was cancelled.", "Сохранение отменено."),
     "error_archive_lost": (
@@ -406,11 +406,16 @@ STRINGS = {
     "optionsNoteFormatMarkdown": ("Markdown (.md), for Obsidian and notes apps", "Markdown (.md) — для Obsidian и приложений заметок"),
     "optionsNoteFormatHtml": ("HTML page (.html): opens in any browser, prints to PDF", "Страница HTML (.html): открывается в любом браузере, печатается в PDF"),
     "optionsNoteFormatJson": ("JSON (.json), for processing by programs", "JSON (.json) — для обработки программами"),
-    "pageButtonTitle": ("Save this chat (CodingCat AI Chat Exporter)", "Сохранить этот чат (CodingCat AI Chat Exporter)"),
+    "pageButtonTitle": ("Save or copy this chat (CodingCat AI Chat Exporter)", "Сохранить или скопировать этот чат (CodingCat AI Chat Exporter)"),
+    "pageMenuWithFiles": ("Save chat with files", "Сохранить чат с файлами"),
+    "pageMenuTextOnly": ("Save text only", "Сохранить только текст"),
+    "pageMenuCopy": ("Copy as Markdown", "Копировать как Markdown"),
+    "panelCopied": ("Copied to the clipboard: $1 messages.", "Скопировано в буфер обмена: сообщений $1."),
+    "panelCopying": ("Copying…", "Копирую…"),
     "optionsShowPageButton": ("Save button on chat pages", "Кнопка сохранения на страницах чатов"),
     "optionsShowPageButtonHint": (
-        "A small round button in the bottom right corner of a chat; it saves the chat like the keyboard shortcut.",
-        "Маленькая круглая кнопка в правом нижнем углу чата; сохраняет чат, как горячая клавиша.",
+        "A small round button in the bottom right corner of a chat, with a menu: save the chat with its files, save its text only, or copy it as Markdown.",
+        "Маленькая круглая кнопка в правом нижнем углу чата с меню: сохранить чат с файлами, только текст или скопировать как Markdown.",
     ),
     "optionsArtifactVersions": ("Artifact versions", "Версии артефактов"),
     "optionsArtifactVersionsLatest": ("Latest only", "Только последняя"),

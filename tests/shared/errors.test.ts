@@ -6,7 +6,7 @@ describe('isUserOutcome', () => {
     expect(isUserOutcome('save-cancelled')).toBe(true);
     expect(isUserOutcome('not-a-chat')).toBe(true);
     expect(isUserOutcome('failed')).toBe(false);
-    expect(isUserOutcome('save-dialog')).toBe(false);
+    expect(isUserOutcome('save-dialog')).toBe(true);
     expect(isUserOutcome('rate-limited')).toBe(false);
   });
 });

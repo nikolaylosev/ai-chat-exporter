@@ -49,6 +49,8 @@ export function userMessage(error: unknown): string {
  */
 const USER_OUTCOMES: ReadonlySet<ErrorCode> = new Set([
   'save-cancelled',
+  // A cancelled file download: Chrome does not say whether a Save As dialog was shown.
+  'save-dialog',
   'not-a-chat',
   'unsupported-page',
   'busy',

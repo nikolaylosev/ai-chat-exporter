@@ -22,9 +22,9 @@ async function ensureOffscreenDocument(): Promise<void> {
   creating ??= chrome.offscreen
     .createDocument({
       url: OFFSCREEN_PATH,
-      reasons: [chrome.offscreen.Reason.BLOBS],
+      reasons: [chrome.offscreen.Reason.BLOBS, chrome.offscreen.Reason.CLIPBOARD],
       justification:
-        'Create blob URLs for generated files and ZIP archives so they can be downloaded, and write exports into the folder the user picked.',
+        'Create blob URLs for generated files and ZIP archives so they can be downloaded, write exports into the folder the user picked, and copy a chat to the clipboard when the user asks.',
     })
     .finally(() => {
       creating = null;
@@ -71,3 +71,9 @@ export const offscreenFiles: OffscreenFiles = {
   },
   revokeBlobUrl,
 };
+
+/** Puts text on the clipboard from the offscreen document: the worker has no clipboard. */
+export async function writeClipboard(text: string): Promise<void> {
+  await ensureOffscreenDocument();
+  await send('offscreen', 'clipboard:write', { text });
+}

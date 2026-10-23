@@ -67,7 +67,10 @@ export type CopyResult =
   | { ok: false; code: ErrorCode; message: string };
 
 /** What the panel on a chat page shows after the keyboard shortcut. */
-export type PanelView = { state: 'running' } | { state: 'result'; result: ExportResult };
+export type PanelView =
+  | { state: 'running'; copying?: boolean }
+  | { state: 'result'; result: ExportResult }
+  | { state: 'copied'; messageCount: number };
 
 export interface JobStartItem {
   kind?: 'conversation' | 'project';
@@ -85,7 +88,9 @@ interface Contract {
     'export:current': { request: { tabId: number }; response: ExportResult };
     'export:copy': { request: { tabId: number }; response: CopyResult };
     /** The page button: the chat of the tab that asks, as the shortcut saves it. */
-    'export:this-tab': { request: Record<string, never>; response: ExportResult };
+    'export:this-tab': { request: { withFiles: boolean }; response: ExportResult };
+    /** The page button's Copy: the asking tab's chat onto the clipboard. */
+    'copy:this-tab': { request: Record<string, never>; response: CopyResult };
     /**
      * A platform tab with the content script ready, opened in the background if none
      * is open. The caller talks to it directly: a long list (Gemini, minutes) must not
@@ -151,6 +156,7 @@ interface Contract {
   };
   offscreen: {
     'blob:create': { request: { text: string; mime: string }; response: { url: string } };
+    'clipboard:write': { request: { text: string }; response: null };
     'blob:revoke': { request: { url: string }; response: null };
     /** Checks the chosen folder; picks a free `name (2)` unless overwriting. */
     'folder:prepare': {

@@ -2,13 +2,16 @@ import { render } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { t } from '../shared/i18n';
 import { send } from '../shared/messages';
-import { loadSettings } from '../shared/settings';
+import { loadSettings, NOTE_EXTENSION, type Settings } from '../shared/settings';
+import { showPanel } from './panel';
 
 /**
- * A small button in the corner of a chat page that saves the open chat, as the
- * keyboard shortcut does (the result shows in the panel). It floats over the
- * page instead of sitting in the site's own toolbar, which changes too often to
- * hook into. Shown on chat pages only, unless turned off in the settings.
+ * A small button in the corner of a chat page with a menu: save the chat with
+ * its files, save its text only, or copy it as Markdown. Saving works as the
+ * keyboard shortcut does (the result shows in the panel); the menu's choice
+ * applies to this export only. The button floats over the page instead of
+ * sitting in the site's own toolbar, which changes too often to hook into. Shown
+ * on chat pages only, unless turned off in the settings.
  */
 
 const HOST_ID = 'ai-chat-exporter-page-button';
@@ -17,19 +20,32 @@ const CHECK_MS = 1000;
 
 const STYLE = `
 :host { all: initial; }
-button {
+.round {
   position: fixed; right: 20px; bottom: 20px; z-index: 2147483646;
   width: 40px; height: 40px; border-radius: 50%; padding: 0;
   display: flex; align-items: center; justify-content: center;
   border: 1px solid rgba(255, 255, 255, 0.18); background: #14161f; color: #ffb000;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28); cursor: pointer;
-  transition: transform 0.12s ease, opacity 0.12s ease;
+  transition: transform 0.12s ease;
 }
-button:hover { transform: scale(1.08); }
-button:focus-visible { outline: 2px solid #ffb000; outline-offset: 2px; }
-button:disabled { opacity: 0.6; cursor: default; transform: none; }
-svg { width: 20px; height: 20px; }
-@media (prefers-reduced-motion: reduce) { button { transition: none; } }
+.round:hover { transform: scale(1.08); }
+.round:focus-visible, .menu button:focus-visible { outline: 2px solid #ffb000; outline-offset: 2px; }
+.round svg { width: 20px; height: 20px; }
+.menu {
+  position: fixed; right: 20px; bottom: 68px; z-index: 2147483646;
+  min-width: 230px; padding: 6px; border-radius: 10px;
+  background: #14161f; border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  font: 13px/1.4 system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+.menu button {
+  display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 8px 10px; border: none; border-radius: 6px; background: none;
+  color: #f2f2ee; font: inherit; text-align: left; cursor: pointer;
+}
+.menu button:hover { background: rgba(255, 255, 255, 0.08); }
+.menu .ext { color: #9aa0ad; font-size: 12px; }
+@media (prefers-reduced-motion: reduce) { .round { transition: none; } }
 `;
 
 function SaveIcon() {
@@ -49,13 +65,41 @@ function SaveIcon() {
   );
 }
 
+/** What a save will make: the note's extension, or `.zip` when saving as an archive. */
+function savedAs(settings: Settings): string {
+  return settings.saveAsZip ? '.zip' : `.${NOTE_EXTENSION[settings.noteFormat]}`;
+}
+
+async function save(withFiles: boolean): Promise<void> {
+  try {
+    // The worker shows progress and the result in the page's panel.
+    await send('background', 'export:this-tab', { withFiles });
+  } catch {
+    // The extension was reloaded or updated; the page needs a reload.
+  }
+}
+
+async function copy(): Promise<void> {
+  showPanel({ state: 'running', copying: true });
+  try {
+    const copied = await send('background', 'copy:this-tab', {});
+    showPanel(
+      copied.ok
+        ? { state: 'copied', messageCount: copied.messageCount }
+        : { state: 'result', result: copied },
+    );
+  } catch {
+    // The extension was reloaded or updated; the page needs a reload.
+  }
+}
+
 function PageButton({ isChat }: { isChat: () => boolean }) {
-  const [enabled, setEnabled] = useState(false);
+  const [settings, setSettings] = useState<Settings | null>(null);
   const [onChat, setOnChat] = useState(isChat());
-  const [busy, setBusy] = useState(false);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const read = () => void loadSettings().then((s) => setEnabled(s.showPageButton));
+    const read = () => void loadSettings().then(setSettings);
     read();
     const changed = (changes: Record<string, unknown>, area: string) => {
       if (area === 'local' && 'settings' in changes) read();
@@ -69,28 +113,56 @@ function PageButton({ isChat }: { isChat: () => boolean }) {
     return () => clearInterval(timer);
   }, [isChat]);
 
-  if (!enabled || !onChat) return null;
-  const save = async () => {
-    setBusy(true);
-    try {
-      // The worker shows progress and the result in the page's panel.
-      await send('background', 'export:this-tab', {});
-    } catch {
-      // The extension was reloaded or updated; the page needs a reload.
-    } finally {
-      setBusy(false);
-    }
+  // The menu closes on Escape and on a click anywhere else.
+  useEffect(() => {
+    if (!open) return undefined;
+    const key = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    const away = (e: PointerEvent) => {
+      const host = document.getElementById(HOST_ID);
+      if (!host || !e.composedPath().includes(host)) setOpen(false);
+    };
+    document.addEventListener('keydown', key);
+    document.addEventListener('pointerdown', away, true);
+    return () => {
+      document.removeEventListener('keydown', key);
+      document.removeEventListener('pointerdown', away, true);
+    };
+  }, [open]);
+
+  if (!settings?.showPageButton || !onChat) return null;
+  const pick = (action: () => Promise<void>) => {
+    setOpen(false);
+    void action();
   };
   return (
-    <button
-      type="button"
-      title={t('pageButtonTitle')}
-      aria-label={t('pageButtonTitle')}
-      disabled={busy}
-      onClick={() => void save()}
-    >
-      <SaveIcon />
-    </button>
+    <div>
+      {open && (
+        <div class="menu" role="menu">
+          <button type="button" role="menuitem" onClick={() => pick(() => save(true))}>
+            <span>{t('pageMenuWithFiles')}</span>
+            <span class="ext">{savedAs(settings)}</span>
+          </button>
+          <button type="button" role="menuitem" onClick={() => pick(() => save(false))}>
+            <span>{t('pageMenuTextOnly')}</span>
+            <span class="ext">{savedAs(settings)}</span>
+          </button>
+          <button type="button" role="menuitem" onClick={() => pick(copy)}>
+            <span>{t('pageMenuCopy')}</span>
+          </button>
+        </div>
+      )}
+      <button
+        type="button"
+        class="round"
+        title={t('pageButtonTitle')}
+        aria-label={t('pageButtonTitle')}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpen(!open)}
+      >
+        <SaveIcon />
+      </button>
+    </div>
   );
 }
 

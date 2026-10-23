@@ -563,7 +563,7 @@
     "message": "Keyboard shortcut is not set."
   },
   "saveDialogWarning": {
-    "message": "Chrome asks where to save each file. Turn off “Ask where to save each file before downloading” in Chrome settings, otherwise every exported file opens a dialog. Or save to a folder you choose (extension settings) or tick “Save as .zip” when saving."
+    "message": "If Chrome asked where to save the file: turn off “Ask where to save each file before downloading” in Chrome settings, otherwise every exported file opens a dialog. Or save to a folder you choose (extension settings) or tick “Save as .zip” when saving."
   },
   "saveDialogWarningEarlier": {
     "message": "Last time Chrome asked where to save a file, and the export stopped. Turn off “Ask where to save each file before downloading” in Chrome settings, or save to a folder you choose (extension settings) or tick “Save as .zip” below. If the Chrome setting is already off, just save the chat."
@@ -666,7 +666,7 @@
     "message": "This chat is already being saved."
   },
   "error_save_dialog": {
-    "message": "Export stopped: Chrome asks where to save each file."
+    "message": "Saving was cancelled, so the export stopped."
   },
   "error_save_cancelled": {
     "message": "Saving was cancelled."
@@ -1002,13 +1002,33 @@
     "message": "JSON (.json), for processing by programs"
   },
   "pageButtonTitle": {
-    "message": "Save this chat (CodingCat AI Chat Exporter)"
+    "message": "Save or copy this chat (CodingCat AI Chat Exporter)"
+  },
+  "pageMenuWithFiles": {
+    "message": "Save chat with files"
+  },
+  "pageMenuTextOnly": {
+    "message": "Save text only"
+  },
+  "pageMenuCopy": {
+    "message": "Copy as Markdown"
+  },
+  "panelCopied": {
+    "message": "Copied to the clipboard: $ARG1$ messages.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "panelCopying": {
+    "message": "Copying…"
   },
   "optionsShowPageButton": {
     "message": "Save button on chat pages"
   },
   "optionsShowPageButtonHint": {
-    "message": "A small round button in the bottom right corner of a chat; it saves the chat like the keyboard shortcut."
+    "message": "A small round button in the bottom right corner of a chat, with a menu: save the chat with its files, save its text only, or copy it as Markdown."
   },
   "optionsArtifactVersions": {
     "message": "Artifact versions"

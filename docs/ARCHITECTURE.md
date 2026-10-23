@@ -83,7 +83,7 @@ src/
   content/
     claude.ts               content script for claude.ai (isolated world)
     panel.tsx               result panel on the chat page after the keyboard shortcut
-    page-button.tsx         save button in the corner of a chat page (shadow root, setting to hide)
+    page-button.tsx         button in the corner of a chat page with a menu: with files, text only, copy
     gemini.ts               content script for gemini.google.com (isolated world)
     common.ts               shared by the content scripts: error codes, liveness check
     grok.ts                 content script for grok.com (isolated world)
@@ -500,7 +500,7 @@ The queue lives in the service worker.
 
 ## 13. Permissions and privacy
 
-- `permissions` are added phase by phase, only when code starts using them. Current set: `downloads`, `storage`, `offscreen`, `activeTab`, `scripting`, `notifications`, `clipboardWrite` (the popup copies a chat's Markdown once the worker has read the chat, which can take longer than a click's activation lasts). `tabs` is not needed: `activeTab` and the platforms' host permissions give access to the tab URL. The README lists each permission with the reason.
+- `permissions` are added phase by phase, only when code starts using them. Current set: `downloads`, `storage`, `offscreen`, `activeTab`, `scripting`, `notifications`, `clipboardWrite` (the popup copies a chat's Markdown once the worker has read the chat, which can take longer than a click's activation lasts; the page button's copy goes through the offscreen document, created with the `CLIPBOARD` reason as well as `BLOBS`). `tabs` is not needed: `activeTab` and the platforms' host permissions give access to the tab URL. The README lists each permission with the reason.
 - `commands` for the keyboard shortcut. Users can rebind it in `chrome://extensions/shortcuts`; the options page shows the current binding.
 - `host_permissions`: `https://claude.ai/*`, `https://gemini.google.com/*`, and Gemini's file hosts `https://lh3.googleusercontent.com/*`, `https://lh3.google.com/*` (where the first one redirects some images) and `https://contribution.usercontent.google.com/*`, Gemini's script hosts `https://www.gstatic.com/*` and `https://gemini.gstatic.com/*` (read only to find the search query again, see [Gemini](#gemini)), `https://grok.com/*` with its file host `https://assets.grok.com/*`, and `https://chatgpt.com/*`, whose signed file links are on the same host. The file hosts are needed only when the offscreen document fetches files for a chosen folder or a ZIP, since `chrome.downloads` needs no permission. The list is kept minimal and each entry is justified in the README.
 - No external servers. All data stays on the user's machine.
@@ -599,4 +599,4 @@ Every new dependency is justified in its commit message.
 | 63  | A project always goes with its chats; the popup has no "Save all chats"                                         | The chats are what a project holds; "Select all" on the export page does the same                                               |
 | 64  | "Save with files" next to .zip; a small Copy button next to Save in the popup                                   | A choice made per export, not once in the settings; a chat is often wanted as text                                              |
 | 65  | HTML and JSON notes besides Markdown; HTML made from the Markdown with marked                                   | Asked for by users of other exporters; one source of layout, printing gives PDF                                                 |
-| 66  | A floating save button on chat pages, not one inside the site's toolbar                                         | The sites change their layout often; a button over the page needs no selectors                                                  |
+| 66  | A floating button with a menu on chat pages, not one inside the site's toolbar                                  | Sites change their layout; the menu says what a click saves, unlike a bare button                                               |
