@@ -107,6 +107,22 @@ function ProjectJob({ job }: { job: JobState }) {
   );
 }
 
+/** A folder: the usual mark for saving somewhere chosen. */
+function FolderIcon() {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M1.75 4.25a1 1 0 0 1 1-1h3.4l1.6 1.6h5.5a1 1 0 0 1 1 1v6.4a1 1 0 0 1-1 1H2.75a1 1 0 0 1-1-1z" />
+    </svg>
+  );
+}
+
 /** Two overlapping sheets: the usual mark for copying. */
 function CopyIcon() {
   return (
@@ -256,6 +272,23 @@ export function Popup() {
           onClick={() => tab && void exportChat(tab.id)}
         >
           {state.status === 'running' && !state.copying ? t('popupSaving') : t('popupSaveChat')}
+        </button>
+        <button
+          type="button"
+          class="folder"
+          title={t('pageMenuToFolder')}
+          aria-label={t('pageMenuToFolder')}
+          disabled={!tab?.isChat || !settings || state.status === 'running'}
+          onClick={() => {
+            if (!tab) return;
+            // The folder window does the rest; the chat page shows the result.
+            void send('background', 'folder:pick', { tabId: tab.id }).then(
+              () => window.close(),
+              () => undefined,
+            );
+          }}
+        >
+          <FolderIcon />
         </button>
         <button
           type="button"

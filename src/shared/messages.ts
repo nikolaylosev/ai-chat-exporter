@@ -93,6 +93,10 @@ interface Contract {
       request: { withFiles?: boolean; zip?: boolean };
       response: ExportResult;
     };
+    /** Opens the "Save to folder…" window for a tab's chat (the asking tab's by default). */
+    'folder:pick': { request: { tabId?: number; withFiles?: boolean }; response: null };
+    /** From that window: the chat of `tabId` into the folder just chosen. */
+    'export:to-folder': { request: { tabId: number; withFiles?: boolean }; response: ExportResult };
     /** The page button's Copy: the asking tab's chat onto the clipboard. */
     'copy:this-tab': { request: Record<string, never>; response: CopyResult };
     /**

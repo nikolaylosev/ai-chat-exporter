@@ -1016,6 +1016,26 @@
   "pageMenuCopy": {
     "message": "Копировать как Markdown"
   },
+  "pageMenuToFolder": {
+    "message": "Сохранить в папку…"
+  },
+  "pickFolderTitle": {
+    "message": "Сохранить чат в папку"
+  },
+  "pickFolderHint": {
+    "message": "Чат и его файлы запишутся прямо в выбранную папку; Chrome не будет спрашивать про каждый файл."
+  },
+  "pickFolderChoose": {
+    "message": "Выбрать папку…"
+  },
+  "pickFolderLast": {
+    "message": "Сохранить в «$ARG1$»",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
   "panelCopied": {
     "message": "Скопировано в буфер обмена: сообщений $ARG1$.",
     "placeholders": {

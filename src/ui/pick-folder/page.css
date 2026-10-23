@@ -1,0 +1,15 @@
+.pick {
+  padding: 18px 20px;
+}
+
+.pick h1 {
+  margin: 0 0 6px;
+  font-size: 16px;
+}
+
+.pick .buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 14px;
+}

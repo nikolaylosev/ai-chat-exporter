@@ -1016,6 +1016,26 @@
   "pageMenuCopy": {
     "message": "Copy as Markdown"
   },
+  "pageMenuToFolder": {
+    "message": "Save to a folder…"
+  },
+  "pickFolderTitle": {
+    "message": "Save this chat to a folder"
+  },
+  "pickFolderHint": {
+    "message": "The chat and its files go straight into the folder you choose; Chrome does not ask about each file."
+  },
+  "pickFolderChoose": {
+    "message": "Choose a folder…"
+  },
+  "pickFolderLast": {
+    "message": "Save to “$ARG1$”",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
   "panelCopied": {
     "message": "Copied to the clipboard: $ARG1$ messages.",
     "placeholders": {

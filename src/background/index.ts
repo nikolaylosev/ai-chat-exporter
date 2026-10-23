@@ -26,6 +26,23 @@ handle('background', {
       ...(withFiles === undefined ? {} : { saveAttachments: withFiles }),
       ...(zip ? { saveAsZip: true } : {}),
     }),
+  'folder:pick': async ({ tabId, withFiles }, sender) => {
+    const query = new URLSearchParams({ tab: String(tabId ?? senderTab(sender)) });
+    if (withFiles !== undefined) query.set('files', withFiles ? '1' : '0');
+    await chrome.windows.create({
+      url: chrome.runtime.getURL(`src/ui/pick-folder/index.html?${query.toString()}`),
+      type: 'popup',
+      width: 420,
+      height: 240,
+      focused: true,
+    });
+    return null;
+  },
+  'export:to-folder': ({ tabId, withFiles }) =>
+    exportCurrent(tabId, 'command', {
+      destination: 'folder',
+      ...(withFiles === undefined ? {} : { saveAttachments: withFiles }),
+    }),
   'copy:this-tab': async (_payload, sender) => {
     const copied = await copyCurrent(senderTab(sender));
     if (copied.ok) await writeClipboard(copied.markdown);

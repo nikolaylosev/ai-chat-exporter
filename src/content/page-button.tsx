@@ -82,6 +82,15 @@ async function save(withFiles: boolean): Promise<void> {
   }
 }
 
+/** Opens the extension's window to choose a folder; the export then goes there. */
+async function pickFolder(): Promise<void> {
+  try {
+    await send('background', 'folder:pick', {});
+  } catch {
+    // The extension was reloaded or updated; the page needs a reload.
+  }
+}
+
 async function copy(): Promise<void> {
   showPanel({ state: 'running', copying: true });
   try {
@@ -148,6 +157,9 @@ function PageButton({ isChat }: { isChat: () => boolean }) {
           <button type="button" role="menuitem" onClick={() => pick(() => save(false))}>
             <span>{t('pageMenuTextOnly')}</span>
             <span class="ext">{savedAs(settings)}</span>
+          </button>
+          <button type="button" role="menuitem" onClick={() => pick(pickFolder)}>
+            <span>{t('pageMenuToFolder')}</span>
           </button>
           <button type="button" role="menuitem" onClick={() => pick(copy)}>
             <span>{t('pageMenuCopy')}</span>
