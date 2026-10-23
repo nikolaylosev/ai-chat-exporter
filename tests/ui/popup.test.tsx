@@ -132,3 +132,56 @@ describe('popup: a cancelled save', () => {
     expect(message.className).not.toContain('error');
   });
 });
+
+describe('popup: note format', () => {
+  it('chooses the note format above the settings link', async () => {
+    const { local } = stubChrome({
+      activeTab: { id: 3, url: 'https://claude.ai/chat/00000000-0000-4000-8000-000000000001' },
+    });
+    render(<Popup />);
+    const select = await screen.findByRole<HTMLSelectElement>('combobox', { name: 'noteFormat' });
+    expect(select.value).toBe('markdown');
+    fireEvent.change(select, { target: { value: 'html' } });
+    await vi.waitFor(() =>
+      expect((local.settings as { noteFormat?: string } | undefined)?.noteFormat).toBe('html'),
+    );
+  });
+});
+
+describe('popup: Chrome asked where to save', () => {
+  it('says so quietly and offers the chat as one .zip', async () => {
+    const asked: unknown[] = [];
+    stubChrome({
+      activeTab: { id: 3, url: 'https://claude.ai/chat/00000000-0000-4000-8000-000000000001' },
+      background: (type, payload) => {
+        if (type !== 'export:current') return null;
+        asked.push(payload);
+        return asked.length === 1
+          ? {
+              ok: false,
+              code: 'save-dialog',
+              message: 'error_save_dialog',
+              warning: 'save-dialog-suspected',
+            }
+          : {
+              ok: true,
+              title: 'Chat',
+              messageCount: 2,
+              attachmentCount: 0,
+              failedAttachmentCount: 0,
+              location: { kind: 'downloads', path: 'AI Chats/Chat.zip' },
+            };
+      },
+    });
+    render(<Popup />);
+    const save = await screen.findByRole<HTMLButtonElement>('button', { name: 'popupSaveChat' });
+    await vi.waitFor(() => expect(save.disabled).toBe(false));
+    fireEvent.click(save);
+    const message = await screen.findByText('error_save_dialog');
+    expect(message.className).toContain('muted');
+    fireEvent.click(screen.getByRole('button', { name: 'saveAsZipInstead' }));
+    await vi.waitFor(() => expect(asked).toHaveLength(2));
+    expect(asked[1]).toEqual({ tabId: 3, zip: true });
+    await screen.findByText('AI Chats/Chat.zip');
+  });
+});

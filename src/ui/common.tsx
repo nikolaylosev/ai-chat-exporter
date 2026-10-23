@@ -36,12 +36,22 @@ export function useShortcut(): string | undefined {
   return shortcut;
 }
 
-/** `earlier`: shown before an export, because the previous one stopped at the dialog. */
-export function SaveDialogWarning({ earlier = false }: { earlier?: boolean }) {
+/**
+ * After a Save As dialog or a cancelled file: how to save without a question per
+ * file, and `onZip` to save this chat again as one archive.
+ */
+export function SaveDialogWarning({ onZip }: { onZip?: () => void }) {
   return (
     <div class="notice" role="alert">
-      <p>{t(earlier ? 'saveDialogWarningEarlier' : 'saveDialogWarning')}</p>
+      <p>{t('saveDialogWarning')}</p>
       <p>
+        {onZip && (
+          <>
+            <button type="button" onClick={onZip}>
+              {t('saveAsZipInstead')}
+            </button>{' '}
+          </>
+        )}
         <button type="button" class="link" onClick={openDownloadSettings}>
           {t('openDownloadSettings')}
         </button>

@@ -4,11 +4,10 @@ import { t } from '../shared/i18n';
 import { log } from '../shared/logger';
 import { sendToTab, type CopyResult, type ExportResult, type PanelView } from '../shared/messages';
 import { detectPlatform } from '../shared/platform';
-import { setSaveDialogSeen } from '../shared/save-dialog';
-import { loadSettings } from '../shared/settings';
+import { loadSettings, type Settings } from '../shared/settings';
 import { planConversationExport, renderConversationExport } from './conversation-export';
 import { setBadge as setTabBadge, type BadgeState } from './badge';
-import { asksPerFile, exportConversation } from './export-conversation';
+import { exportConversation } from './export-conversation';
 import { renderLabels } from './labels';
 import { registry } from './registry';
 import { ensureContentScript } from './tabs';
@@ -59,7 +58,9 @@ async function showFeedback(tabId: number, view: PanelView): Promise<boolean> {
 function failure(error: unknown): ExportResult {
   const code = errorCode(error);
   const result: ExportResult = { ok: false, code, message: errorText(error) };
-  if (code === 'save-dialog') result.warning = 'save-dialog-suspected';
+  if (code === 'save-dialog' || code === 'download-cancelled') {
+    result.warning = 'save-dialog-suspected';
+  }
   return result;
 }
 
@@ -74,14 +75,18 @@ async function openConversationId(tabId: number): Promise<string> {
   return id;
 }
 
-async function runExport(tabId: number, trigger: Trigger): Promise<ExportResult> {
+async function runExport(
+  tabId: number,
+  trigger: Trigger,
+  overrides: Partial<Settings>,
+): Promise<ExportResult> {
   const id = await openConversationId(tabId);
   if (running.has(id)) throw new CodedError('busy', `Already exporting ${id}`);
 
   running.add(id);
   try {
     await setBadge(tabId, 'working');
-    const settings = await loadSettings();
+    const settings = { ...(await loadSettings()), ...overrides };
     if (trigger === 'command' && settings.showNotifications) {
       await showFeedback(tabId, { state: 'running' });
     }
@@ -112,27 +117,16 @@ async function runExport(tabId: number, trigger: Trigger): Promise<ExportResult>
   }
 }
 
-/**
- * A stop at a Save As dialog is remembered so the popup can warn before the next
- * export; a successful export means the dialog no longer appears.
- */
-async function rememberSaveDialog(result: ExportResult): Promise<void> {
-  const seen = !result.ok && result.code === 'save-dialog';
-  if (!seen && !result.ok) return;
-  try {
-    // A folder or ZIP export says nothing about Chrome's per-file question.
-    if (!seen && !asksPerFile(await loadSettings())) return;
-    await setSaveDialogSeen(seen);
-  } catch (error) {
-    log.warn('Could not store the Save As dialog flag', error);
-  }
-}
-
 /** Exports the conversation open in a tab. Never throws; failures come back as a result. */
-export async function exportCurrent(tabId: number, trigger: Trigger): Promise<ExportResult> {
+/** `overrides` change the settings for this export only, e.g. the page button's "text only". */
+export async function exportCurrent(
+  tabId: number,
+  trigger: Trigger,
+  overrides: Partial<Settings> = {},
+): Promise<ExportResult> {
   let result: ExportResult;
   try {
-    result = await runExport(tabId, trigger);
+    result = await runExport(tabId, trigger, overrides);
   } catch (error) {
     (isUserOutcome(errorCode(error)) ? log.info : log.error)('Export failed', error);
     result = failure(error);
@@ -140,9 +134,12 @@ export async function exportCurrent(tabId: number, trigger: Trigger): Promise<Ex
 
   // A repeated trigger is ignored silently: the first export is still running.
   if (!result.ok && result.code === 'busy') return result;
-  await rememberSaveDialog(result);
   // Cancelling the Save As dialog is the user's choice: no mark on the icon.
-  const cancelled = !result.ok && result.code === 'save-cancelled';
+  const cancelled =
+    !result.ok &&
+    (result.code === 'save-cancelled' ||
+      result.code === 'save-dialog' ||
+      result.code === 'download-cancelled');
   await setBadge(
     tabId,
     cancelled ? null : !result.ok ? 'failed' : result.failedAttachmentCount ? 'partial' : 'done',

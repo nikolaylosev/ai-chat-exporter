@@ -51,6 +51,7 @@ label { display: flex; gap: 6px; align-items: center; margin-top: 8px; padding-t
 `;
 
 function needsAttention(result: ExportResult): boolean {
+  // A cancelled save goes quickly; a cancelled file stays, for its hint about Chrome's setting.
   if (!result.ok) return result.code !== 'save-cancelled';
   return result.failedAttachmentCount > 0;
 }
@@ -60,10 +61,26 @@ function ResultView({ result }: { result: ExportResult }) {
     const folderProblem = result.code.startsWith('folder-');
     return (
       <>
-        <p class={result.code === 'save-cancelled' ? 'muted' : 'error'}>{result.message}</p>
+        <p
+          class={
+            ['save-cancelled', 'save-dialog', 'download-cancelled'].includes(result.code)
+              ? 'muted'
+              : 'error'
+          }
+        >
+          {result.message}
+        </p>
         {result.warning === 'save-dialog-suspected' && (
           <p>
             {t('saveDialogWarning')}{' '}
+            <button
+              type="button"
+              class="link"
+              onClick={() => void send('background', 'export:this-tab', { zip: true })}
+            >
+              {t('saveAsZipInstead')}
+            </button>
+            {' · '}
             <button
               type="button"
               class="link"
@@ -147,8 +164,11 @@ function ZipChoice() {
 function Panel({ view, onClose }: { view: PanelView; onClose: () => void }) {
   const hovered = useRef(false);
   useEffect(() => {
-    if (view.state !== 'result') return undefined;
-    const delay = needsAttention(view.result) ? HIDE_AFTER_MS.attention : HIDE_AFTER_MS.ok;
+    if (view.state === 'running') return undefined;
+    const delay =
+      view.state === 'result' && needsAttention(view.result)
+        ? HIDE_AFTER_MS.attention
+        : HIDE_AFTER_MS.ok;
     const timer = setInterval(() => {
       if (!hovered.current) onClose();
     }, delay);
@@ -172,12 +192,14 @@ function Panel({ view, onClose }: { view: PanelView; onClose: () => void }) {
       {view.state === 'running' ? (
         <p>
           <span class="spinner" aria-hidden="true" />
-          {t('popupSaving')}
+          {t(view.copying ? 'panelCopying' : 'popupSaving')}
         </p>
+      ) : view.state === 'copied' ? (
+        <p class="ok">{t('panelCopied', String(view.messageCount))}</p>
       ) : (
         <ResultView result={view.result} />
       )}
-      <ZipChoice />
+      {view.state !== 'copied' && !(view.state === 'running' && view.copying) && <ZipChoice />}
     </div>
   );
 }

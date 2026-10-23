@@ -6,6 +6,8 @@ import {
   removeDownloaded,
   isExpectedLocation,
   isExtensionChangedOnly,
+  isInExpectedFolder,
+  waitsForSaveDialog,
   type DownloadResult,
   type TargetStore,
 } from '../../src/background/downloader';
@@ -58,6 +60,44 @@ describe('DownloadInterruptedError', () => {
     expect(error.reason).toBe(reason);
     expect(error.saveDialogSuspected).toBe(suspected);
     expect(error.message).toBe(`Download interrupted: ${reason}`);
+  });
+});
+
+describe('isInExpectedFolder', () => {
+  const requested = 'AI Chats/Чат - 2026-10-15 (Claude)/files/a:b.png';
+  it('is true in the same folder, whatever Chrome did to the name', () => {
+    expect(
+      isInExpectedFolder(
+        '/Users/u/Downloads/AI Chats/Чат - 2026-10-15 (Claude)/files/a_b.png',
+        requested,
+      ),
+    ).toBe(true);
+    expect(
+      isInExpectedFolder(
+        '/Users/u/Downloads/AI Chats/Чат - 2026-10-15 (Claude)/files/a_b.png'.normalize('NFD'),
+        requested,
+      ),
+    ).toBe(true);
+  });
+  it('is false in another folder, as after a Save As dialog', () => {
+    expect(isInExpectedFolder('/Users/u/Desktop/a_b.png', requested)).toBe(false);
+  });
+});
+
+describe('waitsForSaveDialog', () => {
+  const item = (extra: object = {}) =>
+    ({ state: 'in_progress', filename: '', bytesReceived: 0, totalBytes: 0, ...extra }) as const;
+
+  it('takes a nameless download with bytes arriving, or our own file, for a dialog', () => {
+    expect(waitsForSaveDialog(item({ bytesReceived: 4096 }), 'https://example.com/f')).toBe(true);
+    expect(waitsForSaveDialog(item(), 'blob:chrome-extension://x/1')).toBe(true);
+  });
+
+  it('does not take a slow server for a dialog', () => {
+    // Nothing has arrived yet: Chrome names the file when the response starts.
+    expect(waitsForSaveDialog(item(), 'https://example.com/slow')).toBe(false);
+    expect(waitsForSaveDialog(item({ filename: '/d/x.pdf' }), 'blob:x')).toBe(false);
+    expect(waitsForSaveDialog(item({ state: 'complete' }), 'blob:x')).toBe(false);
   });
 });
 

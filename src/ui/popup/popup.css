@@ -45,6 +45,19 @@ footer {
   font-size: 0.9em;
 }
 
+.chat-actions .folder {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 9px;
+}
+
+.chat-actions .folder svg {
+  width: 1.4em;
+  height: 1.4em;
+}
+
 .chat-actions .copy svg {
   width: 1.3em;
   height: 1.3em;
@@ -79,4 +92,24 @@ footer {
 
 .project button {
   width: 100%;
+}
+
+/* The note format, above the link to the settings. */
+.note-format {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.note-format span {
+  white-space: nowrap;
+}
+
+.note-format select {
+  flex: 0 1 auto;
+  width: auto;
+  min-width: 0;
+  font: inherit;
 }

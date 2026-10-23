@@ -90,6 +90,18 @@
   "saveWithFiles": {
     "message": "Save with files"
   },
+  "noteFormat": {
+    "message": "Note format"
+  },
+  "noteFormatMarkdown": {
+    "message": "Markdown (.md)"
+  },
+  "noteFormatHtml": {
+    "message": "HTML page (.html)"
+  },
+  "noteFormatJson": {
+    "message": "JSON (.json)"
+  },
   "popupCopyChat": {
     "message": "Copy"
   },
@@ -563,10 +575,7 @@
     "message": "Keyboard shortcut is not set."
   },
   "saveDialogWarning": {
-    "message": "Chrome asks where to save each file. Turn off “Ask where to save each file before downloading” in Chrome settings, otherwise every exported file opens a dialog. Or save to a folder you choose (extension settings) or tick “Save as .zip” when saving."
-  },
-  "saveDialogWarningEarlier": {
-    "message": "Last time Chrome asked where to save a file, and the export stopped. Turn off “Ask where to save each file before downloading” in Chrome settings, or save to a folder you choose (extension settings) or tick “Save as .zip” below. If the Chrome setting is already off, just save the chat."
+    "message": "To save without being asked about every file: turn off “Ask where to save each file before downloading” in Chrome settings, choose a folder in the extension settings, or save the chat as one .zip (one question for the whole chat)."
   },
   "openDownloadSettings": {
     "message": "Open download settings"
@@ -666,10 +675,16 @@
     "message": "This chat is already being saved."
   },
   "error_save_dialog": {
-    "message": "Export stopped: Chrome asks where to save each file."
+    "message": "Chrome asked where to save a file, so the export stopped: otherwise it would ask about every file."
   },
   "error_save_cancelled": {
     "message": "Saving was cancelled."
+  },
+  "error_download_cancelled": {
+    "message": "Saving was cancelled, so the export stopped."
+  },
+  "saveAsZipInstead": {
+    "message": "Save as one .zip"
   },
   "error_archive_lost": {
     "message": "The ZIP archive being built was lost (the extension was reloaded or ran out of memory)."
@@ -989,17 +1004,54 @@
   "optionsSectionContent": {
     "message": "Markdown content"
   },
-  "optionsNoteFormat": {
-    "message": "Note format"
+  "pageButtonTitle": {
+    "message": "Save or copy this chat (CodingCat AI Chat Exporter)"
   },
-  "optionsNoteFormatMarkdown": {
-    "message": "Markdown (.md), for Obsidian and notes apps"
+  "pageMenuWithFiles": {
+    "message": "Save chat with files"
   },
-  "optionsNoteFormatHtml": {
-    "message": "HTML page (.html): opens in any browser, prints to PDF"
+  "pageMenuTextOnly": {
+    "message": "Save text only"
   },
-  "optionsNoteFormatJson": {
-    "message": "JSON (.json), for processing by programs"
+  "pageMenuCopy": {
+    "message": "Copy as Markdown"
+  },
+  "pageMenuToFolder": {
+    "message": "Save to a folder…"
+  },
+  "pickFolderTitle": {
+    "message": "Save this chat to a folder"
+  },
+  "pickFolderHint": {
+    "message": "The chat and its files go straight into the folder you choose; Chrome does not ask about each file."
+  },
+  "pickFolderChoose": {
+    "message": "Choose a folder…"
+  },
+  "pickFolderLast": {
+    "message": "Save to “$ARG1$”",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "panelCopied": {
+    "message": "Copied to the clipboard: $ARG1$ messages.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "panelCopying": {
+    "message": "Copying…"
+  },
+  "optionsShowPageButton": {
+    "message": "Save button on chat pages"
+  },
+  "optionsShowPageButtonHint": {
+    "message": "A small round button in the bottom right corner of a chat, with a menu: save the chat with its files, save its text only, or copy it as Markdown."
   },
   "optionsArtifactVersions": {
     "message": "Artifact versions"

@@ -10,7 +10,6 @@ import { jobCounts, isJobActive, type JobState } from '../../shared/job';
 import { locationLabel } from '../../shared/location';
 import { send, type ExportResult } from '../../shared/messages';
 import { detectPlatform, PLATFORM_LABEL, type Platform } from '../../shared/platform';
-import { isSaveDialogSeen } from '../../shared/save-dialog';
 import {
   ensureFolderAccess,
   FailedFiles,
@@ -23,6 +22,7 @@ import {
   useShortcut,
   ZipCheckbox,
 } from '../common';
+import type { Settings } from '../../shared/settings';
 import '../styles.css';
 import './popup.css';
 
@@ -107,6 +107,22 @@ function ProjectJob({ job }: { job: JobState }) {
   );
 }
 
+/** A folder: the usual mark for saving somewhere chosen. */
+function FolderIcon() {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M1.75 4.25a1 1 0 0 1 1-1h3.4l1.6 1.6h5.5a1 1 0 0 1 1 1v6.4a1 1 0 0 1-1 1H2.75a1 1 0 0 1-1-1z" />
+    </svg>
+  );
+}
+
 /** Two overlapping sheets: the usual mark for copying. */
 function CopyIcon() {
   return (
@@ -124,21 +140,16 @@ function CopyIcon() {
   );
 }
 
-function useSaveDialogSeen(): boolean {
-  const [seen, setSeen] = useState(false);
-  useEffect(() => {
-    void isSaveDialogSeen().then(setSeen, () => setSeen(false));
-  }, []);
-  return seen;
-}
-
 function statusText(tab: ActiveTab): string {
   if (!tab.platform) return t('popupUnsupported');
   if (tab.isProject) return t(tab.platform === 'gemini' ? 'popupNotebookPage' : 'popupProjectPage');
   return tab.isChat ? t('popupDetected', PLATFORM_LABEL[tab.platform]) : t('popupNotAChat');
 }
 
-function Result({ result }: { result: ExportResult }) {
+/** What the user did, not a failure: shown in grey. */
+const QUIET = new Set<string>(['save-cancelled', 'save-dialog', 'download-cancelled']);
+
+function Result({ result, onZip }: { result: ExportResult; onZip: () => void }) {
   return (
     <>
       {result.ok ? (
@@ -155,12 +166,10 @@ function Result({ result }: { result: ExportResult }) {
           <span class="path">{result.location.path}</span>
         </p>
       ) : (
-        <p class={`${result.code === 'save-cancelled' ? 'muted' : 'error'} result`}>
-          {result.message}
-        </p>
+        <p class={`${QUIET.has(result.code) ? 'muted' : 'error'} result`}>{result.message}</p>
       )}
       {result.ok && <FailedFiles failures={result.failures} total={result.failedAttachmentCount} />}
-      {result.warning === 'save-dialog-suspected' && <SaveDialogWarning />}
+      {result.warning === 'save-dialog-suspected' && <SaveDialogWarning onZip={onZip} />}
     </>
   );
 }
@@ -170,8 +179,6 @@ export function Popup() {
   const shortcut = useShortcut();
   const [settings, updateSettings] = useSettings();
   const job = useJob();
-  const saveDialogSeen = useSaveDialogSeen();
-  const asksPerFile = settings?.destination === 'downloads' && !settings.saveAsZip;
   const [state, setState] = useState<ExportState>({ status: 'idle' });
   const project = useTabProject(tab);
   // The export page opens on the platform of the open tab.
@@ -205,7 +212,8 @@ export function Popup() {
       ? job
       : null;
 
-  const exportChat = async (tabId: number) => {
+  /** `zip`: this export as one archive, after Chrome asked where to save a file. */
+  const exportChat = async (tabId: number, zip = false) => {
     setState({ status: 'running', copying: false });
     if (settings?.destination === 'folder') {
       const code = await ensureFolderAccess();
@@ -217,7 +225,7 @@ export function Popup() {
     try {
       setState({
         status: 'finished',
-        result: await send('background', 'export:current', { tabId }),
+        result: await send('background', 'export:current', { tabId, ...(zip ? { zip } : {}) }),
       });
     } catch (error) {
       setState({
@@ -248,9 +256,6 @@ export function Popup() {
       <h1>{t('extName')}</h1>
       {tab && <p class="muted">{statusText(tab)}</p>}
       {tab === null && <p class="muted">{t('popupUnsupported')}</p>}
-      {asksPerFile && saveDialogSeen && tab?.isChat && state.status !== 'finished' && (
-        <SaveDialogWarning earlier />
-      )}
 
       {settings && (
         <>
@@ -270,6 +275,23 @@ export function Popup() {
         </button>
         <button
           type="button"
+          class="folder"
+          title={t('pageMenuToFolder')}
+          aria-label={t('pageMenuToFolder')}
+          disabled={!tab?.isChat || !settings || state.status === 'running'}
+          onClick={() => {
+            if (!tab) return;
+            // The folder window does the rest; the chat page shows the result.
+            void send('background', 'folder:pick', { tabId: tab.id }).then(
+              () => window.close(),
+              () => undefined,
+            );
+          }}
+        >
+          <FolderIcon />
+        </button>
+        <button
+          type="button"
           class="copy"
           title={t('popupCopyHint')}
           disabled={!tab?.isChat || !settings || state.status === 'running'}
@@ -280,7 +302,9 @@ export function Popup() {
         </button>
       </div>
 
-      {state.status === 'finished' && <Result result={state.result} />}
+      {state.status === 'finished' && (
+        <Result result={state.result} onZip={() => tab && void exportChat(tab.id, true)} />
+      )}
       {state.status === 'copied' && (
         <p class="result ok">{t('popupCopied', String(state.messageCount))}</p>
       )}
@@ -330,6 +354,22 @@ export function Popup() {
         <p class="muted hint">
           {shortcut ? t('popupShortcut', shortcut) : t('popupShortcutNotSet')}
         </p>
+      )}
+
+      {settings && (
+        <label class="note-format">
+          <span>{t('noteFormat')}</span>
+          <select
+            value={settings.noteFormat}
+            onChange={(e) =>
+              updateSettings({ noteFormat: e.currentTarget.value as Settings['noteFormat'] })
+            }
+          >
+            <option value="markdown">{t('noteFormatMarkdown')}</option>
+            <option value="html">{t('noteFormatHtml')}</option>
+            <option value="json">{t('noteFormatJson')}</option>
+          </select>
+        </label>
       )}
 
       <footer>

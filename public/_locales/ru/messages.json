@@ -90,6 +90,18 @@
   "saveWithFiles": {
     "message": "Сохранять с файлами"
   },
+  "noteFormat": {
+    "message": "Формат заметки"
+  },
+  "noteFormatMarkdown": {
+    "message": "Markdown (.md)"
+  },
+  "noteFormatHtml": {
+    "message": "Страница HTML (.html)"
+  },
+  "noteFormatJson": {
+    "message": "JSON (.json)"
+  },
   "popupCopyChat": {
     "message": "Копировать"
   },
@@ -563,10 +575,7 @@
     "message": "Горячая клавиша не назначена."
   },
   "saveDialogWarning": {
-    "message": "Chrome спрашивает, куда сохранять каждый файл. Отключите «Всегда указывать место для скачивания» в настройках Chrome, иначе каждый файл экспорта откроет диалог. Или выберите сохранение в свою папку (настройки расширения) или отметьте «Сохранить в .zip» при сохранении."
-  },
-  "saveDialogWarningEarlier": {
-    "message": "В прошлый раз Chrome спросил, куда сохранить файл, и экспорт остановился. Отключите «Всегда указывать место для скачивания» в настройках Chrome или выберите сохранение в свою папку (настройки расширения) или отметьте «Сохранить в .zip» ниже. Если настройка Chrome уже отключена, просто сохраните чат."
+    "message": "Чтобы Chrome не спрашивал про каждый файл: отключите «Всегда указывать место для скачивания» в настройках Chrome, выберите папку в настройках расширения или сохраните чат одним .zip (один вопрос на весь чат)."
   },
   "openDownloadSettings": {
     "message": "Открыть настройки скачивания"
@@ -666,10 +675,16 @@
     "message": "Этот чат уже сохраняется."
   },
   "error_save_dialog": {
-    "message": "Экспорт остановлен: Chrome спрашивает, куда сохранять каждый файл."
+    "message": "Chrome спросил, куда сохранить файл, и экспорт остановлен, иначе он спрашивал бы про каждый файл."
   },
   "error_save_cancelled": {
     "message": "Сохранение отменено."
+  },
+  "error_download_cancelled": {
+    "message": "Сохранение отменено, экспорт остановлен."
+  },
+  "saveAsZipInstead": {
+    "message": "Сохранить одним .zip"
   },
   "error_archive_lost": {
     "message": "Собираемый ZIP-архив потерян (расширение перезагрузилось или не хватило памяти)."
@@ -989,17 +1004,54 @@
   "optionsSectionContent": {
     "message": "Содержимое Markdown"
   },
-  "optionsNoteFormat": {
-    "message": "Формат заметки"
+  "pageButtonTitle": {
+    "message": "Сохранить или скопировать этот чат (CodingCat AI Chat Exporter)"
   },
-  "optionsNoteFormatMarkdown": {
-    "message": "Markdown (.md) — для Obsidian и приложений заметок"
+  "pageMenuWithFiles": {
+    "message": "Сохранить чат с файлами"
   },
-  "optionsNoteFormatHtml": {
-    "message": "Страница HTML (.html): открывается в любом браузере, печатается в PDF"
+  "pageMenuTextOnly": {
+    "message": "Сохранить только текст"
   },
-  "optionsNoteFormatJson": {
-    "message": "JSON (.json) — для обработки программами"
+  "pageMenuCopy": {
+    "message": "Копировать как Markdown"
+  },
+  "pageMenuToFolder": {
+    "message": "Сохранить в папку…"
+  },
+  "pickFolderTitle": {
+    "message": "Сохранить чат в папку"
+  },
+  "pickFolderHint": {
+    "message": "Чат и его файлы запишутся прямо в выбранную папку; Chrome не будет спрашивать про каждый файл."
+  },
+  "pickFolderChoose": {
+    "message": "Выбрать папку…"
+  },
+  "pickFolderLast": {
+    "message": "Сохранить в «$ARG1$»",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "panelCopied": {
+    "message": "Скопировано в буфер обмена: сообщений $ARG1$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "panelCopying": {
+    "message": "Копирую…"
+  },
+  "optionsShowPageButton": {
+    "message": "Кнопка сохранения на страницах чатов"
+  },
+  "optionsShowPageButtonHint": {
+    "message": "Маленькая круглая кнопка в правом нижнем углу чата с меню: сохранить чат с файлами, только текст или скопировать как Markdown."
   },
   "optionsArtifactVersions": {
     "message": "Версии артефактов"

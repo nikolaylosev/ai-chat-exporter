@@ -79,6 +79,17 @@ handle('offscreen', {
   'blob:create': ({ text, mime }) => ({
     url: URL.createObjectURL(new Blob([text], { type: mime })),
   }),
+  // navigator.clipboard needs a focused page; the offscreen document never has focus.
+  'clipboard:write': ({ text }) => {
+    const area = document.createElement('textarea');
+    area.value = text;
+    document.body.append(area);
+    area.select();
+    const copied = document.execCommand('copy');
+    area.remove();
+    if (!copied) throw new Error('The clipboard refused the text');
+    return null;
+  },
   'blob:revoke': ({ url }) => {
     URL.revokeObjectURL(url);
     return null;

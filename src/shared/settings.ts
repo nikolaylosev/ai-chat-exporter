@@ -29,6 +29,8 @@ export interface Settings {
   delayBetweenChatsMs: number;
   writeReport: 'never' | 'on-errors' | 'always';
   showNotifications: boolean;
+  /** A save button in the corner of chat pages. */
+  showPageButton: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -48,6 +50,7 @@ export const DEFAULT_SETTINGS: Settings = {
   delayBetweenChatsMs: 800,
   writeReport: 'on-errors',
   showNotifications: true,
+  showPageButton: true,
 };
 
 const STORAGE_KEY = 'settings';

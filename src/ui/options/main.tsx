@@ -43,12 +43,7 @@ function Check(props: {
 
 function Select<
   K extends
-    | 'noteFormat'
-    | 'toolCallDetail'
-    | 'claudeBranches'
-    | 'artifactVersions'
-    | 'onFolderExists'
-    | 'writeReport',
+    'toolCallDetail' | 'claudeBranches' | 'artifactVersions' | 'onFolderExists' | 'writeReport',
 >(props: {
   settings: Settings;
   name: K;
@@ -257,16 +252,6 @@ function Options() {
       <Section title={t('optionsSectionContent')}>
         <Select
           {...common}
-          name="noteFormat"
-          label={t('optionsNoteFormat')}
-          options={[
-            ['markdown', t('optionsNoteFormatMarkdown')],
-            ['html', t('optionsNoteFormatHtml')],
-            ['json', t('optionsNoteFormatJson')],
-          ]}
-        />
-        <Select
-          {...common}
           name="artifactVersions"
           label={t('optionsArtifactVersions')}
           disabled={!settings.saveAttachments}
@@ -360,6 +345,12 @@ function Options() {
           </button>
         </p>
         <Check {...common} name="showNotifications" label={t('optionsShowNotifications')} />
+        <Check
+          {...common}
+          name="showPageButton"
+          label={t('optionsShowPageButton')}
+          hint={t('optionsShowPageButtonHint')}
+        />
       </Section>
 
       <p class="muted">{t('optionsMoreLater')}</p>

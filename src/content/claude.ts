@@ -2,6 +2,7 @@ import { ClaudeAdapter } from '../adapters/claude/adapter';
 import { CodedError } from '../shared/errors';
 import { handle } from '../shared/messages';
 import { coded, isAlive, listHandlers } from './common';
+import { mountPageButton } from './page-button';
 import { showPanel } from './panel';
 
 /**
@@ -45,4 +46,5 @@ if (!window.__aiChatExporterClaudeAlive?.()) {
       return null;
     },
   });
+  mountPageButton(() => adapter.getCurrentConversationId() !== null);
 }
