@@ -163,7 +163,14 @@ describe('popup: Chrome asked where to save', () => {
               message: 'error_save_dialog',
               warning: 'save-dialog-suspected',
             }
-          : null;
+          : {
+              ok: true,
+              title: 'Chat',
+              messageCount: 2,
+              attachmentCount: 0,
+              failedAttachmentCount: 0,
+              location: { kind: 'downloads', path: 'AI Chats/Chat.zip' },
+            };
       },
     });
     render(<Popup />);
@@ -175,5 +182,6 @@ describe('popup: Chrome asked where to save', () => {
     fireEvent.click(screen.getByRole('button', { name: 'saveAsZipInstead' }));
     await vi.waitFor(() => expect(asked).toHaveLength(2));
     expect(asked[1]).toEqual({ tabId: 3, zip: true });
+    await screen.findByText('AI Chats/Chat.zip');
   });
 });
