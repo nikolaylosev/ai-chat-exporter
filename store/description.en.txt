@@ -19,6 +19,7 @@ WHAT A NOTE HOLDS
 
 HOW YOU USE IT
 • The chat you are reading: click the icon and "Save this chat", or press Alt+Shift+S (Option+Shift+S on a Mac). "Copy" puts the chat on the clipboard as Markdown instead.
+• Only some messages: "Choose messages…" lists the chat's messages; tick the ones you want (or only yours, or only the AI's replies) and save or copy just them.
 • Many chats or projects: open the export page, filter by date, project or title, tick the ones you want or all of them, and save. It runs in the background, can be cancelled, and writes a report of anything that failed.
 • Into Downloads, a chat with its files comes as one .zip, and its text alone as one file. Or straight into a folder you choose, file by file.
 

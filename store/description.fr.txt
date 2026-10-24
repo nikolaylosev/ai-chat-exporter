@@ -19,6 +19,7 @@ CE QUE CONTIENT UNE NOTE
 
 UTILISATION
 • Le chat que vous lisez : cliquez sur l'icône puis « Save this chat », ou appuyez sur Alt+Maj+S (Option+Maj+S sur Mac). « Copy » place le chat dans le presse-papiers en Markdown.
+• Seulement certains messages : « Choose messages… » liste les messages du chat ; cochez ceux que vous voulez (ou seulement les vôtres, ou seulement les réponses de l'IA) et enregistrez ou copiez-les seuls.
 • Beaucoup de chats ou de projets : ouvrez la page d'export, filtrez par date, projet ou titre, cochez ceux que vous voulez ou tous, et enregistrez. L'export tourne en arrière-plan, peut être annulé et écrit un rapport de ce qui a échoué.
 • Dans Téléchargements, un chat avec ses fichiers arrive en une seule archive .zip, et son texte seul en un fichier. Ou directement dans un dossier de votre choix, fichier par fichier.
 

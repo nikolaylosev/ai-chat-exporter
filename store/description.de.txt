@@ -19,6 +19,7 @@ WAS IN EINER NOTIZ STEHT
 
 SO FUNKTIONIERT ES
 • Der geöffnete Chat: Symbol anklicken und „Save this chat“ wählen oder Alt+Umschalt+S drücken (auf dem Mac Wahl+Umschalt+S). „Copy“ legt den Chat stattdessen als Markdown in die Zwischenablage.
+• Nur einige Nachrichten: „Choose messages…“ listet die Nachrichten des Chats auf; markieren Sie die gewünschten (oder nur Ihre, oder nur die Antworten der KI) und speichern oder kopieren Sie nur diese.
 • Viele Chats oder Projekte: Exportseite öffnen, nach Datum, Projekt oder Titel filtern, gewünschte oder alle markieren und speichern. Der Export läuft im Hintergrund, lässt sich abbrechen und schreibt einen Bericht über alles, was fehlte.
 • In den Download-Ordner kommt ein Chat mit seinen Dateien als ein .zip, nur der Text als eine Datei. Oder direkt in einen Ordner Ihrer Wahl, Datei für Datei.
 
