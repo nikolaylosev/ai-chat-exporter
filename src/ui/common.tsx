@@ -11,10 +11,6 @@ import { loadFolderHandle, requestFolderAccess, saveFolderHandle } from '../sink
 
 export const EXPORT_COMMAND = 'export-current-chat';
 
-export function openDownloadSettings(): void {
-  void chrome.tabs.create({ url: 'chrome://settings/downloads' });
-}
-
 export function openShortcutSettings(): void {
   void chrome.tabs.create({ url: 'chrome://extensions/shortcuts' });
 }
@@ -35,30 +31,6 @@ export function useShortcut(): string | undefined {
     return () => window.removeEventListener('focus', load);
   }, []);
   return shortcut;
-}
-
-/**
- * After a Save As dialog or a cancelled file: how to save without a question per
- * file, and `onZip` to save this chat again as one archive.
- */
-export function SaveDialogWarning({ onZip }: { onZip?: () => void }) {
-  return (
-    <div class="notice" role="alert">
-      <p>{t('saveDialogWarning')}</p>
-      <p>
-        {onZip && (
-          <>
-            <button type="button" onClick={onZip}>
-              {t('saveAsZipInstead')}
-            </button>{' '}
-          </>
-        )}
-        <button type="button" class="link" onClick={openDownloadSettings}>
-          {t('openDownloadSettings')}
-        </button>
-      </p>
-    </div>
-  );
 }
 
 export const EXPORT_PAGE = 'src/ui/export-page/index.html';
@@ -200,25 +172,6 @@ export function FilesCheckbox({
         onChange={(e) => update({ saveAttachments: e.currentTarget.checked })}
       />
       <span>{t('saveWithFiles')}</span>
-    </label>
-  );
-}
-
-export function ZipCheckbox({
-  settings,
-  update,
-}: {
-  settings: Settings;
-  update: (patch: Partial<Settings>) => void;
-}) {
-  return (
-    <label class="check zip">
-      <input
-        type="checkbox"
-        checked={settings.saveAsZip}
-        onChange={(e) => update({ saveAsZip: e.currentTarget.checked })}
-      />
-      <span>{t('saveAsZip')}</span>
     </label>
   );
 }

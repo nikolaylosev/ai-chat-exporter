@@ -1,6 +1,6 @@
-// Separate files into Downloads over a connection that drops: a pdf cut halfway
-// twice is saved under its own name (Chrome resumes with Range, the extension
-// starts it again); a docx that never arrives leaves nothing behind.
+// A connection that drops while a chat's files are fetched for its .zip: a pdf
+// cut twice is fetched again and saved byte for byte; a docx that never arrives
+// is marked as failed and leaves nothing behind.
 import assert from 'node:assert/strict';
 import { sleep, startStand } from '../harness.mjs';
 import { chatgptChats, chatgptFile, chatgptFiles, fakeChatgpt, uuid } from '../fakes.mjs';

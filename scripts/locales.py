@@ -43,7 +43,6 @@ STRINGS = {
     "savedToFolder": ("Saved to the folder “$1”:", "Сохранено в папку «$1»:"),
     "savedTo": ("Saved to:", "Сохранено:"),
     "savedToArchive": ("In the archive “$1”:", "В архиве «$1»:"),
-    "saveAsZip": ("Save as .zip", "Сохранить в .zip"),
     "saveWithFiles": ("Save with files", "Сохранять с файлами"),
     "noteFormat": ("Note format", "Формат заметки"),
     "noteFormatMarkdown": ("Markdown (.md)", "Markdown (.md)"),
@@ -197,11 +196,6 @@ STRINGS = {
     "reportSaved": ("Saved", "Сохранены"),
     "popupShortcut": ("Shortcut: $1", "Горячая клавиша: $1"),
     "popupShortcutNotSet": ("Keyboard shortcut is not set.", "Горячая клавиша не назначена."),
-    "saveDialogWarning": (
-        "To save without being asked about every file: turn off “Ask where to save each file before downloading” in Chrome settings, choose a folder in the extension settings, or save the chat as one .zip (one question for the whole chat).",
-        "Чтобы Chrome не спрашивал про каждый файл: отключите «Всегда указывать место для скачивания» в настройках Chrome, выберите папку в настройках расширения или сохраните чат одним .zip (один вопрос на весь чат).",
-    ),
-    "openDownloadSettings": ("Open download settings", "Открыть настройки скачивания"),
     "openSettings": ("Settings", "Настройки"),
     # Notifications
     "notifyDone": ("Saved: $1 messages, $2 files.", "Сохранено: сообщений $1, файлов $2."),
@@ -268,7 +262,6 @@ STRINGS = {
     ),
     "error_save_cancelled": ("Saving was cancelled.", "Сохранение отменено."),
     "error_download_cancelled": ("Saving was cancelled, so the export stopped.", "Сохранение отменено, экспорт остановлен."),
-    "saveAsZipInstead": ("Save as one .zip", "Сохранить одним .zip"),
     "error_archive_lost": (
         "The ZIP archive being built was lost (the extension was reloaded or ran out of memory).",
         "Собираемый ZIP-архив потерян (расширение перезагрузилось или не хватило памяти).",
@@ -412,10 +405,6 @@ STRINGS = {
     "pageMenuCopy": ("Copy as Markdown", "Копировать как Markdown"),
     "pageMenuToFolder": ("Save to a folder…", "Сохранить в папку…"),
     "exportToFolder": ("To a folder…", "В папку…"),
-    "exportAskedHint": (
-        "To save into another folder without Chrome asking about each file, use “To a folder…” next to “Save selected”.",
-        "Чтобы сохранить в другую папку без вопроса Chrome про каждый файл, нажмите «В папку…» рядом с «Сохранить выбранные».",
-    ),
     "exportToFolderHint": (
         "Choose a folder: the selected chats and their files go straight into it, without Chrome asking about each file.",
         "Выбрать папку: выбранные чаты с файлами запишутся прямо в неё, без вопроса Chrome про каждый файл.",
@@ -427,6 +416,10 @@ STRINGS = {
     ),
     "pickFolderChoose": ("Choose a folder…", "Выбрать папку…"),
     "pickFolderLast": ("Save to “$1”", "Сохранить в «$1»"),
+    "pickFolderSaving": (
+        "Saving to “$1”… Keep this window open: it closes when the chat is saved.",
+        "Сохраняю в «$1»… Не закрывайте это окно: оно закроется, когда чат сохранится.",
+    ),
     "panelCopied": ("Copied to the clipboard: $1 messages.", "Скопировано в буфер обмена: сообщений $1."),
     "panelCopying": ("Copying…", "Копирую…"),
     "optionsShowPageButton": ("Save button on chat pages", "Кнопка сохранения на страницах чатов"),

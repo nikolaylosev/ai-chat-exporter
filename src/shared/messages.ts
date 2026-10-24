@@ -29,8 +29,6 @@ export const MAX_LISTED_FAILURES = 50;
  * An error's `code` (CodedError) is passed through to the caller.
  */
 
-export type SaveDialogSuspected = 'save-dialog-suspected';
-
 /** Where the export went: `path` is relative to Downloads or to the chosen folder, or absolute. */
 export type SavedLocation =
   | { kind: 'downloads'; path: string }
@@ -57,9 +55,8 @@ export type ExportResult =
       failures?: FileFailure[];
       /** The Markdown file, or the archive when saving as ZIP. */
       location: SavedLocation;
-      warning?: SaveDialogSuspected;
     }
-  | { ok: false; code: ErrorCode; message: string; warning?: SaveDialogSuspected };
+  | { ok: false; code: ErrorCode; message: string };
 
 /** The open chat's note, without its files, for the clipboard. */
 export type CopyResult =
@@ -85,14 +82,10 @@ type Empty = Record<string, never>;
 
 interface Contract {
   background: {
-    /** `zip`: this export as one archive, whatever the setting (after a Save As dialog). */
-    'export:current': { request: { tabId: number; zip?: boolean }; response: ExportResult };
+    'export:current': { request: { tabId: number }; response: ExportResult };
     'export:copy': { request: { tabId: number }; response: CopyResult };
     /** The page button: the chat of the tab that asks, as the shortcut saves it. */
-    'export:this-tab': {
-      request: { withFiles?: boolean; zip?: boolean };
-      response: ExportResult;
-    };
+    'export:this-tab': { request: { withFiles?: boolean }; response: ExportResult };
     /** Opens the "Save to folder…" window for a tab's chat (the asking tab's by default). */
     'folder:pick': { request: { tabId?: number; withFiles?: boolean }; response: null };
     /** From that window: the chat of `tabId` into the folder just chosen. */
@@ -126,7 +119,6 @@ interface Contract {
     'registry:clear': { request: Empty; response: null };
     /** Pages a content script cannot open itself. */
     'open:options': { request: Empty; response: null };
-    'open:download-settings': { request: Empty; response: null };
   };
   content: {
     ping: { request: Empty; response: { platform: Platform } };

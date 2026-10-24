@@ -1,6 +1,7 @@
 import type { Attachment, Conversation } from '../model/conversation';
 import { localDateTime } from '../util/dates';
-import type { Settings } from '../shared/settings';
+import { exportsAsZip, type Settings } from '../shared/settings';
+import { exportedMessages } from './conversation-export';
 import { DownloadsSink } from '../sinks/downloads-sink';
 import type { ZipArchive } from '../sinks/offscreen-sinks';
 import { FolderSink, ZipSink, type ZipTarget } from '../sinks/offscreen-sinks';
@@ -11,8 +12,8 @@ import { createBlobUrl, offscreenFiles, revokeBlobUrl, sniffImageType } from './
 import type { ExportRecord, RecordDestination, Registry } from './registry';
 import { writeConversation, type WritableSink, type WriteOutcome } from './write-conversation';
 
-export function recordDestination(settings: Settings): RecordDestination {
-  return settings.saveAsZip ? 'zip' : settings.destination;
+export function recordDestination(settings: Settings, zip: boolean): RecordDestination {
+  return zip ? 'zip' : settings.destination;
 }
 
 export function zipTarget(settings: Settings, root: string[]): ZipTarget {
@@ -35,11 +36,12 @@ export function sinkFactory(
   settings: Settings,
   registry: Registry,
   archive?: ZipArchive,
+  zip = false,
 ): (root: string[]) => WritableSink {
   const overwrite = settings.onFolderExists === 'overwrite';
   return (root) => {
     if (archive) return new ZipSink(archive);
-    if (settings.saveAsZip) return new ZipSink(offscreenFiles, zipTarget(settings, root));
+    if (zip) return new ZipSink(offscreenFiles, zipTarget(settings, root));
     if (settings.destination === 'folder') return new FolderSink(offscreenFiles, overwrite);
     return new DownloadsSink(
       {
@@ -81,14 +83,17 @@ export async function exportConversation(
   options: ExportOptions = {},
 ): Promise<WriteOutcome> {
   const now = new Date();
+  const hasFiles = exportedMessages(conversation, settings).some((m) => m.attachments.length > 0);
+  // One chat into Downloads: an archive of its own when it has files to save.
+  const zip = !archive && exportsAsZip(settings, { bulk: false, hasFiles });
   // Before the files are planned, so the note links to the corrected names.
   if (settings.saveAttachments) {
     // A folder or a ZIP is written from the offscreen document, which keeps the file
     // it reads here; Downloads fetches by itself, so only the first bytes are read.
-    const keep = Boolean(archive) || settings.saveAsZip || settings.destination === 'folder';
+    const keep = Boolean(archive) || zip || settings.destination === 'folder';
     await fixRecompressedNames(conversation, (url) => sniffImageType(url, keep));
   }
-  const destination = archive ? 'zip' : recordDestination(settings);
+  const destination = archive ? 'zip' : recordDestination(settings, zip);
   const recordId = options.recordId ?? conversation.id;
   const previous = await registry.record(conversation.platform, recordId);
   const reuse = reusedFolder(settings, destination, previous);
@@ -107,7 +112,7 @@ export async function exportConversation(
       ...(reuse && previous?.files ? { previousFiles: previous.files } : {}),
       ...(options.refreshLink ? { refreshLink: options.refreshLink } : {}),
     },
-    sinkFactory(effective, registry, archive),
+    sinkFactory(effective, registry, archive, zip),
   );
 
   await registry.remember(conversation.platform, recordId, {

@@ -19,6 +19,7 @@ export function PickFolder() {
   const files = query.get('files');
   const [last, setLast] = useState<FileSystemDirectoryHandle | null>(null);
   const [error, setError] = useState('');
+  const [saving, setSaving] = useState('');
 
   useEffect(() => {
     void loadFolderHandle().then(setLast, () => setLast(null));
@@ -30,12 +31,15 @@ export function PickFolder() {
       return;
     }
     await saveFolderHandle(handle);
-    // The worker goes on after this window closes; the chat page shows the result.
-    void send('background', 'export:to-folder', {
+    // Chrome takes the folder access back once no extension page is open (the
+    // offscreen document does not count), so this window stays until the chat is
+    // written. The chat page's panel shows the result.
+    setSaving(handle.name);
+    await send('background', 'export:to-folder', {
       tabId,
       ...(files === null ? {} : { withFiles: files === '1' }),
     }).catch(() => undefined);
-    setTimeout(() => window.close(), 200);
+    window.close();
   };
 
   const choose = async () => {
@@ -51,16 +55,20 @@ export function PickFolder() {
     <main class="pick">
       <h1>{t('pickFolderTitle')}</h1>
       <p class="muted">{t('pickFolderHint')}</p>
-      <div class="buttons">
-        <button type="button" class="primary" onClick={() => void choose()}>
-          {t('pickFolderChoose')}
-        </button>
-        {last && (
-          <button type="button" onClick={() => void start(last)}>
-            {t('pickFolderLast', last.name)}
+      {saving ? (
+        <p>{t('pickFolderSaving', saving)}</p>
+      ) : (
+        <div class="buttons">
+          <button type="button" class="primary" onClick={() => void choose()}>
+            {t('pickFolderChoose')}
           </button>
-        )}
-      </div>
+          {last && (
+            <button type="button" onClick={() => void start(last)}>
+              {t('pickFolderLast', last.name)}
+            </button>
+          )}
+        </div>
+      )}
       {error && <p class="error">{error}</p>}
     </main>
   );

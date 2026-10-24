@@ -1,5 +1,5 @@
 // The button on a chat page: shown on a chat, not elsewhere; its menu saves the
-// chat with its files or as text only, or copies it; the setting hides it.
+// chat with its files (one .zip) or as text only, or copies it; the setting hides it.
 import assert from 'node:assert/strict';
 import { startStand, waitFor } from '../harness.mjs';
 import { fakeGrok, grokChats, uuid } from '../fakes.mjs';
@@ -30,26 +30,11 @@ export default {
       await stand.ev(chat, `${button}.click()`);
       const labels = await stand.ev(chat, `${items}.map((b) => b.textContent)`);
       assert.deepEqual(labels, [
-        'Save chat with files.md',
+        'Save chat with files.zip',
         'Save text only.md',
         'Save to a folder…',
         'Copy as Markdown',
       ]);
-
-      // The .zip choice in the menu changes what the saves make, and stays a setting.
-      const zip = `${root}?.querySelector('.menu input[type=checkbox]')`;
-      await stand.ev(chat, `${zip}.click()`);
-      await waitFor(
-        () => stand.ev(chat, `${items}[0]?.textContent === 'Save chat with files.zip'`),
-        5000,
-        'the menu says .zip',
-      );
-      await stand.ev(chat, `${zip}.click()`);
-      await waitFor(
-        () => stand.ev(chat, `${items}[0]?.textContent === 'Save chat with files.md'`),
-        5000,
-        'back to .md',
-      );
 
       // With files: the note and the uploads.
       await stand.ev(chat, `${items}[0].click()`);

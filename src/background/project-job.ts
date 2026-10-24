@@ -60,7 +60,8 @@ export async function exportProject(
   const labels = projectLabels(project.platform);
   let plan = planProjectExport(project, settings, labels.untitled);
 
-  const destination = archive ? 'zip' : recordDestination(settings);
+  // A project goes through a bulk job: an archive into Downloads, files into a chosen folder.
+  const destination = archive ? 'zip' : recordDestination(settings, false);
   const previous = await registry.record(project.platform, projectRecordId(project.id));
   if (
     settings.onFolderExists === 'overwrite' &&

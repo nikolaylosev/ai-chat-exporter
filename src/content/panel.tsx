@@ -1,9 +1,8 @@
 import { render } from 'preact';
-import { useEffect, useRef, useState } from 'preact/hooks';
+import { useEffect, useRef } from 'preact/hooks';
 import { t } from '../shared/i18n';
 import { locationLabel } from '../shared/location';
 import { send, type ExportResult, type PanelView } from '../shared/messages';
-import { loadSettings, saveSettings } from '../shared/settings';
 
 /**
  * Panel on the chat page for a keyboard-shortcut export: progress, then the
@@ -70,26 +69,6 @@ function ResultView({ result }: { result: ExportResult }) {
         >
           {result.message}
         </p>
-        {result.warning === 'save-dialog-suspected' && (
-          <p>
-            {t('saveDialogWarning')}{' '}
-            <button
-              type="button"
-              class="link"
-              onClick={() => void send('background', 'export:this-tab', { zip: true })}
-            >
-              {t('saveAsZipInstead')}
-            </button>
-            {' · '}
-            <button
-              type="button"
-              class="link"
-              onClick={() => void send('background', 'open:download-settings', {})}
-            >
-              {t('openDownloadSettings')}
-            </button>
-          </p>
-        )}
         {folderProblem && (
           <p>
             <button
@@ -139,28 +118,6 @@ function ResultView({ result }: { result: ExportResult }) {
   );
 }
 
-function ZipChoice() {
-  const [zip, setZip] = useState<boolean | null>(null);
-  useEffect(() => {
-    void loadSettings().then((s) => setZip(s.saveAsZip));
-  }, []);
-  if (zip === null) return null;
-  return (
-    <label>
-      <input
-        type="checkbox"
-        checked={zip}
-        onChange={(e) => {
-          const next = e.currentTarget.checked;
-          setZip(next);
-          void saveSettings({ saveAsZip: next });
-        }}
-      />
-      {t('saveAsZip')}
-    </label>
-  );
-}
-
 function Panel({ view, onClose }: { view: PanelView; onClose: () => void }) {
   const hovered = useRef(false);
   useEffect(() => {
@@ -199,7 +156,6 @@ function Panel({ view, onClose }: { view: PanelView; onClose: () => void }) {
       ) : (
         <ResultView result={view.result} />
       )}
-      {view.state !== 'copied' && !(view.state === 'running' && view.copying) && <ZipChoice />}
     </div>
   );
 }

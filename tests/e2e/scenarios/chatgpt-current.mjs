@@ -1,5 +1,6 @@
-// ChatGPT: six chats saved as files and as a ZIP; every file byte-identical; the
-// token goes only to the API, never to the signed file links.
+// ChatGPT: six chats saved, each with files as one .zip and a chat without any as
+// its note alone; every file byte-identical; the token goes only to the API,
+// never to the signed file links.
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { startStand } from '../harness.mjs';
@@ -34,14 +35,25 @@ export default {
       }
       assert.equal(fake.state.noAuth, 0, 'every API request had the token');
 
-      await stand.settings({ saveAsZip: true });
+      // Into Downloads: a chat with files is one archive, a chat without any its note.
+      const saved = stand.downloaded();
+      const uploadsZip = saved.find(
+        (f) =>
+          f.endsWith('.zip') &&
+          Object.keys(unzipSync(stand.read(f))).some((n) => n.endsWith('/files/fruit-prices.pdf')),
+      );
+      assert.ok(uploadsZip, 'the chat with uploads as one .zip');
+      assert.ok(
+        saved.some((f) => f.endsWith('(ChatGPT).md')),
+        'a chat without files as its note alone',
+      );
+      assert.ok(!saved.some((f) => f.includes('/files/')), 'no loose files in Downloads');
+
+      // Text only: the note alone, even for the chat with uploads.
+      const notesBefore = saved.filter((f) => f.endsWith('.md')).length;
+      await stand.settings({ saveAttachments: false });
       await stand.exportTab(`https://chatgpt.com/c/${uuid(0x13)}`);
-      const zip = stand.files().find((f) => f.endsWith('.zip'));
-      const entries = unzipSync(stand.read(zip));
-      for (const name of ['fruit-prices.pdf', 'meeting-notes.docx', 'stripes.png']) {
-        const entry = Object.entries(entries).find(([n]) => n.endsWith(`/files/${name}`));
-        assert.ok(entry && Buffer.from(entry[1]).equals(expect[name]), `${name} in the ZIP`);
-      }
+      assert.equal(stand.downloaded().filter((f) => f.endsWith('.md')).length, notesBefore + 1);
     } finally {
       await stand.close();
     }

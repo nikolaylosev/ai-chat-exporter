@@ -84,9 +84,6 @@
       }
     }
   },
-  "saveAsZip": {
-    "message": "Сохранить в .zip"
-  },
   "saveWithFiles": {
     "message": "Сохранять с файлами"
   },
@@ -574,12 +571,6 @@
   "popupShortcutNotSet": {
     "message": "Горячая клавиша не назначена."
   },
-  "saveDialogWarning": {
-    "message": "Чтобы Chrome не спрашивал про каждый файл: отключите «Всегда указывать место для скачивания» в настройках Chrome, выберите папку в настройках расширения или сохраните чат одним .zip (один вопрос на весь чат)."
-  },
-  "openDownloadSettings": {
-    "message": "Открыть настройки скачивания"
-  },
   "openSettings": {
     "message": "Настройки"
   },
@@ -682,9 +673,6 @@
   },
   "error_download_cancelled": {
     "message": "Сохранение отменено, экспорт остановлен."
-  },
-  "saveAsZipInstead": {
-    "message": "Сохранить одним .zip"
   },
   "error_archive_lost": {
     "message": "Собираемый ZIP-архив потерян (расширение перезагрузилось или не хватило памяти)."
@@ -1022,9 +1010,6 @@
   "exportToFolder": {
     "message": "В папку…"
   },
-  "exportAskedHint": {
-    "message": "Чтобы сохранить в другую папку без вопроса Chrome про каждый файл, нажмите «В папку…» рядом с «Сохранить выбранные»."
-  },
   "exportToFolderHint": {
     "message": "Выбрать папку: выбранные чаты с файлами запишутся прямо в неё, без вопроса Chrome про каждый файл."
   },
@@ -1039,6 +1024,14 @@
   },
   "pickFolderLast": {
     "message": "Сохранить в «$ARG1$»",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "pickFolderSaving": {
+    "message": "Сохраняю в «$ARG1$»… Не закрывайте это окно: оно закроется, когда чат сохранится.",
     "placeholders": {
       "arg1": {
         "content": "$1"

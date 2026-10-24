@@ -15,12 +15,10 @@ import {
   FailedFiles,
   FilesCheckbox,
   openExportPage,
-  SaveDialogWarning,
   startExportJob,
   useJob,
   useSettings,
   useShortcut,
-  ZipCheckbox,
 } from '../common';
 import type { Settings } from '../../shared/settings';
 import '../styles.css';
@@ -149,7 +147,7 @@ function statusText(tab: ActiveTab): string {
 /** What the user did, not a failure: shown in grey. */
 const QUIET = new Set<string>(['save-cancelled', 'save-dialog', 'download-cancelled']);
 
-function Result({ result, onZip }: { result: ExportResult; onZip: () => void }) {
+function Result({ result }: { result: ExportResult }) {
   return (
     <>
       {result.ok ? (
@@ -169,7 +167,6 @@ function Result({ result, onZip }: { result: ExportResult; onZip: () => void }) 
         <p class={`${QUIET.has(result.code) ? 'muted' : 'error'} result`}>{result.message}</p>
       )}
       {result.ok && <FailedFiles failures={result.failures} total={result.failedAttachmentCount} />}
-      {result.warning === 'save-dialog-suspected' && <SaveDialogWarning onZip={onZip} />}
     </>
   );
 }
@@ -212,8 +209,7 @@ export function Popup() {
       ? job
       : null;
 
-  /** `zip`: this export as one archive, after Chrome asked where to save a file. */
-  const exportChat = async (tabId: number, zip = false) => {
+  const exportChat = async (tabId: number) => {
     setState({ status: 'running', copying: false });
     if (settings?.destination === 'folder') {
       const code = await ensureFolderAccess();
@@ -225,7 +221,7 @@ export function Popup() {
     try {
       setState({
         status: 'finished',
-        result: await send('background', 'export:current', { tabId, ...(zip ? { zip } : {}) }),
+        result: await send('background', 'export:current', { tabId }),
       });
     } catch (error) {
       setState({
@@ -260,7 +256,6 @@ export function Popup() {
       {settings && (
         <>
           <FilesCheckbox settings={settings} update={updateSettings} />
-          <ZipCheckbox settings={settings} update={updateSettings} />
         </>
       )}
 
@@ -302,9 +297,7 @@ export function Popup() {
         </button>
       </div>
 
-      {state.status === 'finished' && (
-        <Result result={state.result} onZip={() => tab && void exportChat(tab.id, true)} />
-      )}
+      {state.status === 'finished' && <Result result={state.result} />}
       {state.status === 'copied' && (
         <p class="result ok">{t('popupCopied', String(state.messageCount))}</p>
       )}
