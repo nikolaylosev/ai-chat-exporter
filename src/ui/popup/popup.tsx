@@ -12,7 +12,7 @@ import { send, type ExportResult } from '../../shared/messages';
 import { detectPlatform, PLATFORM_LABEL, type Platform } from '../../shared/platform';
 import {
   ensureFolderAccess,
-  FailedFiles,
+  ExportResultView,
   FilesCheckbox,
   openExportPage,
   startExportJob,
@@ -129,32 +129,6 @@ function statusText(tab: ActiveTab): string {
 }
 
 /** What the user did, not a failure: shown in grey. */
-const QUIET = new Set<string>(['save-cancelled', 'save-dialog', 'download-cancelled']);
-
-function Result({ result }: { result: ExportResult }) {
-  return (
-    <>
-      {result.ok ? (
-        <p class={`result ${result.failedAttachmentCount ? 'warn' : 'ok'}`}>
-          {result.failedAttachmentCount
-            ? t('popupDonePartial', [
-                String(result.messageCount),
-                String(result.attachmentCount),
-                String(result.failedAttachmentCount),
-              ])
-            : t('popupDone', [String(result.messageCount), String(result.attachmentCount)])}{' '}
-          {locationLabel(result.location)}
-          <br />
-          <span class="path">{result.location.path}</span>
-        </p>
-      ) : (
-        <p class={`${QUIET.has(result.code) ? 'muted' : 'error'} result`}>{result.message}</p>
-      )}
-      {result.ok && <FailedFiles failures={result.failures} total={result.failedAttachmentCount} />}
-    </>
-  );
-}
-
 export function Popup() {
   const tab = useActiveTab();
   const shortcut = useShortcut();
@@ -263,8 +237,24 @@ export function Popup() {
           {state.status === 'running' && state.copying ? t('popupCopying') : t('popupCopyChat')}
         </button>
       </div>
+      {tab?.isChat && (
+        <p class="choose">
+          <button
+            type="button"
+            class="link"
+            onClick={() =>
+              void send('background', 'messages:open', { tabId: tab.id }).then(
+                () => window.close(),
+                () => undefined,
+              )
+            }
+          >
+            {t('pageMenuChoose')}
+          </button>
+        </p>
+      )}
 
-      {state.status === 'finished' && <Result result={state.result} />}
+      {state.status === 'finished' && <ExportResultView result={state.result} />}
       {state.status === 'copied' && (
         <p class="result ok">{t('popupCopied', String(state.messageCount))}</p>
       )}

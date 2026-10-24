@@ -26,12 +26,13 @@ export default {
       const chat = await stand.openTab(CHAT);
       await waitFor(() => stand.ev(chat, `Boolean(${button})`), 20000, 'the button on a chat');
 
-      // The menu: three actions, the saves naming what they make.
+      // The menu: four actions, the saves naming what they make.
       await stand.ev(chat, `${button}.click()`);
       const labels = await stand.ev(chat, `${items}.map((b) => b.textContent)`);
       assert.deepEqual(labels, [
         'Save chat with files.zip',
         'Save text only.md',
+        'Choose messages…',
         'Copy as Markdown',
       ]);
 
@@ -61,7 +62,7 @@ export default {
 
       // Copy: the panel says it is on the clipboard.
       await stand.ev(chat, `${button}.click()`);
-      await stand.ev(chat, `${items}[2].click()`);
+      await stand.ev(chat, `${items}[3].click()`);
       await waitFor(
         () => stand.ev(chat, `${panel}.includes('Copied to the clipboard')`),
         20000,
@@ -70,7 +71,7 @@ export default {
 
       // Escape closes the menu (its listener is attached once the menu has rendered).
       await stand.ev(chat, `${button}.click()`);
-      await waitFor(() => stand.ev(chat, `${items}.length === 3`), 5000, 'the menu open');
+      await waitFor(() => stand.ev(chat, `${items}.length === 4`), 5000, 'the menu open');
       await new Promise((r) => setTimeout(r, 200));
       await stand.ev(
         chat,

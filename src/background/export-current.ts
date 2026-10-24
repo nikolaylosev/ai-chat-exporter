@@ -2,9 +2,17 @@ import { errorText } from '../shared/error-text';
 import { CodedError, errorCode, isUserOutcome } from '../shared/errors';
 import { t } from '../shared/i18n';
 import { log } from '../shared/logger';
-import { sendToTab, type CopyResult, type ExportResult, type PanelView } from '../shared/messages';
+import {
+  sendToTab,
+  type ChatOutline,
+  type CopyResult,
+  type ExportResult,
+  type PanelView,
+} from '../shared/messages';
 import { detectPlatform } from '../shared/platform';
 import { loadSettings, type Settings } from '../shared/settings';
+import { selectMessages } from '../model/conversation';
+import { outline } from './outline';
 import { planConversationExport, renderConversationExport } from './conversation-export';
 import { setBadge as setTabBadge, type BadgeState } from './badge';
 import { exportConversation } from './export-conversation';
@@ -76,6 +84,7 @@ async function runExport(
   tabId: number,
   trigger: Trigger,
   overrides: Partial<Settings>,
+  messageIds?: readonly string[],
 ): Promise<ExportResult> {
   const id = await openConversationId(tabId);
   if (running.has(id)) throw new CodedError('busy', `Already exporting ${id}`);
@@ -88,10 +97,11 @@ async function runExport(
     const panel = trigger === 'command' && settings.showNotifications;
     if (panel) await showFeedback(tabId, { state: 'running' });
     const onFileDone = panel ? fileProgress(tabId, shown) : undefined;
-    const conversation = await sendToTab(tabId, 'conversation:get', {
+    const read = await sendToTab(tabId, 'conversation:get', {
       id,
       options: { artifactVersions: settings.artifactVersions },
     });
+    const conversation = messageIds ? selectMessages(read, messageIds) : read;
     const outcome = await exportConversation(conversation, settings, registry, undefined, {
       refreshLink: (attachment) =>
         sendToTab(tabId, 'conversation:file-link', {
@@ -137,16 +147,20 @@ function fileProgress(
   };
 }
 
-/** Exports the conversation open in a tab. Never throws; failures come back as a result. */
-/** `overrides` change the settings for this export only, e.g. the page button's "text only". */
+/**
+ * Exports the conversation open in a tab. Never throws; failures come back as a
+ * result. `overrides` change the settings for this export only, e.g. the page
+ * button's "text only"; `messageIds` keep only those messages.
+ */
 export async function exportCurrent(
   tabId: number,
   trigger: Trigger,
   overrides: Partial<Settings> = {},
+  messageIds?: readonly string[],
 ): Promise<ExportResult> {
   let result: ExportResult;
   try {
-    result = await runExport(tabId, trigger, overrides);
+    result = await runExport(tabId, trigger, overrides, messageIds);
   } catch (error) {
     (isUserOutcome(errorCode(error)) ? log.info : log.error)('Export failed', error);
     result = failure(error);
@@ -176,14 +190,18 @@ export async function exportCurrent(
  * files (they are listed by name), for the popup to put on the clipboard. Never
  * throws; failures come back as a result.
  */
-export async function copyCurrent(tabId: number): Promise<CopyResult> {
+export async function copyCurrent(
+  tabId: number,
+  messageIds?: readonly string[],
+): Promise<CopyResult> {
   try {
     const id = await openConversationId(tabId);
     const settings = { ...(await loadSettings()), saveAttachments: false };
-    const conversation = await sendToTab(tabId, 'conversation:get', {
+    const read = await sendToTab(tabId, 'conversation:get', {
       id,
       options: { artifactVersions: settings.artifactVersions },
     });
+    const conversation = messageIds ? selectMessages(read, messageIds) : read;
     const ctx = { now: new Date(), labels: renderLabels(conversation.platform) };
     const plan = planConversationExport(conversation, settings, ctx);
     return {
@@ -197,4 +215,15 @@ export async function copyCurrent(tabId: number): Promise<CopyResult> {
     (isUserOutcome(code) ? log.info : log.error)('Copy failed', error);
     return { ok: false, code, message: errorText(error) };
   }
+}
+
+/** The messages of the chat open in a tab, for choosing which to save. */
+export async function outlineCurrent(tabId: number): Promise<ChatOutline> {
+  const id = await openConversationId(tabId);
+  const settings = await loadSettings();
+  const conversation = await sendToTab(tabId, 'conversation:get', {
+    id,
+    options: { artifactVersions: settings.artifactVersions },
+  });
+  return outline(conversation);
 }

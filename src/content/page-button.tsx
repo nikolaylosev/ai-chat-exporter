@@ -81,6 +81,15 @@ async function save(withFiles: boolean): Promise<void> {
   }
 }
 
+/** Opens the extension's page for choosing which messages of this chat to save. */
+async function chooseMessages(): Promise<void> {
+  try {
+    await send('background', 'messages:open', {});
+  } catch {
+    // The extension was reloaded or updated; the page needs a reload.
+  }
+}
+
 async function copy(): Promise<void> {
   showPanel({ state: 'running', copying: true });
   try {
@@ -147,6 +156,9 @@ function PageButton({ isChat }: { isChat: () => boolean }) {
           <button type="button" role="menuitem" onClick={() => pick(() => save(false))}>
             <span>{t('pageMenuTextOnly')}</span>
             <span class="ext">{savedAs(settings, false)}</span>
+          </button>
+          <button type="button" role="menuitem" onClick={() => pick(chooseMessages)}>
+            <span>{t('pageMenuChoose')}</span>
           </button>
           <button type="button" role="menuitem" onClick={() => pick(copy)}>
             <span>{t('pageMenuCopy')}</span>

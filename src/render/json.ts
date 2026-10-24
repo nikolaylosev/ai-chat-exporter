@@ -64,6 +64,8 @@ export function renderJson(c: Conversation, o: JsonOptions): string {
       ...(c.model ? { model: c.model } : {}),
       ...(c.project ? { project: c.project } : {}),
       ...(c.archived ? { archived: true } : {}),
+      // Only some messages were chosen: how many the chat has.
+      ...(c.selection ? { chosenFrom: c.selection.total } : {}),
       messages: c.messages.map((m) => message(m, o)),
       branches: o.includeBranches
         ? c.branches.map((b) => ({

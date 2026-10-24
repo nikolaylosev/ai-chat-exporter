@@ -32,6 +32,22 @@ export interface Conversation extends ConversationSummary {
   messages: Message[];
   /** Other branches, each starting right after the message it forks from. */
   branches: Branch[];
+  /** Only some messages were chosen (selectMessages): how many the chat has. */
+  selection?: { total: number };
+}
+
+/**
+ * The conversation with only the chosen messages of the branch the user sees, in
+ * their order, each with its files. Other branches are left out.
+ */
+export function selectMessages(c: Conversation, ids: readonly string[]): Conversation {
+  const chosen = new Set(ids);
+  return {
+    ...c,
+    messages: c.messages.filter((m) => chosen.has(m.id)),
+    branches: [],
+    selection: { total: c.messages.length },
+  };
 }
 
 export interface Branch {

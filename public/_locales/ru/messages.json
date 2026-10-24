@@ -869,6 +869,17 @@
       }
     }
   },
+  "mdSelection": {
+    "message": "$ARG1$ из $ARG2$ сообщений чата",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
   "optionsTitle": {
     "message": "Настройки CodingCat AI Chat Exporter"
   },
@@ -1006,6 +1017,71 @@
   },
   "pageMenuCopy": {
     "message": "Копировать как Markdown"
+  },
+  "pageMenuChoose": {
+    "message": "Выбрать сообщения…"
+  },
+  "messagesTitle": {
+    "message": "Выбор сообщений"
+  },
+  "messagesLoading": {
+    "message": "Читаю чат…"
+  },
+  "messagesReopen": {
+    "message": "Откройте чат в его вкладке и снова выберите «Выбрать сообщения…»."
+  },
+  "messagesHint": {
+    "message": "Отметьте нужные сообщения; Shift+клик отмечает диапазон. Они сохранятся в порядке чата, каждое со своими файлами; другие ветки не попадут."
+  },
+  "messagesAll": {
+    "message": "Все"
+  },
+  "messagesNone": {
+    "message": "Ничего"
+  },
+  "messagesMine": {
+    "message": "Только мои"
+  },
+  "messagesChoose": {
+    "message": "Сообщение $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "messagesNoText": {
+    "message": "Без текста: только файлы или вызовы инструментов"
+  },
+  "messagesFiles": {
+    "message": "Файлы: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "messagesCount": {
+    "message": "Выбрано: $ARG1$ из $ARG2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "messagesCopy": {
+    "message": "Копировать"
+  },
+  "messagesSave": {
+    "message": "Сохранить $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
   },
   "panelCopied": {
     "message": "Скопировано в буфер обмена: сообщений $ARG1$.",

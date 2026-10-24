@@ -30,6 +30,8 @@ export interface RenderLabels {
    * (1 is the main branch).
    */
   branch: (number: number, fork: { branch: number; position: number } | null) => string;
+  /** Under the title of a note with chosen messages only: `5 of the chat's 40 messages`. */
+  selection: (chosen: number, total: number) => string;
 }
 
 export interface RenderOptions {
@@ -188,6 +190,7 @@ function frontmatter(c: Conversation, o: RenderOptions): string {
     ['model', yaml(c.model)],
     ['project', yaml(c.project)],
     ['message_count', String(c.messages.length)],
+    ...(c.selection ? ([['chosen_from', String(c.selection.total)]] as [string, string][]) : []),
     ['attachments', String(attachmentCount)],
     ['tags', `[ai-chat, ${c.platform}]`],
   ];
@@ -196,6 +199,7 @@ function frontmatter(c: Conversation, o: RenderOptions): string {
 
 export function renderMarkdown(c: Conversation, o: RenderOptions): string {
   const sections = [frontmatter(c, o), `# ${c.title || o.labels.untitled}`];
+  if (c.selection) sections.push(`*${o.labels.selection(c.messages.length, c.selection.total)}*`);
   for (const m of c.messages) sections.push(renderMessage(m, 2, o));
 
   if (o.includeBranches && c.branches.length) {

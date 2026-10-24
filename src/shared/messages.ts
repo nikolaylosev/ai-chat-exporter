@@ -63,6 +63,21 @@ export type CopyResult =
   | { ok: true; title: string; messageCount: number; markdown: string }
   | { ok: false; code: ErrorCode; message: string };
 
+/** A chat's messages, for choosing which to save (the messages page). */
+export interface ChatOutline {
+  title: string;
+  platform: Platform;
+  messages: {
+    id: string;
+    role: 'user' | 'assistant';
+    createdAt: string | null;
+    /** The start of its text, without Markdown marks. */
+    preview: string;
+    /** Names of its files. */
+    files: string[];
+  }[];
+}
+
 /** What the panel on a chat page shows after the keyboard shortcut. */
 export type PanelView =
   | { state: 'running'; copying?: boolean; files?: { done: number; total: number } }
@@ -86,6 +101,17 @@ interface Contract {
     'export:copy': { request: { tabId: number }; response: CopyResult };
     /** The page button: the chat of the tab that asks, as the shortcut saves it. */
     'export:this-tab': { request: { withFiles?: boolean }; response: ExportResult };
+    /** Opens the messages page for a tab's chat (the asking tab's by default). */
+    'messages:open': { request: { tabId?: number }; response: null };
+    /** For that page: the messages of the chat in `tabId`. */
+    'messages:list': { request: { tabId: number }; response: ChatOutline };
+    /** The chosen messages of that chat, saved; `withFiles` as the page's checkbox says. */
+    'messages:export': {
+      request: { tabId: number; ids: string[]; withFiles: boolean };
+      response: ExportResult;
+    };
+    /** The chosen messages as Markdown, for the page to put on the clipboard. */
+    'messages:copy': { request: { tabId: number; ids: string[] }; response: CopyResult };
     /** The page button's Copy: the asking tab's chat onto the clipboard. */
     'copy:this-tab': { request: Record<string, never>; response: CopyResult };
     /**
