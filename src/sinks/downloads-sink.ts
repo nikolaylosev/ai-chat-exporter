@@ -30,6 +30,8 @@ export class DownloadsSink implements ExportSink {
   readonly id = 'downloads';
   /** Set when any write looked like it hit a Save As dialog. */
   saveDialogSuspected = false;
+  /** One file at a time: the Save As guess reads the downloads of an export in turn. */
+  readonly fileConcurrency = 1;
   /** Where the last file went when Chrome asked and the user chose another place. */
   private movedTo: string | null = null;
 

@@ -81,12 +81,13 @@ async function runExport(
   if (running.has(id)) throw new CodedError('busy', `Already exporting ${id}`);
 
   running.add(id);
+  const shown: { last: Promise<unknown> } = { last: Promise.resolve() };
   try {
     await setBadge(tabId, 'working');
     const settings = { ...(await loadSettings()), ...overrides };
-    if (trigger === 'command' && settings.showNotifications) {
-      await showFeedback(tabId, { state: 'running' });
-    }
+    const panel = trigger === 'command' && settings.showNotifications;
+    if (panel) await showFeedback(tabId, { state: 'running' });
+    const onFileDone = panel ? fileProgress(tabId, shown) : undefined;
     const conversation = await sendToTab(tabId, 'conversation:get', {
       id,
       options: { artifactVersions: settings.artifactVersions },
@@ -97,6 +98,7 @@ async function runExport(
           conversationId: conversation.id,
           attachmentId: attachment.id,
         }).then((r) => r.url),
+      ...(onFileDone ? { onFileDone } : {}),
     });
     const result: ExportResult = {
       ok: true,
@@ -111,7 +113,28 @@ async function runExport(
     return result;
   } finally {
     running.delete(id);
+    // The result goes to the panel after the last count, never under it.
+    await shown.last;
   }
+}
+
+/**
+ * "Files: 3 of 12" in the chat page's panel, at most four times a second and
+ * always for the last file. Sent one after another, so they arrive in order.
+ */
+function fileProgress(
+  tabId: number,
+  shown: { last: Promise<unknown> },
+): (done: number, total: number) => void {
+  let sentAt = 0;
+  return (done, total) => {
+    const now = Date.now();
+    if (done < total && now - sentAt < 250) return;
+    sentAt = now;
+    shown.last = shown.last.then(() =>
+      showFeedback(tabId, { state: 'running', files: { done, total } }),
+    );
+  };
 }
 
 /** Exports the conversation open in a tab. Never throws; failures come back as a result. */

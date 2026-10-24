@@ -405,6 +405,7 @@ STRINGS = {
     "pageMenuCopy": ("Copy as Markdown", "Копировать как Markdown"),
     "panelCopied": ("Copied to the clipboard: $1 messages.", "Скопировано в буфер обмена: сообщений $1."),
     "panelCopying": ("Copying…", "Копирую…"),
+    "panelFiles": ("Files: $1 of $2", "Файлы: $1 из $2"),
     "optionsShowPageButton": ("Save button on chat pages", "Кнопка сохранения на страницах чатов"),
     "optionsShowPageButtonHint": (
         "A small round button in the bottom right corner of a chat, with a menu: save the chat with its files, save its text only, or copy it as Markdown.",

@@ -73,6 +73,8 @@ export interface ExportOptions {
   listUpdatedAt?: string | null;
   /** A new link for a file whose link was refused (see WriteContext). */
   refreshLink?: (attachment: Attachment) => Promise<string | null>;
+  /** Progress of the chat's files (see WriteContext). */
+  onFileDone?: (done: number, total: number) => void;
 }
 
 export async function exportConversation(
@@ -111,6 +113,7 @@ export async function exportConversation(
       ...(reuse ? { folderOverride: reuse } : {}),
       ...(reuse && previous?.files ? { previousFiles: previous.files } : {}),
       ...(options.refreshLink ? { refreshLink: options.refreshLink } : {}),
+      ...(options.onFileDone ? { onFileDone: options.onFileDone } : {}),
     },
     sinkFactory(effective, registry, archive, zip),
   );

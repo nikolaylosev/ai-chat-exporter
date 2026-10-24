@@ -1,4 +1,5 @@
 import type { Attachment, Conversation } from '../model/conversation';
+import { FILE_CONCURRENCY, forEachLimit } from './pool';
 
 /**
  * Image formats told by their first bytes. Gemini keeps uploaded images
@@ -55,11 +56,11 @@ export async function fixRecompressedNames(
     ...conversation.messages,
     ...conversation.branches.flatMap((b) => b.messages),
   ].flatMap((m) => m.attachments);
-  for (const a of attachments) {
-    if (a.note !== 'recompressed' || a.source?.kind !== 'url') continue;
+  await forEachLimit(attachments, FILE_CONCURRENCY, async (a) => {
+    if (a.note !== 'recompressed' || a.source?.kind !== 'url') return;
     const mime = await sniff(a.source.url).catch(() => null);
-    if (!mime) continue;
+    if (!mime) return;
     a.name = withImageExtension(a.name, mime);
     a.mime = mime;
-  }
+  });
 }

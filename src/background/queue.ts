@@ -1,3 +1,4 @@
+import type { Conversation } from '../model/conversation';
 import { errorText } from '../shared/error-text';
 import { CodedError, errorCode, type ErrorCode } from '../shared/errors';
 import { t } from '../shared/i18n';
@@ -36,8 +37,9 @@ import { WorkerTab } from './tabs';
 
 /**
  * Bulk export: one conversation at a time, with a pause between them
- * (docs/ARCHITECTURE.md, section 10). The state is saved after every conversation,
- * so a restarted service worker resumes the job (resumeJob).
+ * (docs/ARCHITECTURE.md, section 10); the next one is read while the current one
+ * is written. The state is saved after every conversation, so a restarted
+ * service worker resumes the job (resumeJob).
  */
 
 /** Problems that would fail every remaining conversation too: the job stops. */
@@ -58,6 +60,8 @@ interface Running {
   job: JobState;
   archive: ZipArchive | undefined;
   tab: WorkerTab;
+  /** The next chat, being read while the current one is written. */
+  next?: { id: string; conversation: Promise<Conversation> };
 }
 
 let current: Running | null = null;
@@ -261,7 +265,9 @@ async function runJob(job: JobState): Promise<void> {
           job.archive = archive.snapshot();
         }
         await saveJob(job);
-        if (!isSkipped(item) && pending().length > 0) {
+        // A chat read ahead has had its pause already.
+        const upcoming = pending()[0];
+        if (!isSkipped(item) && upcoming && current?.next?.id !== upcoming.id) {
           await sleep(job.settings.delayBetweenChatsMs);
         }
       }
@@ -325,12 +331,8 @@ async function exportConversationItem(
       item.status = 'skipped';
       return undefined;
     }
-    const conversation = await withTab(tab, (tabId) =>
-      sendToTab(tabId, 'conversation:get', {
-        id: item.id,
-        options: { artifactVersions: settings.artifactVersions },
-      }),
-    );
+    const conversation = await (takeReadAhead(item) ?? readConversation(job, item, tab));
+    await readAhead(job, item, tab);
     const outcome = await exportConversation(conversation, settings, registry, archive, {
       ...options,
       listUpdatedAt: item.updatedAt,
@@ -361,6 +363,48 @@ async function exportConversationItem(
     if (STOP_CODES.has(errorCode(error))) throw error;
     return undefined;
   }
+}
+
+function readConversation(job: JobState, item: JobItem, tab: WorkerTab): Promise<Conversation> {
+  return withTab(tab, (tabId) =>
+    sendToTab(tabId, 'conversation:get', {
+      id: item.id,
+      options: { artifactVersions: job.settings.artifactVersions },
+    }),
+  );
+}
+
+/** The chat read ahead for `item`, if it was; one read for another item is dropped. */
+function takeReadAhead(item: JobItem): Promise<Conversation> | null {
+  const next = current?.next;
+  if (current) delete current.next;
+  return next?.id === item.id ? next.conversation : null;
+}
+
+/**
+ * Starts reading the chat that comes after `item`, after the usual pause, so it is
+ * ready when `item` is written. Not for a project (it adds its chats first) or a
+ * chat that "skip unchanged" will skip.
+ */
+async function readAhead(job: JobState, item: JobItem, tab: WorkerTab): Promise<void> {
+  const next = job.items.find((i) => i !== item && i.status === 'pending');
+  if (!next || next.kind === 'project' || current?.job !== job) return;
+  const recordId = projectChatOptions(job, next)?.recordId ?? next.id;
+  if (
+    job.settings.skipUnchanged &&
+    (await registry.isUnchanged(job.platform, recordId, next.updatedAt))
+  ) {
+    return;
+  }
+  if (current?.job !== job) return;
+  const conversation = sleep(job.settings.delayBetweenChatsMs).then(() =>
+    job.status === 'running'
+      ? readConversation(job, next, tab)
+      : Promise.reject(new Error('The job ended')),
+  );
+  // Read when its turn comes; an unused read must not be an unhandled rejection.
+  conversation.catch(() => undefined);
+  current.next = { id: next.id, conversation };
 }
 
 /** Runs a request in the worker tab; if the user closed that tab, retries once in a new one. */

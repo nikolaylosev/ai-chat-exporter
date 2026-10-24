@@ -47,6 +47,7 @@ label { display: flex; gap: 6px; align-items: center; margin-top: 8px; padding-t
 .spinner { display: inline-block; width: 10px; height: 10px; margin-right: 6px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: -1px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
+.files { display: block; margin-top: 4px; color: var(--muted); }
 `;
 
 function needsAttention(result: ExportResult): boolean {
@@ -150,6 +151,11 @@ function Panel({ view, onClose }: { view: PanelView; onClose: () => void }) {
         <p>
           <span class="spinner" aria-hidden="true" />
           {t(view.copying ? 'panelCopying' : 'popupSaving')}
+          {view.files && (
+            <span class="files">
+              {t('panelFiles', [String(view.files.done), String(view.files.total)])}
+            </span>
+          )}
         </p>
       ) : view.state === 'copied' ? (
         <p class="ok">{t('panelCopied', String(view.messageCount))}</p>
