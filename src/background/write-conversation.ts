@@ -14,10 +14,13 @@ import {
 import { FileWriteError } from '../sinks/source';
 import { HttpError } from '../util/http';
 import { DownloadInterruptedError } from './downloader';
+import { FILE_CONCURRENCY, forEachLimit } from '../util/pool';
 
 export interface WritableSink extends ExportSink {
   /** Set when a write probably hit a Save As dialog (DownloadsSink). */
   readonly saveDialogSuspected?: boolean;
+  /** Files written at the same time; FILE_CONCURRENCY when not set. */
+  readonly fileConcurrency?: number;
   /** Picks the folder to write into, e.g. `Chat (2)` when `Chat` exists. */
   prepareFolder?(folderPath: string): Promise<string>;
   /** Completes the export (closes an archive) and says where it was saved. */
@@ -40,6 +43,8 @@ export interface WriteContext extends BuildContext {
    * the export root): those the chat no longer has are deleted afterwards.
    */
   previousFiles?: readonly string[];
+  /** After each file, saved or not: how many of the chat's files are done. */
+  onFileDone?: (done: number, total: number) => void;
 }
 
 /** The server refused the link (401, 403, 404, 410): a fresh link may work. */
@@ -110,7 +115,7 @@ export function rethrowIfFatal(error: unknown, sink: WritableSink): void {
 }
 
 /**
- * Saves a conversation: every attachment one by one into `files/`, then the
+ * Saves a conversation: its attachments into `files/`, a few at a time, then the
  * Markdown, whose links point only at files that were saved. A failed file does
  * not stop the export. A probable Save As dialog does, so the user is not asked
  * once per file, and so does a coded error from the sink (no access to the
@@ -127,6 +132,7 @@ export async function writeConversation(
   const saved = new Map<string, string>();
   const failed = new Map<string, string>();
   let missingFiles = 0;
+  let filesDone = 0;
   const stopForDialog = () => {
     throw askedWhere();
   };
@@ -139,14 +145,14 @@ export async function writeConversation(
     if (ctx.folderOverride) plan = moveToFolder(plan, ctx.folderOverride);
     if (sink.prepareFolder) plan = moveToFolder(plan, await sink.prepareFolder(plan.folderPath));
 
-    for (const file of plan.files) {
+    const writeOne = async (file: ExportPlan['files'][number]) => {
       const { attachment } = file;
       if (!attachment.source) {
         failed.set(
           attachment.id,
           attachment.unavailableReason ?? ctx.describeFailure('unavailable'),
         );
-        continue;
+        return;
       }
       try {
         try {
@@ -168,7 +174,11 @@ export async function writeConversation(
         if (isTransientFailure(error)) missingFiles++;
       }
       if (sink.saveDialogSuspected) stopForDialog();
-    }
+    };
+    await forEachLimit(plan.files, sink.fileConcurrency ?? FILE_CONCURRENCY, async (file) => {
+      await writeOne(file);
+      ctx.onFileDone?.(++filesDone, plan.files.length);
+    });
 
     const note = renderNote(conversation, settings, ctx, plan, { saved, failed });
     try {

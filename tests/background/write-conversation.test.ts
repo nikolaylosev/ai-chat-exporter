@@ -24,6 +24,7 @@ class FakeSink implements WritableSink {
   readonly id = 'fake';
   abort?: () => Promise<void>;
   saveDialogSuspected = false;
+  fileConcurrency?: number;
   readonly writes: { path: string; source: FileSource }[] = [];
   constructor(private readonly fail: Record<string, Error> = {}) {}
   writeText(path: string, content: string) {
@@ -220,6 +221,7 @@ describe('writeConversation', () => {
 
   it('stops when a file download is cancelled', async () => {
     const sink = new FakeSink({ 'a.pdf': new DownloadInterruptedError('USER_CANCELED') });
+    sink.fileConcurrency = 1; // as DownloadsSink
     await expect(
       writeConversation(
         conversation([attachment('a', 'a.pdf'), attachment('b', 'b.pdf')]),
@@ -233,6 +235,7 @@ describe('writeConversation', () => {
 
   it('stops when a file landed in another folder: Chrome asks about each file', async () => {
     const sink = new FakeSink();
+    sink.fileConcurrency = 1; // as DownloadsSink
     const original = sink.writeFile.bind(sink);
     sink.writeFile = async (path, source) => {
       await original(path, source);
@@ -297,8 +300,50 @@ describe('writeConversation', () => {
         () => sink,
       ),
     ).rejects.toMatchObject({ code: 'folder-missing' });
-    expect(sink.writes.map((w) => w.path.split('/').pop())).toEqual(['a.pdf']);
+    // The files already on their way land; nothing starts after, and no note is written.
+    expect(sink.writes.map((w) => w.path.split('/').pop())).toEqual(['a.pdf', 'c.pdf']);
     expect(aborted).toBe(1);
+  });
+
+  it('counts every file done, saved or not, up to all of them', async () => {
+    const sink = new FakeSink({ 'b.pdf': new Error('boom') });
+    const counts: string[] = [];
+    await writeConversation(
+      conversation([
+        attachment('a', 'a.pdf'),
+        attachment('b', 'b.pdf'),
+        attachment('c', 'c.pdf', { source: null }),
+      ]),
+      DEFAULT_SETTINGS,
+      { ...ctx, onFileDone: (done, total) => counts.push(`${done}/${total}`) },
+      () => sink,
+    );
+    expect(counts).toHaveLength(3);
+    expect(counts.at(-1)).toBe('3/3');
+  });
+
+  it('writes a few files at a time and links them in the chat order', async () => {
+    const sink = new FakeSink();
+    let running = 0;
+    let most = 0;
+    const original = sink.writeFile.bind(sink);
+    sink.writeFile = async (path, source) => {
+      running++;
+      most = Math.max(most, running);
+      // The first file is the slowest: the others finish before it.
+      await new Promise((r) => setTimeout(r, path.endsWith('f0.pdf') ? 20 : 1));
+      running--;
+      await original(path, source);
+    };
+    const files = Array.from({ length: 10 }, (_, i) => attachment(`a${i}`, `f${i}.pdf`));
+    const outcome = await writeConversation(conversation(files), DEFAULT_SETTINGS, ctx, () => sink);
+    expect(most).toBe(4);
+    expect(outcome.savedFiles).toBe(10);
+    expect(sink.writes.at(-1)?.path).toMatch(/\.md$/);
+    const note = sink.writes.at(-1)?.source;
+    const text = note?.kind === 'text' ? note.text : '';
+    const order = files.map((f) => text.indexOf(`files/${f.name}`));
+    expect(order.every((at, i) => at > 0 && (i === 0 || at > (order[i - 1] ?? 0)))).toBe(true);
   });
 
   it('writes into the recorded folder when overwriting', async () => {

@@ -1015,6 +1015,17 @@
   "panelCopying": {
     "message": "Копирую…"
   },
+  "panelFiles": {
+    "message": "Файлы: $ARG1$ из $ARG2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
   "optionsShowPageButton": {
     "message": "Кнопка сохранения на страницах чатов"
   },

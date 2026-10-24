@@ -17,6 +17,7 @@ import {
 } from './project-export';
 import { registry } from './registry';
 import { rethrowIfFatal } from './write-conversation';
+import { FILE_CONCURRENCY, forEachLimit } from '../util/pool';
 
 /**
  * A Claude Project or a Gemini notebook in a bulk job: its files first, then
@@ -85,34 +86,45 @@ export async function exportProject(
     knowledge: [],
     chats: project.conversations.map((c) => ({ id: c.id, title: c.title, url: c.url })),
   };
-  let failed = 0;
-  const failures: FileFailure[] = [];
-  for (const file of plan.knowledge) {
-    const name = file.link.slice(file.link.lastIndexOf('/') + 1);
-    // A file the platform keeps without a download (a Gemini notebook's source) is listed only.
-    if (!file.attachment.source && file.attachment.note === 'unavailable') {
-      note.knowledge.push({ name, info: file.attachment.unavailableReason ?? t('mdFileNotGiven') });
-      continue;
-    }
-    // "Save with files" is off: the project's files are listed, as a chat's are.
-    if (!settings.saveAttachments) {
-      note.knowledge.push({ name, info: t('mdFileSkipped') });
-      continue;
-    }
-    try {
-      if (!file.attachment.source) throw new Error('unavailable');
-      await sink.writeFile(file.path, file.attachment.source);
-      rethrowIfFatal(null, sink);
-      note.knowledge.push({ name, link: file.link });
-    } catch (error) {
-      rethrowIfFatal(error, sink);
-      failed++;
-      const reason = describeFailure(error);
-      note.knowledge.push({ name, error: reason });
-      log.info('File not saved', project.name, name, reason);
-      if (failures.length < MAX_LISTED_FAILURES) failures.push({ name, reason });
-    }
-  }
+  // A few files at a time; the note lists them in the project's order.
+  const knowledge: ProjectNote['knowledge'] = [];
+  await forEachLimit(
+    plan.knowledge,
+    sink.fileConcurrency ?? FILE_CONCURRENCY,
+    async (file, index) => {
+      const name = file.link.slice(file.link.lastIndexOf('/') + 1);
+      // A file the platform keeps without a download (a Gemini notebook's source) is listed only.
+      if (!file.attachment.source && file.attachment.note === 'unavailable') {
+        knowledge[index] = {
+          name,
+          info: file.attachment.unavailableReason ?? t('mdFileNotGiven'),
+        };
+        return;
+      }
+      // "Save with files" is off: the project's files are listed, as a chat's are.
+      if (!settings.saveAttachments) {
+        knowledge[index] = { name, info: t('mdFileSkipped') };
+        return;
+      }
+      try {
+        if (!file.attachment.source) throw new Error('unavailable');
+        await sink.writeFile(file.path, file.attachment.source);
+        rethrowIfFatal(null, sink);
+        knowledge[index] = { name, link: file.link };
+      } catch (error) {
+        rethrowIfFatal(error, sink);
+        const reason = describeFailure(error);
+        knowledge[index] = { name, error: reason };
+        log.info('File not saved', project.name, name, reason);
+      }
+    },
+  );
+  note.knowledge = knowledge;
+  const notSaved = knowledge.filter((k) => k.error !== undefined);
+  const failed = notSaved.length;
+  const failures: FileFailure[] = notSaved
+    .slice(0, MAX_LISTED_FAILURES)
+    .map((k) => ({ name: k.name, reason: k.error ?? '' }));
 
   const progress: ProjectProgress = {
     note,

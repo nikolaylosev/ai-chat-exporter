@@ -65,7 +65,7 @@ export type CopyResult =
 
 /** What the panel on a chat page shows after the keyboard shortcut. */
 export type PanelView =
-  | { state: 'running'; copying?: boolean }
+  | { state: 'running'; copying?: boolean; files?: { done: number; total: number } }
   | { state: 'result'; result: ExportResult }
   | { state: 'copied'; messageCount: number };
 

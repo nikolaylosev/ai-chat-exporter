@@ -73,7 +73,7 @@ src/
     report.ts               bulk export report (pure)
     project-export.ts       project folder plan and project note (pure)
     project-job.ts          a project in a bulk job: knowledge files, its chats, the note
-    write-conversation.ts   files first, then the Markdown; stops on folder-wide errors
+    write-conversation.ts   files first (a few at a time), then the Markdown; stops on folder-wide errors
     conversation-export.ts  Conversation + settings -> folder plan and Markdown (pure)
     labels.ts               Markdown labels in the UI language
     downloader.ts           wraps chrome.downloads, tracks completion, Save As heuristic
@@ -145,6 +145,7 @@ src/
     dates.ts                local dates and ISO 8601 with offset
     http.ts                 fetchJson with retries on 429, 5xx and dropped connections
     image-type.ts           image format from the first bytes; re-encoded images renamed
+    pool.ts                 runs tasks a few at a time (files of a chat or a project)
   types/                    File System Access declarations missing from TypeScript's DOM library
   ui/                       each page: main.tsx renders it, the component is in its own module
     popup/                  popup.tsx
@@ -457,8 +458,9 @@ Rendering is a pure function from `Conversation` and settings to a string, so it
 
 The queue lives in the service worker.
 
-- **One conversation at a time**, with at most 1–2 concurrent requests to a platform.
-- **Delay between conversations:** 800 ms by default, configurable.
+- **One conversation written at a time.** While it is written, the next one is read (`readAhead`), so its request does not wait for the files of the current one. Not ahead of a project (it adds its chats first) or of a chat that "skip unchanged" will skip.
+- **Files a few at a time:** up to four files of a chat or a project are fetched at once (`util/pool.ts`); the note lists them in the chat's order whatever order they arrive in. Into Downloads as separate files, one at a time, since the Save As guess reads the downloads in turn. API requests stay paced: ChatGPT's file links go through its `Pacer` one after another.
+- **Delay between conversations:** 800 ms by default, configurable. A chat read ahead waits it out before its request, counted from the end of the previous read.
 - **Retries:** on HTTP 429, 5xx and dropped connections, exponential backoff, up to 3 retries (1, 2, 4 s; ChatGPT waits 15, 30, 60 and 120 s after a 429), then the error goes to the report. Files are retried the same way ([section 12](#12-error-handling)).
 - **Cancellation:** the current conversation finishes; the rest do not start.
 - **Persistence:** Chrome stops an idle service worker after about 30 seconds. The job state (items with their status, settings at the start, the background tab, an open archive's id and folders) is saved to `chrome.storage.session` after each conversation, and the queue resumes from there when the worker starts again. An open ZIP archive lives on in the offscreen document. Verified on the test stand: a worker stopped in the middle of a job finished it after it was woken.
@@ -602,3 +604,4 @@ Every new dependency is justified in its commit message.
 | 67  | "Save to a folder…" (one chat) and "To a folder…" (export page); removed, see 69                                | chrome.downloads writes only inside Downloads; elsewhere Chrome asks about each file                                            |
 | 68  | Into Downloads, a chat with files and any bulk export as one ZIP; no ZIP setting                                | One download, so Chrome asks at most once; separate files go to a chosen folder                                                 |
 | 69  | The chosen folder only as the settings' destination, no "Save to a folder…" buttons                             | Fewer buttons; with one ZIP into Downloads, Chrome asks at most once, so the buttons were no longer needed to get around it     |
+| 70  | Up to four files at once, and the next chat read while the current one is written                               | Files came one after another, and a bulk export waited for each chat's files before asking for the next chat                    |

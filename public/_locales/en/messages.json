@@ -1015,6 +1015,17 @@
   "panelCopying": {
     "message": "Copying…"
   },
+  "panelFiles": {
+    "message": "Files: $ARG1$ of $ARG2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
   "optionsShowPageButton": {
     "message": "Save button on chat pages"
   },
