@@ -35,6 +35,8 @@ export async function sourceBlob(
       return source.blob;
     case 'text':
       return new Blob([source.text], { type: source.mime });
+    case 'docx':
+      throw new Error('A Word note is made by the offscreen document (offscreen/word-notes.ts)');
     case 'url': {
       const kept = prefetched.get(source.url);
       if (kept) {

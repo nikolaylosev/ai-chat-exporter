@@ -1,10 +1,11 @@
-export type NoteFormat = 'markdown' | 'html' | 'json';
+export type NoteFormat = 'markdown' | 'html' | 'json' | 'docx';
 
 /** The note's file extension for each format. */
 export const NOTE_EXTENSION: Record<NoteFormat, string> = {
   markdown: 'md',
   html: 'html',
   json: 'json',
+  docx: 'docx',
 };
 
 /**
@@ -67,7 +68,7 @@ const STORAGE_KEY = 'settings';
 
 const ALLOWED_VALUES: Partial<Record<keyof Settings, readonly unknown[]>> = {
   destination: ['downloads', 'folder'],
-  noteFormat: ['markdown', 'html', 'json'],
+  noteFormat: ['markdown', 'html', 'json', 'docx'],
   toolCallDetail: ['compact', 'full'],
   claudeBranches: ['active', 'all'],
   artifactVersions: ['latest', 'all'],

@@ -305,6 +305,24 @@ describe('writeConversation', () => {
     expect(aborted).toBe(1);
   });
 
+  it('writes a Word note from its Markdown and marks the images it embeds', async () => {
+    const sink = new FakeSink();
+    await writeConversation(
+      conversation([attachment('a', 'a.png'), attachment('b', 'b.pdf')]),
+      { ...DEFAULT_SETTINGS, noteFormat: 'docx' },
+      ctx,
+      () => sink,
+    );
+    const byName = (name: string) => sink.writes.find((w) => w.path.endsWith(name))?.source;
+    expect(byName('a.png')).toMatchObject({ kind: 'url', forNote: true });
+    expect(byName('b.pdf')).not.toHaveProperty('forNote');
+    const note = sink.writes.at(-1);
+    expect(note?.path).toMatch(/\.docx$/);
+    const source = note?.source;
+    expect(source?.kind).toBe('docx');
+    expect(source?.kind === 'docx' && source.markdown).toContain('files/a.png');
+  });
+
   it('counts every file done, saved or not, up to all of them', async () => {
     const sink = new FakeSink({ 'b.pdf': new Error('boom') });
     const counts: string[] = [];

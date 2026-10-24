@@ -8,7 +8,13 @@ import { FolderSink, ZipSink, type ZipTarget } from '../sinks/offscreen-sinks';
 import { downloadWithRetry, removeDownloaded } from './downloader';
 import { describeFailure, renderLabels } from './labels';
 import { fixRecompressedNames } from '../util/image-type';
-import { createBlobUrl, offscreenFiles, revokeBlobUrl, sniffImageType } from './offscreen-client';
+import {
+  createBlobUrl,
+  createDocxUrl,
+  offscreenFiles,
+  revokeBlobUrl,
+  sniffImageType,
+} from './offscreen-client';
 import type { ExportRecord, RecordDestination, Registry } from './registry';
 import { writeConversation, type WritableSink, type WriteOutcome } from './write-conversation';
 
@@ -47,6 +53,7 @@ export function sinkFactory(
       {
         download: (request) => downloadWithRetry(request),
         createBlobUrl,
+        createDocxUrl,
         revokeBlobUrl,
         reserveFolder: (path, reuse) => registry.reserveFolder(path, reuse),
         removeDownloaded,

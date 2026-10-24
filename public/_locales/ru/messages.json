@@ -99,6 +99,9 @@
   "noteFormatJson": {
     "message": "JSON (.json)"
   },
+  "noteFormatDocx": {
+    "message": "Документ Word (.docx)"
+  },
   "popupCopyChat": {
     "message": "Копировать"
   },

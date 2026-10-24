@@ -1,9 +1,14 @@
 export type FileSource =
-  /** Downloaded by the browser with the user's cookies. */
-  | { kind: 'url'; url: string }
+  /**
+   * Downloaded by the browser with the user's cookies. `forNote`: an image the
+   * Word note embeds; the offscreen document keeps it until the note is written.
+   */
+  | { kind: 'url'; url: string; forNote?: boolean }
   /** Only usable inside one context; a Blob never crosses extension messaging. */
   | { kind: 'blob'; blob: Blob }
-  | { kind: 'text'; text: string; mime: string };
+  | { kind: 'text'; text: string; mime: string }
+  /** A Word note, made from its Markdown where its images are (render/docx.ts). */
+  | { kind: 'docx'; markdown: string; title: string };
 
 /**
  * A destination for exported files. Sinks know nothing about platforms.
