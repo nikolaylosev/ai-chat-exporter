@@ -6,7 +6,8 @@ import { JOB_KEY, type JobState } from '../shared/job';
 import { send, type FileFailure, type JobStartItem } from '../shared/messages';
 import type { Platform } from '../shared/platform';
 import { loadSettings, saveSettings, type Settings } from '../shared/settings';
-import { loadFolderHandle, requestFolderAccess } from '../sinks/folder-handle';
+import { errorMessage } from '../shared/logger';
+import { loadFolderHandle, requestFolderAccess, saveFolderHandle } from '../sinks/folder-handle';
 
 export const EXPORT_COMMAND = 'export-current-chat';
 
@@ -72,17 +73,40 @@ export function openExportPage(options: { projects?: boolean; platform?: Platfor
 }
 
 /** Starts a job after asking for folder access where needed; returns an error message or null. */
+/**
+ * Chrome's folder picker, then keeps the folder (the settings' "folder you
+ * choose"). Only on a click in an extension page. Null once a folder is kept,
+ * `closed` when the user closed the picker, else the error to show.
+ */
+export async function pickExportFolder(): Promise<string | null> {
+  try {
+    const handle = await window.showDirectoryPicker({
+      id: 'export-folder',
+      mode: 'readwrite',
+      startIn: 'documents',
+    });
+    if ((await requestFolderAccess(handle)) !== 'granted') return codeText('folder-permission');
+    await saveFolderHandle(handle);
+    return null;
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') return 'closed';
+    return t('optionsFolderError', errorMessage(error));
+  }
+}
+
+/** `toFolder`: this export into the folder just picked, whatever the destination setting. */
 export async function startExportJob(
   settings: Settings,
   items: JobStartItem[],
   platform: Platform = 'claude',
+  toFolder = false,
 ): Promise<string | null> {
-  if (settings.destination === 'folder') {
+  if (settings.destination === 'folder' && !toFolder) {
     const code = await ensureFolderAccess();
     if (code) return codeText(code);
   }
   try {
-    await send('background', 'job:start', { platform, items });
+    await send('background', 'job:start', { platform, items, ...(toFolder ? { toFolder } : {}) });
     return null;
   } catch (error) {
     return errorText(error);

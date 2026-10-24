@@ -15,6 +15,7 @@ import {
   useJob,
   useSettings,
   FilesCheckbox,
+  pickExportFolder,
   ZipCheckbox,
 } from '../common';
 import {
@@ -200,6 +201,9 @@ function useConversations(platform: Platform) {
 
 const formatDate = (iso: string | null) => (iso ? localDateTime(iso) : '');
 
+/** Stops caused by Chrome asking where to save: what the user did, with a way round. */
+const ASKED = new Set<string>(['save-dialog', 'download-cancelled']);
+
 function Progress({ job, onDismiss }: { job: JobState; onDismiss: () => void }) {
   const counts = jobCounts(job);
   const finished = counts.total - counts.pending;
@@ -247,7 +251,12 @@ function Progress({ job, onDismiss }: { job: JobState; onDismiss: () => void }) 
         ])}
       </p>
       {current && <p class="muted">{t('jobCurrent', current.title || t('untitledChat'))}</p>}
-      {job.stopReason && <p class="error">{job.stopReason.message}</p>}
+      {job.stopReason && (
+        <p class={ASKED.has(job.stopReason.code) ? 'muted' : 'error'}>{job.stopReason.message}</p>
+      )}
+      {job.stopReason && ASKED.has(job.stopReason.code) && (
+        <p class="muted">{t('exportAskedHint')}</p>
+      )}
       {job.recoveries ? <p class="warn">{t('jobRecovered', String(job.recoveries))}</p> : null}
       {job.parts && job.parts.length > 0 && (
         <>
@@ -408,14 +417,19 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
       return next;
     });
 
-  const start = async () => {
+  const start = async (toFolder = false) => {
     if (!settings) return;
     setStartError('');
+    if (toFolder) {
+      const picked = await pickExportFolder();
+      if (picked === 'closed') return;
+      if (picked) return setStartError(picked);
+    }
     // Keep the list's order, newest first, whatever the current sort.
     const items = conversations
       .filter((c) => selected.has(c.id))
       .map((c) => ({ id: c.id, title: c.title, updatedAt: c.updatedAt }));
-    const error = await startExportJob(settings, items, platform);
+    const error = await startExportJob(settings, items, platform, toFolder);
     if (error) setStartError(error);
     else onStarted();
   };
@@ -622,6 +636,14 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
             >
               {t('exportStart', String(selected.size))}
             </button>
+            <button
+              type="button"
+              title={t('exportToFolderHint')}
+              disabled={selected.size === 0 || busy || !settings}
+              onClick={() => void start(true)}
+            >
+              {t('exportToFolder')}
+            </button>
             {startError && <p class="error">{startError}</p>}
             {busy && <p class="muted">{t('exportBusy')}</p>}
           </div>
@@ -680,9 +702,14 @@ function ProjectsTab({ platform, settings, updateSettings, job, showJob, onStart
       return next;
     });
 
-  const start = async () => {
+  const start = async (toFolder = false) => {
     if (!settings) return;
     setStartError('');
+    if (toFolder) {
+      const picked = await pickExportFolder();
+      if (picked === 'closed') return;
+      if (picked) return setStartError(picked);
+    }
     const items = projects
       .filter((p) => selected.has(p.id))
       .map((p) => ({
@@ -692,7 +719,7 @@ function ProjectsTab({ platform, settings, updateSettings, job, showJob, onStart
         updatedAt: p.updatedAt,
         withChats: true,
       }));
-    const error = await startExportJob(settings, items, platform);
+    const error = await startExportJob(settings, items, platform, toFolder);
     if (error) setStartError(error);
     else onStarted();
   };
@@ -828,6 +855,14 @@ function ProjectsTab({ platform, settings, updateSettings, job, showJob, onStart
               onClick={() => void start()}
             >
               {t(notebooks ? 'exportStartNotebooks' : 'exportStartProjects', String(selected.size))}
+            </button>
+            <button
+              type="button"
+              title={t('exportToFolderHint')}
+              disabled={selected.size === 0 || busy || !settings}
+              onClick={() => void start(true)}
+            >
+              {t('exportToFolder')}
             </button>
             {startError && <p class="error">{startError}</p>}
             {busy && <p class="muted">{t('exportBusy')}</p>}

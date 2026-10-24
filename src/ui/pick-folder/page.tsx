@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'preact/hooks';
 import { t } from '../../shared/i18n';
-import { errorMessage } from '../../shared/logger';
 import { send } from '../../shared/messages';
 import { loadFolderHandle, requestFolderAccess, saveFolderHandle } from '../../sinks/folder-handle';
+import { pickExportFolder } from '../common';
 import '../styles.css';
 import './page.css';
 
@@ -40,18 +40,11 @@ export function PickFolder() {
 
   const choose = async () => {
     setError('');
-    try {
-      const handle = await window.showDirectoryPicker({
-        id: 'export-folder',
-        mode: 'readwrite',
-        startIn: 'documents',
-      });
-      await start(handle);
-    } catch (e) {
-      // The user closed the picker.
-      if (e instanceof DOMException && e.name === 'AbortError') return;
-      setError(t('optionsFolderError', errorMessage(e)));
-    }
+    const picked = await pickExportFolder();
+    if (picked === 'closed') return;
+    if (picked) return setError(picked);
+    const handle = await loadFolderHandle();
+    if (handle) await start(handle);
   };
 
   return (

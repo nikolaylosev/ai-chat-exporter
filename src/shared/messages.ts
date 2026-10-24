@@ -116,7 +116,11 @@ interface Contract {
       request: { tabId: number };
       response: { id: string; name: string } | null;
     };
-    'job:start': { request: { platform: Platform; items: JobStartItem[] }; response: null };
+    /** `toFolder`: into the folder the user just picked, whatever the destination setting. */
+    'job:start': {
+      request: { platform: Platform; items: JobStartItem[]; toFolder?: boolean };
+      response: null;
+    };
     'job:cancel': { request: Empty; response: null };
     'registry:count': { request: Empty; response: { count: number } };
     'registry:clear': { request: Empty; response: null };

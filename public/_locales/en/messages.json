@@ -1019,6 +1019,15 @@
   "pageMenuToFolder": {
     "message": "Save to a folder…"
   },
+  "exportToFolder": {
+    "message": "To a folder…"
+  },
+  "exportAskedHint": {
+    "message": "To save into another folder without Chrome asking about each file, use “To a folder…” next to “Save selected”."
+  },
+  "exportToFolderHint": {
+    "message": "Choose a folder: the selected chats and their files go straight into it, without Chrome asking about each file."
+  },
   "pickFolderTitle": {
     "message": "Save this chat to a folder"
   },
