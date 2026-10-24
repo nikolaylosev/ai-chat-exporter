@@ -19,6 +19,7 @@ O QUE TEM EM UMA NOTA
 
 COMO USAR
 • O chat que você está lendo: clique no ícone e em "Save this chat", ou pressione Alt+Shift+S (Option+Shift+S no Mac). "Copy" coloca o chat na área de transferência em Markdown.
+• Só algumas mensagens: "Choose messages…" lista as mensagens do chat; marque as que quiser (ou só as suas, ou só as respostas da IA) e salve ou copie apenas elas.
 • Muitos chats ou projetos: abra a página de exportação, filtre por data, projeto ou título, marque os que quiser ou todos, e salve. Roda em segundo plano, pode ser cancelado e gera um relatório do que falhou.
 • Em Downloads, um chat com seus arquivos chega como um único .zip, e só o texto como um arquivo. Ou direto em uma pasta que você escolher, arquivo por arquivo.
 
