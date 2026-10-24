@@ -100,3 +100,7 @@ footer {
   min-width: 0;
   font: inherit;
 }
+
+.choose {
+  margin: 6px 0 0;
+}

@@ -869,6 +869,17 @@
       }
     }
   },
+  "mdSelection": {
+    "message": "$ARG1$ of the chat's $ARG2$ messages",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
   "optionsTitle": {
     "message": "CodingCat AI Chat Exporter settings"
   },
@@ -1006,6 +1017,74 @@
   },
   "pageMenuCopy": {
     "message": "Copy as Markdown"
+  },
+  "pageMenuChoose": {
+    "message": "Choose messages…"
+  },
+  "messagesTitle": {
+    "message": "Choose messages"
+  },
+  "messagesLoading": {
+    "message": "Reading the chat…"
+  },
+  "messagesReopen": {
+    "message": "Open the chat in its tab and choose “Choose messages…” again."
+  },
+  "messagesHint": {
+    "message": "Tick the messages to keep; Shift-click ticks a range. They are saved in the chat's order, each with its files; other branches are left out."
+  },
+  "messagesAll": {
+    "message": "All"
+  },
+  "messagesNone": {
+    "message": "None"
+  },
+  "messagesMine": {
+    "message": "Only mine"
+  },
+  "messagesReplies": {
+    "message": "Only AI replies"
+  },
+  "messagesChoose": {
+    "message": "Message $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "messagesNoText": {
+    "message": "No text: files or tool calls only"
+  },
+  "messagesFiles": {
+    "message": "Files: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "messagesCount": {
+    "message": "Chosen: $ARG1$ of $ARG2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "messagesCopy": {
+    "message": "Copy"
+  },
+  "messagesSave": {
+    "message": "Save $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
   },
   "panelCopied": {
     "message": "Copied to the clipboard: $ARG1$ messages.",

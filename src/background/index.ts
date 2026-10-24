@@ -1,7 +1,7 @@
 import { log } from '../shared/logger';
 import { handle, sendToTab } from '../shared/messages';
 import { keepDownloadNames } from './downloader';
-import { copyCurrent, exportCurrent } from './export-current';
+import { copyCurrent, exportCurrent, outlineCurrent } from './export-current';
 import { writeClipboard } from './offscreen-client';
 import { cancelJob, resumeJob, startJob } from './queue';
 import { detectPlatform } from '../shared/platform';
@@ -26,6 +26,19 @@ handle('background', {
       'command',
       withFiles === undefined ? {} : { saveAttachments: withFiles },
     ),
+  'messages:open': async ({ tabId }, sender) => {
+    const chat = await chrome.tabs.get(tabId ?? senderTab(sender));
+    await chrome.tabs.create({
+      url: chrome.runtime.getURL(`src/ui/messages/index.html?tab=${chat.id}`),
+      ...(chat.index >= 0 ? { index: chat.index + 1 } : {}),
+      ...(chat.id !== undefined ? { openerTabId: chat.id } : {}),
+    });
+    return null;
+  },
+  'messages:list': ({ tabId }) => outlineCurrent(tabId),
+  'messages:export': ({ tabId, ids, withFiles }) =>
+    exportCurrent(tabId, 'popup', { saveAttachments: withFiles }, ids),
+  'messages:copy': ({ tabId, ids }) => copyCurrent(tabId, ids),
   'copy:this-tab': async (_payload, sender) => {
     const copied = await copyCurrent(senderTab(sender));
     if (copied.ok) await writeClipboard(copied.markdown);

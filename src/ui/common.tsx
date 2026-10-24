@@ -3,7 +3,8 @@ import { codeText, errorText } from '../shared/error-text';
 import type { ErrorCode } from '../shared/errors';
 import { t } from '../shared/i18n';
 import { JOB_KEY, type JobState } from '../shared/job';
-import { send, type FileFailure, type JobStartItem } from '../shared/messages';
+import { locationLabel } from '../shared/location';
+import { send, type ExportResult, type FileFailure, type JobStartItem } from '../shared/messages';
 import type { Platform } from '../shared/platform';
 import { loadSettings, saveSettings, type Settings } from '../shared/settings';
 import { loadFolderHandle, requestFolderAccess } from '../sinks/folder-handle';
@@ -106,6 +107,34 @@ export async function ensureFolderAccess(): Promise<ErrorCode | null> {
   }
   if (access === 'granted') return null;
   return access === 'not-chosen' ? 'folder-not-chosen' : 'folder-permission';
+}
+
+/** Stops that are the user's own doing (a cancelled dialog or download): shown in grey. */
+const QUIET = new Set<string>(['save-cancelled', 'save-dialog', 'download-cancelled']);
+
+/** One chat's export result: what was saved and where, or why not. */
+export function ExportResultView({ result }: { result: ExportResult }) {
+  return (
+    <>
+      {result.ok ? (
+        <p class={`result ${result.failedAttachmentCount ? 'warn' : 'ok'}`}>
+          {result.failedAttachmentCount
+            ? t('popupDonePartial', [
+                String(result.messageCount),
+                String(result.attachmentCount),
+                String(result.failedAttachmentCount),
+              ])
+            : t('popupDone', [String(result.messageCount), String(result.attachmentCount)])}{' '}
+          {locationLabel(result.location)}
+          <br />
+          <span class="path">{result.location.path}</span>
+        </p>
+      ) : (
+        <p class={`${QUIET.has(result.code) ? 'muted' : 'error'} result`}>{result.message}</p>
+      )}
+      {result.ok && <FailedFiles failures={result.failures} total={result.failedAttachmentCount} />}
+    </>
+  );
 }
 
 /** Files of a chat that were not saved: name and reason; `total` counts any left out. */

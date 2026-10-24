@@ -104,7 +104,9 @@ export async function exportConversation(
   }
   const destination = archive ? 'zip' : recordDestination(settings, zip);
   const recordId = options.recordId ?? conversation.id;
-  const previous = await registry.record(conversation.platform, recordId);
+  // Chosen messages are a copy beside the chat's export: not recorded, nothing reused.
+  const chosen = Boolean(conversation.selection);
+  const previous = chosen ? undefined : await registry.record(conversation.platform, recordId);
   const reuse = reusedFolder(settings, destination, previous);
   // Writing into the earlier folder means replacing what is there, whatever the setting.
   const effective: Settings = reuse ? { ...settings, onFolderExists: 'overwrite' } : settings;
@@ -125,6 +127,7 @@ export async function exportConversation(
     sinkFactory(effective, registry, archive, zip),
   );
 
+  if (chosen) return outcome;
   await registry.remember(conversation.platform, recordId, {
     updatedAt: options.listUpdatedAt ?? conversation.updatedAt,
     exportedAt: now.toISOString(),

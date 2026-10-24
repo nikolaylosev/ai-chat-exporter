@@ -32,6 +32,7 @@ export function renderLabels(platform: Platform): RenderLabels {
         : fork.branch === 1
           ? t('mdBranchAfter', [String(number), String(fork.position)])
           : t('mdBranchAfterIn', [String(number), String(fork.position), String(fork.branch)]),
+    selection: (chosen, total) => t('mdSelection', [String(chosen), String(total)]),
   };
 }
 
