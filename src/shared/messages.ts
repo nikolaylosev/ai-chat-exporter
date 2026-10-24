@@ -86,10 +86,6 @@ interface Contract {
     'export:copy': { request: { tabId: number }; response: CopyResult };
     /** The page button: the chat of the tab that asks, as the shortcut saves it. */
     'export:this-tab': { request: { withFiles?: boolean }; response: ExportResult };
-    /** Opens the "Save to folder…" window for a tab's chat (the asking tab's by default). */
-    'folder:pick': { request: { tabId?: number; withFiles?: boolean }; response: null };
-    /** From that window: the chat of `tabId` into the folder just chosen. */
-    'export:to-folder': { request: { tabId: number; withFiles?: boolean }; response: ExportResult };
     /** The page button's Copy: the asking tab's chat onto the clipboard. */
     'copy:this-tab': { request: Record<string, never>; response: CopyResult };
     /**
@@ -109,11 +105,7 @@ interface Contract {
       request: { tabId: number };
       response: { id: string; name: string } | null;
     };
-    /** `toFolder`: into the folder the user just picked, whatever the destination setting. */
-    'job:start': {
-      request: { platform: Platform; items: JobStartItem[]; toFolder?: boolean };
-      response: null;
-    };
+    'job:start': { request: { platform: Platform; items: JobStartItem[] }; response: null };
     'job:cancel': { request: Empty; response: null };
     'registry:count': { request: Empty; response: { count: number } };
     'registry:clear': { request: Empty; response: null };

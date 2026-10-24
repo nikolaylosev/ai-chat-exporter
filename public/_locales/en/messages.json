@@ -1004,40 +1004,6 @@
   "pageMenuCopy": {
     "message": "Copy as Markdown"
   },
-  "pageMenuToFolder": {
-    "message": "Save to a folder…"
-  },
-  "exportToFolder": {
-    "message": "To a folder…"
-  },
-  "exportToFolderHint": {
-    "message": "Choose a folder: the selected chats and their files go straight into it, without Chrome asking about each file."
-  },
-  "pickFolderTitle": {
-    "message": "Save this chat to a folder"
-  },
-  "pickFolderHint": {
-    "message": "The chat and its files go straight into the folder you choose; Chrome does not ask about each file."
-  },
-  "pickFolderChoose": {
-    "message": "Choose a folder…"
-  },
-  "pickFolderLast": {
-    "message": "Save to “$ARG1$”",
-    "placeholders": {
-      "arg1": {
-        "content": "$1"
-      }
-    }
-  },
-  "pickFolderSaving": {
-    "message": "Saving to “$ARG1$”… Keep this window open: it closes when the chat is saved.",
-    "placeholders": {
-      "arg1": {
-        "content": "$1"
-      }
-    }
-  },
   "panelCopied": {
     "message": "Copied to the clipboard: $ARG1$ messages.",
     "placeholders": {
