@@ -32,6 +32,31 @@ export function imageTypeOf(bytes: Uint8Array): { mime: string; ext: string } | 
   return found ? { mime: found.mime, ext: found.ext } : null;
 }
 
+/** Pixel size of a png, jpeg or gif from its header, or null when it cannot be read. */
+export function imageSize(bytes: Uint8Array): { width: number; height: number } | null {
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const type = imageTypeOf(bytes)?.ext;
+  if (type === 'png' && bytes.length >= 24) {
+    return { width: view.getUint32(16), height: view.getUint32(20) };
+  }
+  if (type === 'gif' && bytes.length >= 10) {
+    return { width: view.getUint16(6, true), height: view.getUint16(8, true) };
+  }
+  if (type === 'jpg') {
+    // Segments up to a start-of-frame marker (SOF0 to SOF15, not DHT, JPG or DAC).
+    let at = 2;
+    while (at + 9 < bytes.length) {
+      if (bytes[at] !== 0xff) return null;
+      const marker = bytes[at + 1] ?? 0;
+      if (marker >= 0xc0 && marker <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marker)) {
+        return { width: view.getUint16(at + 7), height: view.getUint16(at + 5) };
+      }
+      at += 2 + view.getUint16(at + 2);
+    }
+  }
+  return null;
+}
+
 /** `photo.png` with a JPEG inside → `photo.jpg`; a name already right (`.jpeg` too) stays. */
 export function withImageExtension(name: string, mime: string): string {
   const ext = SIGNATURES.find((s) => s.mime === mime)?.ext;

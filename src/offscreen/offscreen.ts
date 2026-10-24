@@ -10,6 +10,7 @@ import {
 } from '../sinks/source';
 import { imageTypeOf } from '../util/image-type';
 import { ArchiveStore } from './archive-store';
+import { docxBlob, forWrite } from './word-notes';
 
 // The service worker has no URL.createObjectURL and no File System Access, so this
 // document creates blob URLs for chrome.downloads, writes into the folder the user
@@ -90,6 +91,10 @@ handle('offscreen', {
     if (!copied) throw new Error('The clipboard refused the text');
     return null;
   },
+  // A Word note alone (no files) for chrome.downloads.
+  'docx:create': async ({ markdown, title }) => ({
+    url: URL.createObjectURL(await docxBlob(null, { markdown, title })),
+  }),
   'blob:revoke': ({ url }) => {
     URL.revokeObjectURL(url);
     return null;
@@ -104,7 +109,7 @@ handle('offscreen', {
   },
   'folder:write': async ({ path, source }) => {
     const target = await folder();
-    return attempt(() => target.write(path, source));
+    return attempt(async () => target.write(path, await forWrite(path, source)));
   },
   'folder:remove': async ({ path }) => {
     const target = await folder();
@@ -122,7 +127,9 @@ handle('offscreen', {
     source: TransferableSource;
   }) => {
     const zip = archives.get(id);
-    const reply = await attempt(async () => zip.add(path, await sourceBlob(source)));
+    const reply = await attempt(async () =>
+      zip.add(path, await sourceBlob(await forWrite(path, source))),
+    );
     return reply.ok ? { ok: true as const, size: zip.size } : reply;
   },
   // The same blob URL for a repeated close: the worker may have missed the first answer.

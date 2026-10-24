@@ -15,6 +15,8 @@ import { FileWriteError } from '../sinks/source';
 import { HttpError } from '../util/http';
 import { DownloadInterruptedError } from './downloader';
 import { FILE_CONCURRENCY, forEachLimit } from '../util/pool';
+import { embedsInWord } from '../render/docx';
+import type { FileSource } from '../sinks/types';
 
 export interface WritableSink extends ExportSink {
   /** Set when a write probably hit a Save As dialog (DownloadsSink). */
@@ -145,6 +147,10 @@ export async function writeConversation(
     if (ctx.folderOverride) plan = moveToFolder(plan, ctx.folderOverride);
     if (sink.prepareFolder) plan = moveToFolder(plan, await sink.prepareFolder(plan.folderPath));
 
+    // A Word note embeds the chat's images: the offscreen document keeps them for it.
+    const word = settings.noteFormat === 'docx';
+    const forNote = (path: string, source: FileSource): FileSource =>
+      word && source.kind === 'url' && embedsInWord(path) ? { ...source, forNote: true } : source;
     const writeOne = async (file: ExportPlan['files'][number]) => {
       const { attachment } = file;
       if (!attachment.source) {
@@ -156,7 +162,7 @@ export async function writeConversation(
       }
       try {
         try {
-          await sink.writeFile(file.path, attachment.source);
+          await sink.writeFile(file.path, forNote(file.path, attachment.source));
         } catch (error) {
           stopIfFatal(error);
           const source = attachment.source;
@@ -165,7 +171,7 @@ export async function writeConversation(
               ? await ctx.refreshLink(attachment).catch(() => null)
               : null;
           if (!fresh || source.kind !== 'url' || fresh === source.url) throw error;
-          await sink.writeFile(file.path, { kind: 'url', url: fresh });
+          await sink.writeFile(file.path, forNote(file.path, { kind: 'url', url: fresh }));
         }
         saved.set(attachment.id, file.link);
       } catch (error) {
@@ -182,7 +188,10 @@ export async function writeConversation(
 
     const note = renderNote(conversation, settings, ctx, plan, { saved, failed });
     try {
-      await sink.writeText(plan.markdownPath, note);
+      if (word) {
+        const title = conversation.title || ctx.labels.untitled;
+        await sink.writeFile(plan.markdownPath, { kind: 'docx', markdown: note, title });
+      } else await sink.writeText(plan.markdownPath, note);
     } catch (error) {
       stopIfFatal(error);
       throw error;

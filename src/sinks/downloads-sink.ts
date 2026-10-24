@@ -5,6 +5,8 @@ import { textMime, type ExportSink, type FileSource } from './types';
 export interface DownloadsSinkDeps {
   download(request: DownloadRequest): Promise<DownloadResult>;
   createBlobUrl(text: string, mime: string): Promise<string>;
+  /** A blob URL of a Word note (made by the offscreen document). */
+  createDocxUrl?(markdown: string, title: string): Promise<string>;
   revokeBlobUrl(url: string): Promise<void>;
   /**
    * Picks a conversation folder (relative to Downloads) the extension has not issued
@@ -70,6 +72,15 @@ export class DownloadsSink implements ExportSink {
         // Chrome changes a file's extension to match a known MIME type (a .jsx served as
         // text/plain is saved as .txt). A neutral type keeps the name we chose.
         const url = await this.deps.createBlobUrl(source.text, NEUTRAL_MIME);
+        try {
+          return await this.download(path, url);
+        } finally {
+          await this.deps.revokeBlobUrl(url);
+        }
+      }
+      case 'docx': {
+        if (!this.deps.createDocxUrl) throw new Error('DownloadsSink cannot make a Word note');
+        const url = await this.deps.createDocxUrl(source.markdown, source.title);
         try {
           return await this.download(path, url);
         } finally {

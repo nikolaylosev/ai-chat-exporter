@@ -48,6 +48,7 @@ STRINGS = {
     "noteFormatMarkdown": ("Markdown (.md)", "Markdown (.md)"),
     "noteFormatHtml": ("HTML page (.html)", "Страница HTML (.html)"),
     "noteFormatJson": ("JSON (.json)", "JSON (.json)"),
+    "noteFormatDocx": ("Word document (.docx)", "Документ Word (.docx)"),
     "popupCopyChat": ("Copy", "Копировать"),
     "popupCopyHint": (
         "Copy the chat to the clipboard as Markdown, without its files",

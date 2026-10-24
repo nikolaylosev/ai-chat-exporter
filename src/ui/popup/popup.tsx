@@ -328,6 +328,7 @@ export function Popup() {
             <option value="markdown">{t('noteFormatMarkdown')}</option>
             <option value="html">{t('noteFormatHtml')}</option>
             <option value="json">{t('noteFormatJson')}</option>
+            <option value="docx">{t('noteFormatDocx')}</option>
           </select>
         </label>
       )}

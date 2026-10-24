@@ -152,6 +152,7 @@ interface Contract {
   };
   offscreen: {
     'blob:create': { request: { text: string; mime: string }; response: { url: string } };
+    'docx:create': { request: { markdown: string; title: string }; response: { url: string } };
     'clipboard:write': { request: { text: string }; response: null };
     'blob:revoke': { request: { url: string }; response: null };
     /** Checks the chosen folder; picks a free `name (2)` unless overwriting. */

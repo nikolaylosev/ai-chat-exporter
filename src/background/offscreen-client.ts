@@ -38,6 +38,13 @@ export async function createBlobUrl(text: string, mime: string): Promise<string>
   return url;
 }
 
+/** A blob URL of a Word note made from its Markdown, for a note saved alone. */
+export async function createDocxUrl(markdown: string, title: string): Promise<string> {
+  await ensureOffscreenDocument();
+  const { url } = await send('offscreen', 'docx:create', { markdown, title });
+  return url;
+}
+
 export async function revokeBlobUrl(url: string): Promise<void> {
   if (!(await hasOffscreenDocument())) return;
   await send('offscreen', 'blob:revoke', { url });

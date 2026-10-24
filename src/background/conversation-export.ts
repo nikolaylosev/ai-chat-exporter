@@ -169,7 +169,11 @@ export function renderConversationExport(
   });
 }
 
-/** The note in the format the settings ask for: Markdown, its HTML page, or JSON. */
+/**
+ * The note in the format the settings ask for: Markdown, its HTML page, or JSON.
+ * A Word note is its Markdown here; the offscreen document makes the document
+ * where the images are (see writeConversation).
+ */
 export function renderNote(
   c: Conversation,
   settings: Settings,
