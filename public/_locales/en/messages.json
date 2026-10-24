@@ -1042,6 +1042,9 @@
   "messagesMine": {
     "message": "Only mine"
   },
+  "messagesReplies": {
+    "message": "Only AI replies"
+  },
   "messagesChoose": {
     "message": "Message $ARG1$",
     "placeholders": {

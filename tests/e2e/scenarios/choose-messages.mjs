@@ -1,6 +1,7 @@
 // Choosing messages: the page lists the chat's messages; the chosen ones are
 // saved in the chat's order with their files only, the note says how many of the
-// chat it holds, and Copy puts only them on the clipboard.
+// chat it holds, Copy puts only them on the clipboard, and the quick picks choose
+// only the user's messages or only the AI's replies.
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { startStand, waitFor } from '../harness.mjs';
@@ -88,6 +89,21 @@ export default {
       );
       assert.match(copied, /chosen_from: /);
       assert.equal((copied.match(/^## /gm) ?? []).length, 2, 'two messages copied');
+
+      // The quick picks: only mine, only the AI's replies.
+      const pick = async (label) => {
+        await stand.ev(
+          page,
+          `[...document.querySelectorAll('.tools button')].find((b) => b.textContent === '${label}').click()`,
+        );
+        return stand.ev(page, `${rows}.map((r) => r.classList.contains('chosen'))`);
+      };
+      const roles = await stand.ev(page, `${rows}.map((r) => r.classList.contains('user'))`);
+      assert.deepEqual(await pick('Only mine'), roles);
+      assert.deepEqual(
+        await pick('Only AI replies'),
+        roles.map((user) => !user),
+      );
     } finally {
       await stand.close();
     }

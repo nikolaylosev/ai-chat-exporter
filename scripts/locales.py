@@ -419,6 +419,7 @@ STRINGS = {
     "messagesAll": ("All", "Все"),
     "messagesNone": ("None", "Ничего"),
     "messagesMine": ("Only mine", "Только мои"),
+    "messagesReplies": ("Only AI replies", "Только ответы ИИ"),
     "messagesChoose": ("Message $1", "Сообщение $1"),
     "messagesNoText": ("No text: files or tool calls only", "Без текста: только файлы или вызовы инструментов"),
     "messagesFiles": ("Files: $1", "Файлы: $1"),

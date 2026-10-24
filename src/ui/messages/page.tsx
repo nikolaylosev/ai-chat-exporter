@@ -131,6 +131,14 @@ export function MessagesPage() {
         >
           {t('messagesMine')}
         </button>
+        <button
+          type="button"
+          onClick={() =>
+            setChosen(new Set(chat.messages.filter((m) => m.role === 'assistant').map((m) => m.id)))
+          }
+        >
+          {t('messagesReplies')}
+        </button>
       </div>
       <ul class="messages">
         {chat.messages.map((m, index) => (
