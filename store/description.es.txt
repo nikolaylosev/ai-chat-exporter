@@ -15,11 +15,12 @@ POR QUÉ GUARDAR UNA COPIA
 QUÉ CONTIENE UNA NOTA
 • Toda la conversación en Markdown con propiedades YAML (título, fechas, modelo, proyecto), lista para una bóveda de Obsidian o cualquier app de notas.
 • Razonamiento, búsquedas web y llamadas a herramientas como bloques plegables, y otras ramas del chat si las quieres.
+• O la misma nota como página HTML que se abre en cualquier navegador, como documento de Word con las imágenes del chat dentro, o como JSON.
 
 CÓMO SE USA
 • El chat que estás leyendo: haz clic en el icono y en «Save this chat», o pulsa Alt+Mayús+S (Opción+Mayús+S en Mac). «Copy» pone el chat en el portapapeles como Markdown.
 • Muchos chats o proyectos: abre la página de exportación, filtra por fecha, proyecto o título, marca los que quieras o todos, y guarda. Funciona en segundo plano, se puede cancelar y escribe un informe de lo que falló.
-• Guarda en Descargas, en una carpeta que elijas o en un solo archivo .zip; con o sin los archivos.
+• En Descargas, un chat con sus archivos llega como un solo .zip, y solo el texto como un archivo. O directamente en una carpeta que elijas, archivo por archivo.
 
 PRIVACIDAD
 • Todo se queda en tu ordenador. La extensión no tiene servidor y no envía tus conversaciones a ningún sitio.

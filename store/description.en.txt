@@ -15,11 +15,12 @@ WHY KEEP A COPY
 WHAT A NOTE HOLDS
 • The whole conversation as Markdown with YAML properties (title, dates, model, project), ready for an Obsidian vault or any notes app.
 • Thinking, web searches and tool calls as collapsible blocks, and other branches of a chat if you want them.
+• Or the same note as an HTML page that opens in any browser, a Word document with the chat's images inside, or JSON.
 
 HOW YOU USE IT
 • The chat you are reading: click the icon and "Save this chat", or press Alt+Shift+S (Option+Shift+S on a Mac). "Copy" puts the chat on the clipboard as Markdown instead.
 • Many chats or projects: open the export page, filter by date, project or title, tick the ones you want or all of them, and save. It runs in the background, can be cancelled, and writes a report of anything that failed.
-• Save into Downloads, into a folder you choose, or as one .zip archive; with or without the files.
+• Into Downloads, a chat with its files comes as one .zip, and its text alone as one file. Or straight into a folder you choose, file by file.
 
 PRIVACY
 • Everything stays on your computer. The extension has no server and sends your conversations nowhere.

@@ -15,11 +15,12 @@ WARUM EINE KOPIE
 WAS IN EINER NOTIZ STEHT
 • Die ganze Unterhaltung als Markdown mit YAML-Eigenschaften (Titel, Datum, Modell, Projekt), bereit für einen Obsidian-Vault oder jede Notiz-App.
 • Denkschritte, Websuchen und Werkzeugaufrufe als einklappbare Blöcke, auf Wunsch auch andere Zweige eines Chats.
+• Oder dieselbe Notiz als HTML-Seite, die sich in jedem Browser öffnet, als Word-Dokument mit den Bildern des Chats oder als JSON.
 
 SO FUNKTIONIERT ES
 • Der geöffnete Chat: Symbol anklicken und „Save this chat“ wählen oder Alt+Umschalt+S drücken (auf dem Mac Wahl+Umschalt+S). „Copy“ legt den Chat stattdessen als Markdown in die Zwischenablage.
 • Viele Chats oder Projekte: Exportseite öffnen, nach Datum, Projekt oder Titel filtern, gewünschte oder alle markieren und speichern. Der Export läuft im Hintergrund, lässt sich abbrechen und schreibt einen Bericht über alles, was fehlte.
-• Speichern in den Download-Ordner, in einen Ordner Ihrer Wahl oder als ein .zip-Archiv; mit oder ohne Dateien.
+• In den Download-Ordner kommt ein Chat mit seinen Dateien als ein .zip, nur der Text als eine Datei. Oder direkt in einen Ordner Ihrer Wahl, Datei für Datei.
 
 DATENSCHUTZ
 • Alles bleibt auf Ihrem Computer. Die Erweiterung hat keinen Server und sendet Ihre Unterhaltungen nirgendwohin.
