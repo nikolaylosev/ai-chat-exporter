@@ -1,5 +1,9 @@
 # CodingCat AI Chat Exporter
 
+[![CI](https://github.com/nikolaylosev/ai-chat-exporter/actions/workflows/ci.yml/badge.svg)](https://github.com/nikolaylosev/ai-chat-exporter/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/nikolaylosev/ai-chat-exporter)](https://github.com/nikolaylosev/ai-chat-exporter/releases/latest)
+[![License: MIT](https://img.shields.io/github/license/nikolaylosev/ai-chat-exporter)](LICENSE)
+
 A Chrome extension that saves your conversations from **claude.ai**, **gemini.google.com**, **grok.com** and **chatgpt.com** to your computer: the chat as a Markdown file, plus every file from the chat in its original format. Each conversation gets its own folder. Projects can be exported with their instructions, files and chats, and Gemini notebooks with their chats. The output is ready to drop into an Obsidian vault.
 
 > **Status:** in development. Claude works: the current chat, all chats or a selection, and projects, with uploads, files the model created and artifacts. Gemini works: the current chat, all chats or a selection, and notebooks, with uploads and generated images. Grok works: the current chat, all chats or a selection, and projects, with uploads, generated images, files the model created and regenerated answers. ChatGPT works: the current chat, all chats or a selection (archived chats and project chats included), and projects, with uploads, generated images, files made by code, canvas and branches.
