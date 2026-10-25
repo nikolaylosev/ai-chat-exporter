@@ -1,5 +1,11 @@
 # CodingCat AI Chat Exporter
 
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/edkifblojljojogodolgmffacaiahkjk?label=chrome%20web%20store)](https://chromewebstore.google.com/detail/codingcat-ai-chat-exporte/edkifblojljojogodolgmffacaiahkjk)
+[![Users](https://img.shields.io/chrome-web-store/users/edkifblojljojogodolgmffacaiahkjk)](https://chromewebstore.google.com/detail/codingcat-ai-chat-exporte/edkifblojljojogodolgmffacaiahkjk)
+[![CI](https://github.com/nikolaylosev/ai-chat-exporter/actions/workflows/ci.yml/badge.svg)](https://github.com/nikolaylosev/ai-chat-exporter/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/nikolaylosev/ai-chat-exporter)](https://github.com/nikolaylosev/ai-chat-exporter/releases/latest)
+[![License: MIT](https://img.shields.io/github/license/nikolaylosev/ai-chat-exporter)](LICENSE)
+
 A Chrome extension that saves your conversations from **claude.ai**, **gemini.google.com**, **grok.com** and **chatgpt.com** to your computer: the chat as a Markdown file, plus every file from the chat in its original format. Each conversation gets its own folder. Projects can be exported with their instructions, files and chats, and Gemini notebooks with their chats. The output is ready to drop into an Obsidian vault.
 
 > **Status:** in development. Claude works: the current chat, all chats or a selection, and projects, with uploads, files the model created and artifacts. Gemini works: the current chat, all chats or a selection, and notebooks, with uploads and generated images. Grok works: the current chat, all chats or a selection, and projects, with uploads, generated images, files the model created and regenerated answers. ChatGPT works: the current chat, all chats or a selection (archived chats and project chats included), and projects, with uploads, generated images, files made by code, canvas and branches.
@@ -32,7 +38,9 @@ Files are saved to `Downloads/AI Chats/<Title> - <YYYY-MM-DD> (<Platform>)/`.
 
 ## Installation
 
-The extension is not in the Chrome Web Store. You load it as an unpacked extension: from a release, from a CI build, or built from source.
+**Chrome Web Store.** Install it from [its page in the Chrome Web Store](https://chromewebstore.google.com/detail/codingcat-ai-chat-exporte/edkifblojljojogodolgmffacaiahkjk). Chrome updates it by itself.
+
+You can also load it as an unpacked extension: from a release, from a CI build, or built from source.
 
 **Release.** Open the repository's **Releases**, download `ai-chat-exporter-<version>.zip` from the latest one and unzip it. Then open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked**, and select the unzipped folder (the one that contains `manifest.json`).
 
