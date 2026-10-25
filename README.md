@@ -1,5 +1,7 @@
 # CodingCat AI Chat Exporter
 
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/edkifblojljojogodolgmffacaiahkjk?label=chrome%20web%20store)](https://chromewebstore.google.com/detail/codingcat-ai-chat-exporte/edkifblojljojogodolgmffacaiahkjk)
+[![Users](https://img.shields.io/chrome-web-store/users/edkifblojljojogodolgmffacaiahkjk)](https://chromewebstore.google.com/detail/codingcat-ai-chat-exporte/edkifblojljojogodolgmffacaiahkjk)
 [![CI](https://github.com/nikolaylosev/ai-chat-exporter/actions/workflows/ci.yml/badge.svg)](https://github.com/nikolaylosev/ai-chat-exporter/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/nikolaylosev/ai-chat-exporter)](https://github.com/nikolaylosev/ai-chat-exporter/releases/latest)
 [![License: MIT](https://img.shields.io/github/license/nikolaylosev/ai-chat-exporter)](LICENSE)
@@ -36,7 +38,9 @@ Files are saved to `Downloads/AI Chats/<Title> - <YYYY-MM-DD> (<Platform>)/`.
 
 ## Installation
 
-The extension is not in the Chrome Web Store. You load it as an unpacked extension: from a release, from a CI build, or built from source.
+**Chrome Web Store.** Install it from [its page in the Chrome Web Store](https://chromewebstore.google.com/detail/codingcat-ai-chat-exporte/edkifblojljojogodolgmffacaiahkjk). Chrome updates it by itself.
+
+You can also load it as an unpacked extension: from a release, from a CI build, or built from source.
 
 **Release.** Open the repository's **Releases**, download `ai-chat-exporter-<version>.zip` from the latest one and unzip it. Then open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked**, and select the unzipped folder (the one that contains `manifest.json`).
 
