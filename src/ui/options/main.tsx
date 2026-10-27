@@ -5,6 +5,7 @@ import { errorMessage } from '../../shared/logger';
 import { send } from '../../shared/messages';
 import { loadSettings, saveSettings, type Settings } from '../../shared/settings';
 import {
+  canUseFolders,
   folderAccess,
   loadFolderHandle,
   requestFolderAccess,
@@ -219,6 +220,8 @@ function Options() {
               type="radio"
               name="destination"
               checked={settings.destination === 'folder'}
+              // Still shown as chosen when the browser lost the API, so it can be switched off.
+              disabled={!canUseFolders() && settings.destination !== 'folder'}
               onChange={() => update({ destination: 'folder' })}
             />
             <span>
@@ -227,7 +230,13 @@ function Options() {
             </span>
           </label>
         </fieldset>
-        {settings.destination === 'folder' ? (
+        {!canUseFolders() && (
+          <p class="warn">
+            {t('optionsFolderUnsupported')}
+            {'brave' in navigator && <> {t('optionsFolderBrave')}</>}
+          </p>
+        )}
+        {settings.destination === 'folder' && canUseFolders() ? (
           <FolderPicker onChosen={() => update({ destination: 'folder' })} />
         ) : (
           <label class="field">

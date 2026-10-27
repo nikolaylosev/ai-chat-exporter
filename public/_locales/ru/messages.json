@@ -689,6 +689,9 @@
   "error_folder_missing": {
     "message": "Выбранная папка недоступна: возможно, её удалили или переместили. Выберите её заново в настройках расширения."
   },
+  "error_folder_unsupported": {
+    "message": "Этот браузер не даёт расширениям записывать в выбранную папку (в Brave включите brave://flags/#file-system-access-api). Выберите «Загрузки» в настройках расширения."
+  },
   "error_failed": {
     "message": "Не удалось сохранить чат: $ARG1$",
     "placeholders": {
@@ -894,6 +897,12 @@
   },
   "optionsDestinationFolder": {
     "message": "Выбранная вами папка"
+  },
+  "optionsFolderUnsupported": {
+    "message": "Этот браузер не даёт расширениям записывать в папку на диске, поэтому всё сохраняется в «Загрузки»."
+  },
+  "optionsFolderBrave": {
+    "message": "В Brave это включается на странице brave://flags/#file-system-access-api, после чего браузер нужно перезапустить."
   },
   "optionsDestinationFolderHint": {
     "message": "Файлы записываются прямо в папку, без диалогов «Сохранить как», при любых настройках скачивания Chrome. Подойдёт и папка хранилища Obsidian."

@@ -1,6 +1,6 @@
 import { CodedError } from '../shared/errors';
 import { handle, type WriteReply } from '../shared/messages';
-import { loadFolderHandle } from '../sinks/folder-handle';
+import { canUseFolders, loadFolderHandle } from '../sinks/folder-handle';
 import { checkFolder, FolderWriter } from '../sinks/folder-writer';
 import {
   failureReason,
@@ -22,6 +22,9 @@ const archives = new ArchiveStore();
 const folderCloses = new Map<string, Promise<{ folder: string; path: string }>>();
 
 async function openFolder(): Promise<FolderWriter> {
+  if (!canUseFolders()) {
+    throw new CodedError('folder-unsupported', 'This browser cannot write into a chosen folder');
+  }
   const root = await loadFolderHandle();
   if (!root) throw new CodedError('folder-not-chosen', 'No folder chosen');
   await checkFolder(root);
