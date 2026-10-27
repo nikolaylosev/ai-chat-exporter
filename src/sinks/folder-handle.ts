@@ -52,6 +52,7 @@ export async function saveFolderHandle(handle: FileSystemDirectoryHandle): Promi
 const SEARCH_KEY = 'search-folder';
 
 export async function loadSearchFolder(): Promise<FileSystemDirectoryHandle | null> {
+  if (!canUseFolders()) return null;
   const value = await run<unknown>('readonly', (store) => store.get(SEARCH_KEY));
   return value instanceof FileSystemDirectoryHandle ? value : null;
 }

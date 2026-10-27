@@ -1039,6 +1039,9 @@
   "searchNoFolder": {
     "message": "Папка ещё не выбрана."
   },
+  "searchUnsupported": {
+    "message": "Этот браузер не даёт расширениям читать папку на диске, поэтому искать по архиву здесь нельзя."
+  },
   "searchFolder": {
     "message": "Папка: «$ARG1$»",
     "placeholders": {

@@ -424,6 +424,10 @@ STRINGS = {
         "Ищет сразу по всем сохранённым чатам всех сервисов, на этом компьютере: ничего никуда не отправляется. Выберите папку с вашими экспортами; архивы .zip внутри неё тоже читаются.",
     ),
     "searchNoFolder": ("No folder chosen yet.", "Папка ещё не выбрана."),
+    "searchUnsupported": (
+        "This browser does not let extensions read a folder on your disk, so the archive cannot be searched here.",
+        "Этот браузер не даёт расширениям читать папку на диске, поэтому искать по архиву здесь нельзя.",
+    ),
     "searchFolder": ("Folder: “$1”", "Папка: «$1»"),
     "searchAllow": ("Allow reading the folder", "Разрешить чтение папки"),
     "searchUseExportFolder": ("Search “$1” (the export folder)", "Искать в «$1» (папка экспорта)"),

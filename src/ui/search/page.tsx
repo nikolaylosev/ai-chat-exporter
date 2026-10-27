@@ -4,7 +4,12 @@ import { renderHtml } from '../../render/html';
 import { t } from '../../shared/i18n';
 import { errorMessage } from '../../shared/logger';
 import { PLATFORM_LABEL, type Platform } from '../../shared/platform';
-import { loadFolderHandle, loadSearchFolder, saveSearchFolder } from '../../sinks/folder-handle';
+import {
+  canUseFolders,
+  loadFolderHandle,
+  loadSearchFolder,
+  saveSearchFolder,
+} from '../../sinks/folder-handle';
 import {
   clearIndex,
   displayPath,
@@ -187,6 +192,12 @@ export function SearchPage() {
       <h1>{t('searchTitle')}</h1>
       <p class="muted">{t('searchHint')}</p>
 
+      {!canUseFolders() && (
+        <p class="warn">
+          {t('searchUnsupported')}
+          {'brave' in navigator && <> {t('optionsFolderBrave')}</>}
+        </p>
+      )}
       <div class="folder">
         {folder.kind === 'none' && <p>{t('searchNoFolder')}</p>}
         {(folder.kind === 'ready' || folder.kind === 'needs-access') && (
@@ -202,7 +213,7 @@ export function SearchPage() {
             {t('searchUseExportFolder', folder.exportFolder.name)}
           </button>
         )}
-        {folder.kind !== 'loading' && (
+        {folder.kind !== 'loading' && canUseFolders() && (
           <button type="button" onClick={() => void choose()}>
             {folder.kind === 'none' ? t('searchChoose') : t('searchChooseOther')}
           </button>

@@ -1039,6 +1039,9 @@
   "searchNoFolder": {
     "message": "No folder chosen yet."
   },
+  "searchUnsupported": {
+    "message": "This browser does not let extensions read a folder on your disk, so the archive cannot be searched here."
+  },
   "searchFolder": {
     "message": "Folder: “$ARG1$”",
     "placeholders": {
