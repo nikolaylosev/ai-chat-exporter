@@ -63,6 +63,11 @@ footer {
   flex: 1 1 0;
 }
 
+/* A row of its own under the two choices. */
+.bulk button.search {
+  flex-basis: 100%;
+}
+
 .bulk p {
   margin: 0;
 }

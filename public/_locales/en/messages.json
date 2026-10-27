@@ -1021,6 +1021,127 @@
   "pageMenuChoose": {
     "message": "Choose messages…"
   },
+  "searchTitle": {
+    "message": "Search the archive"
+  },
+  "searchHint": {
+    "message": "Searches every saved chat of every service at once, on this computer: nothing is sent anywhere. Choose the folder that holds your exports; .zip exports inside it are read too."
+  },
+  "searchNoFolder": {
+    "message": "No folder chosen yet."
+  },
+  "searchFolder": {
+    "message": "Folder: “$ARG1$”",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "searchAllow": {
+    "message": "Allow reading the folder"
+  },
+  "searchUseExportFolder": {
+    "message": "Search “$ARG1$” (the export folder)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "searchChoose": {
+    "message": "Choose a folder…"
+  },
+  "searchChooseOther": {
+    "message": "Another folder…"
+  },
+  "searchZipHint": {
+    "message": "Exports saved into Downloads are in Downloads/AI Chats: choose that folder (Chrome does not let you choose Downloads itself)."
+  },
+  "searchReading": {
+    "message": "Reading the archive: $ARG1$ of $ARG2$ files, $ARG3$ chats found…",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      }
+    }
+  },
+  "searchReadError": {
+    "message": "Could not read the folder: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "searchPlaceholder": {
+    "message": "Search $ARG1$ chats: words or a \"phrase\"",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "searchPlatform": {
+    "message": "Service"
+  },
+  "searchAllPlatforms": {
+    "message": "All services"
+  },
+  "searchWho": {
+    "message": "Who wrote it"
+  },
+  "searchEveryone": {
+    "message": "Everyone"
+  },
+  "searchProject": {
+    "message": "Project"
+  },
+  "searchFrom": {
+    "message": "From"
+  },
+  "searchTo": {
+    "message": "To"
+  },
+  "searchFound": {
+    "message": "Found in $ARG1$ messages of $ARG2$ chats.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "searchFirst": {
+    "message": "The first $ARG1$ are shown.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "searchNothing": {
+    "message": "Nothing found."
+  },
+  "searchOpenChat": {
+    "message": "Open the chat on $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupSearchArchive": {
+    "message": "Search the archive"
+  },
   "messagesTitle": {
     "message": "Choose messages"
   },

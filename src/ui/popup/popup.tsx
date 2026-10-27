@@ -296,6 +296,15 @@ export function Popup() {
             >
               {t(notebook ? 'popupChooseNotebooks' : 'popupChooseProjects')}
             </button>
+            <button
+              type="button"
+              class="search"
+              onClick={() =>
+                void chrome.tabs.create({ url: chrome.runtime.getURL('src/ui/search/index.html') })
+              }
+            >
+              {t('popupSearchArchive')}
+            </button>
           </>
         )}
       </div>

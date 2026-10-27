@@ -38,6 +38,18 @@ export async function saveFolderHandle(handle: FileSystemDirectoryHandle): Promi
   await run('readwrite', (store) => store.put(handle, KEY));
 }
 
+/** The folder the archive search reads (its page, ui/search); read access is enough. */
+const SEARCH_KEY = 'search-folder';
+
+export async function loadSearchFolder(): Promise<FileSystemDirectoryHandle | null> {
+  const value = await run<unknown>('readonly', (store) => store.get(SEARCH_KEY));
+  return value instanceof FileSystemDirectoryHandle ? value : null;
+}
+
+export async function saveSearchFolder(handle: FileSystemDirectoryHandle): Promise<void> {
+  await run('readwrite', (store) => store.put(handle, SEARCH_KEY));
+}
+
 export type FolderAccess = 'granted' | 'prompt' | 'denied' | 'not-chosen';
 
 /** Write access to the chosen folder, without asking the user. */
