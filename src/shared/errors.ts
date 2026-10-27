@@ -17,6 +17,7 @@ export type ErrorCode =
   | 'folder-not-chosen'
   | 'folder-permission'
   | 'folder-missing'
+  | 'folder-unsupported'
   | 'failed';
 
 /** An error with a code that survives extension messaging (see shared/messages.ts). */
