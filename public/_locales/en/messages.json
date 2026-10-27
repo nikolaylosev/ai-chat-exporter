@@ -689,6 +689,9 @@
   "error_folder_missing": {
     "message": "The chosen folder is not available. It may have been deleted or moved. Choose it again in the extension settings."
   },
+  "error_folder_unsupported": {
+    "message": "This browser does not let extensions write into a folder you choose (in Brave, turn on brave://flags/#file-system-access-api). Choose Downloads in the extension settings."
+  },
   "error_failed": {
     "message": "Could not save the chat: $ARG1$",
     "placeholders": {
@@ -894,6 +897,12 @@
   },
   "optionsDestinationFolder": {
     "message": "A folder you choose"
+  },
+  "optionsFolderUnsupported": {
+    "message": "This browser does not let extensions write into a folder on your disk, so exports go to Downloads."
+  },
+  "optionsFolderBrave": {
+    "message": "In Brave, turn it on at brave://flags/#file-system-access-api and restart the browser."
   },
   "optionsDestinationFolderHint": {
     "message": "Files are written straight into the folder, with no Save As dialogs, whatever Chrome's download settings are. An Obsidian vault folder works too."

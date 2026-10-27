@@ -7,7 +7,7 @@ import { locationLabel } from '../shared/location';
 import { send, type ExportResult, type FileFailure, type JobStartItem } from '../shared/messages';
 import type { Platform } from '../shared/platform';
 import { loadSettings, saveSettings, type Settings } from '../shared/settings';
-import { loadFolderHandle, requestFolderAccess } from '../sinks/folder-handle';
+import { canUseFolders, loadFolderHandle, requestFolderAccess } from '../sinks/folder-handle';
 
 export const EXPORT_COMMAND = 'export-current-chat';
 
@@ -99,6 +99,7 @@ export function useJob(): JobState | null | undefined {
  * here before an export starts; the service worker cannot ask.
  */
 export async function ensureFolderAccess(): Promise<ErrorCode | null> {
+  if (!canUseFolders()) return 'folder-unsupported';
   let access;
   try {
     access = await requestFolderAccess(await loadFolderHandle());

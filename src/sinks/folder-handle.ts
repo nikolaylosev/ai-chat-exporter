@@ -29,7 +29,17 @@ async function run<T>(mode: IDBTransactionMode, action: (store: IDBObjectStore) 
   }
 }
 
+/**
+ * Whether this browser lets an extension pick a folder and write into it. Brave
+ * turns the File System Access API off unless brave://flags/#file-system-access-api
+ * is on; then neither the picker nor the handle class exists.
+ */
+export function canUseFolders(): boolean {
+  return 'showDirectoryPicker' in globalThis && 'FileSystemDirectoryHandle' in globalThis;
+}
+
 export async function loadFolderHandle(): Promise<FileSystemDirectoryHandle | null> {
+  if (!canUseFolders()) return null;
   const value = await run<unknown>('readonly', (store) => store.get(KEY));
   return value instanceof FileSystemDirectoryHandle ? value : null;
 }

@@ -147,3 +147,24 @@ describe('popup: note format', () => {
     );
   });
 });
+
+describe('popup: a browser that cannot write into a folder', () => {
+  it('says why instead of asking for access (Brave without its flag)', async () => {
+    const asked: string[] = [];
+    const { local } = stubChrome({
+      activeTab: { id: 3, url: 'https://claude.ai/chat/00000000-0000-4000-8000-000000000001' },
+      background: (type) => {
+        asked.push(type);
+        return null;
+      },
+    });
+    local.settings = { destination: 'folder' };
+    expect('showDirectoryPicker' in globalThis).toBe(false);
+    render(<Popup />);
+    const save = await screen.findByRole<HTMLButtonElement>('button', { name: 'popupSaveChat' });
+    await vi.waitFor(() => expect(save.disabled).toBe(false));
+    fireEvent.click(save);
+    await screen.findByText('error_folder_unsupported');
+    expect(asked).not.toContain('export:current');
+  });
+});

@@ -279,6 +279,10 @@ STRINGS = {
         "The chosen folder is not available. It may have been deleted or moved. Choose it again in the extension settings.",
         "Выбранная папка недоступна: возможно, её удалили или переместили. Выберите её заново в настройках расширения.",
     ),
+    "error_folder_unsupported": (
+        "This browser does not let extensions write into a folder you choose (in Brave, turn on brave://flags/#file-system-access-api). Choose Downloads in the extension settings.",
+        "Этот браузер не даёт расширениям записывать в выбранную папку (в Brave включите brave://flags/#file-system-access-api). Выберите «Загрузки» в настройках расширения.",
+    ),
     "error_failed": ("Could not save the chat: $1", "Не удалось сохранить чат: $1"),
     # Markdown
     "mdUser": ("User", "Пользователь"),
@@ -336,6 +340,14 @@ STRINGS = {
     "optionsDestination": ("Save to", "Куда сохранять"),
     "optionsDestinationDownloads": ("Chrome's Downloads folder", "Папка «Загрузки» Chrome"),
     "optionsDestinationFolder": ("A folder you choose", "Выбранная вами папка"),
+    "optionsFolderUnsupported": (
+        "This browser does not let extensions write into a folder on your disk, so exports go to Downloads.",
+        "Этот браузер не даёт расширениям записывать в папку на диске, поэтому всё сохраняется в «Загрузки».",
+    ),
+    "optionsFolderBrave": (
+        "In Brave, turn it on at brave://flags/#file-system-access-api and restart the browser.",
+        "В Brave это включается на странице brave://flags/#file-system-access-api, после чего браузер нужно перезапустить.",
+    ),
     "optionsDestinationFolderHint": (
         "Files are written straight into the folder, with no Save As dialogs, whatever Chrome's download settings are. An Obsidian vault folder works too.",
         "Файлы записываются прямо в папку, без диалогов «Сохранить как», при любых настройках скачивания Chrome. Подойдёт и папка хранилища Obsidian.",

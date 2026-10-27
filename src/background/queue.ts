@@ -54,6 +54,7 @@ const STOP_CODES = new Set<ErrorCode>([
   'folder-not-chosen',
   'folder-permission',
   'folder-missing',
+  'folder-unsupported',
 ]);
 
 interface Running {
