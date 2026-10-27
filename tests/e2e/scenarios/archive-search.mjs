@@ -1,10 +1,15 @@
 // Searching the archive: notes saved as Markdown and as a Word document into a
 // folder, and an HTML note inside a .zip export copied there, are all found from
-// the search page; the author filter works, and the viewer marks the match. The
-// extension's private file system stands in for the folder.
+// the search page, and so is the text of a chat's Word file inside that .zip;
+// the author filter works, and the viewer marks the match and shows the note's
+// image from the archive. The extension's private file system stands in for the
+// folder.
 import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
 import { sleep, startStand, waitFor } from '../harness.mjs';
 import { fakeGrok, grokChats, uuid } from '../fakes.mjs';
+
+const { strToU8, zipSync } = createRequire(import.meta.url)('fflate');
 
 const KEEP = (key) => `(async () => {
   const root = await navigator.storage.getDirectory();
@@ -19,7 +24,14 @@ export default {
   async run(extDir) {
     const assets = {
       [`${uuid(0x10)}/content`]: Buffer.from('%PDF-1.4 grok pdf', 'latin1'),
-      [`${uuid(0x11)}/content`]: Buffer.from('PK grok docx', 'latin1'),
+      // The chat's meeting-notes.docx, a real Word document this time.
+      [`${uuid(0x11)}/content`]: Buffer.from(
+        zipSync({
+          'word/document.xml': strToU8(
+            '<w:document><w:body><w:p><w:r><w:t>Paint the fence turquoise</w:t></w:r></w:p></w:body></w:document>',
+          ),
+        }),
+      ),
       [`${uuid(0x12)}/content`]: Buffer.from('89504e470d0a1a0a' + 'ab'.repeat(30), 'hex'),
       'image.jpg': Buffer.from('ffd8ffe000104a4649460001' + '11'.repeat(50) + 'ffd9', 'hex'),
     };
@@ -94,6 +106,26 @@ export default {
         `the Word note: ${circle}`,
       );
 
+      // The text of a chat's file inside the .zip.
+      const turquoise = await stand.ev(
+        page,
+        `(async () => {
+          // Files have no author: the author filter goes back to everyone first.
+          const who = document.querySelectorAll('.query select')[1];
+          who.value = '';
+          who.dispatchEvent(new Event('change', { bubbles: true }));
+          const box = ${box};
+          box.value = 'turquoise';
+          box.dispatchEvent(new Event('input', { bubbles: true }));
+          await new Promise((r) => setTimeout(r, 300));
+          return [...document.querySelectorAll('.hits li .meta')].map((m) => m.textContent);
+        })()`,
+      );
+      assert.ok(
+        turquoise.some((m) => m.includes('📎 meeting-notes.docx')),
+        `the file's text: ${turquoise}`,
+      );
+
       // The viewer shows the note with the match marked.
       await find('fence');
       await stand.ev(page, `document.querySelector('.hits li').click()`);
@@ -107,6 +139,17 @@ export default {
         'the marked match',
       );
       assert.equal(marked.toLowerCase(), 'fence');
+      // The note's image, read from the .zip.
+      const image = await waitFor(
+        () =>
+          stand.ev(
+            page,
+            `(() => { const img = document.querySelector('.viewer iframe')?.contentDocument?.querySelector('img'); return img && img.src.startsWith('blob:') && img.complete && img.naturalWidth >= 0 ? img.src : ''; })()`,
+          ),
+        10000,
+        'the image from the archive',
+      );
+      assert.match(image, /^blob:/);
     } finally {
       await stand.close();
     }

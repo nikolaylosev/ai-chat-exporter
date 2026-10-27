@@ -9,6 +9,7 @@ const note = (key: string, extra: Partial<IndexedNote>): IndexedNote => ({
   project: null,
   created: '2026-10-01T10:00:00Z',
   messages: [],
+  files: [],
   ...extra,
 });
 
