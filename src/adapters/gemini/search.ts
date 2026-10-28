@@ -285,10 +285,11 @@ const MIN_MET = 30;
 /**
  * How much of the history the search has covered, judged by the chats it knows
  * from elsewhere (the list): the share of them it came across, and the older
- * chats there are likely to be, from the ones it found at that share. Search
- * leans towards older chats, so the share of those found is likely higher and
- * the count an upper bound. Null until the search has met enough listed chats
- * to tell.
+ * chats there are likely to be, from the ones it found at that share. Checked
+ * against Google Takeout on a large account (2026-10-28), the search had met a
+ * smaller share of the older chats than of the listed ones, so the count is
+ * rather a lower bound. Null until the search has met enough listed chats to
+ * tell.
  */
 export function searchCoverage(
   seen: Iterable<string>,

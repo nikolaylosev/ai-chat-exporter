@@ -27,7 +27,10 @@ export default {
       await waitFor(async () => (await rows()) >= 62, 60000, 'the list');
       assert.equal(fake.state.listPages, 3, 'the whole list the first time');
       assert.match(await text(), /Saved earlier\s+saved before/);
-      assert.match(await more(), /61 chats from the list, 0 found by search, 1 saved before/);
+      assert.match(
+        await more(),
+        /61 chats from the list, 0 found by search, 0 from Takeout, 1 saved before/,
+      );
 
       // The next visit reads only the first page: its chats are known and unchanged.
       await stand.ev(page, 'location.reload()');

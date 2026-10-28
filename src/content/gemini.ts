@@ -61,6 +61,7 @@ if (!window.__aiChatExporterGeminiAlive?.()) {
       searchStopped = true;
       return null;
     },
+    'conversations:lookup': ({ ids }) => coded(() => adapter.lookupConversations(ids)),
     // Gemini's notebooks are exported like Claude's projects; Gems are recorded on each chat.
     'projects:list': () => coded(() => adapter.listProjects()),
     'project:get': ({ id }) => coded(() => adapter.getProject(id)),

@@ -13,6 +13,8 @@ export interface ConversationSummary {
   project?: string;
   /** Not in the platform's list; found through its search (Gemini, older chats). */
   foundBySearch?: boolean;
+  /** Not in the list; its id came from the user's Google Takeout (Gemini, older chats). */
+  fromTakeout?: boolean;
   /** Not in the list nor found by search, but exported before: known from the registry. */
   savedBefore?: boolean;
   /** Archived on the platform (ChatGPT): hidden from its history, still exported. */

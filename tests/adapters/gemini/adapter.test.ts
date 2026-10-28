@@ -207,6 +207,44 @@ describe('GeminiAdapter.listConversations with chats known from before', () => {
   });
 });
 
+describe('GeminiAdapter.lookupConversations', () => {
+  it('gives the entries of the ids asked, in their order, and names those Gemini has not', async () => {
+    const whole = (await adapter().gemini.listConversations()).conversations;
+    const [first, second] = [whole[0]!, whole[1]!];
+    const { gemini } = adapter();
+    const found = await gemini.lookupConversations([second.id, 'ffffffffffffffff', first.id]);
+    expect(found.conversations).toEqual([
+      { ...second, fromTakeout: true },
+      { ...first, fromTakeout: true },
+    ]);
+    expect(found.missing).toEqual(['ffffffffffffffff']);
+    expect(found.failed).toEqual([]);
+  });
+
+  it('counts a chat Gemini keeps failing on as failed and goes on', async () => {
+    const whole = (await adapter().gemini.listConversations()).conversations;
+    const [first, second] = [whole[0]!, whole[1]!];
+    const server = geminiServer(all);
+    const fetchFn: FetchLike = (url, init) =>
+      typeof init?.body === 'string' && init.body.includes(`c_${first.id}`)
+        ? Promise.resolve(
+            new Response(
+              `)]}'\n\n${JSON.stringify([['wrb.fr', 'MaZiqc', null, null, null, [13], 'generic']])}`,
+            ),
+          )
+        : server.fetchFn(url, init);
+    const gemini = new GeminiAdapter(
+      fetchFn,
+      () => `${ORIGIN}/app`,
+      ORIGIN,
+      () => Promise.resolve(),
+    );
+    const found = await gemini.lookupConversations([first.id, second.id]);
+    expect(found.conversations.map((c) => c.id)).toEqual([second.id]);
+    expect(found.failed).toEqual([first.id]);
+  });
+});
+
 describe('GeminiAdapter.listConversations when Gemini fails', () => {
   const statusBody = (status: number) =>
     `)]}'\n\n${JSON.stringify([['wrb.fr', 'MaZiqc', null, null, null, [status], 'generic']])}`;

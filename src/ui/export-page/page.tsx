@@ -37,6 +37,7 @@ import {
 } from '../../shared/search-cache';
 import { listKey, loadList, mergeList, saveList } from '../../shared/list-cache';
 import { searchCoverage, type SweepState } from '../../adapters/gemini/search';
+import { readTakeout } from './takeout';
 import '../styles.css';
 import './export.css';
 
@@ -183,6 +184,68 @@ function useSearchMore(platform: Platform, onFound: (more: ConversationSummary[]
   /** After "Forget them": the next search starts over. */
   const forget = () => setSweep(null);
   return { state, sweep, start, stop, forget };
+}
+
+type TakeoutState =
+  | { status: 'idle' }
+  | { status: 'reading' }
+  | { status: 'running'; done: number; total: number }
+  | {
+      status: 'done';
+      added: number;
+      known: number;
+      missing: number;
+      failed: number;
+    }
+  | { status: 'error'; message: string };
+
+/** Ids asked of the platform tab per message: each answer joins the table at once. */
+const LOOKUP_BATCH = 20;
+
+/**
+ * Chats from the user's Google Takeout (takeout.ts): every chat the activity
+ * links to that the table does not have yet is asked of the platform tab for
+ * its title and date. A stop ends after the current batch.
+ */
+function useTakeout(platform: Platform, onFound: (more: ConversationSummary[]) => void) {
+  const [state, setState] = useState<TakeoutState>({ status: 'idle' });
+  const stopped = useRef(false);
+  const start = async (file: File, shown: ReadonlySet<string>) => {
+    stopped.current = false;
+    setState({ status: 'reading' });
+    let tab: { tabId: number; opened: boolean } | null = null;
+    try {
+      const ids = await readTakeout(file);
+      if (ids.length === 0) {
+        setState({ status: 'error', message: t('exportTakeoutNone') });
+        return;
+      }
+      const todo = ids.filter((id) => !shown.has(id));
+      const counts = { added: 0, known: ids.length - todo.length, missing: 0, failed: 0 };
+      setState({ status: 'running', done: 0, total: todo.length });
+      if (todo.length) tab = await send('background', 'platform:tab', { platform });
+      for (let i = 0; i < todo.length && tab && !stopped.current; i += LOOKUP_BATCH) {
+        const batch = todo.slice(i, i + LOOKUP_BATCH);
+        const found = await sendToTab(tab.tabId, 'conversations:lookup', { ids: batch });
+        onFound(found.conversations);
+        counts.added += found.conversations.length;
+        counts.missing += found.missing.length;
+        counts.failed += found.failed.length;
+        setState({ status: 'running', done: i + batch.length, total: todo.length });
+      }
+      setState({ status: 'done', ...counts });
+    } catch (error) {
+      setState({ status: 'error', message: errorText(error) });
+    } finally {
+      if (tab) {
+        void send('background', 'platform:tab-done', tab).catch(() => undefined);
+      }
+    }
+  };
+  const stop = () => {
+    stopped.current = true;
+  };
+  return { state, start, stop };
 }
 
 /**
@@ -491,15 +554,20 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
     () => (list.status === 'ready' ? [...list.conversations, ...extraOnly, ...savedOnly] : []),
     [list, extraOnly, savedOnly],
   );
-  const more = useSearchMore(platform, (found) => {
+  const addFound = (found: ConversationSummary[]) => {
     setExtra((previous) => mergeFound(previous, found));
     void rememberFound(platform, found);
-  });
+  };
+  const more = useSearchMore(platform, addFound);
+  const takeout = useTakeout(platform, addFound);
+  const takeoutFile = useRef<HTMLInputElement>(null);
+  const fromTakeout = useMemo(() => extraOnly.filter((c) => c.fromTakeout).length, [extraOnly]);
   const forget = () => {
     setExtra([]);
     more.forget();
     void forgetFound(platform);
   };
+  const takeoutBusy = takeout.state.status === 'reading' || takeout.state.status === 'running';
   const coverage = useMemo(
     () => (more.sweep ? searchCoverage(more.sweep.seen, listedIds) : null),
     [more.sweep, listedIds],
@@ -636,7 +704,11 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
               {more.state.status === 'done' &&
                 `${t('exportSearchDone', [String(more.state.found), String(more.state.queries)])} `}
               {more.state.status === 'error' && <span class="error">{more.state.message} </span>}
-              <button type="button" onClick={() => void more.start(conversations.map((c) => c.id))}>
+              <button
+                type="button"
+                disabled={takeoutBusy}
+                onClick={() => void more.start(conversations.map((c) => c.id))}
+              >
                 {more.state.status === 'idle' && !more.sweep
                   ? t('exportSearchMore')
                   : t('exportSearchAgain')}
@@ -644,14 +716,60 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
               {more.state.status === 'idle' && <small class="hint">{t('exportSearchHint')}</small>}
             </p>
           )}
+          {takeout.state.status === 'running' ? (
+            <p class="muted">
+              {t('exportTakeoutRunning', [String(takeout.state.done), String(takeout.state.total)])}{' '}
+              <button type="button" class="link" onClick={takeout.stop}>
+                {t('exportSearchStop')}
+              </button>
+            </p>
+          ) : (
+            <p class="muted">
+              {takeout.state.status === 'reading' && `${t('exportTakeoutReading')} `}
+              {takeout.state.status === 'done' &&
+                `${t('exportTakeoutDone', [
+                  String(takeout.state.added),
+                  String(takeout.state.known),
+                  String(takeout.state.missing),
+                ])} `}
+              {takeout.state.status === 'done' && takeout.state.failed > 0 && (
+                <span class="warn">{t('exportTakeoutFailed', String(takeout.state.failed))} </span>
+              )}
+              {takeout.state.status === 'error' && (
+                <span class="error">{takeout.state.message} </span>
+              )}
+              <input
+                ref={takeoutFile}
+                type="file"
+                accept=".json,.zip,application/json,application/zip"
+                hidden
+                onChange={(e) => {
+                  const file = e.currentTarget.files?.[0];
+                  e.currentTarget.value = '';
+                  if (file) void takeout.start(file, new Set(conversations.map((c) => c.id)));
+                }}
+              />
+              <button
+                type="button"
+                disabled={takeout.state.status === 'reading' || more.state.status === 'running'}
+                onClick={() => takeoutFile.current?.click()}
+              >
+                {t('exportTakeoutAdd')}
+              </button>
+              {takeout.state.status === 'idle' && (
+                <small class="hint">{t('exportTakeoutHint')}</small>
+              )}
+            </p>
+          )}
           {(extraOnly.length > 0 || savedOnly.length > 0) && (
             <p class="muted">
               {t('exportSources', [
                 String(list.conversations.length),
-                String(extraOnly.length),
+                String(extraOnly.length - fromTakeout),
+                String(fromTakeout),
                 String(savedOnly.length),
               ])}
-              {extraOnly.length > 0 && more.state.status !== 'running' && (
+              {extraOnly.length > 0 && more.state.status !== 'running' && !takeoutBusy && (
                 <>
                   {' '}
                   <button type="button" class="link" onClick={forget}>
@@ -737,6 +855,7 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
                           {c.title || t('untitledChat')}
                         </a>
                         {c.foundBySearch && <small class="hint"> {t('exportFoundBySearch')}</small>}
+                        {c.fromTakeout && <small class="hint"> {t('exportFromTakeout')}</small>}
                         {c.savedBefore && <small class="hint"> {t('exportSavedBefore')}</small>}
                         {c.archived && <small class="hint"> {t('exportArchived')}</small>}
                         <FailedFiles failures={item?.failures} total={item?.failedFiles} />

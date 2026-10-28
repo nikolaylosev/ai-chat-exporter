@@ -243,7 +243,44 @@
     "message": "Искать ещё"
   },
   "exportSources": {
-    "message": "В таблице: из списка $ARG1$ чатов, найдено поиском $ARG2$, сохранено раньше $ARG3$.",
+    "message": "В таблице: из списка $ARG1$ чатов, найдено поиском $ARG2$, из Takeout $ARG3$, сохранено раньше $ARG4$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      },
+      "arg4": {
+        "content": "$4"
+      }
+    }
+  },
+  "exportTakeoutAdd": {
+    "message": "Добавить чаты из Google Takeout…"
+  },
+  "exportTakeoutHint": {
+    "message": "Takeout ссылается на все чаты, даже самые старые. На takeout.google.com выберите «Мои действия» только с «Приложениями Gemini», в формате JSON, затем укажите здесь .zip или файл с действиями. Файл читается только на этом компьютере."
+  },
+  "exportTakeoutReading": {
+    "message": "Читаю файл Takeout…"
+  },
+  "exportTakeoutRunning": {
+    "message": "Добавляю чаты из Takeout: $ARG1$ из $ARG2$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "exportTakeoutDone": {
+    "message": "Takeout: добавлено чатов $ARG1$, уже были здесь $ARG2$, больше нет в Gemini $ARG3$.",
     "placeholders": {
       "arg1": {
         "content": "$1"
@@ -256,8 +293,19 @@
       }
     }
   },
+  "exportTakeoutFailed": {
+    "message": "Сейчас не удалось прочитать чатов: $ARG1$. Добавьте файл ещё раз, чтобы попробовать снова.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportTakeoutNone": {
+    "message": "В этом файле нет чатов Gemini. Укажите .zip из Takeout или JSON-файл из «Мои действия», «Приложения Gemini»."
+  },
   "exportSearchCoverage": {
-    "message": "Поиск встретил $ARG1$% чатов из списка. Скорее всего, более старых он нашёл не меньшую долю, то есть всего их примерно не больше $ARG2$.",
+    "message": "Поиск встретил $ARG1$% чатов из списка. Если более старых он нашёл примерно такую же долю, всего их около $ARG2$, а может, и больше.",
     "placeholders": {
       "arg1": {
         "content": "$1"
@@ -272,6 +320,9 @@
   },
   "exportFoundBySearch": {
     "message": "найден поиском"
+  },
+  "exportFromTakeout": {
+    "message": "из Takeout"
   },
   "exportSavedBefore": {
     "message": "сохранён раньше"

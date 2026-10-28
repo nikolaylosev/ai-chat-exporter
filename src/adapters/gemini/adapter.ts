@@ -11,6 +11,7 @@ import {
   readListPage,
   readNotebook,
   readNotebooks,
+  type RawListEntry,
   type RawNotebook,
   type RawTurn,
 } from './parse';
@@ -42,6 +43,8 @@ const LIST_PAGE_SIZE = 100;
  * Gemini spends its 10 seconds on it; the same page may pass on the next try.
  */
 const LIST_WAITS_MS = [0, 2000, 5000, 10000, 15000, 20000];
+/** One chat's entry takes about half a second whatever its age (2026-10-28). */
+const LOOKUP_AT_ONCE = 4;
 
 const defaultSleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
@@ -230,6 +233,56 @@ export class GeminiAdapter implements PlatformAdapter {
       token = next;
     }
     return { conversations: result };
+  }
+
+  /**
+   * Chats by id, as the list would give them (ids from Google Takeout reach
+   * chats past the list's depth). One request per chat, a few at a time. An id
+   * Gemini has no entry for is `missing` (the chat was deleted); one that kept
+   * failing is `failed`, to be asked again later. Signed out throws.
+   */
+  async lookupConversations(
+    ids: readonly string[],
+  ): Promise<{ conversations: ConversationSummary[]; missing: string[]; failed: string[] }> {
+    const gems = await this.gemNames();
+    const found = new Map<string, ConversationSummary>();
+    const missing: string[] = [];
+    const failed: string[] = [];
+    let next = 0;
+    const worker = async () => {
+      while (next < ids.length) {
+        const id = ids[next++]!;
+        let entry: RawListEntry | null;
+        try {
+          entry = await this.listEntry(id);
+        } catch (error) {
+          if (error instanceof PlatformBusyError || (error instanceof HttpError && !error.isAuth)) {
+            failed.push(id);
+            continue;
+          }
+          throw error;
+        }
+        if (!entry) {
+          missing.push(id);
+          continue;
+        }
+        const gem = entry.gemId ? (gems.get(entry.gemId) ?? entry.gemId) : undefined;
+        found.set(id, {
+          id,
+          platform: 'gemini',
+          title: entry.title,
+          createdAt: null,
+          updatedAt: entry.updatedAt,
+          url: this.chatUrl(id, entry.gemId),
+          fromTakeout: true,
+          ...(gem ? { project: gem } : {}),
+        });
+      }
+    };
+    await Promise.all(Array.from({ length: LOOKUP_AT_ONCE }, worker));
+    // In the order asked.
+    const conversations = ids.flatMap((id) => found.get(id) ?? []);
+    return { conversations, missing, failed };
   }
 
   async getConversation(id: string): Promise<Conversation> {
