@@ -168,3 +168,23 @@ describe('popup: a browser that cannot write into a folder', () => {
     expect(asked).not.toContain('export:current');
   });
 });
+
+describe('popup shortcut line', () => {
+  it('names the shortcut when one is set, and says nothing when none is', async () => {
+    stubChrome({ activeTab: { id: 3, url: 'https://gemini.google.com/app/0123456789abcdef' } });
+    render(<Popup />);
+    await screen.findByText('popupDetected(Gemini)');
+    await vi.waitFor(() => expect(screen.queryByText(/popupShortcut/)).toBeNull());
+    cleanup();
+
+    stubChrome({ activeTab: { id: 3, url: 'https://gemini.google.com/app/0123456789abcdef' } });
+    vi.stubGlobal('chrome', {
+      ...chrome,
+      commands: {
+        getAll: () => Promise.resolve([{ name: 'export-current-chat', shortcut: '⌥⇧S' }]),
+      },
+    });
+    render(<Popup />);
+    await screen.findByText('popupShortcut(⌥⇧S)');
+  });
+});
