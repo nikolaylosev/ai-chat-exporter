@@ -300,11 +300,8 @@ export function Popup() {
         )}
       </div>
 
-      {shortcut !== undefined && (
-        <p class="muted hint">
-          {shortcut ? t('popupShortcut', shortcut) : t('popupShortcutNotSet')}
-        </p>
-      )}
+      {/* Without a shortcut, nothing: the options page says so and has the button to set one. */}
+      {shortcut && <p class="muted hint">{t('popupShortcut', shortcut)}</p>}
 
       {settings && (
         <label class="note-format">
