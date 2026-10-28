@@ -18,6 +18,7 @@ import { exportRootFolder, exportsAsZip, loadSettings } from '../shared/settings
 import { DownloadsSink } from '../sinks/downloads-sink';
 import { FolderSink, ZipArchive } from '../sinks/offscreen-sinks';
 import { sanitizeRelativeDir } from '../util/filename';
+import { refreshListed } from '../shared/list-cache';
 import { refreshFound } from '../shared/search-cache';
 import { downloadAndWait } from './downloader';
 import { bulkArchiveName, exportConversation, zipTarget } from './export-conversation';
@@ -348,6 +349,7 @@ async function exportConversationItem(
     item.title = conversation.title || item.title;
     // A chat found by search earlier is remembered under its title then; keep it current.
     await refreshFound(job.platform, item.id, { title: conversation.title });
+    await refreshListed(job.platform, item.id, { title: conversation.title });
     item.status = outcome.failedFiles ? 'warning' : 'done';
     item.savedFiles = outcome.savedFiles;
     item.failedFiles = outcome.failedFiles;
@@ -356,8 +358,11 @@ async function exportConversationItem(
     item.path = outcome.markdownPath;
     return outcome.location;
   } catch (error) {
-    // A remembered search result that is gone from the platform is forgotten.
-    if (errorCode(error) === 'chat-not-found') await refreshFound(job.platform, item.id, 'gone');
+    // A remembered chat (listed, found by search) that is gone from the platform is forgotten.
+    if (errorCode(error) === 'chat-not-found') {
+      await refreshFound(job.platform, item.id, 'gone');
+      await refreshListed(job.platform, item.id, 'gone');
+    }
     item.status = 'error';
     item.message = describeError(error);
     log.warn('Conversation failed', item.id, error);

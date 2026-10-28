@@ -13,6 +13,10 @@ export interface ConversationSummary {
   project?: string;
   /** Not in the platform's list; found through its search (Gemini, older chats). */
   foundBySearch?: boolean;
+  /** Not in the list; its id came from the user's Google Takeout (Gemini, older chats). */
+  fromTakeout?: boolean;
+  /** Not in the list nor found by search, but exported before: known from the registry. */
+  savedBefore?: boolean;
   /** Archived on the platform (ChatGPT): hidden from its history, still exported. */
   archived?: boolean;
 }
@@ -24,6 +28,11 @@ export interface ConversationSummary {
 export interface ConversationList {
   conversations: ConversationSummary[];
   incomplete?: { loaded: number; stopped?: boolean };
+  /**
+   * The list was read only down to chats the caller already had unchanged
+   * (`known`); the older ones are as the caller has them.
+   */
+  reachedKnown?: boolean;
 }
 
 export interface Conversation extends ConversationSummary {

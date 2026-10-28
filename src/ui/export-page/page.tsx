@@ -30,9 +30,14 @@ import {
   forgetFound,
   foundKey,
   loadFound,
+  loadSearchState,
   mergeFound,
   rememberFound,
+  saveSearchState,
 } from '../../shared/search-cache';
+import { listKey, loadList, mergeList, saveList } from '../../shared/list-cache';
+import { searchCoverage, type SweepState } from '../../adapters/gemini/search';
+import { lookupAll, readTakeout, type LookupProgress } from './takeout';
 import '../styles.css';
 import './export.css';
 
@@ -44,6 +49,8 @@ type ListState =
       conversations: ConversationSummary[];
       /** The list ended early: the platform stopped answering, or the user stopped it. */
       incomplete?: { loaded: number; stopped?: boolean };
+      /** Only the newest chats were read, `changed` of them new or changed; the others are remembered. */
+      reachedKnown?: { changed: number };
     };
 
 const STATUS_MARK: Record<JobItemStatus, string> = {
@@ -94,9 +101,20 @@ type SearchState =
  */
 function useSearchMore(platform: Platform, onFound: (more: ConversationSummary[]) => void) {
   const [state, setState] = useState<SearchState>({ status: 'idle' });
+  // Where the last search stopped: the next one goes on from there.
+  const [sweep, setSweep] = useState<SweepState | null>(null);
+  const keep = (now: SweepState) => {
+    setSweep(now);
+    void saveSearchState(platform, now);
+  };
+  useEffect(() => {
+    if (platform === 'gemini') void loadSearchState(platform).then(setSweep);
+  }, [platform]);
   const tab = useRef<number | null>(null);
   const onFoundRef = useRef(onFound);
   onFoundRef.current = onFound;
+  const keepRef = useRef(keep);
+  keepRef.current = keep;
   useEffect(() => {
     const listener = (
       message: unknown,
@@ -111,6 +129,7 @@ function useSearchMore(platform: Platform, onFound: (more: ConversationSummary[]
           found?: number;
           queries?: number;
           conversations?: ConversationSummary[];
+          state?: SweepState;
         };
       };
       if (m?.target !== 'ui' || m.type !== 'search:progress' || m.payload?.platform !== platform) {
@@ -118,6 +137,7 @@ function useSearchMore(platform: Platform, onFound: (more: ConversationSummary[]
       }
       // Each query's new chats join the table at once.
       if (m.payload.conversations?.length) onFoundRef.current(m.payload.conversations);
+      if (m.payload.state) keepRef.current(m.payload.state);
       setState((s) =>
         s.status === 'running'
           ? { status: 'running', found: m.payload?.found ?? 0, queries: m.payload?.queries ?? 0 }
@@ -137,8 +157,13 @@ function useSearchMore(platform: Platform, onFound: (more: ConversationSummary[]
       const target = await send('background', 'platform:tab', { platform });
       tab.current = target.tabId;
       opened = target.opened;
-      const result = await sendToTab(target.tabId, 'conversations:search', { knownIds });
+      const resume = await loadSearchState(platform);
+      const result = await sendToTab(target.tabId, 'conversations:search', {
+        knownIds,
+        ...(resume ? { resume } : {}),
+      });
       onFound(result.conversations);
+      keep(result.state);
       setState({ status: 'done', found: result.conversations.length, queries: result.queries });
     } catch (error) {
       setState({ status: 'error', message: errorText(error) });
@@ -156,6 +181,79 @@ function useSearchMore(platform: Platform, onFound: (more: ConversationSummary[]
       void sendToTab(tab.current, 'conversations:search-stop', {}).catch(() => undefined);
     }
   };
+  /** After "Forget them": the next search starts over. */
+  const forget = () => setSweep(null);
+  return { state, sweep, start, stop, forget };
+}
+
+type TakeoutState =
+  | { status: 'idle' }
+  | { status: 'reading' }
+  | { status: 'running'; progress: LookupProgress }
+  | {
+      status: 'done';
+      added: number;
+      known: number;
+      missing: number;
+      failed: number;
+    }
+  | { status: 'error'; message: string };
+
+/**
+ * Chats from the user's Google Takeout (takeout.ts): every chat the activity
+ * links to that the table does not have yet is asked of the platform tab for
+ * its title and date, more slowly once Gemini refuses. A stop ends after the
+ * current batch, or a pause.
+ */
+function useTakeout(platform: Platform, onFound: (more: ConversationSummary[]) => void) {
+  const [state, setState] = useState<TakeoutState>({ status: 'idle' });
+  const stopped = useRef(false);
+  const sleep = (ms: number) =>
+    new Promise<void>((resolve) => {
+      const until = Date.now() + ms;
+      const tick = () =>
+        stopped.current || Date.now() >= until ? resolve() : setTimeout(tick, 250);
+      tick();
+    });
+  const start = async (file: File, shown: ReadonlySet<string>) => {
+    stopped.current = false;
+    setState({ status: 'reading' });
+    let tab: { tabId: number; opened: boolean } | null = null;
+    try {
+      const ids = await readTakeout(file);
+      if (ids.length === 0) {
+        setState({ status: 'error', message: t('exportTakeoutNone') });
+        return;
+      }
+      const todo = ids.filter((id) => !shown.has(id));
+      setState({ status: 'running', progress: { phase: 'first', done: 0, total: todo.length } });
+      if (todo.length) tab = await send('background', 'platform:tab', { platform });
+      const target = tab?.tabId;
+      const counts =
+        target === undefined
+          ? { added: 0, missing: 0, failed: 0 }
+          : await lookupAll(
+              todo,
+              (batch, atOnce) => sendToTab(target, 'conversations:lookup', { ids: batch, atOnce }),
+              {
+                onFound,
+                onProgress: (progress) => setState({ status: 'running', progress }),
+                stopped: () => stopped.current,
+                sleep,
+              },
+            );
+      setState({ status: 'done', known: ids.length - todo.length, ...counts });
+    } catch (error) {
+      setState({ status: 'error', message: errorText(error) });
+    } finally {
+      if (tab) {
+        void send('background', 'platform:tab-done', tab).catch(() => undefined);
+      }
+    }
+  };
+  const stop = () => {
+    stopped.current = true;
+  };
   return { state, start, stop };
 }
 
@@ -163,38 +261,97 @@ function useSearchMore(platform: Platform, onFound: (more: ConversationSummary[]
  * The chat list, asked of the platform tab directly (see `platform:tab`).
  * `onTab` gets the tab, so the loading can be stopped there.
  */
-async function listConversations(platform: Platform, onTab: (tabId: number | null) => void) {
+async function listConversations(
+  platform: Platform,
+  onTab: (tabId: number | null) => void,
+  known?: [string, string | null][],
+) {
   const { tabId, opened } = await send('background', 'platform:tab', { platform });
   onTab(tabId);
   try {
-    return await sendToTab(tabId, 'conversations:list', {});
+    return await sendToTab(tabId, 'conversations:list', known ? { known } : {});
   } finally {
     onTab(null);
     void send('background', 'platform:tab-done', { tabId, opened }).catch(() => undefined);
   }
 }
 
+/**
+ * The chat list. Gemini's is remembered (list-cache.ts): the next visit reads only
+ * the chats newer than the remembered ones, unless `full` asks for all of it.
+ * `gone` are chats the bulk export found deleted, not to be shown again.
+ */
 function useConversations(platform: Platform) {
   const [state, setState] = useState<ListState>({ status: 'loading' });
+  const [gone, setGone] = useState<ReadonlySet<string>>(new Set());
   const [stopping, setStopping] = useState(false);
   const tab = useRef<number | null>(null);
-  const load = () => {
+  const read = async (full: boolean): Promise<ListState> => {
+    const remembers = platform === 'gemini';
+    const cached = remembers ? await loadList(platform) : null;
+    const known =
+      cached && !full
+        ? cached.conversations.map((c): [string, string | null] => [c.id, c.updatedAt])
+        : undefined;
+    const list = await listConversations(platform, (tabId) => (tab.current = tabId), known);
+    if (!remembers) {
+      const { conversations, incomplete } = list;
+      return { status: 'ready', conversations, ...(incomplete ? { incomplete } : {}) };
+    }
+    const merged = mergeList(list, cached);
+    void saveList(platform, merged);
+    setGone(new Set(merged.gone));
+    const before = new Map(cached?.conversations.map((c) => [c.id, c.updatedAt]));
+    const changed = list.conversations.filter(
+      (c) => !before.has(c.id) || before.get(c.id) !== c.updatedAt,
+    ).length;
+    return {
+      status: 'ready',
+      conversations: merged.conversations,
+      ...(list.incomplete ? { incomplete: list.incomplete } : {}),
+      ...(list.reachedKnown ? { reachedKnown: { changed } } : {}),
+    };
+  };
+  const load = (full = false) => {
     setState({ status: 'loading' });
     setStopping(false);
-    listConversations(platform, (tabId) => (tab.current = tabId)).then(
-      ({ conversations, incomplete }) =>
-        setState({ status: 'ready', conversations, ...(incomplete ? { incomplete } : {}) }),
-      (error: unknown) => setState({ status: 'error', message: errorText(error) }),
+    read(full).then(setState, (error: unknown) =>
+      setState({ status: 'error', message: errorText(error) }),
     );
   };
+  // The bulk export drops chats that are gone and renews titles: follow it.
+  useEffect(() => {
+    if (platform !== 'gemini') return;
+    const onChanged = (changes: Record<string, chrome.storage.StorageChange>, area: string) => {
+      const change = changes[listKey(platform)];
+      if (area !== 'local' || !change) return;
+      const now = change.newValue as { conversations?: ConversationSummary[]; gone?: string[] };
+      if (!Array.isArray(now?.conversations)) return;
+      const byId = new Map(now.conversations.map((c) => [c.id, c]));
+      const dropped = new Set(now.gone);
+      setGone(dropped);
+      setState((shown) =>
+        shown.status === 'ready'
+          ? {
+              ...shown,
+              conversations: shown.conversations
+                .filter((c) => !dropped.has(c.id))
+                .map((c) => byId.get(c.id) ?? c),
+            }
+          : shown,
+      );
+    };
+    chrome.storage.onChanged.addListener(onChanged);
+    return () => chrome.storage.onChanged.removeListener(onChanged);
+  }, [platform]);
   /** Ends the loading after the current page; the chats read so far are listed. */
   const stop = () => {
     if (tab.current === null) return;
     setStopping(true);
     void sendToTab(tab.current, 'conversations:list-stop', {}).catch(() => undefined);
   };
-  useEffect(load, []);
-  return { list: state, reload: load, stop, stopping };
+  useEffect(() => load(), []);
+  return { list: state, gone, reload: load, stop, stopping };
 }
 
 const formatDate = (iso: string | null) => (iso ? localDateTime(iso) : '');
@@ -330,7 +487,7 @@ interface TabProps {
 }
 
 function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted }: TabProps) {
-  const { list, reload, stop: stopList, stopping } = useConversations(platform);
+  const { list, gone, reload, stop: stopList, stopping } = useConversations(platform);
   const loadedSoFar = useListProgress(platform);
   // Gemini's list has no creation dates: its dates are the last update.
   const hasCreated = platform !== 'gemini';
@@ -366,24 +523,64 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
     chrome.storage.onChanged.addListener(onChanged);
     return () => chrome.storage.onChanged.removeListener(onChanged);
   }, [platform]);
+  const listedIds = useMemo(
+    () => new Set(list.status === 'ready' ? list.conversations.map((c) => c.id) : []),
+    [list],
+  );
   const extraOnly = useMemo(() => {
     if (list.status !== 'ready') return [];
     // A chat the list has now (it was updated, or the list went deeper) is shown once, from the list.
-    const listed = new Set(list.conversations.map((c) => c.id));
-    return extra.filter((c) => !listed.has(c.id));
-  }, [list, extra]);
+    return extra.filter((c) => !listedIds.has(c.id));
+  }, [list, listedIds, extra]);
+
+  // Gemini chats exported before that neither the list nor the search has.
+  const [saved, setSaved] = useState<ConversationSummary[]>([]);
+  useEffect(() => {
+    if (platform !== 'gemini') return;
+    send('background', 'registry:chats', { platform })
+      .then((chats) =>
+        setSaved(
+          chats.map((c) => ({
+            id: c.id,
+            platform,
+            title: c.title,
+            createdAt: null,
+            updatedAt: c.updatedAt,
+            url: `https://gemini.google.com/app/${c.id}`,
+            savedBefore: true,
+          })),
+        ),
+      )
+      .catch(() => undefined);
+  }, [platform]);
+  const savedOnly = useMemo(() => {
+    if (list.status !== 'ready') return [];
+    const shown = new Set([...listedIds, ...extraOnly.map((c) => c.id)]);
+    return saved.filter((c) => !shown.has(c.id) && !gone.has(c.id));
+  }, [list, listedIds, extraOnly, saved, gone]);
+
   const conversations = useMemo(
-    () => (list.status === 'ready' ? [...list.conversations, ...extraOnly] : []),
-    [list, extraOnly],
+    () => (list.status === 'ready' ? [...list.conversations, ...extraOnly, ...savedOnly] : []),
+    [list, extraOnly, savedOnly],
   );
-  const more = useSearchMore(platform, (found) => {
+  const addFound = (found: ConversationSummary[]) => {
     setExtra((previous) => mergeFound(previous, found));
     void rememberFound(platform, found);
-  });
+  };
+  const more = useSearchMore(platform, addFound);
+  const takeout = useTakeout(platform, addFound);
+  const takeoutFile = useRef<HTMLInputElement>(null);
+  const fromTakeout = useMemo(() => extraOnly.filter((c) => c.fromTakeout).length, [extraOnly]);
   const forget = () => {
     setExtra([]);
+    more.forget();
     void forgetFound(platform);
   };
+  const takeoutBusy = takeout.state.status === 'reading' || takeout.state.status === 'running';
+  const coverage = useMemo(
+    () => (more.sweep ? searchCoverage(more.sweep.seen, listedIds) : null),
+    [more.sweep, listedIds],
+  );
   const visible = useMemo(
     () => filterConversations(conversations, filter),
     [conversations, filter],
@@ -476,7 +673,7 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
       {list.status === 'error' && (
         <p class="error">
           {list.message}{' '}
-          <button type="button" class="link" onClick={reload}>
+          <button type="button" class="link" onClick={() => reload()}>
             {t('exportRetry')}
           </button>
         </p>
@@ -489,8 +686,16 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
                 PLATFORM_LABEL[platform],
                 String(list.incomplete.loaded),
               ])}{' '}
-          <button type="button" class="link" onClick={reload}>
+          <button type="button" class="link" onClick={() => reload(true)}>
             {list.incomplete.stopped ? t('exportListLoadAll') : t('exportRetry')}
+          </button>
+        </p>
+      )}
+      {list.status === 'ready' && list.reachedKnown && (
+        <p class="muted">
+          {t('exportListKept', [PLATFORM_LABEL[platform], String(list.reachedKnown.changed)])}{' '}
+          <button type="button" class="link" onClick={() => reload(true)}>
+            {t('exportListReadAll')}
           </button>
         </p>
       )}
@@ -508,19 +713,98 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
               {more.state.status === 'done' &&
                 `${t('exportSearchDone', [String(more.state.found), String(more.state.queries)])} `}
               {more.state.status === 'error' && <span class="error">{more.state.message} </span>}
-              <button type="button" onClick={() => void more.start(conversations.map((c) => c.id))}>
-                {more.state.status === 'idle' ? t('exportSearchMore') : t('exportSearchAgain')}
+              <button
+                type="button"
+                disabled={takeoutBusy}
+                onClick={() => void more.start(conversations.map((c) => c.id))}
+              >
+                {more.state.status === 'idle' && !more.sweep
+                  ? t('exportSearchMore')
+                  : t('exportSearchAgain')}
               </button>
               {more.state.status === 'idle' && <small class="hint">{t('exportSearchHint')}</small>}
-              {more.state.status === 'idle' && extraOnly.length > 0 && (
+            </p>
+          )}
+          {takeout.state.status === 'running' ? (
+            <p class="muted">
+              {takeout.state.progress.phase === 'first'
+                ? t('exportTakeoutRunning', [
+                    String(takeout.state.progress.done),
+                    String(takeout.state.progress.total),
+                  ])
+                : takeout.state.progress.waiting
+                  ? t('exportTakeoutWaiting', String(takeout.state.progress.total))
+                  : t('exportTakeoutAgain', [
+                      String(takeout.state.progress.done),
+                      String(takeout.state.progress.total),
+                    ])}{' '}
+              <button type="button" class="link" onClick={takeout.stop}>
+                {t('exportSearchStop')}
+              </button>
+            </p>
+          ) : (
+            <p class="muted">
+              {takeout.state.status === 'reading' && `${t('exportTakeoutReading')} `}
+              {takeout.state.status === 'done' &&
+                `${t('exportTakeoutDone', [
+                  String(takeout.state.added),
+                  String(takeout.state.known),
+                  String(takeout.state.missing),
+                ])} `}
+              {takeout.state.status === 'done' && takeout.state.failed > 0 && (
+                <span class="warn">{t('exportTakeoutFailed', String(takeout.state.failed))} </span>
+              )}
+              {takeout.state.status === 'error' && (
+                <span class="error">{takeout.state.message} </span>
+              )}
+              <input
+                ref={takeoutFile}
+                type="file"
+                accept=".json,.zip,application/json,application/zip"
+                hidden
+                onChange={(e) => {
+                  const file = e.currentTarget.files?.[0];
+                  e.currentTarget.value = '';
+                  if (file) void takeout.start(file, new Set(conversations.map((c) => c.id)));
+                }}
+              />
+              <button
+                type="button"
+                disabled={takeout.state.status === 'reading' || more.state.status === 'running'}
+                onClick={() => takeoutFile.current?.click()}
+              >
+                {t('exportTakeoutAdd')}
+              </button>
+              {takeout.state.status === 'idle' && (
+                <small class="hint">{t('exportTakeoutHint')}</small>
+              )}
+            </p>
+          )}
+          {(extraOnly.length > 0 || savedOnly.length > 0) && (
+            <p class="muted">
+              {t('exportSources', [
+                String(list.conversations.length),
+                String(extraOnly.length - fromTakeout),
+                String(fromTakeout),
+                String(savedOnly.length),
+              ])}
+              {extraOnly.length > 0 && more.state.status !== 'running' && !takeoutBusy && (
                 <>
-                  <br />
-                  {t('exportSearchRemembered', String(extraOnly.length))}{' '}
+                  {' '}
                   <button type="button" class="link" onClick={forget}>
                     {t('exportSearchForget')}
                   </button>
                 </>
               )}
+            </p>
+          )}
+          {coverage && (
+            <p class="muted">
+              {t('exportSearchCoverage', [
+                String(Math.round(coverage.share * 100)),
+                // Never fewer than the table already holds (found before the state was kept).
+                String(Math.max(coverage.older, extraOnly.length + savedOnly.length)),
+              ])}
             </p>
           )}
         </div>
@@ -590,6 +874,8 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
                           {c.title || t('untitledChat')}
                         </a>
                         {c.foundBySearch && <small class="hint"> {t('exportFoundBySearch')}</small>}
+                        {c.fromTakeout && <small class="hint"> {t('exportFromTakeout')}</small>}
+                        {c.savedBefore && <small class="hint"> {t('exportSavedBefore')}</small>}
                         {c.archived && <small class="hint"> {t('exportArchived')}</small>}
                         <FailedFiles failures={item?.failures} total={item?.failedFiles} />
                       </td>

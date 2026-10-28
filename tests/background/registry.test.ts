@@ -92,4 +92,30 @@ describe('normalizeRegistry', () => {
       }),
     ).toEqual({ records: { 'claude:a': record(null) }, issued: ['chat'] });
   });
+
+  it('lists the chats of a platform exported before, alone or in a project, with folder titles', async () => {
+    const registry = new Registry(memoryStore().store);
+    const at = (exportedAt: string, folder: string) => ({ ...record('u'), exportedAt, folder });
+    await registry.remember(
+      'gemini',
+      'aaaa',
+      at('2026-10-01T00:00:00Z', 'Plan (one) - 2026-09-30 (Gemini)'),
+    );
+    await registry.remember(
+      'gemini',
+      'aaaa@nb',
+      at('2026-10-02T00:00:00Z', 'Notebooks/N (Gemini)/chats/Plan - 2026-09-30 (Gemini) (2)'),
+    );
+    await registry.remember(
+      'gemini',
+      'project:nb',
+      at('2026-10-02T00:00:00Z', 'Notebooks/N (Gemini)'),
+    );
+    await registry.remember('gemini', 'bbbb', at('2026-10-01T00:00:00Z', 'Odd name'));
+    await registry.remember('claude', 'cccc', at('2026-10-01T00:00:00Z', 'Other - 2026-10-01'));
+    expect(await registry.chats('gemini')).toEqual([
+      { id: 'aaaa', title: 'Plan', updatedAt: 'u' },
+      { id: 'bbbb', title: 'Odd name', updatedAt: 'u' },
+    ]);
+  });
 });

@@ -87,8 +87,8 @@ STRINGS = {
         "Найти больше чатов через поиск Gemini",
     ),
     "exportSearchHint": (
-        "Gemini's list stops at about 800 chats. Its search reaches older ones, 20 per query, so this takes a few minutes and may still miss some.",
-        "Список Gemini обрывается примерно на 800 чатах. Его поиск достаёт и более старые, по 20 за запрос: это займёт несколько минут, и часть чатов всё равно может не найтись.",
+        "Gemini's list stops at about 1,000 chats. Its search reaches older ones, 20 per query, so this takes a few minutes and may still miss some.",
+        "Список Gemini обрывается примерно на 1000 чатах. Его поиск достаёт и более старые, по 20 за запрос: это займёт несколько минут, и часть чатов всё равно может не найтись.",
     ),
     "exportSearchRunning": (
         "Searching Gemini… $1 more chats found, $2 queries.",
@@ -100,12 +100,48 @@ STRINGS = {
         "Поиск нашёл ещё $1 чатов (запросов: $2).",
     ),
     "exportSearchAgain": ("Search more", "Искать ещё"),
-    "exportSearchRemembered": (
-        "$1 chats found by an earlier search are in the list.",
-        "В списке $1 чатов, найденных прошлым поиском.",
+    "exportSources": (
+        "In the table: $1 chats from the list, $2 found by search, $3 from Takeout, $4 saved before.",
+        "В таблице: из списка $1 чатов, найдено поиском $2, из Takeout $3, сохранено раньше $4.",
     ),
-    "exportSearchForget": ("Forget them", "Забыть их"),
+    "exportTakeoutAdd": ("Add chats from Google Takeout…", "Добавить чаты из Google Takeout…"),
+    "exportTakeoutHint": (
+        "Takeout links to every chat, however old. On takeout.google.com choose My Activity with only Gemini Apps, in JSON, then pick the .zip or MyActivity.json here. The file is read on this computer only.",
+        "Takeout ссылается на все чаты, даже самые старые. На takeout.google.com выберите «Мои действия» только с «Приложениями Gemini», в формате JSON, затем укажите здесь .zip или файл с действиями. Файл читается только на этом компьютере.",
+    ),
+    "exportTakeoutReading": ("Reading the Takeout file…", "Читаю файл Takeout…"),
+    "exportTakeoutRunning": (
+        "Adding chats from Takeout: $1 of $2.",
+        "Добавляю чаты из Takeout: $1 из $2.",
+    ),
+    "exportTakeoutWaiting": (
+        "Gemini is refusing for now: $1 chats will be asked again shortly, more slowly.",
+        "Gemini пока отказывает: чаты ($1) будут запрошены ещё раз чуть позже, медленнее.",
+    ),
+    "exportTakeoutAgain": (
+        "Asking Gemini again, more slowly: $1 of $2.",
+        "Запрашиваю у Gemini ещё раз, медленнее: $1 из $2.",
+    ),
+    "exportTakeoutDone": (
+        "Takeout: $1 chats added, $2 were already here, $3 no longer on Gemini.",
+        "Takeout: добавлено чатов $1, уже были здесь $2, больше нет в Gemini $3.",
+    ),
+    "exportTakeoutFailed": (
+        "$1 could not be read now. Add the file again to try them.",
+        "Сейчас не удалось прочитать чатов: $1. Добавьте файл ещё раз, чтобы попробовать снова.",
+    ),
+    "exportTakeoutNone": (
+        "No Gemini chats in this file. Pick the Takeout .zip, or the JSON file from My Activity, Gemini Apps.",
+        "В этом файле нет чатов Gemini. Укажите .zip из Takeout или JSON-файл из «Мои действия», «Приложения Gemini».",
+    ),
+    "exportSearchCoverage": (
+        "Search has come across $1% of the chats in the list. If it has found about as large a share of the older chats, there are about $2 of them, perhaps more.",
+        "Поиск встретил $1% чатов из списка. Если более старых он нашёл примерно такую же долю, всего их около $2, а может, и больше.",
+    ),
+    "exportSearchForget": ("Forget the found ones", "Забыть найденные"),
     "exportFoundBySearch": ("found by search", "найден поиском"),
+    "exportFromTakeout": ("from Takeout", "из Takeout"),
+    "exportSavedBefore": ("saved before", "сохранён раньше"),
     "exportArchived": ("archived", "в архиве"),
     "exportLoadingCount": (
         "Loading the chat list… $1 so far. A long list can take a few minutes.",
@@ -232,6 +268,11 @@ STRINGS = {
         "Загрузка остановлена на $1 чатах: в списке самые новые.",
     ),
     "exportListLoadAll": ("Load the whole list", "Загрузить весь список"),
+    "exportListKept": (
+        "Only the newest chats were read from $1 ($2 new or changed); the rest are as on your last visit.",
+        "Из $1 прочитаны только новые чаты (новых или изменённых: $2), остальные как в прошлый раз.",
+    ),
+    "exportListReadAll": ("Read the whole list again", "Прочитать весь список заново"),
     "exportListIncomplete": (
         "$1 returned $2 chats and then stopped answering, so older chats are not listed. Try again later to load the rest.",
         "$1 отдал $2 чатов и перестал отвечать, поэтому более старых чатов в списке нет. Попробуйте позже, чтобы загрузить остальные.",
@@ -418,6 +459,43 @@ STRINGS = {
     "pageMenuTextOnly": ("Save text only", "Сохранить только текст"),
     "pageMenuCopy": ("Copy as Markdown", "Копировать как Markdown"),
     "pageMenuChoose": ("Choose messages…", "Выбрать сообщения…"),
+    "searchTitle": ("Search the archive", "Поиск по архиву"),
+    "searchHint": (
+        "Searches every saved chat of every service at once, on this computer: nothing is sent anywhere. Choose the folder that holds your exports; .zip exports inside it are read too.",
+        "Ищет сразу по всем сохранённым чатам всех сервисов, на этом компьютере: ничего никуда не отправляется. Выберите папку с вашими экспортами; архивы .zip внутри неё тоже читаются.",
+    ),
+    "searchNoFolder": ("No folder chosen yet.", "Папка ещё не выбрана."),
+    "searchUnsupported": (
+        "This browser does not let extensions read a folder on your disk, so the archive cannot be searched here.",
+        "Этот браузер не даёт расширениям читать папку на диске, поэтому искать по архиву здесь нельзя.",
+    ),
+    "searchFolder": ("Folder: “$1”", "Папка: «$1»"),
+    "searchAllow": ("Allow reading the folder", "Разрешить чтение папки"),
+    "searchUseExportFolder": ("Search “$1” (the export folder)", "Искать в «$1» (папка экспорта)"),
+    "searchChoose": ("Choose a folder…", "Выбрать папку…"),
+    "searchChooseOther": ("Another folder…", "Другая папка…"),
+    "searchZipHint": (
+        "Exports saved into Downloads are in Downloads/AI Chats: choose that folder (Chrome does not let you choose Downloads itself).",
+        "Экспорты, сохранённые в «Загрузки», лежат в «Загрузки/AI Chats»: выберите эту папку (сами «Загрузки» Chrome выбрать не даёт).",
+    ),
+    "searchReading": (
+        "Reading the archive: $1 of $2 files, $3 chats found…",
+        "Читаю архив: $1 из $2 файлов, найдено чатов: $3…",
+    ),
+    "searchReadError": ("Could not read the folder: $1", "Не удалось прочитать папку: $1"),
+    "searchPlaceholder": ("Search $1 chats: words or a \"phrase\"", "Поиск по $1 чатам: слова или \"фраза\""),
+    "searchPlatform": ("Service", "Сервис"),
+    "searchAllPlatforms": ("All services", "Все сервисы"),
+    "searchWho": ("Who wrote it", "Кто написал"),
+    "searchEveryone": ("Everyone", "Все"),
+    "searchProject": ("Project", "Проект"),
+    "searchFrom": ("From", "С"),
+    "searchTo": ("To", "По"),
+    "searchFound": ("Found in $1 messages of $2 chats.", "Найдено в $1 сообщениях из $2 чатов."),
+    "searchFirst": ("The first $1 are shown.", "Показаны первые $1."),
+    "searchNothing": ("Nothing found.", "Ничего не найдено."),
+    "searchOpenChat": ("Open the chat on $1", "Открыть чат в $1"),
+    "popupSearchArchive": ("Search the archive", "Поиск по архиву"),
     "messagesTitle": ("Choose messages", "Выбор сообщений"),
     "messagesLoading": ("Reading the chat…", "Читаю чат…"),
     "messagesReopen": (

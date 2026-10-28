@@ -13,6 +13,7 @@ export default defineConfig({
         offscreen: 'src/offscreen/offscreen.html',
         export: 'src/ui/export-page/index.html',
         messages: 'src/ui/messages/index.html',
+        search: 'src/ui/search/index.html',
       },
     },
   },
