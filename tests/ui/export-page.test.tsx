@@ -82,7 +82,7 @@ describe('export page: Gemini search', () => {
     });
     local['searchFound:gemini'] = [{ ...chat('old', 'gemini'), foundBySearch: true }];
     render(<ExportPage />);
-    await screen.findByText(/exportSearchRemembered\(1\)/);
+    await screen.findByText(/exportSources\(2,1,0\)/);
     expect(rows()).toBe(3);
 
     fireEvent.click(screen.getByRole('button', { name: 'exportSearchMore' }));
@@ -103,9 +103,13 @@ describe('export page: Gemini search', () => {
         'new',
       ]),
     );
-    finishSearch({ conversations: [found], queries: 1, end: 'exhausted' });
+    const state = { asked: ['и'], words: [['word', 1]], seen: ['g1', 'new'] };
+    finishSearch({ conversations: [found], queries: 1, end: 'exhausted', state });
     await screen.findByText(/exportSearchDone\(1,1\)/);
     expect(rows()).toBe(4);
+    // Where it stopped is kept for the next search.
+    await waitFor(() => expect(local['searchState:gemini']).toEqual(state));
+    expect(screen.getByRole('button', { name: 'exportSearchAgain' })).toBeTruthy();
 
     // The bulk export found 'old' gone from Gemini and forgot it: the table follows.
     await act(() =>

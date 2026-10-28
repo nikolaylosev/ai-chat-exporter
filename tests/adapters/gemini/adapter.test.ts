@@ -185,6 +185,28 @@ describe('GeminiAdapter.listConversations', () => {
   });
 });
 
+describe('GeminiAdapter.listConversations with chats known from before', () => {
+  it('stops after the page holding a known chat with the same update time', async () => {
+    const whole = (await adapter().gemini.listConversations()).conversations;
+    const { gemini, server } = adapter();
+    const second = whole[2];
+    const known = new Map([[second?.id ?? '', second?.updatedAt ?? null]]);
+    const list = await gemini.listConversations(undefined, undefined, known);
+    expect(list.reachedKnown).toBe(true);
+    expect(server.calls.filter((c) => c.rpcId === 'MaZiqc')).toHaveLength(1);
+    expect(list.conversations.length).toBeGreaterThan(0);
+  });
+
+  it('reads on past a known chat that changed since', async () => {
+    const whole = (await adapter().gemini.listConversations()).conversations;
+    const { gemini } = adapter();
+    const known = new Map(whole.map((c) => [c.id, '2020-01-01T00:00:00.000Z']));
+    const list = await gemini.listConversations(undefined, undefined, known);
+    expect(list.reachedKnown).toBeUndefined();
+    expect(list.conversations).toHaveLength(whole.length);
+  });
+});
+
 describe('GeminiAdapter.listConversations when Gemini fails', () => {
   const statusBody = (status: number) =>
     `)]}'\n\n${JSON.stringify([['wrb.fr', 'MaZiqc', null, null, null, [status], 'generic']])}`;

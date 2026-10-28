@@ -6,6 +6,7 @@ import {
   SEARCH_SIGNATURE,
   SEED_WORDS,
   signatureIn,
+  searchCoverage,
   searchWords,
   sweepSearch,
   type SearchHit,
@@ -224,6 +225,66 @@ describe('sweepSearch', () => {
       { known: new Set(), stall: { window: 1000, minNew: 1 }, ...noSleep },
     );
     expect(asked).toEqual(SEED_WORDS);
+  });
+});
+
+describe('sweepSearch, going on from an earlier search', () => {
+  const noSleep = { sleep: () => Promise.resolve(), delayMs: 0 };
+
+  it('skips the words asked before and starts with the best words kept', async () => {
+    const asked: string[] = [];
+    const record = (q: string) => {
+      asked.push(q);
+      return Promise.resolve<SearchHit[]>([]);
+    };
+    const resume = {
+      asked: SEED_WORDS.slice(0, -1),
+      words: [
+        ['pears', 2],
+        ['apples', 5],
+      ] as [string, number][],
+      seen: [],
+    };
+    await sweepSearch(record, { known: new Set(), resume, ...noSleep });
+    expect(asked).toEqual([SEED_WORDS.at(-1), 'apples', 'pears']);
+  });
+
+  it('gives back where it stopped, and the state every 20 queries as it goes', async () => {
+    let n = 0;
+    const search = (q: string): Promise<SearchHit[]> =>
+      Promise.resolve([{ id: `c${n++}`, title: `${q} word${n}`, timestamp: null }]);
+    const states: number[] = [];
+    const { state } = await sweepSearch(search, {
+      known: new Set(['c0']),
+      maxQueries: 45,
+      onProgress: (p) => {
+        if (p.state) states.push(p.queries);
+      },
+      ...noSleep,
+    });
+    expect(states).toEqual([20, 40]);
+    expect(state.asked).toHaveLength(45);
+    expect(state.seen).toContain('c0');
+    expect(state.words.length).toBeGreaterThan(0);
+    // Chats seen before are not found again.
+    const again = await sweepSearch(search, {
+      known: new Set(),
+      resume: state,
+      maxQueries: 1,
+      ...noSleep,
+    });
+    expect(again.hits.every((h) => !state.seen.includes(h.id))).toBe(true);
+  });
+});
+
+describe('searchCoverage', () => {
+  const listed = new Set(Array.from({ length: 100 }, (_, i) => `l${i}`));
+  it('is the share of listed chats met, and the older chats likely there', () => {
+    const seen = [...[...listed].slice(0, 40), ...Array.from({ length: 30 }, (_, i) => `o${i}`)];
+    expect(searchCoverage(seen, listed)).toEqual({ share: 0.4, older: 75 });
+  });
+  it('says nothing before the search has met enough listed chats', () => {
+    expect(searchCoverage(['l1', 'l2', 'o1'], listed)).toBeNull();
   });
 });
 

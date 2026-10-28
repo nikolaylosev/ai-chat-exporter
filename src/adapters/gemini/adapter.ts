@@ -22,6 +22,7 @@ import {
   sweepSearch,
   type SearchHit,
   type SweepEnd,
+  type SweepState,
 } from './search';
 import { accountPrefixOf, GEMINI_ORIGIN, geminiNotebookId, parseGeminiUrl } from './urls';
 import { fetchJson, HttpError, type FetchLike } from '../../util/http';
@@ -74,16 +75,24 @@ export class GeminiAdapter implements PlatformAdapter {
     known: ReadonlySet<string>,
     options: {
       maxQueries?: number;
+      /** Where an earlier search stopped. */
+      resume?: SweepState;
       /** After each query; `conversations` are the new chats it found. */
       onProgress?: (progress: {
         found: number;
         queries: number;
         conversations: ConversationSummary[];
+        state?: SweepState;
       }) => void;
       shouldStop?: () => boolean;
       scriptUrls?: () => string[];
     } = {},
-  ): Promise<{ conversations: ConversationSummary[]; queries: number; end: SweepEnd }> {
+  ): Promise<{
+    conversations: ConversationSummary[];
+    queries: number;
+    end: SweepEnd;
+    state: SweepState;
+  }> {
     let signature = this.searchSignature ?? SEARCH_SIGNATURE;
     let rediscovered = false;
     const search = async (query: string): Promise<SearchHit[]> => {
@@ -126,19 +135,25 @@ export class GeminiAdapter implements PlatformAdapter {
       foundBySearch: true,
     });
     const onProgress = options.onProgress;
-    const { hits, queries, end } = await sweepSearch(search, {
+    const { hits, queries, end, state } = await sweepSearch(search, {
       known,
       sleep: this.sleep,
+      ...(options.resume ? { resume: options.resume } : {}),
       ...(options.maxQueries ? { maxQueries: options.maxQueries } : {}),
       ...(onProgress
         ? {
-            onProgress: ({ found, queries: asked, hits: added }) =>
-              onProgress({ found, queries: asked, conversations: added.map(summary) }),
+            onProgress: ({ found, queries: asked, hits: added, state: now }) =>
+              onProgress({
+                found,
+                queries: asked,
+                conversations: added.map(summary),
+                ...(now ? { state: now } : {}),
+              }),
           }
         : {}),
       ...(options.shouldStop ? { shouldStop: options.shouldStop } : {}),
     });
-    return { conversations: hits.map(summary), queries, end };
+    return { conversations: hits.map(summary), queries, end, state };
   }
 
   getCurrentConversationId(): string | null {
@@ -147,11 +162,15 @@ export class GeminiAdapter implements PlatformAdapter {
 
   /**
    * Every conversation, pinned first, then by last update. When Gemini stops
-   * answering partway, the chats read so far come back marked incomplete.
+   * answering partway, the chats read so far come back marked incomplete. With
+   * `known`, the reading stops after the first page holding a chat the caller
+   * has with the same update time and not pinned: every chat after it is older
+   * and unchanged (a changed chat moves to the top).
    */
   async listConversations(
     onProgress?: (loaded: number) => void,
     shouldStop?: () => boolean,
+    known?: ReadonlyMap<string, string | null>,
   ): Promise<ConversationList> {
     const gems = await this.gemNames();
     const result: ConversationSummary[] = [];
@@ -187,6 +206,9 @@ export class GeminiAdapter implements PlatformAdapter {
         return { conversations: result, incomplete: { loaded: result.length } };
       }
       const { entries, next } = readListPage(raw);
+      const reachedKnown = entries.some(
+        (e) => !e.pinned && known?.has(e.id) && known.get(e.id) === e.updatedAt,
+      );
       for (const e of entries) {
         if (seen.has(e.id)) continue;
         seen.add(e.id);
@@ -203,6 +225,7 @@ export class GeminiAdapter implements PlatformAdapter {
         });
       }
       onProgress?.(result.length);
+      if (reachedKnown) return { conversations: result, reachedKnown: true };
       if (!next || entries.length === 0) break;
       token = next;
     }

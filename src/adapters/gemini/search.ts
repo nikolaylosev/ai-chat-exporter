@@ -154,16 +154,43 @@ export function searchWords(text: string): string[] {
 const UNLISTED_WEIGHT = 1;
 const LISTED_WEIGHT = -0.7;
 
+/**
+ * Where a search stands, kept by the export page so the next search goes on from
+ * there: the words asked, the best words not asked yet, and every chat the
+ * search came across (listed or not), which also tells how much of the history
+ * it has covered.
+ */
+export interface SweepState {
+  asked: string[];
+  words: [word: string, worth: number][];
+  seen: string[];
+}
+
+/** Words kept for the next search, the best first; enough for hundreds of queries. */
+const KEPT_WORDS = 3000;
+/** How often progress carries the state, in queries. */
+const STATE_EVERY = 20;
+
 export interface SweepOptions {
   /** Chats already listed: only others are returned. */
   known: ReadonlySet<string>;
+  /** Where an earlier search stopped. */
+  resume?: SweepState;
   maxQueries?: number;
   /** Stop once `window` queries in a row found fewer than `minNew` new chats. */
   stall?: { window: number; minNew: number };
   delayMs?: number;
   sleep?: (ms: number) => Promise<void>;
-  /** After each query: totals so far, and the chats this query found that are new. */
-  onProgress?: (progress: { found: number; queries: number; hits: SearchHit[] }) => void;
+  /**
+   * After each query: totals so far, and the chats this query found that are
+   * new; every few queries the state too.
+   */
+  onProgress?: (progress: {
+    found: number;
+    queries: number;
+    hits: SearchHit[];
+    state?: SweepState;
+  }) => void;
   shouldStop?: () => boolean;
 }
 
@@ -172,12 +199,14 @@ export type SweepEnd = 'exhausted' | 'stalled' | 'limit' | 'stopped';
 /**
  * Searches with seed words, then with the most promising words of the chats
  * found (titles and snippets), until nothing new turns up, the query limit is
- * reached, or the caller stops it.
+ * reached, or the caller stops it. With `resume`, goes on where that search
+ * stopped: seed words already asked are skipped.
  */
 export async function sweepSearch(
   search: (query: string) => Promise<SearchHit[]>,
   {
     known,
+    resume,
     maxQueries = 1500,
     stall = { window: 50, minNew: 5 },
     delayMs = 250,
@@ -185,10 +214,12 @@ export async function sweepSearch(
     onProgress,
     shouldStop,
   }: SweepOptions,
-): Promise<{ hits: SearchHit[]; queries: number; end: SweepEnd }> {
-  const queue = [...SEED_WORDS];
+): Promise<{ hits: SearchHit[]; queries: number; end: SweepEnd; state: SweepState }> {
+  const asked = new Set(resume?.asked);
+  const seen = new Set(resume?.seen);
+  const queue = SEED_WORDS.filter((w) => !asked.has(w));
   /** Words of the chats found, not asked yet, with their worth. */
-  const words = new Map<string, number>();
+  const words = new Map(resume?.words.filter(([w]) => !asked.has(w)));
   const next = (): string | undefined => {
     const seed = queue.shift();
     if (seed !== undefined) return seed;
@@ -200,17 +231,21 @@ export async function sweepSearch(
     if (best !== undefined) words.delete(best);
     return best;
   };
-  const asked = new Set<string>();
-  const seen = new Set<string>();
+  const state = (): SweepState => ({
+    asked: [...asked],
+    words: [...words].sort((a, b) => b[1] - a[1]).slice(0, KEPT_WORDS),
+    seen: [...seen],
+  });
   const found: SearchHit[] = [];
   const newPerQuery: number[] = [];
   let queries = 0;
+  const end = (why: SweepEnd) => ({ hits: found, queries, end: why, state: state() });
   for (;;) {
-    if (shouldStop?.()) return { hits: found, queries, end: 'stopped' };
-    if (queries >= maxQueries) return { hits: found, queries, end: 'limit' };
+    if (shouldStop?.()) return end('stopped');
+    if (queries >= maxQueries) return end('limit');
     const recent = newPerQuery.slice(-stall.window);
     if (recent.length === stall.window && recent.reduce((a, b) => a + b, 0) < stall.minNew) {
-      return { hits: found, queries, end: 'stalled' };
+      return end('stalled');
     }
     const word = next();
     if (word === undefined) break;
@@ -234,7 +269,38 @@ export async function sweepSearch(
       }
     }
     newPerQuery.push(added.length);
-    onProgress?.({ found: found.length, queries, hits: added });
+    onProgress?.({
+      found: found.length,
+      queries,
+      hits: added,
+      ...(queries % STATE_EVERY === 0 ? { state: state() } : {}),
+    });
   }
-  return { hits: found, queries, end: 'exhausted' };
+  return end('exhausted');
+}
+
+/** Listed chats the search must have met before its coverage means anything. */
+const MIN_MET = 30;
+
+/**
+ * How much of the history the search has covered, judged by the chats it knows
+ * from elsewhere (the list): the share of them it came across, and the older
+ * chats there are likely to be, from the ones it found at that share. Search
+ * leans towards older chats, so the share of those found is likely higher and
+ * the count an upper bound. Null until the search has met enough listed chats
+ * to tell.
+ */
+export function searchCoverage(
+  seen: Iterable<string>,
+  listed: ReadonlySet<string>,
+): { share: number; older: number } | null {
+  let met = 0;
+  let unlisted = 0;
+  for (const id of seen) {
+    if (listed.has(id)) met++;
+    else unlisted++;
+  }
+  if (met < MIN_MET || listed.size === 0) return null;
+  const share = met / listed.size;
+  return { share, older: Math.round(unlisted / share) };
 }

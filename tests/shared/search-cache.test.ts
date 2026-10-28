@@ -42,8 +42,8 @@ describe('remembered search results', () => {
             stored = { ...stored, ...structuredClone(items) };
             return Promise.resolve();
           },
-          remove: (key: string) => {
-            delete stored[key];
+          remove: (keys: string | string[]) => {
+            for (const key of [keys].flat()) delete stored[key];
             return Promise.resolve();
           },
         },
