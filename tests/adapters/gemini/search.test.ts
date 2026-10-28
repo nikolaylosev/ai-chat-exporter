@@ -6,8 +6,8 @@ import {
   SEARCH_SIGNATURE,
   SEED_WORDS,
   signatureIn,
+  searchWords,
   sweepSearch,
-  titleWords,
   type SearchHit,
 } from '../../../src/adapters/gemini/search';
 import type { FetchLike } from '../../../src/util/http';
@@ -41,7 +41,9 @@ describe('readSearchAnswer', () => {
   it('reads ids without c_, titles and the newest snippet time', () => {
     expect(
       readSearchAnswer(answer([{ id: 'ab12', title: 'Garden plan', at: '2025-03-04T10:00:00Z' }])),
-    ).toEqual([{ id: 'ab12', title: 'Garden plan', timestamp: '2025-03-04T10:00:00Z' }]);
+    ).toEqual([
+      { id: 'ab12', title: 'Garden plan', timestamp: '2025-03-04T10:00:00Z', text: 'x\ny' },
+    ]);
   });
   it('treats searchHistory: null as nothing found', () => {
     expect(readSearchAnswer(answer(null))).toEqual([]);
@@ -100,29 +102,29 @@ describe('the search query signature', () => {
   });
 });
 
-describe('titleWords', () => {
-  it('keeps words longer than three letters, in any script, lower-cased', () => {
-    expect(titleWords('План ремонта: кухня & the Garden (2025)')).toEqual([
+describe('searchWords', () => {
+  it('keeps words longer than three letters, in any script, lower-cased, without bare numbers', () => {
+    expect(searchWords('План ремонта: кухня & the Garden (2025), v2026')).toEqual([
       'план',
       'ремонта',
       'кухня',
       'garden',
-      '2025',
+      'v2026',
     ]);
   });
 });
 
 describe('sweepSearch', () => {
   const noSleep = { sleep: () => Promise.resolve(), delayMs: 0 };
-  /** A fake search: each word finds the chats whose titles contain it. */
+  /** A fake search: each word finds the chats whose titles (or texts) contain it. */
   const library =
-    (titles: Record<string, string>) =>
+    (titles: Record<string, string>, texts: Record<string, string> = {}) =>
     async (query: string): Promise<SearchHit[]> =>
       Promise.resolve(
         Object.entries(titles)
-          .filter(([, title]) => title.toLowerCase().includes(query))
+          .filter(([id, title]) => `${title} ${texts[id] ?? ''}`.toLowerCase().includes(query))
           .slice(0, 20)
-          .map(([id, title]) => ({ id, title, timestamp: null })),
+          .map(([id, title]) => ({ id, title, timestamp: null, text: texts[id] ?? '' })),
       );
 
   it('follows words from found titles to chats no seed word finds', async () => {
@@ -134,6 +136,36 @@ describe('sweepSearch', () => {
     const { hits, end } = await sweepSearch(search, { known: new Set(), ...noSleep });
     expect(hits.map((h) => h.id).sort()).toEqual(['a1', 'a2', 'a3']);
     expect(end).toBe('exhausted');
+  });
+
+  it('follows words from the snippets too, and returns hits without their text', async () => {
+    const search = library(
+      { a1: 'Как дела', a2: 'Огород' },
+      { a1: 'посадить тыкву', a2: 'тыкву поливать' },
+    );
+    const { hits } = await sweepSearch(search, { known: new Set(), ...noSleep });
+    expect(hits).toEqual([
+      { id: 'a1', title: 'Как дела', timestamp: null },
+      { id: 'a2', title: 'Огород', timestamp: null },
+    ]);
+  });
+
+  it('asks words of chats outside the list before words of listed ones', async () => {
+    const asked: string[] = [];
+    const search = library(
+      { k1: 'Как listed', a1: 'Как unlisted' },
+      { k1: 'apples', a1: 'pears pears' },
+    );
+    await sweepSearch(
+      (q) => {
+        asked.push(q);
+        return search(q);
+      },
+      { known: new Set(['k1']), ...noSleep },
+    );
+    const after = asked.slice(SEED_WORDS.length);
+    expect(after.indexOf('pears')).toBeLessThan(after.indexOf('apples'));
+    expect(after.indexOf('unlisted')).toBeLessThan(after.indexOf('listed'));
   });
 
   it("reports each query's new chats as it goes, so a stop keeps them", async () => {

@@ -176,9 +176,9 @@ describe('GeminiAdapter.listConversations', () => {
     const list = (await gemini.listConversations()).conversations;
     const pages = server.calls.filter((c) => c.rpcId === 'MaZiqc').map((c) => c.args);
     expect(pages).toEqual([
-      [27, null, expect.any(Array)],
-      [20, 'NEXT_PAGE_TOKEN', expect.any(Array)],
-      [20, 'LAST_PAGE_TOKEN', expect.any(Array)],
+      [100, null, expect.any(Array)],
+      [100, 'NEXT_PAGE_TOKEN', expect.any(Array)],
+      [100, 'LAST_PAGE_TOKEN', expect.any(Array)],
     ]);
     expect(list.at(-1)).toMatchObject({ id: '00000000000000ff', title: 'Older chat' });
     expect(list.filter((c) => c.id === '0000000000000001')).toHaveLength(1);
@@ -231,14 +231,19 @@ describe('GeminiAdapter.listConversations when Gemini fails', () => {
     return { gemini, seen };
   };
 
-  it('reads a failing page in smaller pieces and goes on', async () => {
-    const { gemini, seen } = failing((size, token) => token === 'NEXT_PAGE_TOKEN' && size === 20);
+  it('asks for a failing page again and goes on', async () => {
+    let failures = 2;
+    const { gemini, seen } = failing(
+      (_size, token) => token === 'NEXT_PAGE_TOKEN' && failures-- > 0,
+    );
     const list = await gemini.listConversations();
     expect(list.incomplete).toBeUndefined();
     expect(list.conversations.at(-1)).toMatchObject({ title: 'Older chat' });
+    // The same page: a smaller one is no faster for Gemini.
     expect(seen.filter(([, token]) => token === 'NEXT_PAGE_TOKEN')).toEqual([
-      [20, 'NEXT_PAGE_TOKEN', 'status 13'],
-      [10, 'NEXT_PAGE_TOKEN', 'ok'],
+      [100, 'NEXT_PAGE_TOKEN', 'status 13'],
+      [100, 'NEXT_PAGE_TOKEN', 'status 13'],
+      [100, 'NEXT_PAGE_TOKEN', 'ok'],
     ]);
   });
 
