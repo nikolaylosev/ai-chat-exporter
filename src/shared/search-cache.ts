@@ -3,8 +3,9 @@ import type { ConversationSummary } from '../model/conversation';
 import type { Platform } from './platform';
 
 /**
- * Chats found through a platform's search (Gemini), remembered between visits
- * to the export page: the search takes minutes, and a reload would lose them.
+ * Chats found through a platform's search (Gemini), and those added from Google
+ * Takeout, remembered between visits to the export page: the search takes
+ * minutes, and a reload would lose them.
  * Kept in chrome.storage.local, on this computer only. The export page adds to
  * it; the bulk export forgets chats that are gone and renews titles.
  */

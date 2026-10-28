@@ -38,6 +38,9 @@ if (!window.__aiChatExporterClaudeAlive?.()) {
       throw new CodedError('platform-not-ready', 'No chat search on this platform');
     },
     'conversations:search-stop': () => null,
+    'conversations:lookup': () => {
+      throw new CodedError('platform-not-ready', 'No chat lookup on this platform');
+    },
     'projects:list': () => coded(() => adapter.listProjects()),
     'project:get': ({ id }) => coded(() => adapter.getProject(id)),
     'project:current': () => coded(() => adapter.getCurrentProject()),

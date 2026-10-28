@@ -26,7 +26,7 @@ Fixtures live in [`tests/fixtures/gemini/`](../tests/fixtures/gemini/). They com
 - **Generated images are available at full size** (`=s0` or `=d` on their `lh3` URL).
 - **Canvas now creates a Google Docs document** in the user's Drive; the chat keeps only a link.
 - **Only the visible branch is kept**: Redo replaces the answer; "Branch in new chat" creates another chat.
-- **The list stops at about 1,000 chats** on a large account: deep pages run past the server's 10 seconds and fail with status 13 (section 3). Gemini's own search reaches older chats ([Search](#search)).
+- **The list stops at about 1,000 chats** on a large account: deep pages run past the server's 10 seconds and fail with status 13 (section 3). Gemini's own search reaches older chats ([Search](#search)), and Google Takeout links to every chat ([Google Takeout](#google-takeout)).
 - **Files can be gone**: a file Gemini removed keeps its entry without a link (section 5).
 - **Notebooks are NotebookLM notebooks**: Gemini lists them, their sources and their chats, but gives no way to download a source (section 7).
 
@@ -104,6 +104,10 @@ The chat list cannot go past about 800 chats (above). The web app's search reach
 Searching with common words and then with words from the titles found reached 692 chats beyond a 916-chat list in 519 queries (about 9 minutes, no errors at about one query per second); new chats kept appearing more slowly. Each chat found downloads through `hNvQHb` like any other.
 
 **Snippets hold most of the matching messages (2026-10-28):** each chat has up to two snippets, about 5 KB of text on average and sometimes over 100 KB, so they give far more words to search next than titles do. Over the same queries after the seed words, words from titles and snippets found about 1.5 times as many chats outside the list as words from titles taken in turn, and about 1.65 times as many when the words of chats outside the list go first and the words of listed chats last (each chat outside the list adds 1 to a word, each listed one takes 0.7). Dates as queries (`2024`, `январь`, `March`) find no more than other words.
+
+### Google Takeout
+
+**Takeout links to every chat (2026-10-28, a large account).** takeout.google.com, My Activity with only Gemini Apps, activity records as JSON: `Takeout/My Activity/Gemini Apps/MyActivity.json` (the folder names follow the account's language). It is an array of records, one per prompt (`title` "Prompted …") and a few others ("Created", "Cleared", "Gave feedback"): `header` "Gemini Apps", `time`, `products`, `activityControls`, the answer as `safeHtmlItem`, sometimes `subtitles`, `imageFile` and `attachedFiles`, and almost always `details: [{ name, url }]` with the chat's link, `https://gemini.google.com/app/<16 hex>`. There is no `titleUrl`. The file linked to every chat the list and the search had found but one, and to about a third more that neither had reached, back to the first months of the account. Every one of a sample of these opened through `hNvQHb`, and `MaZiqc` with the chat's id in the filter gave its list entry (title, update time), the same entry as the list's, in about 0.4 s whatever the chat's age. The archive also holds the files of the prompts (`imageFile`, `attachedFiles`) and can be over a gigabyte; unpacking only the activity file as the archive is read takes seconds. Through the export page, adding every chat the table lacked took about a minute for several hundred chats, four lookups at a time with no errors; one id had no entry (a deleted chat). On a larger import, four at a time, Gemini refused some chats past each request's three retries (1, 2 and 4 s); adding the file again read them all. So the lookups slow to one at a time once Gemini refuses, and the refused ones are asked again after longer pauses.
 
 ## 4. Conversation history
 

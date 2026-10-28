@@ -101,15 +101,46 @@ STRINGS = {
     ),
     "exportSearchAgain": ("Search more", "Искать ещё"),
     "exportSources": (
-        "In the table: $1 chats from the list, $2 found by search, $3 saved before.",
-        "В таблице: из списка $1 чатов, найдено поиском $2, сохранено раньше $3.",
+        "In the table: $1 chats from the list, $2 found by search, $3 from Takeout, $4 saved before.",
+        "В таблице: из списка $1 чатов, найдено поиском $2, из Takeout $3, сохранено раньше $4.",
+    ),
+    "exportTakeoutAdd": ("Add chats from Google Takeout…", "Добавить чаты из Google Takeout…"),
+    "exportTakeoutHint": (
+        "Takeout links to every chat, however old. On takeout.google.com choose My Activity with only Gemini Apps, in JSON, then pick the .zip or MyActivity.json here. The file is read on this computer only.",
+        "Takeout ссылается на все чаты, даже самые старые. На takeout.google.com выберите «Мои действия» только с «Приложениями Gemini», в формате JSON, затем укажите здесь .zip или файл с действиями. Файл читается только на этом компьютере.",
+    ),
+    "exportTakeoutReading": ("Reading the Takeout file…", "Читаю файл Takeout…"),
+    "exportTakeoutRunning": (
+        "Adding chats from Takeout: $1 of $2.",
+        "Добавляю чаты из Takeout: $1 из $2.",
+    ),
+    "exportTakeoutWaiting": (
+        "Gemini is refusing for now: $1 chats will be asked again shortly, more slowly.",
+        "Gemini пока отказывает: чаты ($1) будут запрошены ещё раз чуть позже, медленнее.",
+    ),
+    "exportTakeoutAgain": (
+        "Asking Gemini again, more slowly: $1 of $2.",
+        "Запрашиваю у Gemini ещё раз, медленнее: $1 из $2.",
+    ),
+    "exportTakeoutDone": (
+        "Takeout: $1 chats added, $2 were already here, $3 no longer on Gemini.",
+        "Takeout: добавлено чатов $1, уже были здесь $2, больше нет в Gemini $3.",
+    ),
+    "exportTakeoutFailed": (
+        "$1 could not be read now. Add the file again to try them.",
+        "Сейчас не удалось прочитать чатов: $1. Добавьте файл ещё раз, чтобы попробовать снова.",
+    ),
+    "exportTakeoutNone": (
+        "No Gemini chats in this file. Pick the Takeout .zip, or the JSON file from My Activity, Gemini Apps.",
+        "В этом файле нет чатов Gemini. Укажите .zip из Takeout или JSON-файл из «Мои действия», «Приложения Gemini».",
     ),
     "exportSearchCoverage": (
-        "Search has come across $1% of the chats in the list. It has likely found at least as large a share of the older chats, so there are up to about $2 of them in all.",
-        "Поиск встретил $1% чатов из списка. Скорее всего, более старых он нашёл не меньшую долю, то есть всего их примерно не больше $2.",
+        "Search has come across $1% of the chats in the list. If it has found about as large a share of the older chats, there are about $2 of them, perhaps more.",
+        "Поиск встретил $1% чатов из списка. Если более старых он нашёл примерно такую же долю, всего их около $2, а может, и больше.",
     ),
     "exportSearchForget": ("Forget the found ones", "Забыть найденные"),
     "exportFoundBySearch": ("found by search", "найден поиском"),
+    "exportFromTakeout": ("from Takeout", "из Takeout"),
     "exportSavedBefore": ("saved before", "сохранён раньше"),
     "exportArchived": ("archived", "в архиве"),
     "exportLoadingCount": (

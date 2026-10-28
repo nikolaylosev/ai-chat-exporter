@@ -177,6 +177,15 @@ interface Contract {
       };
     };
     'conversations:search-stop': { request: Empty; response: null };
+    /**
+     * Chats by id, with their titles and dates (Gemini: ids from Google Takeout).
+     * `missing` are no longer on the platform; `failed` could not be read now.
+     * `atOnce`: how many requests at a time (fewer when the platform refuses).
+     */
+    'conversations:lookup': {
+      request: { ids: string[]; atOnce?: number };
+      response: { conversations: ConversationSummary[]; missing: string[]; failed: string[] };
+    };
     'projects:list': { request: Empty; response: ProjectSummary[] };
     'project:get': { request: { id: string }; response: Project };
     /** The project of the open page or chat, if any. */

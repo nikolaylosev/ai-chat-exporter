@@ -243,7 +243,63 @@
     "message": "Search more"
   },
   "exportSources": {
-    "message": "In the table: $ARG1$ chats from the list, $ARG2$ found by search, $ARG3$ saved before.",
+    "message": "In the table: $ARG1$ chats from the list, $ARG2$ found by search, $ARG3$ from Takeout, $ARG4$ saved before.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      },
+      "arg4": {
+        "content": "$4"
+      }
+    }
+  },
+  "exportTakeoutAdd": {
+    "message": "Add chats from Google Takeout…"
+  },
+  "exportTakeoutHint": {
+    "message": "Takeout links to every chat, however old. On takeout.google.com choose My Activity with only Gemini Apps, in JSON, then pick the .zip or MyActivity.json here. The file is read on this computer only."
+  },
+  "exportTakeoutReading": {
+    "message": "Reading the Takeout file…"
+  },
+  "exportTakeoutRunning": {
+    "message": "Adding chats from Takeout: $ARG1$ of $ARG2$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "exportTakeoutWaiting": {
+    "message": "Gemini is refusing for now: $ARG1$ chats will be asked again shortly, more slowly.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportTakeoutAgain": {
+    "message": "Asking Gemini again, more slowly: $ARG1$ of $ARG2$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "exportTakeoutDone": {
+    "message": "Takeout: $ARG1$ chats added, $ARG2$ were already here, $ARG3$ no longer on Gemini.",
     "placeholders": {
       "arg1": {
         "content": "$1"
@@ -256,8 +312,19 @@
       }
     }
   },
+  "exportTakeoutFailed": {
+    "message": "$ARG1$ could not be read now. Add the file again to try them.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportTakeoutNone": {
+    "message": "No Gemini chats in this file. Pick the Takeout .zip, or the JSON file from My Activity, Gemini Apps."
+  },
   "exportSearchCoverage": {
-    "message": "Search has come across $ARG1$% of the chats in the list. It has likely found at least as large a share of the older chats, so there are up to about $ARG2$ of them in all.",
+    "message": "Search has come across $ARG1$% of the chats in the list. If it has found about as large a share of the older chats, there are about $ARG2$ of them, perhaps more.",
     "placeholders": {
       "arg1": {
         "content": "$1"
@@ -272,6 +339,9 @@
   },
   "exportFoundBySearch": {
     "message": "found by search"
+  },
+  "exportFromTakeout": {
+    "message": "from Takeout"
   },
   "exportSavedBefore": {
     "message": "saved before"
