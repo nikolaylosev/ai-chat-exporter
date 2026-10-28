@@ -187,6 +187,12 @@ export function conversationFolderName(
   return `${title} - ${date}${platform}${copy}`;
 }
 
+/** The title in a folder named by `conversationFolderName`, or the whole name if it is not one. */
+export function titleFromFolder(folder: string): string {
+  const name = folder.slice(folder.lastIndexOf('/') + 1);
+  return /^(.+) - \d{4}-\d{2}-\d{2}(?: \([^()]*\))*$/.exec(name)?.[1] ?? name;
+}
+
 /**
  * Builds the folder and Markdown file names for a conversation and shortens the
  * title until the longest path fits the budget (docs/ARCHITECTURE.md, section 8).

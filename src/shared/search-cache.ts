@@ -1,3 +1,4 @@
+import type { SweepState } from '../adapters/gemini/search';
 import type { ConversationSummary } from '../model/conversation';
 import type { Platform } from './platform';
 
@@ -12,6 +13,8 @@ import type { Platform } from './platform';
 const MAX_FOUND = 5000;
 
 const key = (platform: Platform) => `searchFound:${platform}`;
+/** Where the last search stopped, so the next one goes on from there. */
+const stateKey = (platform: Platform) => `searchState:${platform}`;
 
 function isSummary(value: unknown): value is ConversationSummary {
   const c = value as Partial<ConversationSummary> | null;
@@ -54,8 +57,34 @@ export function rememberFound(platform: Platform, more: ConversationSummary[]): 
   return writes;
 }
 
+/** Forgets the chats found and where the search stopped: the next search starts over. */
 export function forgetFound(platform: Platform): Promise<void> {
-  writes = writes.then(() => chrome.storage.local.remove(key(platform))).catch(() => undefined);
+  writes = writes
+    .then(() => chrome.storage.local.remove([key(platform), stateKey(platform)]))
+    .catch(() => undefined);
+  return writes;
+}
+
+function isState(value: unknown): value is SweepState {
+  const s = value as Partial<SweepState> | null;
+  return Array.isArray(s?.asked) && Array.isArray(s.words) && Array.isArray(s.seen);
+}
+
+export async function loadSearchState(platform: Platform): Promise<SweepState | null> {
+  try {
+    const stored: unknown = (await chrome.storage.local.get(stateKey(platform)))[
+      stateKey(platform)
+    ];
+    return isState(stored) ? stored : null;
+  } catch {
+    return null;
+  }
+}
+
+export function saveSearchState(platform: Platform, state: SweepState): Promise<void> {
+  writes = writes
+    .then(() => chrome.storage.local.set({ [stateKey(platform)]: state }))
+    .catch(() => undefined);
   return writes;
 }
 

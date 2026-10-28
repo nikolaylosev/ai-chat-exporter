@@ -242,19 +242,39 @@
   "exportSearchAgain": {
     "message": "Искать ещё"
   },
-  "exportSearchRemembered": {
-    "message": "В списке $ARG1$ чатов, найденных прошлым поиском.",
+  "exportSources": {
+    "message": "В таблице: из списка $ARG1$ чатов, найдено поиском $ARG2$, сохранено раньше $ARG3$.",
     "placeholders": {
       "arg1": {
         "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      }
+    }
+  },
+  "exportSearchCoverage": {
+    "message": "Поиск встретил $ARG1$% чатов из списка. Скорее всего, более старых он нашёл не меньшую долю, то есть всего их примерно не больше $ARG2$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
       }
     }
   },
   "exportSearchForget": {
-    "message": "Забыть их"
+    "message": "Забыть найденные"
   },
   "exportFoundBySearch": {
     "message": "найден поиском"
+  },
+  "exportSavedBefore": {
+    "message": "сохранён раньше"
   },
   "exportArchived": {
     "message": "в архиве"
@@ -633,6 +653,20 @@
   },
   "exportListLoadAll": {
     "message": "Загрузить весь список"
+  },
+  "exportListKept": {
+    "message": "Из $ARG1$ прочитаны только новые чаты (новых или изменённых: $ARG2$), остальные как в прошлый раз.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "exportListReadAll": {
+    "message": "Прочитать весь список заново"
   },
   "exportListIncomplete": {
     "message": "$ARG1$ отдал $ARG2$ чатов и перестал отвечать, поэтому более старых чатов в списке нет. Попробуйте позже, чтобы загрузить остальные.",

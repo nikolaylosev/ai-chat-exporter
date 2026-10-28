@@ -242,19 +242,39 @@
   "exportSearchAgain": {
     "message": "Search more"
   },
-  "exportSearchRemembered": {
-    "message": "$ARG1$ chats found by an earlier search are in the list.",
+  "exportSources": {
+    "message": "In the table: $ARG1$ chats from the list, $ARG2$ found by search, $ARG3$ saved before.",
     "placeholders": {
       "arg1": {
         "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      }
+    }
+  },
+  "exportSearchCoverage": {
+    "message": "Search has come across $ARG1$% of the chats in the list. It has likely found at least as large a share of the older chats, so there are up to about $ARG2$ of them in all.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
       }
     }
   },
   "exportSearchForget": {
-    "message": "Forget them"
+    "message": "Forget the found ones"
   },
   "exportFoundBySearch": {
     "message": "found by search"
+  },
+  "exportSavedBefore": {
+    "message": "saved before"
   },
   "exportArchived": {
     "message": "archived"
@@ -633,6 +653,20 @@
   },
   "exportListLoadAll": {
     "message": "Load the whole list"
+  },
+  "exportListKept": {
+    "message": "Only the newest chats were read from $ARG1$ ($ARG2$ new or changed); the rest are as on your last visit.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "exportListReadAll": {
+    "message": "Read the whole list again"
   },
   "exportListIncomplete": {
     "message": "$ARG1$ returned $ARG2$ chats and then stopped answering, so older chats are not listed. Try again later to load the rest.",

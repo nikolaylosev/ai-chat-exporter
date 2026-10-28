@@ -100,12 +100,17 @@ STRINGS = {
         "Поиск нашёл ещё $1 чатов (запросов: $2).",
     ),
     "exportSearchAgain": ("Search more", "Искать ещё"),
-    "exportSearchRemembered": (
-        "$1 chats found by an earlier search are in the list.",
-        "В списке $1 чатов, найденных прошлым поиском.",
+    "exportSources": (
+        "In the table: $1 chats from the list, $2 found by search, $3 saved before.",
+        "В таблице: из списка $1 чатов, найдено поиском $2, сохранено раньше $3.",
     ),
-    "exportSearchForget": ("Forget them", "Забыть их"),
+    "exportSearchCoverage": (
+        "Search has come across $1% of the chats in the list. It has likely found at least as large a share of the older chats, so there are up to about $2 of them in all.",
+        "Поиск встретил $1% чатов из списка. Скорее всего, более старых он нашёл не меньшую долю, то есть всего их примерно не больше $2.",
+    ),
+    "exportSearchForget": ("Forget the found ones", "Забыть найденные"),
     "exportFoundBySearch": ("found by search", "найден поиском"),
+    "exportSavedBefore": ("saved before", "сохранён раньше"),
     "exportArchived": ("archived", "в архиве"),
     "exportLoadingCount": (
         "Loading the chat list… $1 so far. A long list can take a few minutes.",
@@ -232,6 +237,11 @@ STRINGS = {
         "Загрузка остановлена на $1 чатах: в списке самые новые.",
     ),
     "exportListLoadAll": ("Load the whole list", "Загрузить весь список"),
+    "exportListKept": (
+        "Only the newest chats were read from $1 ($2 new or changed); the rest are as on your last visit.",
+        "Из $1 прочитаны только новые чаты (новых или изменённых: $2), остальные как в прошлый раз.",
+    ),
+    "exportListReadAll": ("Read the whole list again", "Прочитать весь список заново"),
     "exportListIncomplete": (
         "$1 returned $2 chats and then stopped answering, so older chats are not listed. Try again later to load the rest.",
         "$1 отдал $2 чатов и перестал отвечать, поэтому более старых чатов в списке нет. Попробуйте позже, чтобы загрузить остальные.",

@@ -1,4 +1,5 @@
 import type { Platform } from '../shared/platform';
+import { titleFromFolder } from '../util/filename';
 
 /**
  * The extension cannot read the Downloads folder, so it remembers what it has
@@ -125,6 +126,28 @@ export class Registry {
     return this.mutate((data) => {
       data.records[recordKey(platform, id)] = record;
     });
+  }
+
+  /**
+   * The platform's chats exported before, saved alone or in a project (`<chat>@<project>`),
+   * the latest export of each, with the title its folder was named after.
+   */
+  async chats(
+    platform: Platform,
+  ): Promise<{ id: string; title: string; updatedAt: string | null }[]> {
+    const latest = new Map<string, ExportRecord>();
+    for (const [key, record] of Object.entries((await this.read()).records)) {
+      if (!key.startsWith(`${platform}:`)) continue;
+      const id = key.slice(platform.length + 1).split('@')[0] ?? '';
+      if (!id || id.startsWith('project:')) continue;
+      const before = latest.get(id);
+      if (!before || before.exportedAt < record.exportedAt) latest.set(id, record);
+    }
+    return [...latest].map(([id, r]) => ({
+      id,
+      title: titleFromFolder(r.folder),
+      updatedAt: r.updatedAt,
+    }));
   }
 
   async size(): Promise<number> {
