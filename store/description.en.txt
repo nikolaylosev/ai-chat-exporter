@@ -22,6 +22,8 @@ HOW YOU USE IT
 • Only some messages: "Choose messages…" lists the chat's messages; tick the ones you want (or only yours, or only the AI's replies) and save or copy just them.
 • Many chats or projects: open the export page, filter by date, project or title, tick the ones you want or all of them, and save. It runs in the background, can be cancelled, and writes a report of anything that failed.
 • Into Downloads, a chat with its files comes as one .zip, and its text alone as one file. Or straight into a folder you choose, file by file.
+• Search your saved chats: "Search the archive" searches every saved chat of every service at once, on your computer, with the text of their files.
+• All of a large Gemini history: its list stops at about 1,000 chats; Gemini's own search or a Google Takeout file adds the older ones.
 
 PRIVACY
 • Everything stays on your computer. The extension has no server and sends your conversations nowhere.

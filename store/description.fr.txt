@@ -22,6 +22,8 @@ UTILISATION
 • Seulement certains messages : « Choose messages… » liste les messages du chat ; cochez ceux que vous voulez (ou seulement les vôtres, ou seulement les réponses de l'IA) et enregistrez ou copiez-les seuls.
 • Beaucoup de chats ou de projets : ouvrez la page d'export, filtrez par date, projet ou titre, cochez ceux que vous voulez ou tous, et enregistrez. L'export tourne en arrière-plan, peut être annulé et écrit un rapport de ce qui a échoué.
 • Dans Téléchargements, un chat avec ses fichiers arrive en une seule archive .zip, et son texte seul en un fichier. Ou directement dans un dossier de votre choix, fichier par fichier.
+• Recherche dans vos chats enregistrés : « Search the archive » cherche dans tous les chats enregistrés de tous les services à la fois, sur votre ordinateur, y compris dans le texte de leurs fichiers.
+• Tout un long historique Gemini : sa liste s’arrête vers 1 000 chats ; la recherche de Gemini ou un fichier Google Takeout ajoute les plus anciens.
 
 CONFIDENTIALITÉ
 • Tout reste sur votre ordinateur. L'extension n'a pas de serveur et n'envoie vos conversations nulle part.

@@ -22,6 +22,8 @@ COMO USAR
 • Só algumas mensagens: "Choose messages…" lista as mensagens do chat; marque as que quiser (ou só as suas, ou só as respostas da IA) e salve ou copie apenas elas.
 • Muitos chats ou projetos: abra a página de exportação, filtre por data, projeto ou título, marque os que quiser ou todos, e salve. Roda em segundo plano, pode ser cancelado e gera um relatório do que falhou.
 • Em Downloads, um chat com seus arquivos chega como um único .zip, e só o texto como um arquivo. Ou direto em uma pasta que você escolher, arquivo por arquivo.
+• Busca nas conversas salvas: "Search the archive" pesquisa de uma vez em todas as conversas salvas de todos os serviços, no seu computador, inclusive no texto dos arquivos delas.
+• Todo um histórico grande do Gemini: a lista para em cerca de 1.000 conversas; a busca do Gemini ou um arquivo do Google Takeout adiciona as mais antigas.
 
 PRIVACIDADE
 • Tudo fica no seu computador. A extensão não tem servidor e não envia suas conversas para lugar nenhum.
