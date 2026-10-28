@@ -82,7 +82,7 @@ describe('export page: Gemini search', () => {
     });
     local['searchFound:gemini'] = [{ ...chat('old', 'gemini'), foundBySearch: true }];
     render(<ExportPage />);
-    await screen.findByText(/exportSearchRemembered\(1\)/);
+    await screen.findByText(/exportSources\(2,1,0,0\)/);
     expect(rows()).toBe(3);
 
     fireEvent.click(screen.getByRole('button', { name: 'exportSearchMore' }));
@@ -103,9 +103,13 @@ describe('export page: Gemini search', () => {
         'new',
       ]),
     );
-    finishSearch({ conversations: [found], queries: 1, end: 'exhausted' });
+    const state = { asked: ['и'], words: [['word', 1]], seen: ['g1', 'new'] };
+    finishSearch({ conversations: [found], queries: 1, end: 'exhausted', state });
     await screen.findByText(/exportSearchDone\(1,1\)/);
     expect(rows()).toBe(4);
+    // Where it stopped is kept for the next search.
+    await waitFor(() => expect(local['searchState:gemini']).toEqual(state));
+    expect(screen.getByRole('button', { name: 'exportSearchAgain' })).toBeTruthy();
 
     // The bulk export found 'old' gone from Gemini and forgot it: the table follows.
     await act(() =>
@@ -115,6 +119,51 @@ describe('export page: Gemini search', () => {
     );
     await waitFor(() => expect(rows()).toBe(3));
     expect(screen.queryByText('Chat old')).toBeNull();
+  });
+});
+
+describe('export page: Gemini chats from Takeout', () => {
+  it('asks the Gemini tab for the chats the file links to that the table does not have', async () => {
+    history.replaceState(null, '', '?platform=gemini');
+    const listed = chat('00000000000000c1', 'gemini');
+    const old = { ...chat('00000000000000c2', 'gemini'), fromTakeout: true };
+    const { local, sentToTabs } = stubChrome({
+      background: (type) => (type === 'platform:tab' ? { tabId: 9, opened: false } : null),
+      tab: (type) => {
+        if (type === 'conversations:list') return { conversations: [listed] };
+        if (type === 'conversations:lookup') {
+          return { conversations: [old], missing: ['00000000000000c3'], failed: [] };
+        }
+        return null;
+      },
+    });
+    render(<ExportPage />);
+    await screen.findByRole('button', { name: 'exportTakeoutAdd' });
+    const link = (id: string) => ({
+      time: '2026-10-01T10:00:00.000Z',
+      details: [{ url: `https://gemini.google.com/app/${id}` }],
+    });
+    const file = new File(
+      [JSON.stringify(['c1', 'c2', 'c3'].map((n) => link(`00000000000000${n}`)))],
+      'MyActivity.json',
+    );
+    const input = document.querySelector<HTMLInputElement>('input[type=file]')!;
+    Object.defineProperty(input, 'files', { value: [file], configurable: true });
+    fireEvent.change(input);
+
+    await screen.findByText(/exportTakeoutDone\(1,1,1\)/);
+    expect(sentToTabs.find((m) => m.type === 'conversations:lookup')?.payload).toEqual({
+      ids: ['00000000000000c2', '00000000000000c3'],
+      atOnce: 4,
+    });
+    expect(rows()).toBe(2);
+    screen.getByText(/exportSources\(1,0,1,0\)/);
+    screen.getByText('exportFromTakeout');
+    await waitFor(() =>
+      expect((local['searchFound:gemini'] as ConversationSummary[]).map((c) => c.id)).toEqual([
+        '00000000000000c2',
+      ]),
+    );
   });
 });
 

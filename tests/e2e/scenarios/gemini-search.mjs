@@ -31,7 +31,7 @@ export default {
       await stand.ev(page, 'location.reload()');
       await sleep(1500);
       await waitFor(async () => (await rows()) >= 101, 60000, 'the remembered chats');
-      assert.match(await text(), /40 chats found by an earlier search/);
+      assert.match(await text(), /40 found by search/);
       await stand.ev(page, `document.querySelector('.search-more button.link').click()`);
       await waitFor(async () => (await rows()) === 61, 10000, 'forgetting');
       await stand.ev(page, 'location.reload()');

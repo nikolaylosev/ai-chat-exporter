@@ -5,6 +5,7 @@ import type {
   ConversationSummary,
 } from '../model/conversation';
 import type { Project, ProjectSummary } from '../model/project';
+import type { SweepState } from '../adapters/gemini/search';
 import { errorCode, type ErrorCode } from './errors';
 import { errorMessage, log } from './logger';
 import type { TransferableSource } from '../sinks/source';
@@ -134,13 +135,22 @@ interface Contract {
     'job:start': { request: { platform: Platform; items: JobStartItem[] }; response: null };
     'job:cancel': { request: Empty; response: null };
     'registry:count': { request: Empty; response: { count: number } };
+    /** The platform's chats the registry has, with the title read from each folder. */
+    'registry:chats': {
+      request: { platform: Platform };
+      response: { id: string; title: string; updatedAt: string | null }[];
+    };
     'registry:clear': { request: Empty; response: null };
     /** Pages a content script cannot open itself. */
     'open:options': { request: Empty; response: null };
   };
   content: {
     ping: { request: Empty; response: { platform: Platform } };
-    'conversations:list': { request: Empty; response: ConversationList };
+    /** `known`: chat ids with update times the page has from before (Gemini reads only what is newer). */
+    'conversations:list': {
+      request: { known?: [string, string | null][] };
+      response: ConversationList;
+    };
     /**
      * A new download link for a file of a conversation read before, when the first
      * one stopped working (ChatGPT's signed links); null when there is none.
@@ -157,14 +167,25 @@ interface Contract {
      * ends it early with what was found.
      */
     'conversations:search': {
-      request: { knownIds: string[] };
+      /** `resume`: where an earlier search stopped, to go on from there. */
+      request: { knownIds: string[]; resume?: SweepState };
       response: {
         conversations: ConversationSummary[];
         queries: number;
         end: 'exhausted' | 'stalled' | 'limit' | 'stopped';
+        state: SweepState;
       };
     };
     'conversations:search-stop': { request: Empty; response: null };
+    /**
+     * Chats by id, with their titles and dates (Gemini: ids from Google Takeout).
+     * `missing` are no longer on the platform; `failed` could not be read now.
+     * `atOnce`: how many requests at a time (fewer when the platform refuses).
+     */
+    'conversations:lookup': {
+      request: { ids: string[]; atOnce?: number };
+      response: { conversations: ConversationSummary[]; missing: string[]; failed: string[] };
+    };
     'projects:list': { request: Empty; response: ProjectSummary[] };
     'project:get': { request: { id: string }; response: Project };
     /** The project of the open page or chat, if any. */
@@ -215,6 +236,8 @@ interface Contract {
         found: number;
         queries: number;
         conversations: ConversationSummary[];
+        /** Now and then: where the search is, so a closed page can go on from there. */
+        state?: SweepState;
       };
       response: null;
     };

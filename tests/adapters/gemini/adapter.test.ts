@@ -176,12 +176,72 @@ describe('GeminiAdapter.listConversations', () => {
     const list = (await gemini.listConversations()).conversations;
     const pages = server.calls.filter((c) => c.rpcId === 'MaZiqc').map((c) => c.args);
     expect(pages).toEqual([
-      [27, null, expect.any(Array)],
-      [20, 'NEXT_PAGE_TOKEN', expect.any(Array)],
-      [20, 'LAST_PAGE_TOKEN', expect.any(Array)],
+      [100, null, expect.any(Array)],
+      [100, 'NEXT_PAGE_TOKEN', expect.any(Array)],
+      [100, 'LAST_PAGE_TOKEN', expect.any(Array)],
     ]);
     expect(list.at(-1)).toMatchObject({ id: '00000000000000ff', title: 'Older chat' });
     expect(list.filter((c) => c.id === '0000000000000001')).toHaveLength(1);
+  });
+});
+
+describe('GeminiAdapter.listConversations with chats known from before', () => {
+  it('stops after the page holding a known chat with the same update time', async () => {
+    const whole = (await adapter().gemini.listConversations()).conversations;
+    const { gemini, server } = adapter();
+    const second = whole[2];
+    const known = new Map([[second?.id ?? '', second?.updatedAt ?? null]]);
+    const list = await gemini.listConversations(undefined, undefined, known);
+    expect(list.reachedKnown).toBe(true);
+    expect(server.calls.filter((c) => c.rpcId === 'MaZiqc')).toHaveLength(1);
+    expect(list.conversations.length).toBeGreaterThan(0);
+  });
+
+  it('reads on past a known chat that changed since', async () => {
+    const whole = (await adapter().gemini.listConversations()).conversations;
+    const { gemini } = adapter();
+    const known = new Map(whole.map((c) => [c.id, '2020-01-01T00:00:00.000Z']));
+    const list = await gemini.listConversations(undefined, undefined, known);
+    expect(list.reachedKnown).toBeUndefined();
+    expect(list.conversations).toHaveLength(whole.length);
+  });
+});
+
+describe('GeminiAdapter.lookupConversations', () => {
+  it('gives the entries of the ids asked, in their order, and names those Gemini has not', async () => {
+    const whole = (await adapter().gemini.listConversations()).conversations;
+    const [first, second] = [whole[0]!, whole[1]!];
+    const { gemini } = adapter();
+    const found = await gemini.lookupConversations([second.id, 'ffffffffffffffff', first.id]);
+    expect(found.conversations).toEqual([
+      { ...second, fromTakeout: true },
+      { ...first, fromTakeout: true },
+    ]);
+    expect(found.missing).toEqual(['ffffffffffffffff']);
+    expect(found.failed).toEqual([]);
+  });
+
+  it('counts a chat Gemini keeps failing on as failed and goes on', async () => {
+    const whole = (await adapter().gemini.listConversations()).conversations;
+    const [first, second] = [whole[0]!, whole[1]!];
+    const server = geminiServer(all);
+    const fetchFn: FetchLike = (url, init) =>
+      typeof init?.body === 'string' && init.body.includes(`c_${first.id}`)
+        ? Promise.resolve(
+            new Response(
+              `)]}'\n\n${JSON.stringify([['wrb.fr', 'MaZiqc', null, null, null, [13], 'generic']])}`,
+            ),
+          )
+        : server.fetchFn(url, init);
+    const gemini = new GeminiAdapter(
+      fetchFn,
+      () => `${ORIGIN}/app`,
+      ORIGIN,
+      () => Promise.resolve(),
+    );
+    const found = await gemini.lookupConversations([first.id, second.id]);
+    expect(found.conversations.map((c) => c.id)).toEqual([second.id]);
+    expect(found.failed).toEqual([first.id]);
   });
 });
 
@@ -231,14 +291,19 @@ describe('GeminiAdapter.listConversations when Gemini fails', () => {
     return { gemini, seen };
   };
 
-  it('reads a failing page in smaller pieces and goes on', async () => {
-    const { gemini, seen } = failing((size, token) => token === 'NEXT_PAGE_TOKEN' && size === 20);
+  it('asks for a failing page again and goes on', async () => {
+    let failures = 2;
+    const { gemini, seen } = failing(
+      (_size, token) => token === 'NEXT_PAGE_TOKEN' && failures-- > 0,
+    );
     const list = await gemini.listConversations();
     expect(list.incomplete).toBeUndefined();
     expect(list.conversations.at(-1)).toMatchObject({ title: 'Older chat' });
+    // The same page: a smaller one is no faster for Gemini.
     expect(seen.filter(([, token]) => token === 'NEXT_PAGE_TOKEN')).toEqual([
-      [20, 'NEXT_PAGE_TOKEN', 'status 13'],
-      [10, 'NEXT_PAGE_TOKEN', 'ok'],
+      [100, 'NEXT_PAGE_TOKEN', 'status 13'],
+      [100, 'NEXT_PAGE_TOKEN', 'status 13'],
+      [100, 'NEXT_PAGE_TOKEN', 'ok'],
     ]);
   });
 

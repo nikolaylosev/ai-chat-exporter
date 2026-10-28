@@ -11,6 +11,7 @@ import {
   readListPage,
   readNotebook,
   readNotebooks,
+  type RawListEntry,
   type RawNotebook,
   type RawTurn,
 } from './parse';
@@ -22,6 +23,7 @@ import {
   sweepSearch,
   type SearchHit,
   type SweepEnd,
+  type SweepState,
 } from './search';
 import { accountPrefixOf, GEMINI_ORIGIN, geminiNotebookId, parseGeminiUrl } from './urls';
 import { fetchJson, HttpError, type FetchLike } from '../../util/http';
@@ -31,19 +33,18 @@ const MAX_HISTORY_PAGES = 500;
 const MAX_LIST_PAGES = 1000;
 const LIST_FILTER = [null, null, 1, null, null, null, null, null, null, 1];
 /**
- * Page sizes and pauses for one page of the chat list. Deep pages often fail
- * with a server error (status 13, seen on 2026-10-14 past about 600 chats; the
- * web app's own sidebar sends the same request); a smaller page after a pause
- * usually passes.
+ * Chats per page of the list: the most Gemini gives. A page costs about the
+ * same whatever its size, more the deeper it is (2026-10-28), so big pages
+ * reach deeper before Gemini gives up.
  */
-const LIST_ATTEMPTS: [size: number, waitMs: number][] = [
-  [20, 0],
-  [10, 1000],
-  [10, 3000],
-  [5, 6000],
-  [2, 10000],
-  [1, 15000],
-];
+const LIST_PAGE_SIZE = 100;
+/**
+ * Pauses before each try of one page. A deep page fails with status 13 when
+ * Gemini spends its 10 seconds on it; the same page may pass on the next try.
+ */
+const LIST_WAITS_MS = [0, 2000, 5000, 10000, 15000, 20000];
+/** One chat's entry takes about half a second whatever its age (2026-10-28). */
+const LOOKUP_AT_ONCE = 4;
 
 const defaultSleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
@@ -77,16 +78,24 @@ export class GeminiAdapter implements PlatformAdapter {
     known: ReadonlySet<string>,
     options: {
       maxQueries?: number;
+      /** Where an earlier search stopped. */
+      resume?: SweepState;
       /** After each query; `conversations` are the new chats it found. */
       onProgress?: (progress: {
         found: number;
         queries: number;
         conversations: ConversationSummary[];
+        state?: SweepState;
       }) => void;
       shouldStop?: () => boolean;
       scriptUrls?: () => string[];
     } = {},
-  ): Promise<{ conversations: ConversationSummary[]; queries: number; end: SweepEnd }> {
+  ): Promise<{
+    conversations: ConversationSummary[];
+    queries: number;
+    end: SweepEnd;
+    state: SweepState;
+  }> {
     let signature = this.searchSignature ?? SEARCH_SIGNATURE;
     let rediscovered = false;
     const search = async (query: string): Promise<SearchHit[]> => {
@@ -129,19 +138,25 @@ export class GeminiAdapter implements PlatformAdapter {
       foundBySearch: true,
     });
     const onProgress = options.onProgress;
-    const { hits, queries, end } = await sweepSearch(search, {
+    const { hits, queries, end, state } = await sweepSearch(search, {
       known,
       sleep: this.sleep,
+      ...(options.resume ? { resume: options.resume } : {}),
       ...(options.maxQueries ? { maxQueries: options.maxQueries } : {}),
       ...(onProgress
         ? {
-            onProgress: ({ found, queries: asked, hits: added }) =>
-              onProgress({ found, queries: asked, conversations: added.map(summary) }),
+            onProgress: ({ found, queries: asked, hits: added, state: now }) =>
+              onProgress({
+                found,
+                queries: asked,
+                conversations: added.map(summary),
+                ...(now ? { state: now } : {}),
+              }),
           }
         : {}),
       ...(options.shouldStop ? { shouldStop: options.shouldStop } : {}),
     });
-    return { conversations: hits.map(summary), queries, end };
+    return { conversations: hits.map(summary), queries, end, state };
   }
 
   getCurrentConversationId(): string | null {
@@ -150,11 +165,15 @@ export class GeminiAdapter implements PlatformAdapter {
 
   /**
    * Every conversation, pinned first, then by last update. When Gemini stops
-   * answering partway, the chats read so far come back marked incomplete.
+   * answering partway, the chats read so far come back marked incomplete. With
+   * `known`, the reading stops after the first page holding a chat the caller
+   * has with the same update time and not pinned: every chat after it is older
+   * and unchanged (a changed chat moves to the top).
    */
   async listConversations(
     onProgress?: (loaded: number) => void,
     shouldStop?: () => boolean,
+    known?: ReadonlyMap<string, string | null>,
   ): Promise<ConversationList> {
     const gems = await this.gemNames();
     const result: ConversationSummary[] = [];
@@ -167,18 +186,12 @@ export class GeminiAdapter implements PlatformAdapter {
       }
       let raw: unknown = null;
       let busy: PlatformBusyError | null = null;
-      for (const [attempt, [size, wait]] of LIST_ATTEMPTS.entries()) {
+      for (const wait of LIST_WAITS_MS) {
         if (wait) await this.sleep(wait);
         try {
-          // The web app asks for 27 chats first, then 20 per page.
-          raw = await this.rpc.call(
-            'MaZiqc',
-            [page || attempt ? size : 27, token, LIST_FILTER],
-            '/app',
-            {
-              retries: 0,
-            },
-          );
+          raw = await this.rpc.call('MaZiqc', [LIST_PAGE_SIZE, token, LIST_FILTER], '/app', {
+            retries: 0,
+          });
           busy = null;
           break;
         } catch (error) {
@@ -196,6 +209,9 @@ export class GeminiAdapter implements PlatformAdapter {
         return { conversations: result, incomplete: { loaded: result.length } };
       }
       const { entries, next } = readListPage(raw);
+      const reachedKnown = entries.some(
+        (e) => !e.pinned && known?.has(e.id) && known.get(e.id) === e.updatedAt,
+      );
       for (const e of entries) {
         if (seen.has(e.id)) continue;
         seen.add(e.id);
@@ -212,10 +228,63 @@ export class GeminiAdapter implements PlatformAdapter {
         });
       }
       onProgress?.(result.length);
+      if (reachedKnown) return { conversations: result, reachedKnown: true };
       if (!next || entries.length === 0) break;
       token = next;
     }
     return { conversations: result };
+  }
+
+  /**
+   * Chats by id, as the list would give them (ids from Google Takeout reach
+   * chats past the list's depth). One request per chat, a few at a time. An id
+   * Gemini has no entry for is `missing` (the chat was deleted); one that kept
+   * failing is `failed`, to be asked again later. Signed out throws. `atOnce`
+   * lowers the pace when Gemini refuses.
+   */
+  async lookupConversations(
+    ids: readonly string[],
+    atOnce = LOOKUP_AT_ONCE,
+  ): Promise<{ conversations: ConversationSummary[]; missing: string[]; failed: string[] }> {
+    const gems = await this.gemNames();
+    const found = new Map<string, ConversationSummary>();
+    const missing: string[] = [];
+    const failed: string[] = [];
+    let next = 0;
+    const worker = async () => {
+      while (next < ids.length) {
+        const id = ids[next++]!;
+        let entry: RawListEntry | null;
+        try {
+          entry = await this.listEntry(id);
+        } catch (error) {
+          if (error instanceof PlatformBusyError || (error instanceof HttpError && !error.isAuth)) {
+            failed.push(id);
+            continue;
+          }
+          throw error;
+        }
+        if (!entry) {
+          missing.push(id);
+          continue;
+        }
+        const gem = entry.gemId ? (gems.get(entry.gemId) ?? entry.gemId) : undefined;
+        found.set(id, {
+          id,
+          platform: 'gemini',
+          title: entry.title,
+          createdAt: null,
+          updatedAt: entry.updatedAt,
+          url: this.chatUrl(id, entry.gemId),
+          fromTakeout: true,
+          ...(gem ? { project: gem } : {}),
+        });
+      }
+    };
+    await Promise.all(Array.from({ length: Math.max(1, atOnce) }, worker));
+    // In the order asked.
+    const conversations = ids.flatMap((id) => found.get(id) ?? []);
+    return { conversations, missing, failed };
   }
 
   async getConversation(id: string): Promise<Conversation> {

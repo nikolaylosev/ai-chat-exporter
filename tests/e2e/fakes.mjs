@@ -148,7 +148,7 @@ export function fakeGemini({
   documents = {},
   notebooks = null,
 } = {}) {
-  const state = { listPages: 0, searches: 0, lh3: 0, contribution: 0, history: 0 };
+  const state = { listPages: 0, searches: 0, queries: [], lh3: 0, contribution: 0, history: 0 };
   const handler = (req, res, url) => {
     if (url.hostname === 'lh3.googleusercontent.com') {
       state.lh3++;
@@ -167,6 +167,7 @@ export function fakeGemini({
     if (url.pathname.endsWith('/executeQuery')) {
       state.searches++;
       const q = JSON.parse(url.searchParams.get('variables')).query.toLowerCase();
+      state.queries.push(q);
       const found = searchable.filter((h) => h.title.toLowerCase().includes(q)).slice(0, 5);
       const snippets = found.map((h) => ({
         conversation: { conversationId: `c_${h.id}`, title: h.title },

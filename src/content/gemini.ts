@@ -29,18 +29,20 @@ if (!window.__aiChatExporterGeminiAlive?.()) {
     'conversation:current-id': () => ({ id: adapter.getCurrentConversationId() }),
     'conversation:get': ({ id }) => coded(() => adapter.getConversation(id)),
     ...listHandlers('gemini', adapter),
-    'conversations:search': ({ knownIds }) => {
+    'conversations:search': ({ knownIds, resume }) => {
       searchStopped = false;
       return coded(() =>
         adapter.searchConversations(new Set(knownIds), {
+          ...(resume ? { resume } : {}),
           shouldStop: () => searchStopped,
           // Each query's new chats go to the page at once, so a stop or a failure keeps them.
-          onProgress: ({ found, queries, conversations }) => {
+          onProgress: ({ found, queries, conversations, state }) => {
             send('ui', 'search:progress', {
               platform: 'gemini',
               found,
               queries,
               conversations,
+              ...(state ? { state } : {}),
             }).catch(() => undefined);
           },
           scriptUrls: () => [
@@ -59,6 +61,8 @@ if (!window.__aiChatExporterGeminiAlive?.()) {
       searchStopped = true;
       return null;
     },
+    'conversations:lookup': ({ ids, atOnce }) =>
+      coded(() => adapter.lookupConversations(ids, atOnce)),
     // Gemini's notebooks are exported like Claude's projects; Gems are recorded on each chat.
     'projects:list': () => coded(() => adapter.listProjects()),
     'project:get': ({ id }) => coded(() => adapter.getProject(id)),
