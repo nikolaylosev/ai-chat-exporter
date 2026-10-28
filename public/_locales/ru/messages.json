@@ -284,23 +284,6 @@
     "placeholders": {
       "arg1": {
         "content": "$1"
-      },
-      "arg2": {
-        "content": "$2"
-      },
-      "arg3": {
-        "content": "$3"
-      }
-    }
-  },
-  "exportSearchCoverage": {
-    "message": "Поиск встретил $ARG1$% чатов из списка. Скорее всего, более старых он нашёл не меньшую долю, то есть всего их примерно не больше $ARG2$.",
-    "placeholders": {
-      "arg1": {
-        "content": "$1"
-      },
-      "arg2": {
-        "content": "$2"
       }
     }
   },

@@ -284,23 +284,6 @@
     "placeholders": {
       "arg1": {
         "content": "$1"
-      },
-      "arg2": {
-        "content": "$2"
-      },
-      "arg3": {
-        "content": "$3"
-      }
-    }
-  },
-  "exportSearchCoverage": {
-    "message": "Search has come across $ARG1$% of the chats in the list. It has likely found at least as large a share of the older chats, so there are up to about $ARG2$ of them in all.",
-    "placeholders": {
-      "arg1": {
-        "content": "$1"
-      },
-      "arg2": {
-        "content": "$2"
       }
     }
   },
