@@ -83,6 +83,7 @@ handle('background', {
     return null;
   },
   'registry:count': async () => ({ count: await registry.size() }),
+  'registry:chats': ({ platform }) => registry.chats(platform),
   'registry:clear': async () => {
     await registry.clear();
     return null;

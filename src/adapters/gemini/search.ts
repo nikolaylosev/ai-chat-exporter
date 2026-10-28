@@ -1,7 +1,7 @@
 /**
  * Gemini's chat search (docs/platforms-gemini.md, "Search"). The chat list stops
- * answering past about 800 chats; search covers the whole history but returns at
- * most 20 chats per query. Searching again with words from the titles found
+ * answering past about 1,000 chats; search covers the whole history but returns
+ * at most 20 chats per query. Searching again with words from the chats found
  * ("snowballing") reaches chats the list never returns.
  */
 
@@ -26,7 +26,12 @@ export interface SearchHit {
   title: string;
   /** The newest matching snippet's time: the closest the search gives to an update time. */
   timestamp: string | null;
+  /** The text of its snippets, which is most of the matching messages: words to search next. */
+  text?: string;
 }
+
+/** Snippet text kept per chat: plenty of words, without holding whole chats. */
+const HIT_TEXT_LENGTH = 20_000;
 
 /** Search results from a GraphQL answer: `[{ data: { viewer: { rpcs: { searchHistory } } } }]`. */
 export function readSearchAnswer(answer: unknown): SearchHit[] {
@@ -46,7 +51,7 @@ export function readSearchAnswer(answer: unknown): SearchHit[] {
   for (const item of search.historySnippets as unknown[]) {
     const entry = item as {
       conversation?: { conversationId?: unknown; title?: unknown };
-      snippets?: { timestamp?: unknown }[];
+      snippets?: { text?: unknown; timestamp?: unknown }[];
     };
     const raw = entry.conversation?.conversationId;
     if (typeof raw !== 'string') continue;
@@ -54,10 +59,15 @@ export function readSearchAnswer(answer: unknown): SearchHit[] {
       .map((s) => s.timestamp)
       .filter((t): t is string => typeof t === 'string')
       .sort();
+    const text = (entry.snippets ?? [])
+      .map((s) => (typeof s.text === 'string' ? s.text : ''))
+      .join('\n')
+      .slice(0, HIT_TEXT_LENGTH);
     hits.push({
       id: raw.replace(/^c_/, ''),
       title: typeof entry.conversation?.title === 'string' ? entry.conversation.title : '',
       timestamp: times.at(-1) ?? null,
+      text,
     });
   }
   return hits;
@@ -128,37 +138,75 @@ const STOP_WORDS = new Set([
   'или',
 ]);
 
-/** Words of a title worth searching for: longer than three letters, not filler. */
-export function titleWords(title: string): string[] {
-  return title
+/** Words worth searching for: longer than three letters, not filler, not bare numbers. */
+export function searchWords(text: string): string[] {
+  return text
     .toLowerCase()
     .split(/[^\p{L}\p{N}]+/u)
-    .filter((w) => w.length > 3 && !STOP_WORDS.has(w));
+    .filter((w) => w.length > 3 && !STOP_WORDS.has(w) && !/^\p{N}+$/u.test(w));
 }
+
+/**
+ * How much a word is worth asking next: up for each chat outside the list it
+ * is in, down for each listed one. Such words find more chats the list lacks
+ * (2026-10-28: about 1.6 times as many as words from titles taken in turn).
+ */
+const UNLISTED_WEIGHT = 1;
+const LISTED_WEIGHT = -0.7;
+
+/**
+ * Where a search stands, kept by the export page so the next search goes on from
+ * there: the words asked, the best words not asked yet, and every chat the
+ * search came across (listed or not), which also tells how much of the history
+ * it has covered.
+ */
+export interface SweepState {
+  asked: string[];
+  words: [word: string, worth: number][];
+  seen: string[];
+}
+
+/** Words kept for the next search, the best first; enough for hundreds of queries. */
+const KEPT_WORDS = 3000;
+/** How often progress carries the state, in queries. */
+const STATE_EVERY = 20;
 
 export interface SweepOptions {
   /** Chats already listed: only others are returned. */
   known: ReadonlySet<string>;
+  /** Where an earlier search stopped. */
+  resume?: SweepState;
   maxQueries?: number;
   /** Stop once `window` queries in a row found fewer than `minNew` new chats. */
   stall?: { window: number; minNew: number };
   delayMs?: number;
   sleep?: (ms: number) => Promise<void>;
-  /** After each query: totals so far, and the chats this query found that are new. */
-  onProgress?: (progress: { found: number; queries: number; hits: SearchHit[] }) => void;
+  /**
+   * After each query: totals so far, and the chats this query found that are
+   * new; every few queries the state too.
+   */
+  onProgress?: (progress: {
+    found: number;
+    queries: number;
+    hits: SearchHit[];
+    state?: SweepState;
+  }) => void;
   shouldStop?: () => boolean;
 }
 
 export type SweepEnd = 'exhausted' | 'stalled' | 'limit' | 'stopped';
 
 /**
- * Searches with seed words, then with words from the titles found, until nothing
- * new turns up, the query limit is reached, or the caller stops it.
+ * Searches with seed words, then with the most promising words of the chats
+ * found (titles and snippets), until nothing new turns up, the query limit is
+ * reached, or the caller stops it. With `resume`, goes on where that search
+ * stopped: seed words already asked are skipped.
  */
 export async function sweepSearch(
   search: (query: string) => Promise<SearchHit[]>,
   {
     known,
+    resume,
     maxQueries = 1500,
     stall = { window: 50, minNew: 5 },
     delayMs = 250,
@@ -166,21 +214,41 @@ export async function sweepSearch(
     onProgress,
     shouldStop,
   }: SweepOptions,
-): Promise<{ hits: SearchHit[]; queries: number; end: SweepEnd }> {
-  const queue = [...SEED_WORDS];
-  const asked = new Set<string>();
-  const seen = new Set<string>();
+): Promise<{ hits: SearchHit[]; queries: number; end: SweepEnd; state: SweepState }> {
+  const asked = new Set(resume?.asked);
+  const seen = new Set(resume?.seen);
+  const queue = SEED_WORDS.filter((w) => !asked.has(w));
+  /** Words of the chats found, not asked yet, with their worth. */
+  const words = new Map(resume?.words.filter(([w]) => !asked.has(w)));
+  const next = (): string | undefined => {
+    const seed = queue.shift();
+    if (seed !== undefined) return seed;
+    let best: string | undefined;
+    let bestScore = -Infinity;
+    for (const [word, score] of words) {
+      if (score > bestScore) [best, bestScore] = [word, score];
+    }
+    if (best !== undefined) words.delete(best);
+    return best;
+  };
+  const state = (): SweepState => ({
+    asked: [...asked],
+    words: [...words].sort((a, b) => b[1] - a[1]).slice(0, KEPT_WORDS),
+    seen: [...seen],
+  });
   const found: SearchHit[] = [];
   const newPerQuery: number[] = [];
   let queries = 0;
-  while (queue.length) {
-    if (shouldStop?.()) return { hits: found, queries, end: 'stopped' };
-    if (queries >= maxQueries) return { hits: found, queries, end: 'limit' };
+  const end = (why: SweepEnd) => ({ hits: found, queries, end: why, state: state() });
+  for (;;) {
+    if (shouldStop?.()) return end('stopped');
+    if (queries >= maxQueries) return end('limit');
     const recent = newPerQuery.slice(-stall.window);
     if (recent.length === stall.window && recent.reduce((a, b) => a + b, 0) < stall.minNew) {
-      return { hits: found, queries, end: 'stalled' };
+      return end('stalled');
     }
-    const word = queue.shift() as string;
+    const word = next();
+    if (word === undefined) break;
     if (asked.has(word)) continue;
     asked.add(word);
     if (queries > 0 && delayMs) await sleep(delayMs);
@@ -189,14 +257,51 @@ export async function sweepSearch(
     for (const hit of await search(word)) {
       if (seen.has(hit.id)) continue;
       seen.add(hit.id);
-      for (const w of titleWords(hit.title)) if (!asked.has(w)) queue.push(w);
-      if (!known.has(hit.id)) {
-        found.push(hit);
-        added.push(hit);
+      const listed = known.has(hit.id);
+      const weight = listed ? LISTED_WEIGHT : UNLISTED_WEIGHT;
+      for (const w of new Set(searchWords(`${hit.title}\n${hit.text ?? ''}`))) {
+        if (!asked.has(w)) words.set(w, (words.get(w) ?? 0) + weight);
+      }
+      if (!listed) {
+        const kept: SearchHit = { id: hit.id, title: hit.title, timestamp: hit.timestamp };
+        found.push(kept);
+        added.push(kept);
       }
     }
     newPerQuery.push(added.length);
-    onProgress?.({ found: found.length, queries, hits: added });
+    onProgress?.({
+      found: found.length,
+      queries,
+      hits: added,
+      ...(queries % STATE_EVERY === 0 ? { state: state() } : {}),
+    });
   }
-  return { hits: found, queries, end: 'exhausted' };
+  return end('exhausted');
+}
+
+/** Listed chats the search must have met before its coverage means anything. */
+const MIN_MET = 30;
+
+/**
+ * How much of the history the search has covered, judged by the chats it knows
+ * from elsewhere (the list): the share of them it came across, and the older
+ * chats there are likely to be, from the ones it found at that share. Checked
+ * against Google Takeout on a large account (2026-10-28), the search had met a
+ * smaller share of the older chats than of the listed ones, so the count is
+ * rather a lower bound. Null until the search has met enough listed chats to
+ * tell.
+ */
+export function searchCoverage(
+  seen: Iterable<string>,
+  listed: ReadonlySet<string>,
+): { share: number; older: number } | null {
+  let met = 0;
+  let unlisted = 0;
+  for (const id of seen) {
+    if (listed.has(id)) met++;
+    else unlisted++;
+  }
+  if (met < MIN_MET || listed.size === 0) return null;
+  const share = met / listed.size;
+  return { share, older: Math.round(unlisted / share) };
 }
