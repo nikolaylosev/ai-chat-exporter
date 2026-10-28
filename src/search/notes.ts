@@ -292,3 +292,85 @@ export function parseDocxNote(bytes: Uint8Array): ParsedNote | null {
   }
   return fromProperties(props, messages);
 }
+
+/** Files of a chat whose text is searched: plain text, code and data. */
+const TEXT_EXTENSIONS = new Set([
+  ...['txt', 'md', 'markdown', 'csv', 'tsv', 'json', 'jsonl', 'xml', 'html', 'htm', 'svg'],
+  ...['yaml', 'yml', 'toml', 'ini', 'log', 'tex', 'rtf', 'sql', 'css', 'scss'],
+  ...['py', 'js', 'mjs', 'ts', 'tsx', 'jsx', 'java', 'kt', 'swift', 'go', 'rs', 'rb', 'php'],
+  ...['c', 'h', 'cpp', 'hpp', 'cs', 'sh', 'ps1', 'r', 'lua', 'dart', 'scala', 'vue'],
+]);
+/** Office documents, read from their XML parts. */
+const OFFICE_EXTENSIONS = new Set(['docx', 'xlsx', 'pptx']);
+/** Longer text is cut: a log of hundreds of megabytes would only slow every search. */
+const MAX_FILE_TEXT = 2_000_000;
+
+function extensionOf(name: string): string {
+  const dot = name.lastIndexOf('.');
+  return dot > 0 ? name.slice(dot + 1).toLowerCase() : '';
+}
+
+/** Folders of a chat or a project that hold its files. */
+const ATTACHMENT_FOLDERS = new Set(['files', 'knowledge']);
+
+/**
+ * The folder of the note a chat's file belongs to (`Chat/` for `Chat/files/a.txt`),
+ * or null when the path is not one of a chat's files whose text can be searched.
+ */
+export function attachmentOwner(path: string): string | null {
+  const parts = path.split('/');
+  const folder = parts.length >= 2 ? parts[parts.length - 2] : undefined;
+  if (!folder || !ATTACHMENT_FOLDERS.has(folder)) return null;
+  const ext = extensionOf(path);
+  if (!TEXT_EXTENSIONS.has(ext) && !OFFICE_EXTENSIONS.has(ext)) return null;
+  return parts
+    .slice(0, -2)
+    .map((p) => `${p}/`)
+    .join('');
+}
+
+/** The text of an Office document's XML parts, joined. */
+function officeText(ext: string, bytes: Uint8Array): string | null {
+  const wanted =
+    ext === 'docx'
+      ? (n: string) => n === 'word/document.xml'
+      : ext === 'xlsx'
+        ? (n: string) => n === 'xl/sharedStrings.xml' || n.startsWith('xl/worksheets/sheet')
+        : (n: string) => /^ppt\/slides\/slide\d+\.xml$/.test(n);
+  let parts: Record<string, Uint8Array>;
+  try {
+    parts = unzipSync(bytes, { filter: (f) => wanted(f.name) });
+  } catch {
+    return null;
+  }
+  const names = Object.keys(parts).sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
+  if (!names.length) return null;
+  return names
+    .map((name) => {
+      const xml = strFromU8(parts[name] ?? new Uint8Array());
+      if (ext === 'docx') {
+        return [...xml.matchAll(/<w:p(?:\s[^>]*)?>([\s\S]*?)<\/w:p>/g)]
+          .map((p) => paragraphText(p[1] ?? ''))
+          .join('\n');
+      }
+      // Spreadsheet cells and slide text: every <t> and <a:t>, inline strings included.
+      return [...xml.matchAll(/<(?:a:)?t(?:\s[^>]*)?>([^<]*)<\/(?:a:)?t>/g)]
+        .map((m) => decodeXml(m[1] ?? ''))
+        .join(ext === 'pptx' ? '\n' : ' ');
+    })
+    .join('\n\n');
+}
+
+/** The searchable text of a chat's file, or null for a binary or unknown one. */
+export function fileText(name: string, bytes: Uint8Array): string | null {
+  const ext = extensionOf(name);
+  let text: string | null = null;
+  if (OFFICE_EXTENSIONS.has(ext)) text = officeText(ext, bytes);
+  else if (TEXT_EXTENSIONS.has(ext)) {
+    // A NUL in the first bytes: not text, whatever its name.
+    if (bytes.subarray(0, 4096).includes(0)) return null;
+    text = strFromU8(bytes);
+  }
+  if (!text?.trim()) return null;
+  return text.length > MAX_FILE_TEXT ? text.slice(0, MAX_FILE_TEXT) : text;
+}

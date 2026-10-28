@@ -8,6 +8,14 @@ import type { NoteMessage } from './notes';
  * language and any part of a word is found.
  */
 
+/** The text of one of a chat's files (`files/`, a project's `knowledge/`). */
+export interface AttachmentText {
+  /** Where it is, as a note's key is. */
+  key: string;
+  name: string;
+  text: string;
+}
+
 /** A note as the search page keeps it (see archive.ts). */
 export interface IndexedNote {
   /** Where it is: a path in the folder, or `archive.zip › path` inside an archive. */
@@ -18,6 +26,8 @@ export interface IndexedNote {
   project: string | null;
   created: string | null;
   messages: NoteMessage[];
+  /** The chat's files whose text could be read. */
+  files: AttachmentText[];
 }
 
 export interface SearchFilters {
@@ -32,8 +42,10 @@ export interface SearchFilters {
 
 export interface SearchHit {
   note: IndexedNote;
-  /** Index of the message in the note. */
-  message: number;
+  /** Index of the message in the note, or null for a hit in one of its files. */
+  message: number | null;
+  /** Index of the file in the note's files, for a hit in a file. */
+  file: number | null;
   /** The text around the first match, split into plain and matched parts. */
   snippet: { text: string; match: boolean }[];
 }
@@ -87,8 +99,8 @@ export function snippet(text: string, terms: readonly string[]): SearchHit['snip
 }
 
 /** Each message's normalized text, made once rather than on every query. */
-const lowered = new WeakMap<NoteMessage, string>();
-function lowerText(m: NoteMessage): string {
+const lowered = new WeakMap<{ text: string }, string>();
+function lowerText(m: { text: string }): string {
   let text = lowered.get(m);
   if (text === undefined) {
     text = normalize(m.text);
@@ -128,7 +140,19 @@ export function search(
       const text = lowerText(m);
       if (!terms.every((t) => text.includes(t))) return;
       total++;
-      if (hits.length < limit) hits.push({ note, message: index, snippet: snippet(m.text, terms) });
+      if (hits.length < limit) {
+        hits.push({ note, message: index, file: null, snippet: snippet(m.text, terms) });
+      }
+    });
+    // A file has no author to filter by: uploads are the user's, made files the AI's.
+    if (filters.role) continue;
+    note.files.forEach((f, index) => {
+      const text = lowerText(f);
+      if (!terms.every((t) => text.includes(t))) return;
+      total++;
+      if (hits.length < limit) {
+        hits.push({ note, message: null, file: index, snippet: snippet(f.text, terms) });
+      }
     });
   }
   return { hits, total };

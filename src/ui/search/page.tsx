@@ -13,6 +13,7 @@ import {
 import {
   clearIndex,
   displayPath,
+  noteFolder,
   parseNote,
   readNote,
   scanArchive,
@@ -64,27 +65,77 @@ function notePage(name: string, bytes: Uint8Array, title: string): string {
   return renderHtml(`# ${title}\n\n${markdown}`, title);
 }
 
-/** Scrolls the viewer to message `index` and marks the query's terms in it. */
-function showMessage(frame: HTMLIFrameElement, index: number, terms: string[]) {
+function escapeHtml(text: string): string {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+/** One of a chat's files for the viewer: its text as it is. */
+function filePage(name: string, text: string): string {
+  return `<!doctype html><html><head><meta charset="utf-8"><title>${escapeHtml(name)}</title><style>body { margin: 0; font: 13px/1.5 ui-monospace, Menlo, Consolas, monospace; } pre { margin: 0; padding: 16px; white-space: pre-wrap; overflow-wrap: anywhere; }</style></head><body><pre>${escapeHtml(text)}</pre></body></html>`;
+}
+
+const IMAGE_TYPES: Record<string, string> = {
+  png: 'image/png',
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg',
+  gif: 'image/gif',
+  webp: 'image/webp',
+  svg: 'image/svg+xml',
+  avif: 'image/avif',
+  bmp: 'image/bmp',
+};
+
+/**
+ * The note's images, read from the folder (or its archive) into blob URLs: the
+ * viewer has no address of its own to resolve `files/photo.png` against.
+ */
+async function showImages(
+  doc: Document,
+  root: FileSystemDirectoryHandle,
+  folderKey: string,
+  urls: string[],
+): Promise<void> {
+  for (const img of [...doc.querySelectorAll('img')]) {
+    const src = img.getAttribute('src') ?? '';
+    const type = IMAGE_TYPES[src.slice(src.lastIndexOf('.') + 1).toLowerCase()];
+    if (!type || /^[a-z][a-z0-9+.-]*:/i.test(src) || src.startsWith('/')) continue;
+    try {
+      const bytes = await readNote(root, folderKey + decodeURI(src));
+      const url = URL.createObjectURL(new Blob([bytes as Uint8Array<ArrayBuffer>], { type }));
+      urls.push(url);
+      img.src = url;
+    } catch {
+      // Not saved with the chat, or gone: the browser's broken image stays.
+    }
+  }
+}
+
+/**
+ * Marks the query's terms in the viewer and scrolls to the hit: message `index`
+ * (from its heading to the next one), or with no index the whole page, at its
+ * first mark.
+ */
+function showHit(frame: HTMLIFrameElement, index: number | null, terms: string[]) {
   const doc = frame.contentDocument;
   if (!doc) return;
   const headings = [...doc.querySelectorAll('h2, h4')].filter((h) =>
     headingRole(h.textContent ?? ''),
   );
-  const heading = headings[index];
-  if (!heading) return;
-  heading.scrollIntoView({ block: 'start' });
+  const heading = index === null ? null : (headings[index] ?? null);
+  if (index !== null && !heading) return;
+  heading?.scrollIntoView({ block: 'start' });
   const style = doc.createElement('style');
   style.textContent = 'mark { background: #fde68a; color: inherit; }';
   doc.head.append(style);
   if (!terms.length) return;
-  // Marks the terms from this heading to the next one.
-  const next = headings[index + 1] ?? null;
+  const next = index === null ? null : (headings[index + 1] ?? null);
   const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
   const texts: Text[] = [];
-  let inside = false;
+  let inside = heading === null;
   for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-    if (heading.compareDocumentPosition(node) & Node.DOCUMENT_POSITION_FOLLOWING) inside = true;
+    if (heading && heading.compareDocumentPosition(node) & Node.DOCUMENT_POSITION_FOLLOWING) {
+      inside = true;
+    }
     if (next && next.compareDocumentPosition(node) & Node.DOCUMENT_POSITION_FOLLOWING) break;
     if (inside) texts.push(node as Text);
   }
@@ -110,6 +161,7 @@ function showMessage(frame: HTMLIFrameElement, index: number, terms: string[]) {
     fragment.append(value.slice(at));
     text.replaceWith(fragment);
   }
+  if (!heading) doc.querySelector('mark')?.scrollIntoView({ block: 'center' });
 }
 
 /**
@@ -127,6 +179,8 @@ export function SearchPage() {
   const [filters, setFilters] = useState<SearchFilters>({});
   const [shown, setShown] = useState<Shown | null>(null);
   const frame = useRef<HTMLIFrameElement>(null);
+  /** Blob URLs of the shown note's images, revoked when another one is shown. */
+  const imageUrls = useRef<string[]>([]);
 
   useEffect(() => {
     document.title = `${t('searchTitle')} · ${t('extName')}`;
@@ -176,11 +230,22 @@ export function SearchPage() {
   const open = async (hit: SearchHit) => {
     if (folder.kind !== 'ready') return;
     try {
+      const file = hit.file === null ? null : hit.note.files[hit.file];
+      if (file) return setShown({ hit, html: filePage(file.name, file.text) });
       const bytes = await readNote(folder.handle, hit.note.key);
       const name = hit.note.key.slice(hit.note.key.lastIndexOf('/') + 1);
       setShown({ hit, html: notePage(name, bytes, hit.note.title || t('untitledChat')) });
     } catch (e) {
       setError(t('searchReadError', errorMessage(e)));
+    }
+  };
+
+  const onShown = (iframe: HTMLIFrameElement, hit: SearchHit) => {
+    showHit(iframe, hit.message, queryTerms(query));
+    for (const url of imageUrls.current.splice(0)) URL.revokeObjectURL(url);
+    const doc = iframe.contentDocument;
+    if (doc && hit.file === null && folder.kind === 'ready') {
+      void showImages(doc, folder.handle, noteFolder(hit.note.key), imageUrls.current);
     }
   };
 
@@ -302,7 +367,7 @@ export function SearchPage() {
             <ul class="hits">
               {result.hits.map((hit) => (
                 <li
-                  key={`${hit.note.key}#${hit.message}`}
+                  key={`${hit.note.key}#${hit.message ?? `f${hit.file}`}`}
                   class={shown?.hit === hit ? 'open' : ''}
                   onClick={() => void open(hit)}
                 >
@@ -312,7 +377,10 @@ export function SearchPage() {
                       hit.note.platform ? PLATFORM_LABEL[hit.note.platform] : null,
                       hit.note.created?.slice(0, 10),
                       hit.note.project,
-                      hit.note.messages[hit.message]?.role === 'user' ? t('mdUser') : null,
+                      hit.message !== null && hit.note.messages[hit.message]?.role === 'user'
+                        ? t('mdUser')
+                        : null,
+                      hit.file !== null ? `📎 ${hit.note.files[hit.file]?.name ?? ''}` : null,
                     ]
                       .filter(Boolean)
                       .join(' · ')}
@@ -328,7 +396,12 @@ export function SearchPage() {
             {shown && (
               <section class="viewer">
                 <header>
-                  <p class="muted">{displayPath(shown.hit.note.key)}</p>
+                  <p class="muted">
+                    {displayPath(
+                      (shown.hit.file !== null && shown.hit.note.files[shown.hit.file]?.key) ||
+                        shown.hit.note.key,
+                    )}
+                  </p>
                   {shown.hit.note.url && /^https:\/\//.test(shown.hit.note.url) && (
                     <a href={shown.hit.note.url} target="_blank" rel="noreferrer">
                       {t(
@@ -344,10 +417,7 @@ export function SearchPage() {
                   sandbox="allow-same-origin"
                   srcDoc={shown.html}
                   title={shown.hit.note.title}
-                  onLoad={() =>
-                    frame.current &&
-                    showMessage(frame.current, shown.hit.message, queryTerms(query))
-                  }
+                  onLoad={() => frame.current && onShown(frame.current, shown.hit)}
                 />
               </section>
             )}

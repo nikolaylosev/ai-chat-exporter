@@ -127,8 +127,8 @@ src/
     json.ts                 Conversation -> JSON, without download links
     docx.ts                 the Markdown as a Word document (marked tokens to WordprocessingML, packed by fflate)
   search/                   searching the saved archive (the search page)
-    notes.ts                every note format read back into its properties and messages
-    archive.ts              the search folder walked, .zip exports read inside, an index in IndexedDB
+    notes.ts                every note format read back into its properties and messages; the text of chats' files
+    archive.ts              the search folder walked, .zip exports read inside, notes and files' text kept in IndexedDB
     query.ts                words and "phrases" in every message, with filters (pure)
   sinks/
     types.ts                ExportSink interface
