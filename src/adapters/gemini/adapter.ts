@@ -31,19 +31,16 @@ const MAX_HISTORY_PAGES = 500;
 const MAX_LIST_PAGES = 1000;
 const LIST_FILTER = [null, null, 1, null, null, null, null, null, null, 1];
 /**
- * Page sizes and pauses for one page of the chat list. Deep pages often fail
- * with a server error (status 13, seen on 2026-10-14 past about 600 chats; the
- * web app's own sidebar sends the same request); a smaller page after a pause
- * usually passes.
+ * Chats per page of the list: the most Gemini gives. A page costs about the
+ * same whatever its size, more the deeper it is (2026-10-28), so big pages
+ * reach deeper before Gemini gives up.
  */
-const LIST_ATTEMPTS: [size: number, waitMs: number][] = [
-  [20, 0],
-  [10, 1000],
-  [10, 3000],
-  [5, 6000],
-  [2, 10000],
-  [1, 15000],
-];
+const LIST_PAGE_SIZE = 100;
+/**
+ * Pauses before each try of one page. A deep page fails with status 13 when
+ * Gemini spends its 10 seconds on it; the same page may pass on the next try.
+ */
+const LIST_WAITS_MS = [0, 2000, 5000, 10000, 15000, 20000];
 
 const defaultSleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
@@ -167,18 +164,12 @@ export class GeminiAdapter implements PlatformAdapter {
       }
       let raw: unknown = null;
       let busy: PlatformBusyError | null = null;
-      for (const [attempt, [size, wait]] of LIST_ATTEMPTS.entries()) {
+      for (const wait of LIST_WAITS_MS) {
         if (wait) await this.sleep(wait);
         try {
-          // The web app asks for 27 chats first, then 20 per page.
-          raw = await this.rpc.call(
-            'MaZiqc',
-            [page || attempt ? size : 27, token, LIST_FILTER],
-            '/app',
-            {
-              retries: 0,
-            },
-          );
+          raw = await this.rpc.call('MaZiqc', [LIST_PAGE_SIZE, token, LIST_FILTER], '/app', {
+            retries: 0,
+          });
           busy = null;
           break;
         } catch (error) {

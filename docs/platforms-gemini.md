@@ -26,7 +26,7 @@ Fixtures live in [`tests/fixtures/gemini/`](../tests/fixtures/gemini/). They com
 - **Generated images are available at full size** (`=s0` or `=d` on their `lh3` URL).
 - **Canvas now creates a Google Docs document** in the user's Drive; the chat keeps only a link.
 - **Only the visible branch is kept**: Redo replaces the answer; "Branch in new chat" creates another chat.
-- **The list stops at about 800 chats** on a large account: deep pages fail with status 13 (section 3). Gemini's own search reaches older chats ([Search](#search)).
+- **The list stops at about 1,000 chats** on a large account: deep pages run past the server's 10 seconds and fail with status 13 (section 3). Gemini's own search reaches older chats ([Search](#search)).
 - **Files can be gone**: a file Gemini removed keeps its entry without a link (section 5).
 - **Notebooks are NotebookLM notebooks**: Gemini lists them, their sources and their chats, but gives no way to download a source (section 7).
 
@@ -70,7 +70,27 @@ Checked: a call built this way from the page returned 200 with the conversation.
 
 A full pass over 380 chats worked; the last page still had a token, so the account had more. **Deep pages are slow and fail (2026-10-14, an account with 800+ chats).** Gemini answers each page in more time the deeper it is: about 0.7 s for the first 200 chats, 2 s at 200–400, 7–10 s past 400. Past about 600 chats it more and more often answers with status 13 (INTERNAL) instead of data; a smaller page after a pause often passes, and the same page may pass or fail on the next try. Past about 800 chats almost every request fails. The web app's own sidebar sends the same request (`[20, token, same filter]`). Reading the whole list took 5 to 9 minutes and stopped at 700 to 860 chats.
 
-The extension tries each page with 20, then 10, 5, 2 and 1 chats, pausing up to 15 s between tries; if all fail, it shows the chats read so far with a note that older ones are missing. An answer without data and without a status (`["wrb.fr","MaZiqc",null,…]`) is taken as the end of the list; one with a status at index 5 (`google.rpc.Code`) is an error: 8, 13 and 14 are retried, 7 and 16 mean signed out.
+**Why, and what helps (2026-10-28, an account with well over 1,000 chats):**
+
+- **The cost is depth, not page size.** A failed page takes 10.2 s every time: status 13 is the server giving up after 10 seconds. The page token is opaque (one protobuf field holding an encrypted blob that starts with the same 5 bytes) and grows by about 14 characters with every chat already listed, whatever the page size: 1.5 KB after 100 chats, 14 KB after 1,000. At a depth of 1,000 a page of 1 chat fails like a page of 100.
+- **A page holds up to 100 chats** (`[100, token, filter]`; 200 still gives 100). With pages of 100, reading the list reached 1,000 chats in about 2.5 minutes: pages took 0.6 s at the top, 4 s at 500, 8–10 s at 800–1,000, and a failed page often passed on the next try. Past 1,000 every try failed.
+- **No filter splits the list into shorter ones.** The filter is the web app's `ListConversations` request (field numbers from 1; the list sends fields 3 and 10):
+
+  | Field    | Meaning, from the web app's code and tries                                                         |
+  | -------- | -------------------------------------------------------------------------------------------------- |
+  | 1        | Pinned (true) or not pinned (false); the sidebar reads them apart, the extension together          |
+  | 3        | Set by the web app for its own requests                                                            |
+  | 4        | A string (a notebook: `notebooks/<uuid>`); a Gem id there gives nothing                            |
+  | 5        | Set with field 6 to read one chat's entry                                                          |
+  | 6        | One chat: `c_<id>`                                                                                 |
+  | 10       | Pinned and not pinned together                                                                     |
+  | 11       | A kind of chat: 1 and 6 give the usual list, 2–5 and 7 nothing on that account                     |
+  | 12       | A list of task states, for agent tasks (`[4,1]` ready, `[3,5]` needs attention, `[2]` in progress) |
+  | 7, 8, 13 | Flags; set alone, the list comes back empty                                                        |
+
+  Not pinned (field 1 false) is the same deep list, and every other value either gives the whole list or nothing.
+
+The extension asks for pages of 100 and tries a failing page up to six times with pauses of 2 to 20 s; if all fail, it shows the chats read so far with a note that older ones are missing. An answer without data and without a status (`["wrb.fr","MaZiqc",null,…]`) is taken as the end of the list; one with a status at index 5 (`google.rpc.Code`) is an error: 8, 13 and 14 are retried, 7 and 16 mean signed out.
 
 ### Search
 
@@ -82,6 +102,8 @@ The chat list cannot go past about 800 chats (above). The web app's search reach
 - `<sig>` is the registered query `SearchChatsPageRefetchQuery` in the web app's `SearchModalDialog-*.js` chunk (`id:\`2/…\`,metadata:{},name:\`SearchChatsPageRefetchQuery\``). An empty query (`queryEmpty: true`) returns 13 recent chats; the "recent chats" pagination query (`SearchChatsRecentsPaginationQuery`, `count`and`cursor`) wraps the same `ListConversations`backend as`MaZiqc`, cursor included, so it has the same depth limit.
 
 Searching with common words and then with words from the titles found reached 692 chats beyond a 916-chat list in 519 queries (about 9 minutes, no errors at about one query per second); new chats kept appearing more slowly. Each chat found downloads through `hNvQHb` like any other.
+
+**Snippets hold most of the matching messages (2026-10-28):** each chat has up to two snippets, about 5 KB of text on average and up to 130 KB, so they give far more words to search next than titles do. On the same 31 seed queries, the next 50 queries found 116 chats outside a 1,000-chat list with words from titles taken in turn, 179 with words from titles and snippets, and 192 when words of chats outside the list go first and words of listed chats last (each chat outside the list adds 1 to a word, each listed one takes 0.7). That last way found 618 chats outside the list in 280 queries, and about half of the listed chats along the way. Dates as queries (`2024`, `январь`, `March`) find no more than other words.
 
 ## 4. Conversation history
 

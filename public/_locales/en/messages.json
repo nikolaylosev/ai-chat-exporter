@@ -212,7 +212,7 @@
     "message": "Find more chats with Gemini search"
   },
   "exportSearchHint": {
-    "message": "Gemini's list stops at about 800 chats. Its search reaches older ones, 20 per query, so this takes a few minutes and may still miss some."
+    "message": "Gemini's list stops at about 1,000 chats. Its search reaches older ones, 20 per query, so this takes a few minutes and may still miss some."
   },
   "exportSearchRunning": {
     "message": "Searching Gemini… $ARG1$ more chats found, $ARG2$ queries.",

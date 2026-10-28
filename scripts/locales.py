@@ -87,8 +87,8 @@ STRINGS = {
         "Найти больше чатов через поиск Gemini",
     ),
     "exportSearchHint": (
-        "Gemini's list stops at about 800 chats. Its search reaches older ones, 20 per query, so this takes a few minutes and may still miss some.",
-        "Список Gemini обрывается примерно на 800 чатах. Его поиск достаёт и более старые, по 20 за запрос: это займёт несколько минут, и часть чатов всё равно может не найтись.",
+        "Gemini's list stops at about 1,000 chats. Its search reaches older ones, 20 per query, so this takes a few minutes and may still miss some.",
+        "Список Gemini обрывается примерно на 1000 чатах. Его поиск достаёт и более старые, по 20 за запрос: это займёт несколько минут, и часть чатов всё равно может не найтись.",
     ),
     "exportSearchRunning": (
         "Searching Gemini… $1 more chats found, $2 queries.",
