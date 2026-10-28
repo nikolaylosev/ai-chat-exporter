@@ -114,6 +114,14 @@ STRINGS = {
         "Adding chats from Takeout: $1 of $2.",
         "Добавляю чаты из Takeout: $1 из $2.",
     ),
+    "exportTakeoutWaiting": (
+        "Gemini is refusing for now: $1 chats will be asked again shortly, more slowly.",
+        "Gemini пока отказывает: чаты ($1) будут запрошены ещё раз чуть позже, медленнее.",
+    ),
+    "exportTakeoutAgain": (
+        "Asking Gemini again, more slowly: $1 of $2.",
+        "Запрашиваю у Gemini ещё раз, медленнее: $1 из $2.",
+    ),
     "exportTakeoutDone": (
         "Takeout: $1 chats added, $2 were already here, $3 no longer on Gemini.",
         "Takeout: добавлено чатов $1, уже были здесь $2, больше нет в Gemini $3.",

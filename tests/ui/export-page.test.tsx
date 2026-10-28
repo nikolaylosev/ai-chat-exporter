@@ -154,6 +154,7 @@ describe('export page: Gemini chats from Takeout', () => {
     await screen.findByText(/exportTakeoutDone\(1,1,1\)/);
     expect(sentToTabs.find((m) => m.type === 'conversations:lookup')?.payload).toEqual({
       ids: ['00000000000000c2', '00000000000000c3'],
+      atOnce: 4,
     });
     expect(rows()).toBe(2);
     screen.getByText(/exportSources\(1,0,1,0\)/);

@@ -279,6 +279,25 @@
       }
     }
   },
+  "exportTakeoutWaiting": {
+    "message": "Gemini is refusing for now: $ARG1$ chats will be asked again shortly, more slowly.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportTakeoutAgain": {
+    "message": "Asking Gemini again, more slowly: $ARG1$ of $ARG2$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
   "exportTakeoutDone": {
     "message": "Takeout: $ARG1$ chats added, $ARG2$ were already here, $ARG3$ no longer on Gemini.",
     "placeholders": {

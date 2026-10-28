@@ -239,10 +239,12 @@ export class GeminiAdapter implements PlatformAdapter {
    * Chats by id, as the list would give them (ids from Google Takeout reach
    * chats past the list's depth). One request per chat, a few at a time. An id
    * Gemini has no entry for is `missing` (the chat was deleted); one that kept
-   * failing is `failed`, to be asked again later. Signed out throws.
+   * failing is `failed`, to be asked again later. Signed out throws. `atOnce`
+   * lowers the pace when Gemini refuses.
    */
   async lookupConversations(
     ids: readonly string[],
+    atOnce = LOOKUP_AT_ONCE,
   ): Promise<{ conversations: ConversationSummary[]; missing: string[]; failed: string[] }> {
     const gems = await this.gemNames();
     const found = new Map<string, ConversationSummary>();
@@ -279,7 +281,7 @@ export class GeminiAdapter implements PlatformAdapter {
         });
       }
     };
-    await Promise.all(Array.from({ length: LOOKUP_AT_ONCE }, worker));
+    await Promise.all(Array.from({ length: Math.max(1, atOnce) }, worker));
     // In the order asked.
     const conversations = ids.flatMap((id) => found.get(id) ?? []);
     return { conversations, missing, failed };

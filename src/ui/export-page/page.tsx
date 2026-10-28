@@ -37,7 +37,7 @@ import {
 } from '../../shared/search-cache';
 import { listKey, loadList, mergeList, saveList } from '../../shared/list-cache';
 import { searchCoverage, type SweepState } from '../../adapters/gemini/search';
-import { readTakeout } from './takeout';
+import { lookupAll, readTakeout, type LookupProgress } from './takeout';
 import '../styles.css';
 import './export.css';
 
@@ -189,7 +189,7 @@ function useSearchMore(platform: Platform, onFound: (more: ConversationSummary[]
 type TakeoutState =
   | { status: 'idle' }
   | { status: 'reading' }
-  | { status: 'running'; done: number; total: number }
+  | { status: 'running'; progress: LookupProgress }
   | {
       status: 'done';
       added: number;
@@ -199,17 +199,22 @@ type TakeoutState =
     }
   | { status: 'error'; message: string };
 
-/** Ids asked of the platform tab per message: each answer joins the table at once. */
-const LOOKUP_BATCH = 20;
-
 /**
  * Chats from the user's Google Takeout (takeout.ts): every chat the activity
  * links to that the table does not have yet is asked of the platform tab for
- * its title and date. A stop ends after the current batch.
+ * its title and date, more slowly once Gemini refuses. A stop ends after the
+ * current batch, or a pause.
  */
 function useTakeout(platform: Platform, onFound: (more: ConversationSummary[]) => void) {
   const [state, setState] = useState<TakeoutState>({ status: 'idle' });
   const stopped = useRef(false);
+  const sleep = (ms: number) =>
+    new Promise<void>((resolve) => {
+      const until = Date.now() + ms;
+      const tick = () =>
+        stopped.current || Date.now() >= until ? resolve() : setTimeout(tick, 250);
+      tick();
+    });
   const start = async (file: File, shown: ReadonlySet<string>) => {
     stopped.current = false;
     setState({ status: 'reading' });
@@ -221,19 +226,23 @@ function useTakeout(platform: Platform, onFound: (more: ConversationSummary[]) =
         return;
       }
       const todo = ids.filter((id) => !shown.has(id));
-      const counts = { added: 0, known: ids.length - todo.length, missing: 0, failed: 0 };
-      setState({ status: 'running', done: 0, total: todo.length });
+      setState({ status: 'running', progress: { phase: 'first', done: 0, total: todo.length } });
       if (todo.length) tab = await send('background', 'platform:tab', { platform });
-      for (let i = 0; i < todo.length && tab && !stopped.current; i += LOOKUP_BATCH) {
-        const batch = todo.slice(i, i + LOOKUP_BATCH);
-        const found = await sendToTab(tab.tabId, 'conversations:lookup', { ids: batch });
-        onFound(found.conversations);
-        counts.added += found.conversations.length;
-        counts.missing += found.missing.length;
-        counts.failed += found.failed.length;
-        setState({ status: 'running', done: i + batch.length, total: todo.length });
-      }
-      setState({ status: 'done', ...counts });
+      const target = tab?.tabId;
+      const counts =
+        target === undefined
+          ? { added: 0, missing: 0, failed: 0 }
+          : await lookupAll(
+              todo,
+              (batch, atOnce) => sendToTab(target, 'conversations:lookup', { ids: batch, atOnce }),
+              {
+                onFound,
+                onProgress: (progress) => setState({ status: 'running', progress }),
+                stopped: () => stopped.current,
+                sleep,
+              },
+            );
+      setState({ status: 'done', known: ids.length - todo.length, ...counts });
     } catch (error) {
       setState({ status: 'error', message: errorText(error) });
     } finally {
@@ -718,7 +727,17 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
           )}
           {takeout.state.status === 'running' ? (
             <p class="muted">
-              {t('exportTakeoutRunning', [String(takeout.state.done), String(takeout.state.total)])}{' '}
+              {takeout.state.progress.phase === 'first'
+                ? t('exportTakeoutRunning', [
+                    String(takeout.state.progress.done),
+                    String(takeout.state.progress.total),
+                  ])
+                : takeout.state.progress.waiting
+                  ? t('exportTakeoutWaiting', String(takeout.state.progress.total))
+                  : t('exportTakeoutAgain', [
+                      String(takeout.state.progress.done),
+                      String(takeout.state.progress.total),
+                    ])}{' '}
               <button type="button" class="link" onClick={takeout.stop}>
                 {t('exportSearchStop')}
               </button>

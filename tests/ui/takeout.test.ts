@@ -1,6 +1,13 @@
 import { strToU8, zipSync } from 'fflate';
 import { describe, expect, it } from 'vitest';
-import { readTakeout, takeoutChatIds } from '../../src/ui/export-page/takeout';
+import type { ConversationSummary } from '../../src/model/conversation';
+import {
+  lookupAll,
+  readTakeout,
+  takeoutChatIds,
+  type LookupAnswer,
+  type LookupProgress,
+} from '../../src/ui/export-page/takeout';
 
 /** Activity records as Takeout writes them (made up). */
 const prompt = (id: string, time: string, account = '') => ({
@@ -62,5 +69,81 @@ describe('readTakeout', () => {
 
   it('gives none for a file that is not an activity file', async () => {
     expect(await readTakeout(new File(['<html></html>'], 'MyActivity.html'))).toEqual([]);
+  });
+});
+
+describe('lookupAll', () => {
+  const ids = Array.from({ length: 45 }, (_, i) => `id${i}`);
+  const summary = (id: string) => ({ id, title: id }) as ConversationSummary;
+  /** Gemini refusing the ids `refuses` says, for as many asks as it says. */
+  const run = (refuses: (id: string, ask: number) => boolean, stopAt?: number) => {
+    const asks: [number, number][] = [];
+    const sleeps: number[] = [];
+    const progress: LookupProgress[] = [];
+    const found: string[] = [];
+    let stopped = false;
+    const ask = (batch: string[], atOnce: number): Promise<LookupAnswer> => {
+      asks.push([batch.length, atOnce]);
+      const failed = batch.filter((id) => refuses(id, asks.length));
+      return Promise.resolve({
+        conversations: batch.filter((id) => !failed.includes(id)).map(summary),
+        missing: [],
+        failed,
+      });
+    };
+    const result = lookupAll(ids, ask, {
+      onFound: (more) => found.push(...more.map((c) => c.id)),
+      onProgress: (p) => progress.push(p),
+      stopped: () => stopped,
+      sleep: (ms) => {
+        sleeps.push(ms);
+        if (sleeps.length === stopAt) stopped = true;
+        return Promise.resolve();
+      },
+    });
+    return { result, asks, sleeps, progress, found };
+  };
+
+  it('asks in batches of 20, four at a time, with no pauses when Gemini answers', async () => {
+    const { result, asks, sleeps, found, progress } = run(() => false);
+    expect(await result).toEqual({ added: 45, missing: 0, failed: 0 });
+    expect(asks).toEqual([
+      [20, 4],
+      [20, 4],
+      [5, 4],
+    ]);
+    expect(sleeps).toEqual([]);
+    expect(found).toEqual(ids);
+    expect(progress.at(-1)).toEqual({ phase: 'first', done: 45, total: 45 });
+  });
+
+  it('slows down once Gemini refuses and asks the refused ones again after a pause', async () => {
+    // The first batch has two refused; Gemini answers again later.
+    const { result, asks, sleeps, found, progress } = run(
+      (id, ask) => ask === 1 && (id === 'id3' || id === 'id7'),
+    );
+    expect(await result).toEqual({ added: 45, missing: 0, failed: 0 });
+    expect(asks).toEqual([
+      [20, 4],
+      [20, 1],
+      [5, 1],
+      [2, 1],
+    ]);
+    expect(sleeps).toEqual([3000, 3000, 30000]);
+    expect(found.slice(-2)).toEqual(['id3', 'id7']);
+    expect(progress).toContainEqual({ phase: 'again', done: 0, total: 2, waiting: true });
+    expect(progress.at(-1)).toEqual({ phase: 'again', done: 2, total: 2, waiting: false });
+  });
+
+  it('gives up after three more tries and counts what is left', async () => {
+    const { result, sleeps } = run((id) => id === 'id0');
+    expect(await result).toEqual({ added: 44, missing: 0, failed: 1 });
+    expect(sleeps.filter((ms) => ms > 3000)).toEqual([30000, 60000, 120000]);
+  });
+
+  it('keeps the refused ones counted when stopped during a pause', async () => {
+    const { result, asks } = run((id) => id === 'id0' || id === 'id1', 3);
+    expect(await result).toEqual({ added: 43, missing: 0, failed: 2 });
+    expect(asks).toHaveLength(3);
   });
 });

@@ -279,6 +279,25 @@
       }
     }
   },
+  "exportTakeoutWaiting": {
+    "message": "Gemini пока отказывает: чаты ($ARG1$) будут запрошены ещё раз чуть позже, медленнее.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportTakeoutAgain": {
+    "message": "Запрашиваю у Gemini ещё раз, медленнее: $ARG1$ из $ARG2$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
   "exportTakeoutDone": {
     "message": "Takeout: добавлено чатов $ARG1$, уже были здесь $ARG2$, больше нет в Gemini $ARG3$.",
     "placeholders": {
