@@ -70,10 +70,10 @@ Checked: a call built this way from the page returned 200 with the conversation.
 
 A full pass over 380 chats worked; the last page still had a token, so the account had more. **Deep pages are slow and fail (2026-10-14, an account with 800+ chats).** Gemini answers each page in more time the deeper it is: about 0.7 s for the first 200 chats, 2 s at 200–400, 7–10 s past 400. Past about 600 chats it more and more often answers with status 13 (INTERNAL) instead of data; a smaller page after a pause often passes, and the same page may pass or fail on the next try. Past about 800 chats almost every request fails. The web app's own sidebar sends the same request (`[20, token, same filter]`). Reading the whole list took 5 to 9 minutes and stopped at 700 to 860 chats.
 
-**Why, and what helps (2026-10-28, an account with well over 1,000 chats):**
+**Why, and what helps (2026-10-28, a large account):**
 
 - **The cost is depth, not page size.** A failed page takes 10.2 s every time: status 13 is the server giving up after 10 seconds. The page token is opaque (one protobuf field holding an encrypted blob that starts with the same 5 bytes) and grows by about 14 characters with every chat already listed, whatever the page size: 1.5 KB after 100 chats, 14 KB after 1,000. At a depth of 1,000 a page of 1 chat fails like a page of 100.
-- **A page holds up to 100 chats** (`[100, token, filter]`; 200 still gives 100). With pages of 100, reading the list reached 1,000 chats in about 2.5 minutes: pages took 0.6 s at the top, 4 s at 500, 8–10 s at 800–1,000, and a failed page often passed on the next try. Past 1,000 every try failed.
+- **A page holds up to 100 chats** (`[100, token, filter]`; 200 still gives 100). With pages of 100, reading the list reached about 1,000 chats in a few minutes: pages took under a second at the top, about 4 s at 500 and 8–10 s at 800–1,000, and a failed page often passed on the next try. Past about 1,000 every try failed.
 - **No filter splits the list into shorter ones.** The filter is the web app's `ListConversations` request (field numbers from 1; the list sends fields 3 and 10):
 
   | Field    | Meaning, from the web app's code and tries                                                         |
@@ -103,7 +103,7 @@ The chat list cannot go past about 800 chats (above). The web app's search reach
 
 Searching with common words and then with words from the titles found reached 692 chats beyond a 916-chat list in 519 queries (about 9 minutes, no errors at about one query per second); new chats kept appearing more slowly. Each chat found downloads through `hNvQHb` like any other.
 
-**Snippets hold most of the matching messages (2026-10-28):** each chat has up to two snippets, about 5 KB of text on average and up to 130 KB, so they give far more words to search next than titles do. On the same 31 seed queries, the next 50 queries found 116 chats outside a 1,000-chat list with words from titles taken in turn, 179 with words from titles and snippets, and 192 when words of chats outside the list go first and words of listed chats last (each chat outside the list adds 1 to a word, each listed one takes 0.7). That last way found 618 chats outside the list in 280 queries, and about half of the listed chats along the way. Dates as queries (`2024`, `январь`, `March`) find no more than other words.
+**Snippets hold most of the matching messages (2026-10-28):** each chat has up to two snippets, about 5 KB of text on average and sometimes over 100 KB, so they give far more words to search next than titles do. Over the same queries after the seed words, words from titles and snippets found about 1.5 times as many chats outside the list as words from titles taken in turn, and about 1.65 times as many when the words of chats outside the list go first and the words of listed chats last (each chat outside the list adds 1 to a word, each listed one takes 0.7). Dates as queries (`2024`, `январь`, `March`) find no more than other words.
 
 ## 4. Conversation history
 
