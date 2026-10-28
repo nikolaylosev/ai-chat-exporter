@@ -1134,6 +1134,130 @@
   "pageMenuChoose": {
     "message": "Выбрать сообщения…"
   },
+  "searchTitle": {
+    "message": "Поиск по архиву"
+  },
+  "searchHint": {
+    "message": "Ищет сразу по всем сохранённым чатам всех сервисов, на этом компьютере: ничего никуда не отправляется. Выберите папку с вашими экспортами; архивы .zip внутри неё тоже читаются."
+  },
+  "searchNoFolder": {
+    "message": "Папка ещё не выбрана."
+  },
+  "searchUnsupported": {
+    "message": "Этот браузер не даёт расширениям читать папку на диске, поэтому искать по архиву здесь нельзя."
+  },
+  "searchFolder": {
+    "message": "Папка: «$ARG1$»",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "searchAllow": {
+    "message": "Разрешить чтение папки"
+  },
+  "searchUseExportFolder": {
+    "message": "Искать в «$ARG1$» (папка экспорта)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "searchChoose": {
+    "message": "Выбрать папку…"
+  },
+  "searchChooseOther": {
+    "message": "Другая папка…"
+  },
+  "searchZipHint": {
+    "message": "Экспорты, сохранённые в «Загрузки», лежат в «Загрузки/AI Chats»: выберите эту папку (сами «Загрузки» Chrome выбрать не даёт)."
+  },
+  "searchReading": {
+    "message": "Читаю архив: $ARG1$ из $ARG2$ файлов, найдено чатов: $ARG3$…",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      }
+    }
+  },
+  "searchReadError": {
+    "message": "Не удалось прочитать папку: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "searchPlaceholder": {
+    "message": "Поиск по $ARG1$ чатам: слова или \"фраза\"",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "searchPlatform": {
+    "message": "Сервис"
+  },
+  "searchAllPlatforms": {
+    "message": "Все сервисы"
+  },
+  "searchWho": {
+    "message": "Кто написал"
+  },
+  "searchEveryone": {
+    "message": "Все"
+  },
+  "searchProject": {
+    "message": "Проект"
+  },
+  "searchFrom": {
+    "message": "С"
+  },
+  "searchTo": {
+    "message": "По"
+  },
+  "searchFound": {
+    "message": "Найдено в $ARG1$ сообщениях из $ARG2$ чатов.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "searchFirst": {
+    "message": "Показаны первые $ARG1$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "searchNothing": {
+    "message": "Ничего не найдено."
+  },
+  "searchOpenChat": {
+    "message": "Открыть чат в $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupSearchArchive": {
+    "message": "Поиск по архиву"
+  },
   "messagesTitle": {
     "message": "Выбор сообщений"
   },
