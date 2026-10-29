@@ -129,7 +129,7 @@ src/
   search/                   searching the saved archive (the search page)
     notes.ts                every note format read back into its properties and messages; the text of chats' files
     archive.ts              the search folder walked, .zip exports read inside, notes and files' text kept in IndexedDB
-    query.ts                words and "phrases" in every message, with filters, narrowing to chats that also hold (or lack) words, order (pure)
+    query.ts                words and "phrases" in every message, with filters, narrowing to chats that also hold (or lack) words, order, hits per filter choice (pure)
   takeout/                  saved Gemini chats completed from Google Takeout (the Takeout page)
     source.ts               Takeout as given: .zip parts read as they stream, the activity JSON, or the unpacked folder
     activity.ts             the activity's prompts: chat, time, text, answer, files

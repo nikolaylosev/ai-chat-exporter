@@ -220,3 +220,63 @@ export function search(
   }
   return { hits, total, chats: groups.length };
 }
+
+/** How many hits each choice of a filter would give, the other filters as they are. */
+export interface SearchCounts {
+  platforms: { all: number } & Partial<Record<Platform, number>>;
+  roles: { all: number; user: number; assistant: number };
+  where: { all: number; messages: number; files: number };
+}
+
+/**
+ * The hits per service, author and place for a query, in one pass. A file has
+ * no author: choosing one leaves the files out, as `search` does.
+ */
+export function searchCounts(
+  notes: readonly IndexedNote[],
+  query: string,
+  filters: SearchFilters = {},
+): SearchCounts {
+  const terms = queryTerms(query);
+  const found: { platform: Platform | null; role: NoteMessage['role'] | null }[] = [];
+  if (terms.length) {
+    const within = refineTerms(filters.within ?? '');
+    for (const note of notes) {
+      if (!inFilters(note, { ...filters, platform: null }) || !holds(note, within)) continue;
+      for (const m of note.messages) {
+        const text = lowerText(m);
+        if (terms.every((t) => text.includes(t)))
+          found.push({ platform: note.platform, role: m.role });
+      }
+      for (const f of note.files) {
+        const text = lowerText(f);
+        if (terms.every((t) => text.includes(t)))
+          found.push({ platform: note.platform, role: null });
+      }
+    }
+  }
+  const byPlatform = (h: (typeof found)[number]) =>
+    !filters.platform || h.platform === filters.platform;
+  const byRole = (h: (typeof found)[number]) => !filters.role || h.role === filters.role;
+  const byWhere = (h: (typeof found)[number]) =>
+    !filters.where || (filters.where === 'files' ? h.role === null : h.role !== null);
+  const count = (keep: (h: (typeof found)[number]) => boolean) => found.filter(keep).length;
+  const platforms: SearchCounts['platforms'] = { all: count((h) => byRole(h) && byWhere(h)) };
+  for (const h of found) {
+    if (h.platform && byRole(h) && byWhere(h))
+      platforms[h.platform] = (platforms[h.platform] ?? 0) + 1;
+  }
+  return {
+    platforms,
+    roles: {
+      all: count((h) => byPlatform(h) && byWhere(h)),
+      user: count((h) => byPlatform(h) && byWhere(h) && h.role === 'user'),
+      assistant: count((h) => byPlatform(h) && byWhere(h) && h.role === 'assistant'),
+    },
+    where: {
+      all: count((h) => byPlatform(h) && byRole(h)),
+      messages: count((h) => byPlatform(h) && byRole(h) && h.role !== null),
+      files: count((h) => byPlatform(h) && byRole(h) && h.role === null),
+    },
+  };
+}
