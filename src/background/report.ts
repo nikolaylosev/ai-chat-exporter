@@ -17,6 +17,8 @@ export interface ReportLabels {
   skipped: string;
   notReached: string;
   saved: string;
+  /** After a Gemini export's missing files: where Google Takeout's copies can be added from. */
+  takeout: string;
 }
 
 export const REPORTS_DIR = '_reports';
@@ -84,6 +86,8 @@ export function renderReport(
           : []),
       ].join('\n'),
     ),
+    // Google Takeout keeps files Gemini's history leaves out.
+    ...(job.platform === 'gemini' && by('warning').length ? [`> ${labels.takeout}`, ''] : []),
     ...section(labels.skipped, by('skipped'), (i) => escapeLinkText(i.title)),
     ...section(labels.notReached, by('pending'), (i) => escapeLinkText(i.title)),
     ...section(labels.saved, by('done'), link),
