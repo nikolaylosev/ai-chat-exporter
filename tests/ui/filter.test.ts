@@ -5,6 +5,7 @@ import {
   DEFAULT_PROJECT_FILTER,
   filterConversations,
   filterProjects,
+  chatSource,
   savedStatus,
 } from '../../src/ui/export-page/filter';
 
@@ -124,5 +125,26 @@ describe('saved status', () => {
     expect(only('saved')).toEqual(['a']);
     expect(only('changed')).toEqual(['b']);
     expect(only('new')).toEqual(['c', 'd']);
+  });
+});
+
+describe('chat source', () => {
+  const from = (extra: object) => ({ ...chat('s', 'Chat', null, null), ...extra });
+  const sources = [
+    from({}),
+    from({ id: 'f', foundBySearch: true }),
+    from({ id: 't', fromTakeout: true }),
+    from({ id: 'r', savedBefore: true }),
+  ];
+
+  it('tells the list, the search, Takeout and the registry apart', () => {
+    expect(sources.map(chatSource)).toEqual(['list', 'search', 'takeout', 'saved']);
+  });
+
+  it('filters the list by it', () => {
+    const only = (source: 'list' | 'search' | 'takeout' | 'saved') =>
+      ids(filterConversations(sources, { ...DEFAULT_FILTER, source }, 'UTC'));
+    expect(only('takeout')).toEqual(['t']);
+    expect(only('list')).toEqual(['s']);
   });
 });

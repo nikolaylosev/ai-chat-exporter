@@ -367,6 +367,44 @@
       }
     }
   },
+  "exportSourceFilter": {
+    "message": "Источник"
+  },
+  "exportSourceAll": {
+    "message": "Все источники"
+  },
+  "exportSourceList": {
+    "message": "Список Gemini ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportSourceSearch": {
+    "message": "Найдены поиском ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportSourceTakeout": {
+    "message": "Google Takeout ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportSourceSaved": {
+    "message": "Только сохранённые раньше ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
   "exportFoundBySearch": {
     "message": "найден поиском"
   },

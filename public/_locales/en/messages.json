@@ -367,6 +367,44 @@
       }
     }
   },
+  "exportSourceFilter": {
+    "message": "Source"
+  },
+  "exportSourceAll": {
+    "message": "All sources"
+  },
+  "exportSourceList": {
+    "message": "Gemini's list ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportSourceSearch": {
+    "message": "Found by search ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportSourceTakeout": {
+    "message": "Google Takeout ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportSourceSaved": {
+    "message": "Only saved before ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
   "exportFoundBySearch": {
     "message": "found by search"
   },

@@ -84,6 +84,7 @@ describe('export page: saved status', () => {
     });
     render(<ExportPage />);
     await screen.findByText('exportStatusNew(1)');
+    expect(screen.queryByRole('combobox', { name: 'exportSourceFilter' })).toBeNull();
     screen.getByText('exportStatusChanged(1)');
     screen.getByText('exportStatusSaved(1)');
     expect(rows()).toBe(3);
@@ -118,6 +119,14 @@ describe('export page: Gemini search', () => {
     render(<ExportPage />);
     await screen.findByText(/exportSources\(2,1,0,0\)/);
     expect(rows()).toBe(3);
+    // Only the chats the search found.
+    screen.getByText('exportSourceList(2)');
+    const source = screen.getByRole<HTMLSelectElement>('combobox', { name: 'exportSourceFilter' });
+    fireEvent.change(source, { target: { value: 'search' } });
+    await waitFor(() => expect(rows()).toBe(1));
+    screen.getByText('Chat old');
+    fireEvent.change(source, { target: { value: 'all' } });
+    await waitFor(() => expect(rows()).toBe(3));
 
     fireEvent.click(screen.getByRole('button', { name: 'exportSearchMore' }));
     const found = { ...chat('new', 'gemini'), foundBySearch: true };
