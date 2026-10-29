@@ -38,6 +38,15 @@ export interface SearchFilters {
   /** `YYYY-MM-DD`, compared with the chat's creation date. */
   from?: string;
   to?: string;
+  /**
+   * Words and "phrases" the chat must also hold somewhere, in any message or
+   * file; `-word` leaves out chats that hold it.
+   */
+  within?: string;
+  /** Hits in messages only, or in the chat's files only. */
+  where?: 'messages' | 'files' | null;
+  /** Newest chats first (the default), oldest first, or the chats with most hits first. */
+  sort?: 'newest' | 'oldest' | 'matches';
 }
 
 export interface SearchHit {
@@ -62,6 +71,17 @@ export function queryTerms(query: string): string[] {
     if (term) terms.push(term);
   }
   return terms;
+}
+
+/** The terms of a "within" query: those a chat must hold, and those (`-word`) it must not. */
+export function refineTerms(query: string): { include: string[]; exclude: string[] } {
+  const include: string[] = [];
+  const exclude: string[] = [];
+  for (const m of query.matchAll(/(-?)(?:"([^"]*)"|(\S+))/g)) {
+    const term = normalize((m[2] ?? m[3] ?? '').trim());
+    if (term) (m[1] ? exclude : include).push(term);
+  }
+  return { include, exclude };
 }
 
 const SNIPPET_BEFORE = 60;
@@ -109,6 +129,33 @@ function lowerText(m: { text: string }): string {
   return text;
 }
 
+/** A note's whole text, messages and files, normalized once. */
+const noteTexts = new WeakMap<IndexedNote, string>();
+function noteText(note: IndexedNote): string {
+  let text = noteTexts.get(note);
+  if (text === undefined) {
+    text = [...note.messages, ...note.files].map(lowerText).join('\n');
+    noteTexts.set(note, text);
+  }
+  return text;
+}
+
+function holds(note: IndexedNote, within: ReturnType<typeof refineTerms>): boolean {
+  if (!within.include.length && !within.exclude.length) return true;
+  const text = noteText(note);
+  return (
+    within.include.every((t) => text.includes(t)) && !within.exclude.some((t) => text.includes(t))
+  );
+}
+
+/** Newest first; a chat without a date last, whichever the order. */
+function byDate(oldest: boolean) {
+  return (a: IndexedNote, b: IndexedNote) => {
+    if (!a.created || !b.created) return a.created ? -1 : b.created ? 1 : 0;
+    return oldest ? a.created.localeCompare(b.created) : b.created.localeCompare(a.created);
+  };
+}
+
 function inFilters(note: IndexedNote, f: SearchFilters): boolean {
   if (f.platform && note.platform !== f.platform) return false;
   if (f.project && !normalize(note.project ?? '').includes(normalize(f.project))) return false;
@@ -119,41 +166,57 @@ function inFilters(note: IndexedNote, f: SearchFilters): boolean {
 }
 
 /**
- * Messages that hold every term, newest chats first, at most `limit`; `total`
- * counts them all. An empty query lists nothing.
+ * Messages (and files) that hold every term, in chats within the filters, in
+ * the order asked (newest chats first by default), at most `limit`; `total`
+ * counts them all and `chats` the chats they are in. An empty query lists
+ * nothing.
  */
 export function search(
   notes: readonly IndexedNote[],
   query: string,
   filters: SearchFilters = {},
   limit = 200,
-): { hits: SearchHit[]; total: number } {
+): { hits: SearchHit[]; total: number; chats: number } {
   const terms = queryTerms(query);
-  if (!terms.length) return { hits: [], total: 0 };
-  const sorted = [...notes].sort((a, b) => (b.created ?? '').localeCompare(a.created ?? ''));
+  if (!terms.length) return { hits: [], total: 0, chats: 0 };
+  const within = refineTerms(filters.within ?? '');
+  type Found = { message: number | null; file: number | null; text: string };
+  const groups: { note: IndexedNote; found: Found[] }[] = [];
+  for (const note of notes) {
+    if (!inFilters(note, filters) || !holds(note, within)) continue;
+    const found: Found[] = [];
+    if (filters.where !== 'files') {
+      note.messages.forEach((m, index) => {
+        if (filters.role && m.role !== filters.role) return;
+        const text = lowerText(m);
+        if (terms.every((t) => text.includes(t)))
+          found.push({ message: index, file: null, text: m.text });
+      });
+    }
+    // A file has no author to filter by: uploads are the user's, made files the AI's.
+    if (!filters.role && filters.where !== 'messages') {
+      note.files.forEach((f, index) => {
+        const text = lowerText(f);
+        if (terms.every((t) => text.includes(t)))
+          found.push({ message: null, file: index, text: f.text });
+      });
+    }
+    if (found.length) groups.push({ note, found });
+  }
+  const dated = byDate(filters.sort === 'oldest');
+  groups.sort((a, b) =>
+    filters.sort === 'matches'
+      ? b.found.length - a.found.length || dated(a.note, b.note)
+      : dated(a.note, b.note),
+  );
   const hits: SearchHit[] = [];
   let total = 0;
-  for (const note of sorted) {
-    if (!inFilters(note, filters)) continue;
-    note.messages.forEach((m, index) => {
-      if (filters.role && m.role !== filters.role) return;
-      const text = lowerText(m);
-      if (!terms.every((t) => text.includes(t))) return;
-      total++;
-      if (hits.length < limit) {
-        hits.push({ note, message: index, file: null, snippet: snippet(m.text, terms) });
-      }
-    });
-    // A file has no author to filter by: uploads are the user's, made files the AI's.
-    if (filters.role) continue;
-    note.files.forEach((f, index) => {
-      const text = lowerText(f);
-      if (!terms.every((t) => text.includes(t))) return;
-      total++;
-      if (hits.length < limit) {
-        hits.push({ note, message: null, file: index, snippet: snippet(f.text, terms) });
-      }
-    });
+  for (const { note, found } of groups) {
+    total += found.length;
+    for (const f of found) {
+      if (hits.length >= limit) break;
+      hits.push({ note, message: f.message, file: f.file, snippet: snippet(f.text, terms) });
+    }
   }
-  return { hits, total };
+  return { hits, total, chats: groups.length };
 }

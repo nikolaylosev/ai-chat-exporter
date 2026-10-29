@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { queryTerms, search, snippet, type IndexedNote } from '../../src/search/query';
+import { queryTerms, refineTerms, search, snippet, type IndexedNote } from '../../src/search/query';
 
 const note = (key: string, extra: Partial<IndexedNote>): IndexedNote => ({
   key,
@@ -72,5 +72,53 @@ describe('search', () => {
     const parts = snippet(`${'x '.repeat(100)}Buy TICKETS here, tickets`, ['tickets']);
     expect(parts[0]).toEqual({ text: '…', match: false });
     expect(parts.filter((p) => p.match).map((p) => p.text)).toEqual(['TICKETS', 'tickets']);
+  });
+});
+
+describe('narrowing the results', () => {
+  const keys = (r: { hits: { note: IndexedNote }[] }) => r.hits.map((h) => h.note.key);
+  const more = [
+    ...notes,
+    note('c', {
+      created: null,
+      messages: [{ role: 'user', time: null, text: 'tickets for the train' }],
+      files: [{ key: 'c/files/plan.txt', name: 'plan.txt', text: 'Tickets and the station map' }],
+    }),
+  ];
+
+  it('reads the terms to keep and those to leave out', () => {
+    expect(refineTerms('rome -"train ride" -x')).toEqual({
+      include: ['rome'],
+      exclude: ['train ride', 'x'],
+    });
+  });
+
+  it('keeps chats that also hold the words anywhere, and drops those with -words', () => {
+    // 'Colosseum' is in another message of chat a than the one that matches 'билеты'.
+    expect(keys(search(more, 'билеты', { within: 'colosseum' }))).toEqual(['a']);
+    expect(keys(search(more, 'tickets', { within: 'station' }))).toEqual(['b', 'c', 'c']);
+    expect(keys(search(more, 'tickets', { within: '-station' }))).toEqual(['a']);
+    // 'map' is only in chat c's file.
+    expect(keys(search(more, 'tickets', { within: 'map' }))).toEqual(['c', 'c']);
+  });
+
+  it('finds in messages only, or in files only', () => {
+    expect(search(more, 'tickets', { where: 'messages' }).total).toBe(3);
+    const files = search(more, 'tickets', { where: 'files' });
+    expect(files.hits.map((h) => h.file)).toEqual([0]);
+  });
+
+  it('orders by date either way, undated chats last, or by the number of hits', () => {
+    expect(keys(search(more, 'tickets'))).toEqual(['b', 'a', 'c', 'c']);
+    expect(keys(search(more, 'tickets', { sort: 'oldest' }))).toEqual(['a', 'b', 'c', 'c']);
+    expect(keys(search(more, 'tickets', { sort: 'matches' }))).toEqual(['c', 'c', 'b', 'a']);
+  });
+
+  it('counts every chat with hits, not only those shown', () => {
+    const many = Array.from({ length: 5 }, (_, i) =>
+      note(`n${i}`, { messages: [{ role: 'user', time: null, text: 'tickets' }] }),
+    );
+    expect(search(many, 'tickets', {}, 2)).toMatchObject({ total: 5, chats: 5 });
+    expect(search(many, 'tickets', {}, 2).hits).toHaveLength(2);
   });
 });

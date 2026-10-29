@@ -1225,6 +1225,36 @@
   "searchTo": {
     "message": "По"
   },
+  "searchWithin": {
+    "message": "В чатах, где есть ещё…"
+  },
+  "searchWithinHint": {
+    "message": "Слова, которые должны быть ещё где-то в чате, в любом сообщении или файле. -слово убирает чаты, где оно есть."
+  },
+  "searchWhere": {
+    "message": "Где"
+  },
+  "searchWhereAll": {
+    "message": "В сообщениях и файлах"
+  },
+  "searchWhereMessages": {
+    "message": "Только в сообщениях"
+  },
+  "searchWhereFiles": {
+    "message": "Только в файлах"
+  },
+  "searchSort": {
+    "message": "Порядок"
+  },
+  "searchSortNewest": {
+    "message": "Сначала новые чаты"
+  },
+  "searchSortOldest": {
+    "message": "Сначала старые чаты"
+  },
+  "searchSortMatches": {
+    "message": "Сначала больше совпадений"
+  },
   "searchFound": {
     "message": "Найдено в $ARG1$ сообщениях из $ARG2$ чатов.",
     "placeholders": {
