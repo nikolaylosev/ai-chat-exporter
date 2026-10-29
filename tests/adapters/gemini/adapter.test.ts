@@ -197,6 +197,15 @@ describe('GeminiAdapter.listConversations with chats known from before', () => {
     expect(list.conversations.length).toBeGreaterThan(0);
   });
 
+  it('stops after the page holding a chat older than `until`', async () => {
+    const whole = (await adapter().gemini.listConversations()).conversations;
+    const { gemini, server } = adapter();
+    const third = whole.filter((c) => c.updatedAt)[2]!;
+    const list = await gemini.listConversations(undefined, undefined, undefined, third.updatedAt!);
+    expect(list.reachedKnown).toBe(true);
+    expect(server.calls.filter((c) => c.rpcId === 'MaZiqc')).toHaveLength(1);
+  });
+
   it('reads on past a known chat that changed since', async () => {
     const whole = (await adapter().gemini.listConversations()).conversations;
     const { gemini } = adapter();

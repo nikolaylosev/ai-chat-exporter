@@ -129,3 +129,33 @@ export function refreshListed(
 
 /** The storage key, for pages that follow changes. */
 export const listKey = key;
+
+const takeoutKey = (platform: Platform) => `takeoutUntil:${platform}`;
+
+/**
+ * The time of the newest record of a Google Takeout file added (Gemini): chats
+ * last updated before it came from Takeout, so reading the whole list again
+ * can stop there.
+ */
+export async function loadTakeoutUntil(platform: Platform): Promise<string | null> {
+  try {
+    const stored: unknown = (await chrome.storage.local.get(takeoutKey(platform)))[
+      takeoutKey(platform)
+    ];
+    return typeof stored === 'string' ? stored : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Keeps the newest of the Takeout files added. */
+export function rememberTakeoutUntil(platform: Platform, time: string): Promise<void> {
+  writes = writes
+    .then(async () => {
+      const before = await loadTakeoutUntil(platform);
+      if (!before || time > before)
+        await chrome.storage.local.set({ [takeoutKey(platform)]: time });
+    })
+    .catch(() => undefined);
+  return writes;
+}

@@ -148,7 +148,8 @@ interface Contract {
     ping: { request: Empty; response: { platform: Platform } };
     /** `known`: chat ids with update times the page has from before (Gemini reads only what is newer). */
     'conversations:list': {
-      request: { known?: [string, string | null][] };
+      /** `until`: stop at chats last updated before then (ISO 8601); see the adapters. */
+      request: { known?: [string, string | null][]; until?: string };
       response: ConversationList;
     };
     /**

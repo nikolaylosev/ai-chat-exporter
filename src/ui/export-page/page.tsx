@@ -43,7 +43,14 @@ import {
   rememberFound,
   saveSearchState,
 } from '../../shared/search-cache';
-import { listKey, loadList, mergeList, saveList } from '../../shared/list-cache';
+import {
+  listKey,
+  loadList,
+  loadTakeoutUntil,
+  mergeList,
+  rememberTakeoutUntil,
+  saveList,
+} from '../../shared/list-cache';
 import { searchCoverage, type SweepState } from '../../adapters/gemini/search';
 import { lookupAll, readTakeout, type LookupProgress } from './takeout';
 import '../styles.css';
@@ -283,7 +290,7 @@ function useTakeout(platform: Platform, onFound: (more: ConversationSummary[]) =
     setState({ status: 'reading' });
     let tab: { tabId: number; opened: boolean } | null = null;
     try {
-      const ids = await readTakeout(file);
+      const { ids, newest } = await readTakeout(file);
       if (ids.length === 0) {
         setState({ status: 'error', message: t('exportTakeoutNone') });
         return;
@@ -306,6 +313,7 @@ function useTakeout(platform: Platform, onFound: (more: ConversationSummary[]) =
               },
             );
       setState({ status: 'done', known: ids.length - todo.length, ...counts });
+      if (newest) void rememberTakeoutUntil(platform, newest);
     } catch (error) {
       setState({ status: 'error', message: errorText(error) });
     } finally {
@@ -328,11 +336,15 @@ async function listConversations(
   platform: Platform,
   onTab: (tabId: number | null) => void,
   known?: [string, string | null][],
+  until?: string,
 ) {
   const { tabId, opened } = await send('background', 'platform:tab', { platform });
   onTab(tabId);
   try {
-    return await sendToTab(tabId, 'conversations:list', known ? { known } : {});
+    return await sendToTab(tabId, 'conversations:list', {
+      ...(known ? { known } : {}),
+      ...(until ? { until } : {}),
+    });
   } finally {
     onTab(null);
     void send('background', 'platform:tab-done', { tabId, opened }).catch(() => undefined);
@@ -356,7 +368,13 @@ function useConversations(platform: Platform) {
       cached && !full
         ? cached.conversations.map((c): [string, string | null] => [c.id, c.updatedAt])
         : undefined;
-    const list = await listConversations(platform, (tabId) => (tab.current = tabId), known);
+    // Read again in full, the list stops a day before the newest Takeout file added:
+    // the older chats came from Takeout.
+    const takeout = full && remembers ? await loadTakeoutUntil(platform) : null;
+    const until = takeout
+      ? new Date(new Date(takeout).getTime() - 86_400_000).toISOString()
+      : undefined;
+    const list = await listConversations(platform, (tabId) => (tab.current = tabId), known, until);
     if (!remembers) {
       const { conversations, incomplete } = list;
       return { status: 'ready', conversations, ...(incomplete ? { incomplete } : {}) };

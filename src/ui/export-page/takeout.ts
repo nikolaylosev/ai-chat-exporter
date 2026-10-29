@@ -12,15 +12,21 @@ import { readActivity } from '../../takeout/source';
 export { takeoutChatIds };
 
 /**
- * The chat ids in a file the user picked: the activity JSON itself, or the
- * Takeout .zip it came in. A file that is neither gives none.
+ * The chat ids in a file the user picked, the most recently used first, and the
+ * time of its newest record (when the file was made, about): the activity JSON
+ * itself, or the Takeout .zip it came in. A file that is neither gives none.
  */
-export async function readTakeout(file: File): Promise<string[]> {
+export async function readTakeout(file: File): Promise<{ ids: string[]; newest: string | null }> {
   const ids = new Set<string>();
+  let newest: string | null = null;
   for (const activity of await readActivity({ kind: 'files', files: [file] })) {
     for (const id of takeoutChatIds(activity)) ids.add(id);
+    for (const record of Array.isArray(activity) ? (activity as { time?: unknown }[]) : []) {
+      const time = record?.time;
+      if (typeof time === 'string' && (!newest || time > newest)) newest = time;
+    }
   }
-  return [...ids];
+  return { ids: [...ids], newest };
 }
 
 export interface LookupAnswer {
