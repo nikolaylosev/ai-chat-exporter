@@ -263,7 +263,13 @@
     "message": "Add chats from Google Takeout…"
   },
   "exportTakeoutHint": {
-    "message": "Takeout links to every chat, however old. On takeout.google.com choose My Activity with only Gemini Apps, in JSON, then pick the .zip or MyActivity.json here. The file is read on this computer only."
+    "message": "Takeout links to every chat, however old. In Google Takeout choose My Activity with only Gemini Apps, in JSON, then pick the .zip or MyActivity.json here. The file is read on this computer only."
+  },
+  "exportTakeoutOpen": {
+    "message": "Open Google Takeout"
+  },
+  "exportSearchAfterTakeout": {
+    "message": "The chats from Takeout are in the table, and Gemini's list holds the newer ones, so the search is needed only if many chats were started after the Takeout file was made."
   },
   "exportTakeoutReading": {
     "message": "Reading the Takeout file…"

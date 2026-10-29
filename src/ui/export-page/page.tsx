@@ -186,6 +186,9 @@ function useSearchMore(platform: Platform, onFound: (more: ConversationSummary[]
   return { state, sweep, start, stop, forget };
 }
 
+/** Google Takeout with My Activity chosen: the activity holds the links to every chat. */
+const TAKEOUT_URL = 'https://takeout.google.com/settings/takeout/custom/my_activity';
+
 type TakeoutState =
   | { status: 'idle' }
   | { status: 'reading' }
@@ -722,7 +725,11 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
                   ? t('exportSearchMore')
                   : t('exportSearchAgain')}
               </button>
-              {more.state.status === 'idle' && <small class="hint">{t('exportSearchHint')}</small>}
+              {more.state.status === 'idle' && (
+                <small class="hint">
+                  {fromTakeout > 0 ? t('exportSearchAfterTakeout') : t('exportSearchHint')}
+                </small>
+              )}
             </p>
           )}
           {takeout.state.status === 'running' ? (
@@ -776,7 +783,12 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
                 {t('exportTakeoutAdd')}
               </button>
               {takeout.state.status === 'idle' && (
-                <small class="hint">{t('exportTakeoutHint')}</small>
+                <small class="hint">
+                  {t('exportTakeoutHint')}{' '}
+                  <a href={TAKEOUT_URL} target="_blank" rel="noreferrer">
+                    {t('exportTakeoutOpen')}
+                  </a>
+                </small>
               )}
             </p>
           )}
@@ -798,7 +810,8 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
               )}
             </p>
           )}
-          {coverage && (
+          {/* With Takeout's chats in the table, the estimate no longer tells anything. */}
+          {coverage && fromTakeout === 0 && (
             <p class="muted">
               {t('exportSearchCoverage', [
                 String(Math.round(coverage.share * 100)),

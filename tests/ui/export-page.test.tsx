@@ -165,6 +165,33 @@ describe('export page: Gemini chats from Takeout', () => {
       ]),
     );
   });
+
+  it('links to Takeout, and once its chats are in, drops the coverage estimate', async () => {
+    history.replaceState(null, '', '?platform=gemini');
+    // Enough listed chats, all met by an earlier search, for the estimate to show.
+    const listed = Array.from({ length: 30 }, (_, i) =>
+      chat(`00000000000001${String(i).padStart(2, '0')}`, 'gemini'),
+    );
+    const { local } = stubChrome({
+      background: (type) => (type === 'platform:tab' ? { tabId: 9, opened: false } : null),
+      tab: (type) => (type === 'conversations:list' ? { conversations: listed } : null),
+    });
+    local['searchState:gemini'] = { asked: ['и'], words: [], seen: listed.map((c) => c.id) };
+    render(<ExportPage />);
+    await screen.findByText(/exportSearchCoverage/);
+    screen.getByText('exportSearchHint');
+    expect(screen.getByRole<HTMLAnchorElement>('link', { name: 'exportTakeoutOpen' }).href).toBe(
+      'https://takeout.google.com/settings/takeout/custom/my_activity',
+    );
+
+    await act(() =>
+      chrome.storage.local.set({
+        'searchFound:gemini': [{ ...chat('00000000000000c2', 'gemini'), fromTakeout: true }],
+      }),
+    );
+    await waitFor(() => expect(screen.queryByText(/exportSearchCoverage/)).toBeNull());
+    screen.getByText('exportSearchAfterTakeout');
+  });
 });
 
 describe('export page: Gemini notebooks', () => {
