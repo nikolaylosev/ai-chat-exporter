@@ -729,6 +729,14 @@
   "reportWarnings": {
     "message": "Saved with missing files"
   },
+  "reportTakeout": {
+    "message": "Google Takeout may have these files: Gemini's history leaves some out. The extension's \"Complete from Google Takeout\" page adds them to the saved chats: $ARG1$ (also linked from Gemini's tab of the export page).",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
   "reportFailedFiles": {
     "message": "files not saved: $ARG1$",
     "placeholders": {

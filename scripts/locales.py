@@ -249,6 +249,10 @@ STRINGS = {
     "reportStopped": ("The export stopped: $1", "Экспорт остановлен: $1"),
     "reportErrors": ("Errors", "Ошибки"),
     "reportWarnings": ("Saved with missing files", "Сохранены не со всеми файлами"),
+    "reportTakeout": (
+        "Google Takeout may have these files: Gemini's history leaves some out. The extension's \"Complete from Google Takeout\" page adds them to the saved chats: $1 (also linked from Gemini's tab of the export page).",
+        "Эти файлы могут быть в Google Takeout: история Gemini отдаёт не все. Страница расширения «Дополнить из Google Takeout» добавит их к сохранённым чатам: $1 (ссылка есть и на вкладке Gemini страницы экспорта).",
+    ),
     "reportFailedFiles": ("files not saved: $1", "файлов не сохранено: $1"),
     "reportSkipped": ("Skipped: not changed since the last export", "Пропущены: не изменились с прошлого экспорта"),
     "reportNotReached": ("Not reached", "Не обработаны"),

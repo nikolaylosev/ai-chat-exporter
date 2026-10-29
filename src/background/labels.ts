@@ -75,5 +75,6 @@ export function reportLabels(): ReportLabels {
     skipped: t('reportSkipped'),
     notReached: t('reportNotReached'),
     saved: t('reportSaved'),
+    takeout: t('reportTakeout', chrome.runtime.getURL('src/ui/takeout/index.html')),
   };
 }

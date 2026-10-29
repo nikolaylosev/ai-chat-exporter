@@ -23,6 +23,7 @@ const labels: ReportLabels = {
   skipped: 'Skipped',
   notReached: 'Not reached',
   saved: 'Saved',
+  takeout: 'Google Takeout may have these files.',
 };
 
 const item = (id: string, status: JobItem['status'], extra: Partial<JobItem> = {}): JobItem => ({
@@ -99,6 +100,22 @@ describe('renderReport', () => {
         '',
       ].join('\n'),
     );
+  });
+
+  it('points a Gemini export with missing files to Google Takeout', () => {
+    const missing = item('2', 'warning', { path: 'B/B.md', failedFiles: 1, failures: [] });
+    const gemini = renderReport(job([missing], { platform: 'gemini' }), 'Gemini', labels, 'UTC');
+    expect(gemini).toContain(
+      '- [Chat 2](../B/B.md) — files not saved: 1\n\n> Google Takeout may have these files.\n',
+    );
+    expect(renderReport(job([missing]), 'Claude', labels, 'UTC')).not.toContain('Takeout');
+    const whole = renderReport(
+      job([item('1', 'done')], { platform: 'gemini' }),
+      'Gemini',
+      labels,
+      'UTC',
+    );
+    expect(whole).not.toContain('Takeout');
   });
 
   it('says why a job stopped', () => {

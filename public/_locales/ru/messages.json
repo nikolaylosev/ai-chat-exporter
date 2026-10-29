@@ -729,6 +729,14 @@
   "reportWarnings": {
     "message": "Сохранены не со всеми файлами"
   },
+  "reportTakeout": {
+    "message": "Эти файлы могут быть в Google Takeout: история Gemini отдаёт не все. Страница расширения «Дополнить из Google Takeout» добавит их к сохранённым чатам: $ARG1$ (ссылка есть и на вкладке Gemini страницы экспорта).",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
   "reportFailedFiles": {
     "message": "файлов не сохранено: $ARG1$",
     "placeholders": {
