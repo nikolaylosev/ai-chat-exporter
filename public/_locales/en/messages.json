@@ -1241,6 +1241,12 @@
   "takeoutHint": {
     "message": "Google Takeout keeps every Gemini prompt with its files, also those Gemini's history no longer shows: prompts edited or answered again, videos it shows as a frame, some PDFs and audio. This adds them to the Gemini chats you saved: the files into each chat's files folder, the prompts as a \"From Google Takeout\" section at the end of its note. Everything is read and written on this computer."
   },
+  "takeoutReexportHint": {
+    "message": "Saving a chat again writes its note anew, without this section: come back here after that."
+  },
+  "takeoutTimeWarning": {
+    "message": "Most of Takeout's prompts did not match a message at their time. The notes may have been saved on a computer in another time zone, and the prompts below may be in the chats after all: check one chat before adding."
+  },
   "takeoutArchive": {
     "message": "Saved chats: $ARG1$",
     "placeholders": {
