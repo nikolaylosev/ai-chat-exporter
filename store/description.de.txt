@@ -24,6 +24,8 @@ SO FUNKTIONIERT ES
 • In den Download-Ordner kommt ein Chat mit seinen Dateien als ein .zip, nur der Text als eine Datei. Oder direkt in einen Ordner Ihrer Wahl, Datei für Datei.
 • Gespeicherte Chats durchsuchen: „Search the archive“ sucht in allen gespeicherten Chats aller Dienste zugleich, auf Ihrem Computer, auch im Text ihrer Dateien.
 • Ein großer Gemini-Verlauf vollständig: Die Liste endet bei etwa 1.000 Chats; die Suche von Gemini oder eine Google-Takeout-Datei fügt die älteren hinzu.
+• Sehen, was noch zu sichern ist: Die Exportseite filtert Chats danach, ob sie gespeichert wurden (noch nicht, seitdem geändert, unverändert), nach Projekt oder Gem und bei Gemini nach Herkunft, und merkt sich die Auswahl.
+• Was Geminis Verlauf auslässt: „Complete from Google Takeout“ fügt den gespeicherten Gemini-Chats die Prompts und Dateien hinzu, die Gemini nicht mehr zeigt.
 
 DATENSCHUTZ
 • Alles bleibt auf Ihrem Computer. Die Erweiterung hat keinen Server und sendet Ihre Unterhaltungen nirgendwohin.
