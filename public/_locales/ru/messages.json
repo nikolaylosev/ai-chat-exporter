@@ -337,6 +337,93 @@
   "exportSearchForget": {
     "message": "Забыть найденные"
   },
+  "exportStatusFilter": {
+    "message": "Сохранение"
+  },
+  "exportStatusAll": {
+    "message": "Все чаты"
+  },
+  "exportStatusNew": {
+    "message": "Ещё не сохранены ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportStatusChanged": {
+    "message": "Изменились после сохранения ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportStatusSaved": {
+    "message": "Сохранены, без изменений ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportSourceFilter": {
+    "message": "Источник"
+  },
+  "exportSourceAll": {
+    "message": "Все источники"
+  },
+  "exportSourceList": {
+    "message": "Список Gemini ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportSourceSearch": {
+    "message": "Найдены поиском ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportSourceTakeout": {
+    "message": "Google Takeout ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportSourceSaved": {
+    "message": "Только сохранённые раньше ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportProjectAll": {
+    "message": "Все"
+  },
+  "exportProjectNone": {
+    "message": "Без проекта ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportGemNone": {
+    "message": "Без Gem ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
   "exportFoundBySearch": {
     "message": "найден поиском"
   },

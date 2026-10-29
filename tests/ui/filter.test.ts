@@ -5,6 +5,9 @@ import {
   DEFAULT_PROJECT_FILTER,
   filterConversations,
   filterProjects,
+  chatSource,
+  projectCounts,
+  savedStatus,
 } from '../../src/ui/export-page/filter';
 
 const chat = (
@@ -94,5 +97,71 @@ describe('filterProjects', () => {
     ];
     const filter = { ...DEFAULT_FILTER, from: '2026-10-01', to: '2026-10-31' };
     expect(ids(filterConversations(gemini, filter, 'UTC'))).toEqual(['g1']);
+  });
+});
+
+describe('saved status', () => {
+  const now = chat('x', 'Chat', null, '2026-10-05T10:00:00Z');
+
+  it('is new without a record, saved with the same update time, changed otherwise', () => {
+    expect(savedStatus(now, undefined)).toBe('new');
+    expect(savedStatus(now, { updatedAt: '2026-10-05T10:00:00Z' })).toBe('saved');
+    expect(savedStatus(now, { updatedAt: '2026-10-01T10:00:00Z' })).toBe('changed');
+  });
+
+  it('counts an export that missed files, or a chat without an update time, as changed', () => {
+    expect(savedStatus(now, { updatedAt: '2026-10-05T10:00:00Z', missingFiles: 2 })).toBe(
+      'changed',
+    );
+    expect(savedStatus(chat('y', 'Chat', null, null), { updatedAt: null })).toBe('changed');
+  });
+
+  it('filters the list by it', () => {
+    const saved = new Map([
+      ['a', { updatedAt: '2026-10-05T10:00:00Z' }],
+      ['b', { updatedAt: '2026-10-01T10:00:00Z' }],
+    ]);
+    const only = (status: 'new' | 'saved' | 'changed') =>
+      ids(filterConversations(list, { ...DEFAULT_FILTER, status }, 'UTC', saved));
+    expect(only('saved')).toEqual(['a']);
+    expect(only('changed')).toEqual(['b']);
+    expect(only('new')).toEqual(['c', 'd']);
+  });
+});
+
+describe('chat source', () => {
+  const from = (extra: object) => ({ ...chat('s', 'Chat', null, null), ...extra });
+  const sources = [
+    from({}),
+    from({ id: 'f', foundBySearch: true }),
+    from({ id: 't', fromTakeout: true }),
+    from({ id: 'r', savedBefore: true }),
+  ];
+
+  it('tells the list, the search, Takeout and the registry apart', () => {
+    expect(sources.map(chatSource)).toEqual(['list', 'search', 'takeout', 'saved']);
+  });
+
+  it('filters the list by it', () => {
+    const only = (source: 'list' | 'search' | 'takeout' | 'saved') =>
+      ids(filterConversations(sources, { ...DEFAULT_FILTER, source }, 'UTC'));
+    expect(only('takeout')).toEqual(['t']);
+    expect(only('list')).toEqual(['s']);
+  });
+});
+
+describe('project filter', () => {
+  it('counts the chats of each project by name, those without one under an empty name', () => {
+    expect(projectCounts(list)).toEqual([
+      ['', 3],
+      ['Finance', 1],
+    ]);
+  });
+
+  it('shows one project, or only the chats without one', () => {
+    const only = (project: string) =>
+      ids(filterConversations(list, { ...DEFAULT_FILTER, project }, 'UTC'));
+    expect(only('Finance')).toEqual(['b']);
+    expect(only('')).toEqual(['a', 'c', 'd']);
   });
 });

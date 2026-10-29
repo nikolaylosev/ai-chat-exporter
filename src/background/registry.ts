@@ -130,11 +130,12 @@ export class Registry {
 
   /**
    * The platform's chats exported before, saved alone or in a project (`<chat>@<project>`),
-   * the latest export of each, with the title its folder was named after.
+   * the latest export of each, with the title its folder was named after and the
+   * files it missed.
    */
   async chats(
     platform: Platform,
-  ): Promise<{ id: string; title: string; updatedAt: string | null }[]> {
+  ): Promise<{ id: string; title: string; updatedAt: string | null; missingFiles?: number }[]> {
     const latest = new Map<string, ExportRecord>();
     for (const [key, record] of Object.entries((await this.read()).records)) {
       if (!key.startsWith(`${platform}:`)) continue;
@@ -147,6 +148,7 @@ export class Registry {
       id,
       title: titleFromFolder(r.folder),
       updatedAt: r.updatedAt,
+      ...(r.missingFiles ? { missingFiles: r.missingFiles } : {}),
     }));
   }
 
