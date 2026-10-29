@@ -64,6 +64,40 @@ describe('export page: the chat list', () => {
   });
 });
 
+describe('export page: saved status', () => {
+  it('counts the chats by saved status and shows only those asked for', async () => {
+    history.replaceState(null, '', '?');
+    stubChrome({
+      background: (type) => {
+        if (type === 'platform:tab') return { tabId: 7, opened: false };
+        // 'a' saved as it is now, 'b' saved before its last update; 'c' never.
+        if (type === 'registry:chats') {
+          return [
+            { id: 'a', title: 'Chat a', updatedAt: '2026-10-02T10:00:00Z' },
+            { id: 'b', title: 'Chat b', updatedAt: '2026-09-01T10:00:00Z' },
+          ];
+        }
+        return null;
+      },
+      tab: (type) =>
+        type === 'conversations:list' ? { conversations: [chat('a'), chat('b'), chat('c')] } : null,
+    });
+    render(<ExportPage />);
+    await screen.findByText('exportStatusNew(1)');
+    screen.getByText('exportStatusChanged(1)');
+    screen.getByText('exportStatusSaved(1)');
+    expect(rows()).toBe(3);
+
+    const status = screen.getByRole<HTMLSelectElement>('combobox', { name: 'exportStatusFilter' });
+    fireEvent.change(status, { target: { value: 'new' } });
+    await waitFor(() => expect(rows()).toBe(1));
+    screen.getByText('Chat c');
+    fireEvent.change(status, { target: { value: 'changed' } });
+    await waitFor(() => screen.getByText('Chat b'));
+    expect(rows()).toBe(1);
+  });
+});
+
 describe('export page: Gemini search', () => {
   it('shows remembered results, adds new ones as each query finds them, and remembers them', async () => {
     history.replaceState(null, '', '?platform=gemini');

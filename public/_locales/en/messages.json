@@ -337,6 +337,36 @@
   "exportSearchForget": {
     "message": "Forget the found ones"
   },
+  "exportStatusFilter": {
+    "message": "Saved"
+  },
+  "exportStatusAll": {
+    "message": "All chats"
+  },
+  "exportStatusNew": {
+    "message": "Not saved yet ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportStatusChanged": {
+    "message": "Changed since saved ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportStatusSaved": {
+    "message": "Saved, unchanged ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
   "exportFoundBySearch": {
     "message": "found by search"
   },

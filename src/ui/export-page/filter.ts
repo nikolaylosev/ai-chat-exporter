@@ -3,11 +3,21 @@ import type { ConversationSummary } from '../../model/conversation';
 
 export type SortKey = 'title' | 'createdAt' | 'updatedAt' | 'project';
 
+/** A chat against the export registry: never saved, saved as it is now, or changed since. */
+export type SavedStatus = 'new' | 'saved' | 'changed';
+
+/** What the registry holds for a chat: its latest export (`registry:chats`). */
+export interface SavedRecord {
+  updatedAt: string | null;
+  missingFiles?: number;
+}
+
 export interface ListFilter {
   query: string;
   /** YYYY-MM-DD, inclusive; empty for no limit. Compared with the creation date, or the last update where there is none. */
   from: string;
   to: string;
+  status: 'all' | SavedStatus;
   sort: SortKey;
   descending: boolean;
 }
@@ -16,9 +26,22 @@ export const DEFAULT_FILTER: ListFilter = {
   query: '',
   from: '',
   to: '',
+  status: 'all',
   sort: 'updatedAt',
   descending: true,
 };
+
+/**
+ * As "skip unchanged chats" decides: saved when the latest export has the
+ * chat's update time and every file; an export that missed files, or an older
+ * version, counts as changed.
+ */
+export function savedStatus(c: ConversationSummary, record: SavedRecord | undefined): SavedStatus {
+  if (!record) return 'new';
+  return c.updatedAt && record.updatedAt === c.updatedAt && !record.missingFiles
+    ? 'saved'
+    : 'changed';
+}
 
 /** Local calendar date of an ISO timestamp, to compare with date inputs. */
 function day(iso: string | null, timeZone?: string): string {
@@ -28,11 +51,12 @@ function day(iso: string | null, timeZone?: string): string {
   return date.toLocaleDateString('sv-SE', timeZone ? { timeZone } : {});
 }
 
-/** Conversations matching the search and date range, sorted. */
+/** Conversations matching the search, date range and saved status, sorted. */
 export function filterConversations(
   list: readonly ConversationSummary[],
   filter: ListFilter,
   timeZone?: string,
+  saved: ReadonlyMap<string, SavedRecord> = new Map(),
 ): ConversationSummary[] {
   const words = filter.query.toLocaleLowerCase().split(/\s+/).filter(Boolean);
   const matches = list.filter((c) => {
@@ -42,6 +66,7 @@ export function filterConversations(
     const created = day(c.createdAt ?? c.updatedAt, timeZone);
     if (filter.from && (!created || created < filter.from)) return false;
     if (filter.to && (!created || created > filter.to)) return false;
+    if (filter.status !== 'all' && savedStatus(c, saved.get(c.id)) !== filter.status) return false;
     return true;
   });
   const value = (c: ConversationSummary) =>
