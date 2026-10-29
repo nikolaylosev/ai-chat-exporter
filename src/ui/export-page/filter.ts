@@ -6,6 +6,19 @@ export type SortKey = 'title' | 'createdAt' | 'updatedAt' | 'project';
 /** A chat against the export registry: never saved, saved as it is now, or changed since. */
 export type SavedStatus = 'new' | 'saved' | 'changed';
 
+/**
+ * Where a chat in the table came from (Gemini): its list, its search, Google
+ * Takeout, or only the registry of chats saved before.
+ */
+export type ChatSource = 'list' | 'search' | 'takeout' | 'saved';
+
+export function chatSource(c: ConversationSummary): ChatSource {
+  if (c.fromTakeout) return 'takeout';
+  if (c.foundBySearch) return 'search';
+  if (c.savedBefore) return 'saved';
+  return 'list';
+}
+
 /** What the registry holds for a chat: its latest export (`registry:chats`). */
 export interface SavedRecord {
   updatedAt: string | null;
@@ -18,6 +31,7 @@ export interface ListFilter {
   from: string;
   to: string;
   status: 'all' | SavedStatus;
+  source: 'all' | ChatSource;
   sort: SortKey;
   descending: boolean;
 }
@@ -27,6 +41,7 @@ export const DEFAULT_FILTER: ListFilter = {
   from: '',
   to: '',
   status: 'all',
+  source: 'all',
   sort: 'updatedAt',
   descending: true,
 };
@@ -51,7 +66,7 @@ function day(iso: string | null, timeZone?: string): string {
   return date.toLocaleDateString('sv-SE', timeZone ? { timeZone } : {});
 }
 
-/** Conversations matching the search, date range and saved status, sorted. */
+/** Conversations matching the search, date range, saved status and source, sorted. */
 export function filterConversations(
   list: readonly ConversationSummary[],
   filter: ListFilter,
@@ -67,6 +82,7 @@ export function filterConversations(
     if (filter.from && (!created || created < filter.from)) return false;
     if (filter.to && (!created || created > filter.to)) return false;
     if (filter.status !== 'all' && savedStatus(c, saved.get(c.id)) !== filter.status) return false;
+    if (filter.source !== 'all' && chatSource(c) !== filter.source) return false;
     return true;
   });
   const value = (c: ConversationSummary) =>

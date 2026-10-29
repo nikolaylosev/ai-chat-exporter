@@ -23,7 +23,9 @@ import {
   filterProjects,
   type ListFilter,
   type ProjectFilter,
+  chatSource,
   savedStatus,
+  type ChatSource,
   type ProjectSortKey,
   type SavedRecord,
   type SavedStatus,
@@ -612,6 +614,11 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
     for (const c of conversations) counts[savedStatus(c, savedById.get(c.id))]++;
     return counts;
   }, [conversations, savedById]);
+  const sourceCounts = useMemo(() => {
+    const counts: Record<ChatSource, number> = { list: 0, search: 0, takeout: 0, saved: 0 };
+    for (const c of conversations) counts[chatSource(c)]++;
+    return counts;
+  }, [conversations]);
   const visible = useMemo(
     () => filterConversations(conversations, filter, undefined, savedById),
     [conversations, filter, savedById],
@@ -687,6 +694,25 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
             <option value="saved">{t('exportStatusSaved', String(statusCounts.saved))}</option>
           </select>
         </label>
+        {platform === 'gemini' && (
+          <label class="field">
+            <span>{t('exportSourceFilter')}</span>
+            <select
+              value={filter.source}
+              onChange={(e) =>
+                setFilter({ ...filter, source: e.currentTarget.value as ListFilter['source'] })
+              }
+            >
+              <option value="all">{t('exportSourceAll')}</option>
+              <option value="list">{t('exportSourceList', String(sourceCounts.list))}</option>
+              <option value="search">{t('exportSourceSearch', String(sourceCounts.search))}</option>
+              <option value="takeout">
+                {t('exportSourceTakeout', String(sourceCounts.takeout))}
+              </option>
+              <option value="saved">{t('exportSourceSaved', String(sourceCounts.saved))}</option>
+            </select>
+          </label>
+        )}
         <label class="field">
           <span>{hasCreated ? t('exportFrom') : t('exportUpdatedFrom')}</span>
           <input
