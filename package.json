@@ -1,6 +1,6 @@
 {
   "name": "ai-chat-exporter",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "private": true,
   "description": "Chrome extension that exports Claude and Gemini chats to Markdown with all attachments",
   "license": "MIT",
