@@ -118,4 +118,18 @@ describe('normalizeRegistry', () => {
       { id: 'bbbb', title: 'Odd name', updatedAt: 'u' },
     ]);
   });
+
+  it("says how many files a chat's latest export missed", async () => {
+    const registry = new Registry(memoryStore().store);
+    await registry.remember('claude', 'aaaa', {
+      updatedAt: 'u',
+      exportedAt: '2026-10-02T00:00:00Z',
+      destination: 'downloads',
+      folder: 'Plan - 2026-10-01 (Claude)',
+      missingFiles: 2,
+    });
+    expect(await registry.chats('claude')).toEqual([
+      { id: 'aaaa', title: 'Plan', updatedAt: 'u', missingFiles: 2 },
+    ]);
+  });
 });

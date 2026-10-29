@@ -337,6 +337,36 @@
   "exportSearchForget": {
     "message": "Забыть найденные"
   },
+  "exportStatusFilter": {
+    "message": "Сохранение"
+  },
+  "exportStatusAll": {
+    "message": "Все чаты"
+  },
+  "exportStatusNew": {
+    "message": "Ещё не сохранены ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportStatusChanged": {
+    "message": "Изменились после сохранения ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportStatusSaved": {
+    "message": "Сохранены, без изменений ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
   "exportFoundBySearch": {
     "message": "найден поиском"
   },
