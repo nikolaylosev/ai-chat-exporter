@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { queryTerms, refineTerms, search, snippet, type IndexedNote } from '../../src/search/query';
+import {
+  queryTerms,
+  refineTerms,
+  search,
+  searchCounts,
+  snippet,
+  type IndexedNote,
+} from '../../src/search/query';
 
 const note = (key: string, extra: Partial<IndexedNote>): IndexedNote => ({
   key,
@@ -120,5 +127,43 @@ describe('narrowing the results', () => {
     );
     expect(search(many, 'tickets', {}, 2)).toMatchObject({ total: 5, chats: 5 });
     expect(search(many, 'tickets', {}, 2).hits).toHaveLength(2);
+  });
+});
+
+describe('counts for the filters', () => {
+  const withFile = [
+    ...notes,
+    note('c', {
+      platform: 'gemini',
+      messages: [{ role: 'user', time: null, text: 'tickets please' }],
+      files: [{ key: 'c/files/t.txt', name: 't.txt', text: 'two tickets' }],
+    }),
+  ];
+
+  it('gives the hits of each choice, the other filters as they are', () => {
+    expect(searchCounts(withFile, 'tickets')).toEqual({
+      platforms: { all: 4, claude: 1, chatgpt: 1, gemini: 2 },
+      roles: { all: 4, user: 1, assistant: 2 },
+      where: { all: 4, messages: 3, files: 1 },
+    });
+    // With a service chosen, the other counts are within it; the services' own are not.
+    const gemini = searchCounts(withFile, 'tickets', { platform: 'gemini' });
+    expect(gemini.platforms).toEqual({ all: 4, claude: 1, chatgpt: 1, gemini: 2 });
+    expect(gemini.roles).toEqual({ all: 2, user: 1, assistant: 0 });
+    expect(gemini.where).toEqual({ all: 2, messages: 1, files: 1 });
+  });
+
+  it('match what the search finds for each choice', () => {
+    const filters = { role: 'user' as const };
+    const counts = searchCounts(withFile, 'tickets', filters);
+    expect(counts.platforms.gemini).toBe(
+      search(withFile, 'tickets', { ...filters, platform: 'gemini' }).total,
+    );
+    expect(counts.where.files).toBe(0);
+    expect(searchCounts(withFile, '')).toEqual({
+      platforms: { all: 0 },
+      roles: { all: 0, user: 0, assistant: 0 },
+      where: { all: 0, messages: 0, files: 0 },
+    });
   });
 });

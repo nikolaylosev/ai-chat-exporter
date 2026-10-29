@@ -94,6 +94,16 @@ export default {
         banana.length >= 1 && banana.every((h) => /fruits list/.test(h)),
         banana.join('\n'),
       );
+      // Each choice says how many hits it would give.
+      const services = await stand.ev(
+        page,
+        `[...document.querySelectorAll('.query select')[0].options].map((o) => o.text)`,
+      );
+      assert.ok(
+        services.some((o) => /^All services \(\d+\)$/.test(o)) &&
+          services.some((o) => /^Grok \([1-9]\d*\)$/.test(o)),
+        services.join(', '),
+      );
       assert.deepEqual(await find('banana', 'user'), [], 'not in the user messages');
       const fence = await find('fence');
       assert.ok(

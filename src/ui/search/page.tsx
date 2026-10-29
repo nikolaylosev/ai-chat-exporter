@@ -23,6 +23,7 @@ import { headingRole, noteFormatOf } from '../../search/notes';
 import {
   queryTerms,
   search,
+  searchCounts,
   type IndexedNote,
   type SearchFilters,
   type SearchHit,
@@ -250,6 +251,13 @@ export function SearchPage() {
   };
 
   const update = (patch: Partial<SearchFilters>) => setFilters((f) => ({ ...f, ...patch }));
+  const counts = useMemo(
+    () => (notes && query.trim() ? searchCounts(notes, query, filters) : null),
+    [notes, query, filters],
+  );
+  /** An option's label with the hits it would give, once there is a query. */
+  const withCount = (label: string, n: number | undefined) =>
+    counts ? `${label} (${n ?? 0})` : label;
 
   return (
     <main>
@@ -313,10 +321,10 @@ export function SearchPage() {
                 update({ platform: (e.currentTarget.value || null) as Platform | null })
               }
             >
-              <option value="">{t('searchAllPlatforms')}</option>
+              <option value="">{withCount(t('searchAllPlatforms'), counts?.platforms.all)}</option>
               {PLATFORMS.map((p) => (
                 <option key={p} value={p}>
-                  {PLATFORM_LABEL[p]}
+                  {withCount(PLATFORM_LABEL[p], counts?.platforms[p])}
                 </option>
               ))}
             </select>
@@ -327,9 +335,11 @@ export function SearchPage() {
                 update({ role: (e.currentTarget.value || null) as 'user' | 'assistant' | null })
               }
             >
-              <option value="">{t('searchEveryone')}</option>
-              <option value="user">{t('messagesMine')}</option>
-              <option value="assistant">{t('messagesReplies')}</option>
+              <option value="">{withCount(t('searchEveryone'), counts?.roles.all)}</option>
+              <option value="user">{withCount(t('messagesMine'), counts?.roles.user)}</option>
+              <option value="assistant">
+                {withCount(t('messagesReplies'), counts?.roles.assistant)}
+              </option>
             </select>
             <input
               type="text"
@@ -369,9 +379,11 @@ export function SearchPage() {
                 update({ where: (e.currentTarget.value || null) as 'messages' | 'files' | null })
               }
             >
-              <option value="">{t('searchWhereAll')}</option>
-              <option value="messages">{t('searchWhereMessages')}</option>
-              <option value="files">{t('searchWhereFiles')}</option>
+              <option value="">{withCount(t('searchWhereAll'), counts?.where.all)}</option>
+              <option value="messages">
+                {withCount(t('searchWhereMessages'), counts?.where.messages)}
+              </option>
+              <option value="files">{withCount(t('searchWhereFiles'), counts?.where.files)}</option>
             </select>
             <select
               aria-label={t('searchSort')}
