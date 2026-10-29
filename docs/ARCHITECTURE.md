@@ -462,6 +462,7 @@ The output targets Obsidian but stays plain Markdown.
 - YAML frontmatter with `title`, `platform`, `conversation_id`, `url`, `created`, `updated`, `created_source`, `exported`, `model`, `project`, `message_count`, `attachments`, `tags`. Obsidian reads it as Properties.
 - One `##` heading per message: role and local time.
 - Model replies keep the platform's original Markdown (code blocks with languages, tables, lists, `$…$` / `$$…$$` math); all four platforms give Markdown. Platform marks that mean nothing outside its page are removed or replaced: Gemini's `[cite: N]`, Grok's `<grok:render>` cards, ChatGPT's `<Cite>`, `<Entity>`, `<FileCite>` and `<WritingBlock>`.
+- A code fence a message leaves open (a reply that stopped inside a code block) is closed at the end of the message's text (`closeFences`); left open, it would turn the rest of the note into code. The archive search, reading notes saved before this, ends such a fence at the next message heading with its time or at a section heading of the note.
 - Thinking, web search results and tool calls become collapsible Obsidian callouts (`> [!note]-`, `> [!info]-`, `> [!abstract]-`). Each type can be turned off in settings.
 - Attachments are relative links into `files/`, with a note when the file is not the original (extracted text, rebuilt, re-encoded). An attachment that could not be saved is listed as `⚠️ name — <reason>`.
 - Other branches follow the main one under "Other branches", each saying where it forks.
