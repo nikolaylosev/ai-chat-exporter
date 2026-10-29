@@ -348,7 +348,11 @@ async function exportConversationItem(
     });
     item.title = conversation.title || item.title;
     // A chat found by search earlier is remembered under its title then; keep it current.
-    await refreshFound(job.platform, item.id, { title: conversation.title });
+    // A chat found by search carries a snippet's time: it gets the chat's own.
+    await refreshFound(job.platform, item.id, {
+      title: conversation.title,
+      updatedAt: conversation.updatedAt,
+    });
     await refreshListed(job.platform, item.id, { title: conversation.title });
     item.status = outcome.failedFiles ? 'warning' : 'done';
     item.savedFiles = outcome.savedFiles;
