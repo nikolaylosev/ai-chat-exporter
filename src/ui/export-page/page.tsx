@@ -780,6 +780,15 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
               )}
             </p>
           )}
+          <p class="muted">
+            <a
+              href={chrome.runtime.getURL('src/ui/takeout/index.html')}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {t('exportTakeoutComplete')}
+            </a>
+          </p>
           {(extraOnly.length > 0 || savedOnly.length > 0) && (
             <p class="muted">
               {t('exportSources', [
