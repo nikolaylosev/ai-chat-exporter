@@ -112,6 +112,17 @@ async function showImages(
 }
 
 /**
+ * Scrolls the viewer's own document to an element, at its top or centred.
+ * `scrollIntoView` would scroll the search page around the viewer too.
+ */
+function scrollInside(doc: Document, el: Element, center: boolean) {
+  const scroller = doc.scrollingElement ?? doc.documentElement;
+  const top = el.getBoundingClientRect().top + scroller.scrollTop;
+  const view = doc.defaultView?.innerHeight ?? 0;
+  scroller.scrollTop = Math.max(0, center ? top - view / 2 : top - 8);
+}
+
+/**
  * Marks the query's terms in the viewer and scrolls to the hit: message `index`
  * (from its heading to the next one), or with no index the whole page, at its
  * first mark.
@@ -124,9 +135,10 @@ function showHit(frame: HTMLIFrameElement, index: number | null, terms: string[]
   );
   const heading = index === null ? null : (headings[index] ?? null);
   if (index !== null && !heading) return;
-  heading?.scrollIntoView({ block: 'start' });
+  if (heading) scrollInside(doc, heading, false);
   const style = doc.createElement('style');
-  style.textContent = 'mark { background: #fde68a; color: inherit; }';
+  // Dark text on the mark: the note may be shown in a dark theme.
+  style.textContent = 'mark { background: #fde68a; color: #1d1d1f; }';
   doc.head.append(style);
   if (!terms.length) return;
   const next = index === null ? null : (headings[index + 1] ?? null);
@@ -162,7 +174,8 @@ function showHit(frame: HTMLIFrameElement, index: number | null, terms: string[]
     fragment.append(value.slice(at));
     text.replaceWith(fragment);
   }
-  if (!heading) doc.querySelector('mark')?.scrollIntoView({ block: 'center' });
+  const mark = doc.querySelector('mark');
+  if (!heading && mark) scrollInside(doc, mark, true);
 }
 
 /**
