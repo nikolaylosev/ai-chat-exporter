@@ -39,6 +39,16 @@ h1 {
   padding: 8px 10px;
 }
 
+/* The second row narrows the results: smaller than the query itself. */
+.query.refine {
+  margin-top: 0;
+}
+
+.query.refine input[type='search'] {
+  font-size: 14px;
+  padding: 6px 10px;
+}
+
 .query select,
 .query input[type='text'],
 .query input[type='date'] {

@@ -223,7 +223,7 @@ export function SearchPage() {
   };
 
   const result = useMemo(
-    () => (notes ? search(notes, query, filters) : { hits: [], total: 0 }),
+    () => (notes ? search(notes, query, filters) : { hits: [], total: 0, chats: 0 }),
     [notes, query, filters],
   );
 
@@ -250,7 +250,6 @@ export function SearchPage() {
   };
 
   const update = (patch: Partial<SearchFilters>) => setFilters((f) => ({ ...f, ...patch }));
-  const chats = new Set(result.hits.map((h) => h.note.key)).size;
 
   return (
     <main>
@@ -354,10 +353,42 @@ export function SearchPage() {
               onInput={(e) => update({ to: e.currentTarget.value })}
             />
           </div>
+          <div class="query refine">
+            <input
+              type="search"
+              value={filters.within ?? ''}
+              placeholder={t('searchWithin')}
+              aria-label={t('searchWithin')}
+              title={t('searchWithinHint')}
+              onInput={(e) => update({ within: e.currentTarget.value })}
+            />
+            <select
+              aria-label={t('searchWhere')}
+              value={filters.where ?? ''}
+              onChange={(e) =>
+                update({ where: (e.currentTarget.value || null) as 'messages' | 'files' | null })
+              }
+            >
+              <option value="">{t('searchWhereAll')}</option>
+              <option value="messages">{t('searchWhereMessages')}</option>
+              <option value="files">{t('searchWhereFiles')}</option>
+            </select>
+            <select
+              aria-label={t('searchSort')}
+              value={filters.sort ?? 'newest'}
+              onChange={(e) =>
+                update({ sort: e.currentTarget.value as NonNullable<SearchFilters['sort']> })
+              }
+            >
+              <option value="newest">{t('searchSortNewest')}</option>
+              <option value="oldest">{t('searchSortOldest')}</option>
+              <option value="matches">{t('searchSortMatches')}</option>
+            </select>
+          </div>
           {query.trim() && (
             <p class="muted">
               {result.total
-                ? t('searchFound', [String(result.total), String(chats)])
+                ? t('searchFound', [String(result.total), String(result.chats)])
                 : t('searchNothing')}
               {result.total > result.hits.length &&
                 ` ${t('searchFirst', String(result.hits.length))}`}

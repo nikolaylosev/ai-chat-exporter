@@ -263,7 +263,13 @@
     "message": "Добавить чаты из Google Takeout…"
   },
   "exportTakeoutHint": {
-    "message": "Takeout ссылается на все чаты, даже самые старые. На takeout.google.com выберите «Мои действия» только с «Приложениями Gemini», в формате JSON, затем укажите здесь .zip или файл с действиями. Файл читается только на этом компьютере."
+    "message": "Takeout ссылается на все чаты, даже самые старые. В Google Takeout выберите «Мои действия» только с «Приложениями Gemini», в формате JSON, затем укажите здесь .zip или файл с действиями. Файл читается только на этом компьютере."
+  },
+  "exportTakeoutOpen": {
+    "message": "Открыть Google Takeout"
+  },
+  "exportSearchAfterTakeout": {
+    "message": "Чаты из Takeout уже в таблице, а более новые есть в списке Gemini, так что поиск нужен, только если после создания файла Takeout появилось много новых чатов."
   },
   "exportTakeoutReading": {
     "message": "Читаю файл Takeout…"
@@ -336,6 +342,93 @@
   },
   "exportSearchForget": {
     "message": "Забыть найденные"
+  },
+  "exportStatusFilter": {
+    "message": "Сохранение"
+  },
+  "exportStatusAll": {
+    "message": "Все чаты"
+  },
+  "exportStatusNew": {
+    "message": "Ещё не сохранены ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportStatusChanged": {
+    "message": "Изменились после сохранения ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportStatusSaved": {
+    "message": "Сохранены, без изменений ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportSourceFilter": {
+    "message": "Источник"
+  },
+  "exportSourceAll": {
+    "message": "Все источники"
+  },
+  "exportSourceList": {
+    "message": "Список Gemini ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportSourceSearch": {
+    "message": "Найдены поиском ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportSourceTakeout": {
+    "message": "Google Takeout ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportSourceSaved": {
+    "message": "Только сохранённые раньше ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportProjectAll": {
+    "message": "Все"
+  },
+  "exportProjectNone": {
+    "message": "Без проекта ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportGemNone": {
+    "message": "Без Gem ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
   },
   "exportFoundBySearch": {
     "message": "найден поиском"
@@ -1399,6 +1492,36 @@
   },
   "searchTo": {
     "message": "По"
+  },
+  "searchWithin": {
+    "message": "В чатах, где есть ещё…"
+  },
+  "searchWithinHint": {
+    "message": "Слова, которые должны быть ещё где-то в чате, в любом сообщении или файле. -слово убирает чаты, где оно есть."
+  },
+  "searchWhere": {
+    "message": "Где"
+  },
+  "searchWhereAll": {
+    "message": "В сообщениях и файлах"
+  },
+  "searchWhereMessages": {
+    "message": "Только в сообщениях"
+  },
+  "searchWhereFiles": {
+    "message": "Только в файлах"
+  },
+  "searchSort": {
+    "message": "Порядок"
+  },
+  "searchSortNewest": {
+    "message": "Сначала новые чаты"
+  },
+  "searchSortOldest": {
+    "message": "Сначала старые чаты"
+  },
+  "searchSortMatches": {
+    "message": "Сначала больше совпадений"
   },
   "searchFound": {
     "message": "Найдено в $ARG1$ сообщениях из $ARG2$ чатов.",

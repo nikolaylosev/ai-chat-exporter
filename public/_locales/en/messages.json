@@ -263,7 +263,13 @@
     "message": "Add chats from Google Takeout…"
   },
   "exportTakeoutHint": {
-    "message": "Takeout links to every chat, however old. On takeout.google.com choose My Activity with only Gemini Apps, in JSON, then pick the .zip or MyActivity.json here. The file is read on this computer only."
+    "message": "Takeout links to every chat, however old. In Google Takeout choose My Activity with only Gemini Apps, in JSON, then pick the .zip or MyActivity.json here. The file is read on this computer only."
+  },
+  "exportTakeoutOpen": {
+    "message": "Open Google Takeout"
+  },
+  "exportSearchAfterTakeout": {
+    "message": "The chats from Takeout are in the table, and Gemini's list holds the newer ones, so the search is needed only if many chats were started after the Takeout file was made."
   },
   "exportTakeoutReading": {
     "message": "Reading the Takeout file…"
@@ -336,6 +342,93 @@
   },
   "exportSearchForget": {
     "message": "Forget the found ones"
+  },
+  "exportStatusFilter": {
+    "message": "Saved"
+  },
+  "exportStatusAll": {
+    "message": "All chats"
+  },
+  "exportStatusNew": {
+    "message": "Not saved yet ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportStatusChanged": {
+    "message": "Changed since saved ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportStatusSaved": {
+    "message": "Saved, unchanged ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportSourceFilter": {
+    "message": "Source"
+  },
+  "exportSourceAll": {
+    "message": "All sources"
+  },
+  "exportSourceList": {
+    "message": "Gemini's list ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportSourceSearch": {
+    "message": "Found by search ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportSourceTakeout": {
+    "message": "Google Takeout ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportSourceSaved": {
+    "message": "Only saved before ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportProjectAll": {
+    "message": "All"
+  },
+  "exportProjectNone": {
+    "message": "Without a project ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportGemNone": {
+    "message": "Without a Gem ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
   },
   "exportFoundBySearch": {
     "message": "found by search"
@@ -1399,6 +1492,36 @@
   },
   "searchTo": {
     "message": "To"
+  },
+  "searchWithin": {
+    "message": "In chats that also mention…"
+  },
+  "searchWithinHint": {
+    "message": "Words that must also be somewhere in the chat, in any message or file. -word leaves out the chats that have it."
+  },
+  "searchWhere": {
+    "message": "Where"
+  },
+  "searchWhereAll": {
+    "message": "In messages and files"
+  },
+  "searchWhereMessages": {
+    "message": "Only in messages"
+  },
+  "searchWhereFiles": {
+    "message": "Only in files"
+  },
+  "searchSort": {
+    "message": "Order"
+  },
+  "searchSortNewest": {
+    "message": "Newest chats first"
+  },
+  "searchSortOldest": {
+    "message": "Oldest chats first"
+  },
+  "searchSortMatches": {
+    "message": "Most matches first"
   },
   "searchFound": {
     "message": "Found in $ARG1$ messages of $ARG2$ chats.",
