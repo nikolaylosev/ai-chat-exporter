@@ -91,12 +91,13 @@ export function saveSearchState(platform: Platform, state: SweepState): Promise<
 
 /**
  * After an export: a chat that is gone from the platform is forgotten, and one
- * that was saved gets the title it has now. Chats not remembered are left alone.
+ * that was saved gets the title and the update time it has now (a search hit
+ * has its snippet's time). Chats not remembered are left alone.
  */
 export function refreshFound(
   platform: Platform,
   id: string,
-  now: { title: string } | 'gone',
+  now: { title: string; updatedAt?: string | null } | 'gone',
 ): Promise<void> {
   writes = writes
     .then(async () => {
@@ -105,8 +106,12 @@ export function refreshFound(
       const entry = found[at];
       if (!entry) return;
       if (now === 'gone') found.splice(at, 1);
-      else if (now.title && now.title !== entry.title) found[at] = { ...entry, title: now.title };
-      else return;
+      else {
+        const title = now.title || entry.title;
+        const updatedAt = now.updatedAt ?? entry.updatedAt;
+        if (title === entry.title && updatedAt === entry.updatedAt) return;
+        found[at] = { ...entry, title, updatedAt };
+      }
       await chrome.storage.local.set({ [key(platform)]: found });
     })
     .catch(() => undefined);
