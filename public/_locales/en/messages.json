@@ -1227,6 +1227,181 @@
   "pageMenuChoose": {
     "message": "Choose messages…"
   },
+  "takeoutTitle": {
+    "message": "Complete from Google Takeout"
+  },
+  "takeoutHint": {
+    "message": "Google Takeout keeps every Gemini prompt with its files, also those Gemini's history no longer shows: prompts edited or answered again, videos it shows as a frame, some PDFs and audio. This adds them to the Gemini chats you saved: the files into each chat's files folder, the prompts as a \"From Google Takeout\" section at the end of its note. Everything is read and written on this computer."
+  },
+  "takeoutArchive": {
+    "message": "Saved chats: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "takeoutArchiveNone": {
+    "message": "Choose the folder with your saved chats. Unpack .zip exports into it first."
+  },
+  "takeoutChooseArchive": {
+    "message": "Choose the folder…"
+  },
+  "takeoutUseExportFolder": {
+    "message": "Use the export folder ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "takeoutSource": {
+    "message": "Takeout: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "takeoutSourceNone": {
+    "message": "Choose the Takeout .zip, with all its parts, or its unpacked folder."
+  },
+  "takeoutChooseZip": {
+    "message": "Choose .zip files…"
+  },
+  "takeoutChooseFolder": {
+    "message": "Choose an unpacked folder…"
+  },
+  "takeoutCheck": {
+    "message": "Check"
+  },
+  "takeoutAdd": {
+    "message": "Add them"
+  },
+  "takeoutReadingActivity": {
+    "message": "Reading Takeout's activity…"
+  },
+  "takeoutReadingArchive": {
+    "message": "Reading saved chats: $ARG1$…",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "takeoutReadingFiles": {
+    "message": "Comparing Takeout's files: $ARG1$ of $ARG2$…",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "takeoutWriting": {
+    "message": "Writing notes: $ARG1$ of $ARG2$…",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "takeoutFound": {
+    "message": "$ARG1$ chats would get something from Takeout: $ARG2$ files and $ARG3$ prompts.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      }
+    }
+  },
+  "takeoutNothing": {
+    "message": "The saved chats already have everything Takeout holds for them."
+  },
+  "takeoutDone": {
+    "message": "Added to $ARG1$ chats: $ARG2$ files and $ARG3$ prompts. The report is _reports/$ARG4$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      },
+      "arg4": {
+        "content": "$4"
+      }
+    }
+  },
+  "takeoutChat": {
+    "message": "$ARG1$ files, $ARG2$ prompts",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "takeoutFilesOnly": {
+    "message": "files only: a JSON or Word note"
+  },
+  "takeoutFilesOnlyHint": {
+    "message": "JSON and Word notes get the files only; Markdown and HTML notes get the section too."
+  },
+  "takeoutSectionHeading": {
+    "message": "From Google Takeout"
+  },
+  "takeoutSectionIntro": {
+    "message": "Gemini's history of this chat does not have these. Added from Google Takeout on $ARG1$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "takeoutSectionFiles": {
+    "message": "Files Gemini's history left out"
+  },
+  "takeoutNotInTakeout": {
+    "message": "not in the Takeout files"
+  },
+  "takeoutReportTitle": {
+    "message": "Completed from Google Takeout"
+  },
+  "takeoutReportSummary": {
+    "message": "$ARG1$: $ARG2$ chats got $ARG3$ files and $ARG4$ prompts.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      },
+      "arg4": {
+        "content": "$4"
+      }
+    }
+  },
+  "exportTakeoutComplete": {
+    "message": "Chats saved already? Add what Gemini's history left out…"
+  },
   "searchTitle": {
     "message": "Search the archive"
   },

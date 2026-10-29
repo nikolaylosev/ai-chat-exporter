@@ -1227,6 +1227,181 @@
   "pageMenuChoose": {
     "message": "Выбрать сообщения…"
   },
+  "takeoutTitle": {
+    "message": "Дополнить из Google Takeout"
+  },
+  "takeoutHint": {
+    "message": "Google Takeout хранит все запросы к Gemini с их файлами, в том числе те, которых история Gemini уже не показывает: отредактированные или перегенерированные запросы, видео, которые она показывает кадром, часть PDF и аудио. Здесь они добавляются к сохранённым чатам Gemini: файлы в папку files каждого чата, запросы разделом «Из Google Takeout» в конце его заметки. Всё читается и пишется только на этом компьютере."
+  },
+  "takeoutArchive": {
+    "message": "Сохранённые чаты: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "takeoutArchiveNone": {
+    "message": "Выберите папку с сохранёнными чатами. Выгрузки в .zip сначала распакуйте в неё."
+  },
+  "takeoutChooseArchive": {
+    "message": "Выбрать папку…"
+  },
+  "takeoutUseExportFolder": {
+    "message": "Взять папку для выгрузки ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "takeoutSource": {
+    "message": "Takeout: $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "takeoutSourceNone": {
+    "message": "Выберите .zip из Takeout со всеми его частями или его распакованную папку."
+  },
+  "takeoutChooseZip": {
+    "message": "Выбрать файлы .zip…"
+  },
+  "takeoutChooseFolder": {
+    "message": "Выбрать распакованную папку…"
+  },
+  "takeoutCheck": {
+    "message": "Проверить"
+  },
+  "takeoutAdd": {
+    "message": "Добавить"
+  },
+  "takeoutReadingActivity": {
+    "message": "Читаю действия из Takeout…"
+  },
+  "takeoutReadingArchive": {
+    "message": "Читаю сохранённые чаты: $ARG1$…",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "takeoutReadingFiles": {
+    "message": "Сравниваю файлы Takeout: $ARG1$ из $ARG2$…",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "takeoutWriting": {
+    "message": "Записываю заметки: $ARG1$ из $ARG2$…",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "takeoutFound": {
+    "message": "Чатов, которые получат что-то из Takeout: $ARG1$. Файлов: $ARG2$, запросов: $ARG3$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      }
+    }
+  },
+  "takeoutNothing": {
+    "message": "В сохранённых чатах уже есть всё, что для них есть в Takeout."
+  },
+  "takeoutDone": {
+    "message": "Добавлено в чатов: $ARG1$. Файлов: $ARG2$, запросов: $ARG3$. Отчёт: _reports/$ARG4$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      },
+      "arg4": {
+        "content": "$4"
+      }
+    }
+  },
+  "takeoutChat": {
+    "message": "файлов $ARG1$, запросов $ARG2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "takeoutFilesOnly": {
+    "message": "только файлы: заметка JSON или Word"
+  },
+  "takeoutFilesOnlyHint": {
+    "message": "Заметки JSON и Word получают только файлы, а Markdown и HTML ещё и раздел."
+  },
+  "takeoutSectionHeading": {
+    "message": "Из Google Takeout"
+  },
+  "takeoutSectionIntro": {
+    "message": "Этого нет в истории чата в Gemini. Добавлено из Google Takeout $ARG1$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "takeoutSectionFiles": {
+    "message": "Файлы, которых нет в истории Gemini"
+  },
+  "takeoutNotInTakeout": {
+    "message": "нет среди файлов Takeout"
+  },
+  "takeoutReportTitle": {
+    "message": "Дополнено из Google Takeout"
+  },
+  "takeoutReportSummary": {
+    "message": "$ARG1$: чатов $ARG2$, добавлено файлов $ARG3$ и запросов $ARG4$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      },
+      "arg3": {
+        "content": "$3"
+      },
+      "arg4": {
+        "content": "$4"
+      }
+    }
+  },
+  "exportTakeoutComplete": {
+    "message": "Чаты уже сохранены? Добавить то, чего нет в истории Gemini…"
+  },
   "searchTitle": {
     "message": "Поиск по архиву"
   },
