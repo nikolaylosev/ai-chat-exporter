@@ -24,6 +24,8 @@ COMO USAR
 • Em Downloads, um chat com seus arquivos chega como um único .zip, e só o texto como um arquivo. Ou direto em uma pasta que você escolher, arquivo por arquivo.
 • Busca nas conversas salvas: "Search the archive" pesquisa de uma vez em todas as conversas salvas de todos os serviços, no seu computador, inclusive no texto dos arquivos delas.
 • Todo um histórico grande do Gemini: a lista para em cerca de 1.000 conversas; a busca do Gemini ou um arquivo do Google Takeout adiciona as mais antigas.
+• Veja o que falta salvar: a página de exportação filtra as conversas por terem sido salvas (ainda não, alteradas desde então, sem alterações), por projeto ou Gem e, no Gemini, pela origem, e lembra suas escolhas.
+• O que o histórico do Gemini deixa de fora: "Complete from Google Takeout" adiciona às conversas do Gemini salvas os prompts e arquivos que o Gemini não mostra mais.
 
 PRIVACIDADE
 • Tudo fica no seu computador. A extensão não tem servidor e não envia suas conversas para lugar nenhum.

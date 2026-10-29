@@ -24,6 +24,8 @@ CÓMO SE USA
 • En Descargas, un chat con sus archivos llega como un solo .zip, y solo el texto como un archivo. O directamente en una carpeta que elijas, archivo por archivo.
 • Busca en tus chats guardados: «Search the archive» busca a la vez en todos los chats guardados de todos los servicios, en tu ordenador, también en el texto de sus archivos.
 • Todo un historial grande de Gemini: su lista se detiene en unos 1.000 chats; la búsqueda de Gemini o un archivo de Google Takeout añade los más antiguos.
+• Ve lo que falta por guardar: la página de exportación filtra los chats según si se guardaron (todavía no, cambiados desde entonces, sin cambios), por proyecto o Gem y, en Gemini, por su origen, y recuerda tu elección.
+• Lo que el historial de Gemini omite: «Complete from Google Takeout» añade a los chats de Gemini guardados las peticiones y archivos que Gemini ya no muestra.
 
 PRIVACIDAD
 • Todo se queda en tu ordenador. La extensión no tiene servidor y no envía tus conversaciones a ningún sitio.

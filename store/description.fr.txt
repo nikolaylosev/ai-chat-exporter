@@ -24,6 +24,8 @@ UTILISATION
 • Dans Téléchargements, un chat avec ses fichiers arrive en une seule archive .zip, et son texte seul en un fichier. Ou directement dans un dossier de votre choix, fichier par fichier.
 • Recherche dans vos chats enregistrés : « Search the archive » cherche dans tous les chats enregistrés de tous les services à la fois, sur votre ordinateur, y compris dans le texte de leurs fichiers.
 • Tout un long historique Gemini : sa liste s’arrête vers 1 000 chats ; la recherche de Gemini ou un fichier Google Takeout ajoute les plus anciens.
+• Voir ce qui reste à enregistrer : la page d’export filtre les chats selon qu’ils ont été enregistrés (pas encore, modifiés depuis, inchangés), par projet ou Gem et, pour Gemini, par provenance, et retient vos choix.
+• Ce que l’historique de Gemini omet : « Complete from Google Takeout » ajoute aux chats Gemini enregistrés les requêtes et fichiers que Gemini ne montre plus.
 
 CONFIDENTIALITÉ
 • Tout reste sur votre ordinateur. L'extension n'a pas de serveur et n'envoie vos conversations nulle part.

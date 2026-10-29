@@ -24,6 +24,8 @@ HOW YOU USE IT
 • Into Downloads, a chat with its files comes as one .zip, and its text alone as one file. Or straight into a folder you choose, file by file.
 • Search your saved chats: "Search the archive" searches every saved chat of every service at once, on your computer, with the text of their files.
 • All of a large Gemini history: its list stops at about 1,000 chats; Gemini's own search or a Google Takeout file adds the older ones.
+• See what is left to save: the export page filters chats by whether they were saved (not yet, changed since, unchanged), by project or Gem, and on Gemini by where they came from, and remembers your choices.
+• What Gemini's history leaves out: "Complete from Google Takeout" adds the prompts and files Gemini no longer shows to the Gemini chats you saved.
 
 PRIVACY
 • Everything stays on your computer. The extension has no server and sends your conversations nowhere.
