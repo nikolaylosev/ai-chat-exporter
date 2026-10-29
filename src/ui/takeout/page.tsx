@@ -22,7 +22,7 @@ import './takeout.css';
 type Phase =
   | { kind: 'idle' }
   | { kind: 'running'; adding: boolean; progress: CompletionProgress | null }
-  | { kind: 'checked'; completions: ChatCompletion[] }
+  | { kind: 'checked'; completions: ChatCompletion[]; offTime: boolean }
   | { kind: 'done'; completions: ChatCompletion[]; report: string }
   | { kind: 'error'; message: string };
 
@@ -123,12 +123,15 @@ export function TakeoutPage() {
     try {
       const labels = sectionLabels();
       const date = today();
-      const completions = await completeFromTakeout(archive, source.source, {
+      const result = await completeFromTakeout(archive, source.source, {
         dryRun: !adding,
         onProgress: (progress) => setPhase({ kind: 'running', adding, progress }),
         writeNotes: (c) => writeSections(c, labels, date),
       });
-      if (!adding) return setPhase({ kind: 'checked', completions });
+      const completions = result.chats;
+      // Most prompts unmatched: the notes' times are likely another time zone's.
+      const offTime = result.prompts >= 20 && result.unmatched > result.prompts / 2;
+      if (!adding) return setPhase({ kind: 'checked', completions, offTime });
       const report = completions.length
         ? await writeReport(archive, reportMarkdown(completions, reportLabels(), date), stamp())
         : '';
@@ -146,6 +149,7 @@ export function TakeoutPage() {
     <main>
       <h1>{t('takeoutTitle')}</h1>
       <p class="muted">{t('takeoutHint')}</p>
+      <p class="muted">{t('takeoutReexportHint')}</p>
       {!canUseFolders() && (
         <p class="warn">
           {t('searchUnsupported')}
@@ -219,6 +223,7 @@ export function TakeoutPage() {
 
       {running && <p class="muted">{progressText(phase.progress)}</p>}
       {phase.kind === 'error' && <p class="error">{phase.message}</p>}
+      {phase.kind === 'checked' && phase.offTime && <p class="warn">{t('takeoutTimeWarning')}</p>}
       {sum && (
         <p>
           {sum.chats === 0

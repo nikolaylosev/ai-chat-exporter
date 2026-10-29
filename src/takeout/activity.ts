@@ -58,6 +58,21 @@ export function takeoutChatIds(activity: unknown): string[] {
 }
 
 /**
+ * The word nearly every title starts with ("Prompted", in other languages
+ * another), or "Prompted" for a few titles; null when none leads.
+ */
+function leadingWord(titles: readonly string[]): string | null {
+  const counts = new Map<string, number>();
+  for (const t of titles) {
+    const word = t.split(/\s/, 1)[0] ?? '';
+    if (word) counts.set(word, (counts.get(word) ?? 0) + 1);
+  }
+  const [word, n] = [...counts].sort((a, b) => b[1] - a[1])[0] ?? ['', 0];
+  if (titles.length >= 5 && n >= titles.length * 0.8) return word;
+  return counts.has('Prompted') ? 'Prompted' : null;
+}
+
+/**
  * The prompts of an activity file, oldest first: records that link to one chat
  * and hold an answer or files. A record linking to many chats ("Cleared") is not
  * a prompt.
@@ -75,13 +90,14 @@ export function takeoutPrompts(activity: unknown): TakeoutPrompt[] {
     const files = [...strings(record.attachedFiles), ...strings([record.imageFile])];
     if (!answer && !files.length) continue;
     const title = typeof record.title === 'string' ? record.title : '';
-    prompts.push({
-      chatId: chats[0]!,
-      time: record.time,
-      text: title.replace(/^Prompted(?:\s+|$)/, ''),
-      answer,
-      files,
-    });
+    prompts.push({ chatId: chats[0]!, time: record.time, text: title, answer, files });
+  }
+  // The title starts with the word for "Prompted" in the account's language.
+  const lead = leadingWord(prompts.map((p) => p.text));
+  for (const p of prompts) {
+    if (lead && (p.text === lead || p.text.startsWith(`${lead} `))) {
+      p.text = p.text.slice(lead.length).trimStart();
+    }
   }
   return prompts.sort((a, b) => (a.time < b.time ? -1 : a.time > b.time ? 1 : 0));
 }

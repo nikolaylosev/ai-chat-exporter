@@ -237,7 +237,10 @@ describe('completing saved chats from Takeout', () => {
   it('finds, without writing, the files the chat lacks and the prompt it does not show', async () => {
     const root = archive();
     const before = root.paths().length;
-    const [md, html, json] = await run(root, true);
+    const result = await run(root, true);
+    const [md, html, json] = result.chats;
+    // Of this chat's prompts in Takeout, one is not in it (each of the three notes counts).
+    expect([result.prompts, result.unmatched]).toEqual([6, 3]);
     expect(root.paths()).toHaveLength(before);
     const byPath = new Map([md, html, json].map((c) => [c?.chat.path, c]));
     for (const path of ['Photos (Gemini)/', 'Html/Photos/']) {
@@ -295,7 +298,7 @@ describe('completing saved chats from Takeout', () => {
     expect(root.paths().sort()).toEqual(paths);
     expect(root.read(`${folder}Photos (Gemini).md`)).toBe(note);
     // A JSON note has no section: the files copied the first time are its own now.
-    expect(Object.fromEntries(again.map((c) => [c.chat.path, c.files.length]))).toEqual({
+    expect(Object.fromEntries(again.chats.map((c) => [c.chat.path, c.files.length]))).toEqual({
       'Photos (Gemini)/': 2,
       'Html/Photos/': 2,
     });
@@ -332,7 +335,7 @@ describe('the section and the report', () => {
   });
 
   it('lists each chat with a link to its note', async () => {
-    const completions = await run(archive(), true);
+    const completions = (await run(archive(), true)).chats;
     const report = reportMarkdown(
       completions,
       {
@@ -348,5 +351,43 @@ describe('the section and the report', () => {
       '- [Photos](../Photos%20%28Gemini%29/Photos%20%28Gemini%29.md): 3 files, 1 prompts',
     );
     expect(report).toContain('(files only)');
+  });
+});
+
+describe('Takeout times and languages', () => {
+  it("reads a note at the offset it was saved with, whatever this computer's time zone", async () => {
+    // Saved on a computer five hours ahead of UTC: its headings show 15:00 for 10:00 UTC.
+    const ahead = renderMarkdown(chat, { ...options, timeZone: 'Asia/Almaty' });
+    expect(ahead).toContain('## User · 2026-10-20 15:00');
+    const root = new MemoryDir('AI Chats')
+      .put('Photos (Gemini)/Photos (Gemini).md', ahead)
+      .put('Photos (Gemini)/files/photo.png', png(10, 10, 9));
+    const result = await completeFromTakeout(
+      root.asHandle(),
+      { kind: 'files', files: [takeoutZip()] },
+      {
+        timeZone: 'America/New_York',
+        writeNotes: (c) => writeSections(c, labels, '2026-10-29', 'America/New_York'),
+      },
+    );
+    expect(result.unmatched).toBe(1);
+    expect(result.chats[0]?.prompts.map((p) => p.text)).toEqual(['an edited question']);
+    // The section shows the time as the note does: at its own offset.
+    expect(root.read('Photos (Gemini)/Photos (Gemini).md')).toContain(
+      '### User · 2026-10-20 17:30',
+    );
+  });
+
+  it("drops the word the titles start with in the account's language", () => {
+    const titled = (title: string, i: number) => ({
+      title,
+      time: `2026-10-0${i + 1}T00:00:00.000Z`,
+      details: link(ID),
+      safeHtmlItem: [{ html: '<p>x</p>' }],
+    });
+    const prompts = takeoutPrompts(
+      ['Запрос: один', 'Запрос: два', 'Запрос: три', 'Запрос: четыре', 'Запрос:'].map(titled),
+    );
+    expect(prompts.map((p) => p.text)).toEqual(['один', 'два', 'три', 'четыре', '']);
   });
 });

@@ -1,6 +1,6 @@
 import { escapeLinkText, linkTarget } from '../render/markdown';
 import {
-  localMinute,
+  minuteAt,
   SECTION_END,
   SECTION_START,
   withoutSection,
@@ -81,7 +81,9 @@ export function htmlText(html: string): string {
   );
 }
 
-const minute = (iso: string, timeZone?: string) => localMinute(new Date(iso), timeZone);
+/** A time as the chat's note shows its own: at the note's offset when known. */
+const minuteIn = (c: ChatCompletion, timeZone?: string) => (iso: string) =>
+  minuteAt(new Date(iso), c.chat.offset, timeZone);
 const nameOf = (path: string) => path.slice(path.lastIndexOf('/') + 1);
 
 export function markdownSection(
@@ -90,16 +92,17 @@ export function markdownSection(
   date: string,
   timeZone?: string,
 ): string {
+  const minute = minuteIn(c, timeZone);
   const parts = [SECTION_START, `## ${labels.heading}`, labels.intro(date)];
   const link = (path: string) => `[${escapeLinkText(nameOf(path))}](${linkTarget(path)})`;
   if (c.files.length) {
     parts.push(
       `### ${labels.files}`,
-      c.files.map((f) => `- ${minute(f.time, timeZone)} · ${link(f.path)}`).join('\n'),
+      c.files.map((f) => `- ${minute(f.time)} · ${link(f.path)}`).join('\n'),
     );
   }
   for (const p of c.prompts) {
-    const user = [`### ${labels.user} · ${minute(p.time, timeZone)}`];
+    const user = [`### ${labels.user} · ${minute(p.time)}`];
     if (p.text) user.push(p.text);
     if (p.links.length) {
       user.push(
@@ -113,7 +116,7 @@ export function markdownSection(
     }
     parts.push(user.join('\n\n'));
     const answer = htmlText(p.answer);
-    if (answer) parts.push(`### ${labels.assistant} · ${minute(p.time, timeZone)}\n\n${answer}`);
+    if (answer) parts.push(`### ${labels.assistant} · ${minute(p.time)}\n\n${answer}`);
   }
   parts.push(SECTION_END);
   return parts.join('\n\n');
@@ -133,6 +136,7 @@ export function htmlSection(
   date: string,
   timeZone?: string,
 ): string {
+  const minute = minuteIn(c, timeZone);
   const link = (path: string) =>
     `<a href="${escapeHtml(linkTarget(path))}">${escapeHtml(nameOf(path))}</a>`;
   const parts = [
@@ -143,11 +147,11 @@ export function htmlSection(
   ];
   if (c.files.length) {
     parts.push(
-      `<h3>${escapeHtml(labels.files)}</h3><ul>${c.files.map((f) => `<li>${minute(f.time, timeZone)} · ${link(f.path)}</li>`).join('')}</ul>`,
+      `<h3>${escapeHtml(labels.files)}</h3><ul>${c.files.map((f) => `<li>${minute(f.time)} · ${link(f.path)}</li>`).join('')}</ul>`,
     );
   }
   for (const p of c.prompts) {
-    parts.push(`<h3>${escapeHtml(labels.user)} · ${minute(p.time, timeZone)}</h3>`);
+    parts.push(`<h3>${escapeHtml(labels.user)} · ${minute(p.time)}</h3>`);
     if (p.text) parts.push(paragraphs(p.text));
     if (p.links.length) {
       parts.push(
@@ -162,7 +166,7 @@ export function htmlSection(
     const answer = htmlText(p.answer);
     if (answer)
       parts.push(
-        `<h3>${escapeHtml(labels.assistant)} · ${minute(p.time, timeZone)}</h3>${paragraphs(answer)}`,
+        `<h3>${escapeHtml(labels.assistant)} · ${minute(p.time)}</h3>${paragraphs(answer)}`,
       );
   }
   parts.push('</section>', SECTION_END);

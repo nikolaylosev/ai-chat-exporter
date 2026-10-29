@@ -35,20 +35,40 @@ export function localMinute(date: Date, timeZone?: string): string {
 }
 
 /**
+ * The UTC offset, in minutes, of an ISO 8601 time written with one
+ * (`2026-08-16T18:13:03+05:00`, `…Z`); undefined without.
+ */
+export function offsetOf(iso: string | null): number | undefined {
+  const m = iso?.match(/(?:([+-])(\d\d):?(\d\d)|(Z))$/);
+  if (!m) return undefined;
+  if (m[4]) return 0;
+  return (m[1] === '-' ? -1 : 1) * (Number(m[2]) * 60 + Number(m[3]));
+}
+
+/**
+ * A time as a note shows it: at the note's own offset when known (its `created`
+ * carries the offset of the computer it was saved on), else in the time zone.
+ */
+export function minuteAt(date: Date, offset?: number, timeZone?: string): string {
+  if (offset === undefined) return localMinute(date, timeZone);
+  return new Date(date.getTime() + offset * 60_000).toISOString().slice(0, 16).replace('T', ' ');
+}
+
+/**
  * A note's message time as a minute: Markdown and HTML notes show local
  * `YYYY-MM-DD HH:MM`, JSON notes ISO 8601 with an offset.
  */
-export function noteMinute(time: string | null, timeZone?: string): string | null {
+export function noteMinute(time: string | null, timeZone?: string, offset?: number): string | null {
   if (!time) return null;
   if (/^\d{4}-\d\d-\d\d \d\d:\d\d/.test(time)) return time.slice(0, 16);
   const date = new Date(time);
-  return Number.isNaN(date.getTime()) ? null : localMinute(date, timeZone);
+  return Number.isNaN(date.getTime()) ? null : minuteAt(date, offset, timeZone);
 }
 
 /** The minute before and after too: a prompt is logged a little after it is sent. */
-function nearMinutes(iso: string, timeZone?: string): string[] {
+function nearMinutes(iso: string, timeZone?: string, offset?: number): string[] {
   const t = new Date(iso).getTime();
-  return [-1, 0, 1].map((d) => localMinute(new Date(t + d * 60_000), timeZone));
+  return [-1, 0, 1].map((d) => minuteAt(new Date(t + d * 60_000), offset, timeZone));
 }
 
 /** Takeout's name for a file without the id it adds: `report-0123456789abcdef.pdf` → `report.pdf`. */
@@ -108,6 +128,8 @@ export interface SavedChat {
   notes: { name: string; format: NoteFormat }[];
   /** Minutes of the user's messages, as `localMinute` gives them. */
   userMinutes: Set<string>;
+  /** The UTC offset its note was written at, from its `created`: the minutes are at it. */
+  offset?: number;
   /** The chat's own files: those its note links to, or all of `files/` for a JSON or Word note. */
   files: string[];
 }
@@ -124,6 +146,19 @@ export interface ChatCompletion {
   prompts: PlannedPrompt[];
   /** Files of prompts the chat shows, but not the files themselves. */
   files: { time: string; takeoutName: string; path: string }[];
+}
+
+/**
+ * What each chat gets, and how Takeout's prompts of the saved chats matched:
+ * most unmatched means the times do not line up (another time zone), not that
+ * the chats lack them.
+ */
+export interface CompletionResult {
+  chats: ChatCompletion[];
+  /** Takeout's prompts of chats saved in the folder, counted for each saved chat. */
+  prompts: number;
+  /** Those of them with no user message of their chat at that time. */
+  unmatched: number;
 }
 
 export interface CompletionProgress {
@@ -156,11 +191,21 @@ export async function readArchive(
       const id = note?.platform === 'gemini' ? chatIdOf(note.url) : null;
       if (!note || !id) continue;
       onNote?.(chats.length + 1);
-      chat ??= { id, title: note.title, path, dir, notes: [], userMinutes: new Set(), files: [] };
+      const offset = offsetOf(note.created) ?? offsetOf(note.updated);
+      chat ??= {
+        id,
+        title: note.title,
+        path,
+        dir,
+        notes: [],
+        userMinutes: new Set(),
+        files: [],
+        ...(offset === undefined ? {} : { offset }),
+      };
       if (chat.id !== id) continue;
       chat.notes.push({ name: entry.name, format });
       for (const m of note.messages) {
-        const minute = m.role === 'user' ? noteMinute(m.time, timeZone) : null;
+        const minute = m.role === 'user' ? noteMinute(m.time, timeZone, chat.offset) : null;
         if (minute) chat.userMinutes.add(minute);
       }
       if (format === 'markdown' || format === 'html') {
@@ -210,7 +255,7 @@ export function planCompletion(
   return chats.flatMap((chat) => {
     const own = byChat.get(chat.id) ?? [];
     const missing = own.filter(
-      (p) => !nearMinutes(p.time, timeZone).some((m) => chat.userMinutes.has(m)),
+      (p) => !nearMinutes(p.time, timeZone, chat.offset).some((m) => chat.userMinutes.has(m)),
     );
     const stems = new Set(chat.files.map(stem));
     const candidates = own.flatMap((prompt) =>
@@ -290,7 +335,7 @@ export async function completeFromTakeout(
     /** Writes a chat's note sections; the page passes the renderers. */
     writeNotes?: (completion: ChatCompletion) => Promise<void>;
   } = {},
-): Promise<ChatCompletion[]> {
+): Promise<CompletionResult> {
   const { onProgress, timeZone } = options;
   onProgress?.({ phase: 'activity', done: 0 });
   const prompts = (await readActivity(source)).flatMap(takeoutPrompts);
@@ -370,7 +415,14 @@ export async function completeFromTakeout(
       onProgress?.({ phase: 'writing', done: ++done, total: completions.length });
     }
   }
-  return completions;
+  // Per saved chat, as `unmatched` is: a chat saved in two places counts twice.
+  const perChat = new Map<string, number>();
+  for (const p of prompts) perChat.set(p.chatId, (perChat.get(p.chatId) ?? 0) + 1);
+  return {
+    chats: completions,
+    prompts: chats.reduce((n, c) => n + (perChat.get(c.id) ?? 0), 0),
+    unmatched: plans.reduce((n, p) => n + p.missing.length, 0),
+  };
 }
 
 /**

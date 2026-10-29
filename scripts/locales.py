@@ -490,6 +490,14 @@ STRINGS = {
         "Google Takeout keeps every Gemini prompt with its files, also those Gemini's history no longer shows: prompts edited or answered again, videos it shows as a frame, some PDFs and audio. This adds them to the Gemini chats you saved: the files into each chat's files folder, the prompts as a \"From Google Takeout\" section at the end of its note. Everything is read and written on this computer.",
         "Google Takeout хранит все запросы к Gemini с их файлами, в том числе те, которых история Gemini уже не показывает: отредактированные или перегенерированные запросы, видео, которые она показывает кадром, часть PDF и аудио. Здесь они добавляются к сохранённым чатам Gemini: файлы в папку files каждого чата, запросы разделом «Из Google Takeout» в конце его заметки. Всё читается и пишется только на этом компьютере.",
     ),
+    "takeoutReexportHint": (
+        "Saving a chat again writes its note anew, without this section: come back here after that.",
+        "Повторная выгрузка чата перезаписывает заметку без этого раздела: после неё вернитесь сюда.",
+    ),
+    "takeoutTimeWarning": (
+        "Most of Takeout's prompts did not match a message at their time. The notes may have been saved on a computer in another time zone, and the prompts below may be in the chats after all: check one chat before adding.",
+        "Большинство запросов из Takeout не совпали по времени ни с одним сообщением. Возможно, заметки сохранены на компьютере в другом часовом поясе, и запросы ниже на самом деле есть в чатах: проверьте один чат, прежде чем добавлять.",
+    ),
     "takeoutArchive": ("Saved chats: $1", "Сохранённые чаты: $1"),
     "takeoutArchiveNone": (
         "Choose the folder with your saved chats. Unpack .zip exports into it first.",
