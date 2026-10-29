@@ -405,6 +405,25 @@
       }
     }
   },
+  "exportProjectAll": {
+    "message": "All"
+  },
+  "exportProjectNone": {
+    "message": "Without a project ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportGemNone": {
+    "message": "Without a Gem ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
   "exportFoundBySearch": {
     "message": "found by search"
   },

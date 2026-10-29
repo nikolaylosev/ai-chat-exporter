@@ -405,6 +405,25 @@
       }
     }
   },
+  "exportProjectAll": {
+    "message": "Все"
+  },
+  "exportProjectNone": {
+    "message": "Без проекта ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportGemNone": {
+    "message": "Без Gem ($ARG1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
   "exportFoundBySearch": {
     "message": "найден поиском"
   },

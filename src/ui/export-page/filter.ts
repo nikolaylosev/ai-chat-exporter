@@ -19,6 +19,13 @@ export function chatSource(c: ConversationSummary): ChatSource {
   return 'list';
 }
 
+/** The projects (Gems) of a list with how many chats each has, by name; '' for none. */
+export function projectCounts(list: readonly ConversationSummary[]): [string, number][] {
+  const counts = new Map<string, number>();
+  for (const c of list) counts.set(c.project ?? '', (counts.get(c.project ?? '') ?? 0) + 1);
+  return [...counts].sort(([a], [b]) => a.localeCompare(b));
+}
+
 /** What the registry holds for a chat: its latest export (`registry:chats`). */
 export interface SavedRecord {
   updatedAt: string | null;
@@ -32,6 +39,8 @@ export interface ListFilter {
   to: string;
   status: 'all' | SavedStatus;
   source: 'all' | ChatSource;
+  /** A project (Gem on Gemini) by name, '' for chats without one, null for any. */
+  project: string | null;
   sort: SortKey;
   descending: boolean;
 }
@@ -42,6 +51,7 @@ export const DEFAULT_FILTER: ListFilter = {
   to: '',
   status: 'all',
   source: 'all',
+  project: null,
   sort: 'updatedAt',
   descending: true,
 };
@@ -66,7 +76,7 @@ function day(iso: string | null, timeZone?: string): string {
   return date.toLocaleDateString('sv-SE', timeZone ? { timeZone } : {});
 }
 
-/** Conversations matching the search, date range, saved status and source, sorted. */
+/** Conversations matching the search, date range, saved status, source and project, sorted. */
 export function filterConversations(
   list: readonly ConversationSummary[],
   filter: ListFilter,
@@ -83,6 +93,7 @@ export function filterConversations(
     if (filter.to && (!created || created > filter.to)) return false;
     if (filter.status !== 'all' && savedStatus(c, saved.get(c.id)) !== filter.status) return false;
     if (filter.source !== 'all' && chatSource(c) !== filter.source) return false;
+    if (filter.project !== null && (c.project ?? '') !== filter.project) return false;
     return true;
   });
   const value = (c: ConversationSummary) =>

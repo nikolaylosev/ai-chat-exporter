@@ -24,6 +24,7 @@ import {
   type ListFilter,
   type ProjectFilter,
   chatSource,
+  projectCounts,
   savedStatus,
   type ChatSource,
   type ProjectSortKey,
@@ -619,6 +620,7 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
     for (const c of conversations) counts[chatSource(c)]++;
     return counts;
   }, [conversations]);
+  const projects = useMemo(() => projectCounts(conversations), [conversations]);
   const visible = useMemo(
     () => filterConversations(conversations, filter, undefined, savedById),
     [conversations, filter, savedById],
@@ -710,6 +712,30 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
                 {t('exportSourceTakeout', String(sourceCounts.takeout))}
               </option>
               <option value="saved">{t('exportSourceSaved', String(sourceCounts.saved))}</option>
+            </select>
+          </label>
+        )}
+        {projects.some(([name]) => name) && (
+          <label class="field">
+            <span>{platform === 'gemini' ? t('exportColGem') : t('exportColProject')}</span>
+            <select
+              value={filter.project === null ? '*' : `=${filter.project}`}
+              onChange={(e) => {
+                const value = e.currentTarget.value;
+                setFilter({ ...filter, project: value === '*' ? null : value.slice(1) });
+              }}
+            >
+              <option value="*">{t('exportProjectAll')}</option>
+              {projects.map(([name, count]) => (
+                <option key={name} value={`=${name}`}>
+                  {name
+                    ? `${name} (${count})`
+                    : t(
+                        platform === 'gemini' ? 'exportGemNone' : 'exportProjectNone',
+                        String(count),
+                      )}
+                </option>
+              ))}
             </select>
           </label>
         )}
