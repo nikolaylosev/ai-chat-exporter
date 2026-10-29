@@ -64,6 +64,80 @@ describe('export page: the chat list', () => {
   });
 });
 
+describe('export page: saved status', () => {
+  it('counts the chats by saved status and shows only those asked for', async () => {
+    history.replaceState(null, '', '?');
+    stubChrome({
+      background: (type) => {
+        if (type === 'platform:tab') return { tabId: 7, opened: false };
+        // 'a' saved as it is now, 'b' saved before its last update; 'c' never.
+        if (type === 'registry:chats') {
+          return [
+            { id: 'a', title: 'Chat a', updatedAt: '2026-10-02T10:00:00Z' },
+            { id: 'b', title: 'Chat b', updatedAt: '2026-09-01T10:00:00Z' },
+          ];
+        }
+        return null;
+      },
+      tab: (type) =>
+        type === 'conversations:list' ? { conversations: [chat('a'), chat('b'), chat('c')] } : null,
+    });
+    render(<ExportPage />);
+    await screen.findByText('exportStatusNew(1)');
+    expect(screen.queryByRole('combobox', { name: 'exportSourceFilter' })).toBeNull();
+    screen.getByText('exportStatusChanged(1)');
+    screen.getByText('exportStatusSaved(1)');
+    expect(rows()).toBe(3);
+
+    const status = screen.getByRole<HTMLSelectElement>('combobox', { name: 'exportStatusFilter' });
+    fireEvent.change(status, { target: { value: 'new' } });
+    await waitFor(() => expect(rows()).toBe(1));
+    screen.getByText('Chat c');
+    fireEvent.change(status, { target: { value: 'changed' } });
+    await waitFor(() => screen.getByText('Chat b'));
+    expect(rows()).toBe(1);
+  });
+});
+
+describe('export page: project filter', () => {
+  it('lists the projects with their counts and shows one of them', async () => {
+    history.replaceState(null, '', '?');
+    stubChrome({
+      background: (type) => (type === 'platform:tab' ? { tabId: 7, opened: false } : null),
+      tab: (type) =>
+        type === 'conversations:list'
+          ? {
+              conversations: [
+                { ...chat('a'), project: 'Work' },
+                { ...chat('b'), project: 'Work' },
+                chat('c'),
+              ],
+            }
+          : null,
+    });
+    render(<ExportPage />);
+    await screen.findByText('Work (2)');
+    screen.getByText('exportProjectNone(1)');
+    const project = screen.getByRole<HTMLSelectElement>('combobox', { name: 'exportColProject' });
+    fireEvent.change(project, { target: { value: '=Work' } });
+    await waitFor(() => expect(rows()).toBe(2));
+    fireEvent.change(project, { target: { value: '=' } });
+    await waitFor(() => expect(rows()).toBe(1));
+    screen.getByText('Chat c');
+  });
+
+  it('is not there when no chat has a project', async () => {
+    history.replaceState(null, '', '?');
+    stubChrome({
+      background: (type) => (type === 'platform:tab' ? { tabId: 7, opened: false } : null),
+      tab: (type) => (type === 'conversations:list' ? { conversations: [chat('a')] } : null),
+    });
+    render(<ExportPage />);
+    await waitFor(() => expect(rows()).toBe(1));
+    expect(screen.queryByRole('combobox', { name: 'exportColProject' })).toBeNull();
+  });
+});
+
 describe('export page: Gemini search', () => {
   it('shows remembered results, adds new ones as each query finds them, and remembers them', async () => {
     history.replaceState(null, '', '?platform=gemini');
@@ -84,6 +158,14 @@ describe('export page: Gemini search', () => {
     render(<ExportPage />);
     await screen.findByText(/exportSources\(2,1,0,0\)/);
     expect(rows()).toBe(3);
+    // Only the chats the search found.
+    screen.getByText('exportSourceList(2)');
+    const source = screen.getByRole<HTMLSelectElement>('combobox', { name: 'exportSourceFilter' });
+    fireEvent.change(source, { target: { value: 'search' } });
+    await waitFor(() => expect(rows()).toBe(1));
+    screen.getByText('Chat old');
+    fireEvent.change(source, { target: { value: 'all' } });
+    await waitFor(() => expect(rows()).toBe(3));
 
     fireEvent.click(screen.getByRole('button', { name: 'exportSearchMore' }));
     const found = { ...chat('new', 'gemini'), foundBySearch: true };

@@ -67,10 +67,23 @@ export default {
         60000,
         'the list',
       );
+      const statuses = () =>
+        stand.ev(
+          page,
+          `[...document.querySelectorAll('.filters option')].map((o) => o.text).join('|')`,
+        );
+      assert.match(await statuses(), /Not saved yet \(5\)/);
       // Every chat, as the user ticks "select all".
       await stand.ev(page, `document.querySelector('thead input[type=checkbox]').click()`);
       const job = await runBulkJob(stand, page);
       assert.deepEqual(job.counts, { done: 5 }, JSON.stringify(fake.state.missing));
+      // The page follows the registry as the export saves each chat.
+      await waitFor(
+        async () => /Saved, unchanged \(5\)/.test(await statuses()),
+        10000,
+        'the statuses',
+      );
+      assert.match(await statuses(), /Not saved yet \(0\)/);
       const all = stand.files();
       const saved = (name) => {
         const path = all.find((f) => f.endsWith(`/files/${name}`));
