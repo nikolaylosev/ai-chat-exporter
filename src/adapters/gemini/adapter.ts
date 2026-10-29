@@ -168,12 +168,14 @@ export class GeminiAdapter implements PlatformAdapter {
    * answering partway, the chats read so far come back marked incomplete. With
    * `known`, the reading stops after the first page holding a chat the caller
    * has with the same update time and not pinned: every chat after it is older
-   * and unchanged (a changed chat moves to the top).
+   * and unchanged (a changed chat moves to the top). With `until`, it stops
+   * after the first page holding a chat, not pinned, last updated before then.
    */
   async listConversations(
     onProgress?: (loaded: number) => void,
     shouldStop?: () => boolean,
     known?: ReadonlyMap<string, string | null>,
+    until?: string,
   ): Promise<ConversationList> {
     const gems = await this.gemNames();
     const result: ConversationSummary[] = [];
@@ -212,6 +214,9 @@ export class GeminiAdapter implements PlatformAdapter {
       const reachedKnown = entries.some(
         (e) => !e.pinned && known?.has(e.id) && known.get(e.id) === e.updatedAt,
       );
+      const reachedUntil = Boolean(
+        until && entries.some((e) => !e.pinned && e.updatedAt !== null && e.updatedAt < until),
+      );
       for (const e of entries) {
         if (seen.has(e.id)) continue;
         seen.add(e.id);
@@ -228,7 +233,7 @@ export class GeminiAdapter implements PlatformAdapter {
         });
       }
       onProgress?.(result.length);
-      if (reachedKnown) return { conversations: result, reachedKnown: true };
+      if (reachedKnown || reachedUntil) return { conversations: result, reachedKnown: true };
       if (!next || entries.length === 0) break;
       token = next;
     }

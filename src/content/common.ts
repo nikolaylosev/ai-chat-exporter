@@ -48,7 +48,13 @@ export async function coded<T>(action: () => Promise<T>): Promise<T> {
 export function listHandlers(platform: Platform, adapter: PlatformAdapter) {
   let stopped = false;
   return {
-    'conversations:list': ({ known }: { known?: [string, string | null][] }) => {
+    'conversations:list': ({
+      known,
+      until,
+    }: {
+      known?: [string, string | null][];
+      until?: string;
+    }) => {
       stopped = false;
       return coded(() =>
         adapter.listConversations(
@@ -58,6 +64,7 @@ export function listHandlers(platform: Platform, adapter: PlatformAdapter) {
           },
           () => stopped,
           known ? new Map(known) : undefined,
+          until,
         ),
       );
     },

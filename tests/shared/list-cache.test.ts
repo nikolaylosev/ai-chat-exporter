@@ -1,6 +1,13 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { ConversationSummary } from '../../src/model/conversation';
-import { loadList, mergeList, refreshListed, saveList } from '../../src/shared/list-cache';
+import {
+  loadList,
+  loadTakeoutUntil,
+  mergeList,
+  refreshListed,
+  rememberTakeoutUntil,
+  saveList,
+} from '../../src/shared/list-cache';
 
 const chat = (
   id: string,
@@ -90,5 +97,24 @@ describe('the remembered list', () => {
       gone: ['a', 'registry-only'],
     });
     expect(await loadList('claude')).toBeNull();
+  });
+
+  it('keeps the newest Takeout file added', async () => {
+    let stored: Record<string, unknown> = {};
+    vi.stubGlobal('chrome', {
+      storage: {
+        local: {
+          get: (key: string) => Promise.resolve({ [key]: stored[key] }),
+          set: (items: Record<string, unknown>) => {
+            stored = { ...stored, ...items };
+            return Promise.resolve();
+          },
+        },
+      },
+    });
+    expect(await loadTakeoutUntil('gemini')).toBeNull();
+    await rememberTakeoutUntil('gemini', '2026-10-20T00:00:00Z');
+    await rememberTakeoutUntil('gemini', '2026-09-01T00:00:00Z');
+    expect(await loadTakeoutUntil('gemini')).toBe('2026-10-20T00:00:00Z');
   });
 });

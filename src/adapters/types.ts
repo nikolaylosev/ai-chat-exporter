@@ -13,11 +13,14 @@ export interface PlatformAdapter {
    * When `shouldStop` turns true, the list ends after the current page, marked stopped.
    * `known` (chat id to update time) lets an adapter whose list is slow stop at
    * chats the caller already has unchanged, marked `reachedKnown` (Gemini).
+   * `until` (ISO 8601) stops it, the same way, at chats last updated before then:
+   * the caller has the older ones from elsewhere (Gemini, Google Takeout).
    */
   listConversations(
     onProgress?: (loaded: number) => void,
     shouldStop?: () => boolean,
     known?: ReadonlyMap<string, string | null>,
+    until?: string,
   ): Promise<ConversationList>;
   getConversation(id: string, options?: ConversationOptions): Promise<Conversation>;
   /** A new link for a file of a conversation read before; for links that expire. */

@@ -251,6 +251,29 @@ describe('export page: Gemini search', () => {
   });
 });
 
+describe('export page: Gemini list after Takeout', () => {
+  it('reads the whole list again only down to a day before the Takeout file', async () => {
+    history.replaceState(null, '', '?platform=gemini');
+    const { local, sentToTabs } = stubChrome({
+      background: (type) => (type === 'platform:tab' ? { tabId: 9, opened: false } : null),
+      tab: (type) =>
+        type === 'conversations:list'
+          ? { conversations: [chat('00000000000000d1', 'gemini')], reachedKnown: true }
+          : null,
+    });
+    local['listed:gemini'] = { conversations: [chat('00000000000000d1', 'gemini')] };
+    local['takeoutUntil:gemini'] = '2026-10-10T08:00:00.000Z';
+    render(<ExportPage />);
+    fireEvent.click(await screen.findByRole('button', { name: 'exportListReadAll' }));
+    await waitFor(() =>
+      expect(sentToTabs.filter((m) => m.type === 'conversations:list')).toHaveLength(2),
+    );
+    const [first, again] = sentToTabs.filter((m) => m.type === 'conversations:list');
+    expect(first?.payload).toHaveProperty('known');
+    expect(again?.payload).toEqual({ until: '2026-10-09T08:00:00.000Z' });
+  });
+});
+
 describe('export page: Gemini chats from Takeout', () => {
   it('asks the Gemini tab for the chats the file links to that the table does not have', async () => {
     history.replaceState(null, '', '?platform=gemini');

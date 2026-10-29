@@ -50,9 +50,10 @@ describe('takeoutChatIds', () => {
 describe('readTakeout', () => {
   const json = JSON.stringify(activity);
 
-  it('reads the activity file itself', async () => {
+  it('reads the activity file itself, and the time of its newest record', async () => {
     const file = new File([json], 'MyActivity.json');
-    expect(await readTakeout(file)).toEqual(['00000000000000a1', '00000000000000a2']);
+    expect((await readTakeout(file)).newest).toBe('2026-10-07T10:00:00.000Z');
+    expect((await readTakeout(file)).ids).toEqual(['00000000000000a1', '00000000000000a2']);
   });
 
   it('reads the Gemini activity out of a Takeout archive, leaving the rest', async () => {
@@ -64,11 +65,14 @@ describe('readTakeout', () => {
       'Takeout/My Activity/Gemini Apps/photo.jpg': new Uint8Array([1, 2, 3]),
     });
     const file = new File([zip], 'takeout-20261028.zip');
-    expect(await readTakeout(file)).toEqual(['00000000000000a1', '00000000000000a2']);
+    expect((await readTakeout(file)).ids).toEqual(['00000000000000a1', '00000000000000a2']);
   });
 
   it('gives none for a file that is not an activity file', async () => {
-    expect(await readTakeout(new File(['<html></html>'], 'MyActivity.html'))).toEqual([]);
+    expect(await readTakeout(new File(['<html></html>'], 'MyActivity.html'))).toEqual({
+      ids: [],
+      newest: null,
+    });
   });
 });
 
