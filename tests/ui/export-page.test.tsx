@@ -99,6 +99,53 @@ describe('export page: saved status', () => {
   });
 });
 
+describe('export page: remembered filter', () => {
+  it('opens with the saved status chosen last time, and remembers a new choice', async () => {
+    history.replaceState(null, '', '?');
+    const { local } = stubChrome({
+      background: (type) => {
+        if (type === 'platform:tab') return { tabId: 7, opened: false };
+        if (type === 'registry:chats')
+          return [{ id: 'a', title: 'Chat a', updatedAt: '2026-10-02T10:00:00Z' }];
+        return null;
+      },
+      tab: (type) =>
+        type === 'conversations:list' ? { conversations: [chat('a'), chat('b')] } : null,
+    });
+    local['exportFilter:claude'] = {
+      status: 'new',
+      sort: 'title',
+      descending: false,
+      source: 'all',
+      project: null,
+    };
+    render(<ExportPage />);
+    await waitFor(() => expect(rows()).toBe(1));
+    screen.getByText('Chat b');
+    const status = screen.getByRole<HTMLSelectElement>('combobox', { name: 'exportStatusFilter' });
+    expect(status.value).toBe('new');
+    fireEvent.change(status, { target: { value: 'saved' } });
+    await waitFor(() =>
+      expect(local['exportFilter:claude']).toMatchObject({ status: 'saved', sort: 'title' }),
+    );
+  });
+
+  it('drops a remembered project the list no longer has', async () => {
+    history.replaceState(null, '', '?');
+    const { local } = stubChrome({
+      background: (type) => (type === 'platform:tab' ? { tabId: 7, opened: false } : null),
+      tab: (type) =>
+        type === 'conversations:list'
+          ? { conversations: [{ ...chat('a'), project: 'Work' }, chat('b')] }
+          : null,
+    });
+    local['exportFilter:claude'] = { project: 'Gone' };
+    render(<ExportPage />);
+    await waitFor(() => expect(rows()).toBe(2));
+    await waitFor(() => expect(local['exportFilter:claude']).toMatchObject({ project: null }));
+  });
+});
+
 describe('export page: project filter', () => {
   it('lists the projects with their counts and shows one of them', async () => {
     history.replaceState(null, '', '?');

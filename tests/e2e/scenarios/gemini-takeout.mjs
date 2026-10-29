@@ -60,17 +60,19 @@ export default {
       assert.match(await text(), /61 chats from the list, 0 found by search, 3 from Takeout/);
       assert.equal(await rows(), 64);
       // Only the chats from Takeout.
-      await stand.ev(
-        page,
-        `(() => {
-          const source = [...document.querySelectorAll('.filters select')].find((s) =>
-            [...s.options].some((o) => o.value === 'takeout'),
-          );
-          source.value = 'takeout';
-          source.dispatchEvent(new Event('change', { bubbles: true }));
-          return 'ok';
-        })()`,
-      );
+      const pickSource = (value) =>
+        stand.ev(
+          page,
+          `(() => {
+            const source = [...document.querySelectorAll('.filters select')].find((s) =>
+              [...s.options].some((o) => o.value === 'takeout'),
+            );
+            source.value = ${JSON.stringify(value)};
+            source.dispatchEvent(new Event('change', { bubbles: true }));
+            return 'ok';
+          })()`,
+        );
+      await pickSource('takeout');
       await waitFor(async () => (await rows()) === 3, 5000, 'only the chats from Takeout');
       assert.match(
         await stand.ev(page, `document.querySelector('.filters').innerText`),
@@ -80,7 +82,10 @@ export default {
       // Remembered after a reload, marked as from Takeout.
       await stand.ev(page, 'location.reload()');
       await sleep(1500);
-      await waitFor(async () => (await rows()) >= 64, 60000, 'the remembered chats');
+      // The source chosen is remembered too; then all of them again.
+      await waitFor(async () => (await rows()) === 3, 60000, 'the remembered chats and filter');
+      await pickSource('all');
+      await waitFor(async () => (await rows()) >= 64, 10000, 'all the chats');
       const row = `[...document.querySelectorAll('tbody tr')].find((r) => /Takeout chat 2/.test(r.innerText))`;
       assert.match(await stand.ev(page, `${row}.innerText`), /from Takeout/);
 
