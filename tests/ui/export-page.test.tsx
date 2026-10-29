@@ -99,6 +99,45 @@ describe('export page: saved status', () => {
   });
 });
 
+describe('export page: project filter', () => {
+  it('lists the projects with their counts and shows one of them', async () => {
+    history.replaceState(null, '', '?');
+    stubChrome({
+      background: (type) => (type === 'platform:tab' ? { tabId: 7, opened: false } : null),
+      tab: (type) =>
+        type === 'conversations:list'
+          ? {
+              conversations: [
+                { ...chat('a'), project: 'Work' },
+                { ...chat('b'), project: 'Work' },
+                chat('c'),
+              ],
+            }
+          : null,
+    });
+    render(<ExportPage />);
+    await screen.findByText('Work (2)');
+    screen.getByText('exportProjectNone(1)');
+    const project = screen.getByRole<HTMLSelectElement>('combobox', { name: 'exportColProject' });
+    fireEvent.change(project, { target: { value: '=Work' } });
+    await waitFor(() => expect(rows()).toBe(2));
+    fireEvent.change(project, { target: { value: '=' } });
+    await waitFor(() => expect(rows()).toBe(1));
+    screen.getByText('Chat c');
+  });
+
+  it('is not there when no chat has a project', async () => {
+    history.replaceState(null, '', '?');
+    stubChrome({
+      background: (type) => (type === 'platform:tab' ? { tabId: 7, opened: false } : null),
+      tab: (type) => (type === 'conversations:list' ? { conversations: [chat('a')] } : null),
+    });
+    render(<ExportPage />);
+    await waitFor(() => expect(rows()).toBe(1));
+    expect(screen.queryByRole('combobox', { name: 'exportColProject' })).toBeNull();
+  });
+});
+
 describe('export page: Gemini search', () => {
   it('shows remembered results, adds new ones as each query finds them, and remembers them', async () => {
     history.replaceState(null, '', '?platform=gemini');

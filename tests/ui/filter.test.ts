@@ -6,6 +6,7 @@ import {
   filterConversations,
   filterProjects,
   chatSource,
+  projectCounts,
   savedStatus,
 } from '../../src/ui/export-page/filter';
 
@@ -146,5 +147,21 @@ describe('chat source', () => {
       ids(filterConversations(sources, { ...DEFAULT_FILTER, source }, 'UTC'));
     expect(only('takeout')).toEqual(['t']);
     expect(only('list')).toEqual(['s']);
+  });
+});
+
+describe('project filter', () => {
+  it('counts the chats of each project by name, those without one under an empty name', () => {
+    expect(projectCounts(list)).toEqual([
+      ['', 3],
+      ['Finance', 1],
+    ]);
+  });
+
+  it('shows one project, or only the chats without one', () => {
+    const only = (project: string) =>
+      ids(filterConversations(list, { ...DEFAULT_FILTER, project }, 'UTC'));
+    expect(only('Finance')).toEqual(['b']);
+    expect(only('')).toEqual(['a', 'c', 'd']);
   });
 });
