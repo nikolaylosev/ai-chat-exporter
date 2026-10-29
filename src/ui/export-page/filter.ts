@@ -56,6 +56,34 @@ export const DEFAULT_FILTER: ListFilter = {
   descending: true,
 };
 
+/** What the export page remembers of a platform's filter between visits: the choices, not the search or dates. */
+const KEPT = ['sort', 'descending', 'status', 'source', 'project'] as const;
+export type KeptFilter = Pick<ListFilter, (typeof KEPT)[number]>;
+
+export function keptFilter(filter: ListFilter): KeptFilter {
+  return Object.fromEntries(KEPT.map((k) => [k, filter[k]])) as KeptFilter;
+}
+
+/** The remembered choices back in a filter; anything malformed is left at its default. */
+export function withKept(filter: ListFilter, stored: unknown): ListFilter {
+  const s = (stored ?? {}) as Partial<Record<keyof KeptFilter, unknown>>;
+  const sorts = ['title', 'createdAt', 'updatedAt', 'project'];
+  const statuses = ['all', 'new', 'saved', 'changed'];
+  const sources = ['all', 'list', 'search', 'takeout', 'saved'];
+  return {
+    ...filter,
+    ...(typeof s.sort === 'string' && sorts.includes(s.sort) ? { sort: s.sort as SortKey } : {}),
+    ...(typeof s.descending === 'boolean' ? { descending: s.descending } : {}),
+    ...(typeof s.status === 'string' && statuses.includes(s.status)
+      ? { status: s.status as ListFilter['status'] }
+      : {}),
+    ...(typeof s.source === 'string' && sources.includes(s.source)
+      ? { source: s.source as ListFilter['source'] }
+      : {}),
+    ...(typeof s.project === 'string' || s.project === null ? { project: s.project } : {}),
+  };
+}
+
 /**
  * As "skip unchanged chats" decides: saved when the latest export has the
  * chat's update time and every file; an export that missed files, or an older

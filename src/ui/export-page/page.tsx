@@ -24,7 +24,9 @@ import {
   type ListFilter,
   type ProjectFilter,
   chatSource,
+  keptFilter,
   projectCounts,
+  withKept,
   savedStatus,
   type ChatSource,
   type ProjectSortKey,
@@ -222,6 +224,29 @@ function useSavedRecords(platform: Platform) {
     };
   }, [platform]);
   return records;
+}
+
+const filterKey = (platform: Platform) => `exportFilter:${platform}`;
+
+/**
+ * The chat list's filter, its choices (sort, saved status, source, project)
+ * remembered per platform between visits.
+ */
+function useKeptFilter(platform: Platform): [ListFilter, (next: ListFilter) => void] {
+  const [filter, setFilter] = useState<ListFilter>(DEFAULT_FILTER);
+  useEffect(() => {
+    chrome.storage.local
+      .get(filterKey(platform))
+      .then((stored) => setFilter((now) => withKept(now, stored[filterKey(platform)])))
+      .catch(() => undefined);
+  }, [platform]);
+  const update = (next: ListFilter) => {
+    setFilter(next);
+    void chrome.storage.local
+      .set({ [filterKey(platform)]: keptFilter(next) })
+      .catch(() => undefined);
+  };
+  return [filter, update];
 }
 
 type TakeoutState =
@@ -529,7 +554,7 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
   const loadedSoFar = useListProgress(platform);
   // Gemini's list has no creation dates: its dates are the last update.
   const hasCreated = platform !== 'gemini';
-  const [filter, setFilter] = useState<ListFilter>(DEFAULT_FILTER);
+  const [filter, setFilter] = useKeptFilter(platform);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [startError, setStartError] = useState('');
 
@@ -624,6 +649,12 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
     return counts;
   }, [conversations]);
   const projects = useMemo(() => projectCounts(conversations), [conversations]);
+  // A remembered project the list no longer has would show nothing.
+  useEffect(() => {
+    if (list.status !== 'ready' || !filter.project) return;
+    if (!projects.some(([name]) => name === filter.project))
+      setFilter({ ...filter, project: null });
+  }, [list.status, projects, filter.project]);
   const visible = useMemo(
     () => filterConversations(conversations, filter, undefined, savedById),
     [conversations, filter, savedById],

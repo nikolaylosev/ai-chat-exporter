@@ -6,6 +6,8 @@ import {
   filterConversations,
   filterProjects,
   chatSource,
+  keptFilter,
+  withKept,
   projectCounts,
   savedStatus,
 } from '../../src/ui/export-page/filter';
@@ -163,5 +165,47 @@ describe('project filter', () => {
       ids(filterConversations(list, { ...DEFAULT_FILTER, project }, 'UTC'));
     expect(only('Finance')).toEqual(['b']);
     expect(only('')).toEqual(['a', 'c', 'd']);
+  });
+});
+
+describe('remembered filter', () => {
+  it('keeps the choices, not the search or the dates', () => {
+    const filter = {
+      ...DEFAULT_FILTER,
+      query: 'x',
+      from: '2026-01-01',
+      status: 'new' as const,
+      project: 'Work',
+    };
+    expect(keptFilter(filter)).toEqual({
+      sort: 'updatedAt',
+      descending: true,
+      status: 'new',
+      source: 'all',
+      project: 'Work',
+    });
+  });
+
+  it('puts them back, leaving anything malformed at its default', () => {
+    expect(
+      withKept(DEFAULT_FILTER, {
+        sort: 'title',
+        descending: false,
+        status: 'saved',
+        source: 'takeout',
+        project: '',
+      }),
+    ).toEqual({
+      ...DEFAULT_FILTER,
+      sort: 'title',
+      descending: false,
+      status: 'saved',
+      source: 'takeout',
+      project: '',
+    });
+    expect(withKept(DEFAULT_FILTER, { sort: 'size', status: 3, project: 7 })).toEqual(
+      DEFAULT_FILTER,
+    );
+    expect(withKept(DEFAULT_FILTER, undefined)).toEqual(DEFAULT_FILTER);
   });
 });
