@@ -96,6 +96,14 @@ describe('notes read back', () => {
     expect(note?.messages[1]?.text).toContain('See the Vatican.');
   });
 
+  it('reads every message of a note saved with a code fence left open', () => {
+    // As older exports wrote a reply that stopped inside a code block.
+    const open = markdown.replace('See the Vatican.', 'See the Vatican.\n```js\nunfinished');
+    const note = parseNote('Chat.md', strToU8(open));
+    expect(note?.messages.map((m) => m.role)).toEqual(['user', 'assistant', 'assistant']);
+    expect(note?.messages[2]?.text).toBe('Or Florence.');
+  });
+
   it('skips files that are not the extension notes', () => {
     expect(parseNote('notes.md', strToU8('# Just a note\n\nText.'))).toBeNull();
     expect(parseNote('notes.md', strToU8('---\ntitle: x\n---\n## User\n\nhi'))).toBeNull();

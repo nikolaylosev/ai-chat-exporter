@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Conversation } from '../../src/model/conversation';
-import { renderMarkdown, type RenderOptions } from '../../src/render/markdown';
+import { closeFences, renderMarkdown, type RenderOptions } from '../../src/render/markdown';
 import { LABELS } from './labels';
 
 const base: RenderOptions = {
@@ -227,5 +227,41 @@ console.log(1)
     expect(md).toContain(
       '## Other branches\n\n### Branch 2, after message 1\n\n#### Claude\n\nAlt answer\n\n### Branch 3, from the start\n\n#### User\n\nAlt start\n\n### Branch 4, after message 1 of branch 3\n\n#### Claude\n\nDeep\n',
     );
+  });
+});
+
+describe('code fences a reply leaves open', () => {
+  it('are closed at the end of the text, with the fence that opened them', () => {
+    expect(closeFences('Here:\n```js\nconst a = 1;')).toBe('Here:\n```js\nconst a = 1;\n```');
+    expect(closeFences('````md\n```js\nx\n```')).toBe('````md\n```js\nx\n```\n````');
+    expect(closeFences('~~~\nx')).toBe('~~~\nx\n~~~');
+  });
+
+  it('leave closed fences alone', () => {
+    const text = 'a\n```\nb\n```\nc\n````\n```\n````';
+    expect(closeFences(text)).toBe(text);
+  });
+
+  it('do not swallow the next message', () => {
+    const md = renderMarkdown(
+      {
+        ...conversation,
+        messages: [
+          {
+            ...conversation.messages[0]!,
+            blocks: [{ type: 'text', markdown: 'Run:\n```sh\nls' }],
+            attachments: [],
+          },
+          {
+            ...conversation.messages[0]!,
+            id: 'm9',
+            blocks: [{ type: 'text', markdown: 'Next.' }],
+            attachments: [],
+          },
+        ],
+      },
+      base,
+    );
+    expect(md).toMatch(/ls\n```\n\n## /);
   });
 });

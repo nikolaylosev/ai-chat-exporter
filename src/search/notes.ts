@@ -136,10 +136,24 @@ function markdownMessages(body: string): NoteMessage[] {
       });
     current = null;
   };
-  let fence = false;
+  // The open code fence: a longer one (````) holds ``` lines, which do not close it.
+  let fence: string | null = null;
   for (const line of body.split('\n')) {
-    if (/^\s*```/.test(line)) fence = !fence;
-    const head = fence ? null : /^(##|####) (.+)$/.exec(line);
+    const mark = /^\s*(`{3,}|~{3,})(.*)$/.exec(line);
+    if (mark?.[1]) {
+      if (!fence) fence = mark[1];
+      else if (mark[1][0] === fence[0] && mark[1].length >= fence.length && !mark[2]?.trim()) {
+        fence = null;
+      }
+    }
+    // A message heading with its time, or a section heading of the note, ends a
+    // fence left open (notes saved before replies' open fences were closed).
+    if (fence && !mark) {
+      const own = /^(##|####) (.+)$/.exec(line)?.[2] ?? '';
+      const timed = / · \d{4}-\d\d-\d\d \d\d:\d\d$/.test(own) && headingRole(own);
+      if (timed || (own && endsMessages(own))) fence = null;
+    }
+    const head = fence || mark ? null : /^(##|####) (.+)$/.exec(line);
     const role = head?.[2] ? headingRole(head[2]) : null;
     if (role) {
       flush();

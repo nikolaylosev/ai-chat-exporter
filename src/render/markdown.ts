@@ -70,6 +70,24 @@ export function linkTarget(path: string): string {
   return encodeURI(path).replace(/\(/g, '%28').replace(/\)/g, '%29');
 }
 
+/**
+ * The text with a code fence it leaves open closed at its end. A model's reply
+ * can stop inside a code block; left open, it would turn the rest of the note
+ * into code (in Obsidian, and for the archive search reading the note back).
+ */
+export function closeFences(markdown: string): string {
+  let fence: string | null = null;
+  for (const line of markdown.split('\n')) {
+    const mark = /^\s*(`{3,}|~{3,})(.*)$/.exec(line);
+    if (!mark?.[1]) continue;
+    if (!fence) fence = mark[1];
+    else if (mark[1][0] === fence[0] && mark[1].length >= fence.length && !mark[2]?.trim()) {
+      fence = null;
+    }
+  }
+  return fence ? `${markdown}\n${fence}` : markdown;
+}
+
 /** A fence longer than any backtick run inside the text. */
 function fence(text: string, info = ''): string {
   const longest = Math.max(2, ...(text.match(/`+/g) ?? []).map((m) => m.length));
@@ -109,7 +127,7 @@ function renderBlocks(blocks: Block[], o: RenderOptions): string[] {
   for (const block of blocks) {
     switch (block.type) {
       case 'text':
-        parts.push(block.markdown.replace(/\s+$/, ''));
+        parts.push(closeFences(block.markdown.replace(/\s+$/, '')));
         break;
       case 'thinking':
         if (o.includeThinking) parts.push(callout('note', o.labels.thinking, block.markdown));
