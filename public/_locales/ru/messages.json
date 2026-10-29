@@ -263,7 +263,13 @@
     "message": "Добавить чаты из Google Takeout…"
   },
   "exportTakeoutHint": {
-    "message": "Takeout ссылается на все чаты, даже самые старые. На takeout.google.com выберите «Мои действия» только с «Приложениями Gemini», в формате JSON, затем укажите здесь .zip или файл с действиями. Файл читается только на этом компьютере."
+    "message": "Takeout ссылается на все чаты, даже самые старые. В Google Takeout выберите «Мои действия» только с «Приложениями Gemini», в формате JSON, затем укажите здесь .zip или файл с действиями. Файл читается только на этом компьютере."
+  },
+  "exportTakeoutOpen": {
+    "message": "Открыть Google Takeout"
+  },
+  "exportSearchAfterTakeout": {
+    "message": "Чаты из Takeout уже в таблице, а более новые есть в списке Gemini, так что поиск нужен, только если после создания файла Takeout появилось много новых чатов."
   },
   "exportTakeoutReading": {
     "message": "Читаю файл Takeout…"

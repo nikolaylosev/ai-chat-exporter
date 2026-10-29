@@ -106,8 +106,13 @@ STRINGS = {
     ),
     "exportTakeoutAdd": ("Add chats from Google Takeout…", "Добавить чаты из Google Takeout…"),
     "exportTakeoutHint": (
-        "Takeout links to every chat, however old. On takeout.google.com choose My Activity with only Gemini Apps, in JSON, then pick the .zip or MyActivity.json here. The file is read on this computer only.",
-        "Takeout ссылается на все чаты, даже самые старые. На takeout.google.com выберите «Мои действия» только с «Приложениями Gemini», в формате JSON, затем укажите здесь .zip или файл с действиями. Файл читается только на этом компьютере.",
+        "Takeout links to every chat, however old. In Google Takeout choose My Activity with only Gemini Apps, in JSON, then pick the .zip or MyActivity.json here. The file is read on this computer only.",
+        "Takeout ссылается на все чаты, даже самые старые. В Google Takeout выберите «Мои действия» только с «Приложениями Gemini», в формате JSON, затем укажите здесь .zip или файл с действиями. Файл читается только на этом компьютере.",
+    ),
+    "exportTakeoutOpen": ("Open Google Takeout", "Открыть Google Takeout"),
+    "exportSearchAfterTakeout": (
+        "The chats from Takeout are in the table, and Gemini's list holds the newer ones, so the search is needed only if many chats were started after the Takeout file was made.",
+        "Чаты из Takeout уже в таблице, а более новые есть в списке Gemini, так что поиск нужен, только если после создания файла Takeout появилось много новых чатов.",
     ),
     "exportTakeoutReading": ("Reading the Takeout file…", "Читаю файл Takeout…"),
     "exportTakeoutRunning": (
