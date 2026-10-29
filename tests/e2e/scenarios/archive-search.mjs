@@ -126,6 +126,29 @@ export default {
         `the file's text: ${turquoise}`,
       );
 
+      // Narrowing: only files, only messages, and leaving out the chats with a word.
+      const narrow = (control, value) =>
+        stand.ev(
+          page,
+          `(async () => {
+            const el = document.querySelector('.query.refine ${control}');
+            el.value = ${JSON.stringify(value)};
+            el.dispatchEvent(new Event(el.tagName === 'SELECT' ? 'change' : 'input', { bubbles: true }));
+            await new Promise((r) => setTimeout(r, 300));
+            return [...document.querySelectorAll('.hits li .meta')].map((m) => m.textContent);
+          })()`,
+        );
+      const inFiles = await narrow('select', 'files');
+      assert.ok(inFiles.length > 0 && inFiles.every((m) => m.includes('📎')), `files: ${inFiles}`);
+      const inMessages = await narrow('select', 'messages');
+      assert.ok(
+        inMessages.every((m) => !m.includes('📎')),
+        `messages: ${inMessages}`,
+      );
+      await narrow('select', '');
+      assert.deepEqual(await narrow('input', '-turquoise'), [], 'chats with the word left out');
+      await narrow('input', '');
+
       // The viewer shows the note with the match marked.
       await find('fence');
       await stand.ev(page, `document.querySelector('.hits li').click()`);

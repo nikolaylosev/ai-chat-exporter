@@ -23,7 +23,13 @@ import {
   filterProjects,
   type ListFilter,
   type ProjectFilter,
+  chatSource,
+  projectCounts,
+  savedStatus,
+  type ChatSource,
   type ProjectSortKey,
+  type SavedRecord,
+  type SavedStatus,
   type SortKey,
 } from './filter';
 import {
@@ -184,6 +190,38 @@ function useSearchMore(platform: Platform, onFound: (more: ConversationSummary[]
   /** After "Forget them": the next search starts over. */
   const forget = () => setSweep(null);
   return { state, sweep, start, stop, forget };
+}
+
+/** Google Takeout with My Activity chosen: the activity holds the links to every chat. */
+const TAKEOUT_URL = 'https://takeout.google.com/settings/takeout/custom/my_activity';
+
+/**
+ * The platform's chats exported before, from the registry, read again shortly
+ * after it changes (a bulk export records each chat as it saves it).
+ */
+function useSavedRecords(platform: Platform) {
+  const [records, setRecords] = useState<(SavedRecord & { id: string; title: string })[]>([]);
+  useEffect(() => {
+    let alive = true;
+    const load = () =>
+      void send('background', 'registry:chats', { platform })
+        .then((chats) => alive && Array.isArray(chats) && setRecords(chats))
+        .catch(() => undefined);
+    load();
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const onChanged = (changes: Record<string, chrome.storage.StorageChange>, area: string) => {
+      if (area !== 'local' || !changes.registry) return;
+      clearTimeout(timer);
+      timer = setTimeout(load, 1000);
+    };
+    chrome.storage.onChanged.addListener(onChanged);
+    return () => {
+      alive = false;
+      clearTimeout(timer);
+      chrome.storage.onChanged.removeListener(onChanged);
+    };
+  }, [platform]);
+  return records;
 }
 
 type TakeoutState =
@@ -533,31 +571,24 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
     return extra.filter((c) => !listedIds.has(c.id));
   }, [list, listedIds, extra]);
 
+  // Chats exported before (the registry), read again as an export saves more.
+  const records = useSavedRecords(platform);
   // Gemini chats exported before that neither the list nor the search has.
-  const [saved, setSaved] = useState<ConversationSummary[]>([]);
-  useEffect(() => {
-    if (platform !== 'gemini') return;
-    send('background', 'registry:chats', { platform })
-      .then((chats) =>
-        setSaved(
-          chats.map((c) => ({
-            id: c.id,
-            platform,
-            title: c.title,
-            createdAt: null,
-            updatedAt: c.updatedAt,
-            url: `https://gemini.google.com/app/${c.id}`,
-            savedBefore: true,
-          })),
-        ),
-      )
-      .catch(() => undefined);
-  }, [platform]);
   const savedOnly = useMemo(() => {
-    if (list.status !== 'ready') return [];
+    if (list.status !== 'ready' || platform !== 'gemini') return [];
     const shown = new Set([...listedIds, ...extraOnly.map((c) => c.id)]);
-    return saved.filter((c) => !shown.has(c.id) && !gone.has(c.id));
-  }, [list, listedIds, extraOnly, saved, gone]);
+    return records
+      .filter((c) => !shown.has(c.id) && !gone.has(c.id))
+      .map((c): ConversationSummary => ({
+        id: c.id,
+        platform,
+        title: c.title,
+        createdAt: null,
+        updatedAt: c.updatedAt,
+        url: `https://gemini.google.com/app/${c.id}`,
+        savedBefore: true,
+      }));
+  }, [list, platform, listedIds, extraOnly, records, gone]);
 
   const conversations = useMemo(
     () => (list.status === 'ready' ? [...list.conversations, ...extraOnly, ...savedOnly] : []),
@@ -581,9 +612,21 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
     () => (more.sweep ? searchCoverage(more.sweep.seen, listedIds) : null),
     [more.sweep, listedIds],
   );
+  const savedById = useMemo(() => new Map(records.map((r) => [r.id, r])), [records]);
+  const statusCounts = useMemo(() => {
+    const counts: Record<SavedStatus, number> = { new: 0, saved: 0, changed: 0 };
+    for (const c of conversations) counts[savedStatus(c, savedById.get(c.id))]++;
+    return counts;
+  }, [conversations, savedById]);
+  const sourceCounts = useMemo(() => {
+    const counts: Record<ChatSource, number> = { list: 0, search: 0, takeout: 0, saved: 0 };
+    for (const c of conversations) counts[chatSource(c)]++;
+    return counts;
+  }, [conversations]);
+  const projects = useMemo(() => projectCounts(conversations), [conversations]);
   const visible = useMemo(
-    () => filterConversations(conversations, filter),
-    [conversations, filter],
+    () => filterConversations(conversations, filter, undefined, savedById),
+    [conversations, filter, savedById],
   );
 
   const itemById = useMemo(() => new Map((job?.items ?? []).map((item) => [item.id, item])), [job]);
@@ -640,6 +683,65 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
             onInput={(e) => setFilter({ ...filter, query: e.currentTarget.value })}
           />
         </label>
+        <label class="field">
+          <span>{t('exportStatusFilter')}</span>
+          <select
+            value={filter.status}
+            onChange={(e) =>
+              setFilter({ ...filter, status: e.currentTarget.value as ListFilter['status'] })
+            }
+          >
+            <option value="all">{t('exportStatusAll')}</option>
+            <option value="new">{t('exportStatusNew', String(statusCounts.new))}</option>
+            <option value="changed">
+              {t('exportStatusChanged', String(statusCounts.changed))}
+            </option>
+            <option value="saved">{t('exportStatusSaved', String(statusCounts.saved))}</option>
+          </select>
+        </label>
+        {platform === 'gemini' && (
+          <label class="field">
+            <span>{t('exportSourceFilter')}</span>
+            <select
+              value={filter.source}
+              onChange={(e) =>
+                setFilter({ ...filter, source: e.currentTarget.value as ListFilter['source'] })
+              }
+            >
+              <option value="all">{t('exportSourceAll')}</option>
+              <option value="list">{t('exportSourceList', String(sourceCounts.list))}</option>
+              <option value="search">{t('exportSourceSearch', String(sourceCounts.search))}</option>
+              <option value="takeout">
+                {t('exportSourceTakeout', String(sourceCounts.takeout))}
+              </option>
+              <option value="saved">{t('exportSourceSaved', String(sourceCounts.saved))}</option>
+            </select>
+          </label>
+        )}
+        {projects.some(([name]) => name) && (
+          <label class="field">
+            <span>{platform === 'gemini' ? t('exportColGem') : t('exportColProject')}</span>
+            <select
+              value={filter.project === null ? '*' : `=${filter.project}`}
+              onChange={(e) => {
+                const value = e.currentTarget.value;
+                setFilter({ ...filter, project: value === '*' ? null : value.slice(1) });
+              }}
+            >
+              <option value="*">{t('exportProjectAll')}</option>
+              {projects.map(([name, count]) => (
+                <option key={name} value={`=${name}`}>
+                  {name
+                    ? `${name} (${count})`
+                    : t(
+                        platform === 'gemini' ? 'exportGemNone' : 'exportProjectNone',
+                        String(count),
+                      )}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
         <label class="field">
           <span>{hasCreated ? t('exportFrom') : t('exportUpdatedFrom')}</span>
           <input
@@ -722,7 +824,11 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
                   ? t('exportSearchMore')
                   : t('exportSearchAgain')}
               </button>
-              {more.state.status === 'idle' && <small class="hint">{t('exportSearchHint')}</small>}
+              {more.state.status === 'idle' && (
+                <small class="hint">
+                  {fromTakeout > 0 ? t('exportSearchAfterTakeout') : t('exportSearchHint')}
+                </small>
+              )}
             </p>
           )}
           {takeout.state.status === 'running' ? (
@@ -776,7 +882,12 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
                 {t('exportTakeoutAdd')}
               </button>
               {takeout.state.status === 'idle' && (
-                <small class="hint">{t('exportTakeoutHint')}</small>
+                <small class="hint">
+                  {t('exportTakeoutHint')}{' '}
+                  <a href={TAKEOUT_URL} target="_blank" rel="noreferrer">
+                    {t('exportTakeoutOpen')}
+                  </a>
+                </small>
               )}
             </p>
           )}
@@ -798,7 +909,8 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
               )}
             </p>
           )}
-          {coverage && (
+          {/* With Takeout's chats in the table, the estimate no longer tells anything. */}
+          {coverage && fromTakeout === 0 && (
             <p class="muted">
               {t('exportSearchCoverage', [
                 String(Math.round(coverage.share * 100)),

@@ -59,6 +59,23 @@ export default {
       );
       assert.match(await text(), /61 chats from the list, 0 found by search, 3 from Takeout/);
       assert.equal(await rows(), 64);
+      // Only the chats from Takeout.
+      await stand.ev(
+        page,
+        `(() => {
+          const source = [...document.querySelectorAll('.filters select')].find((s) =>
+            [...s.options].some((o) => o.value === 'takeout'),
+          );
+          source.value = 'takeout';
+          source.dispatchEvent(new Event('change', { bubbles: true }));
+          return 'ok';
+        })()`,
+      );
+      await waitFor(async () => (await rows()) === 3, 5000, 'only the chats from Takeout');
+      assert.match(
+        await stand.ev(page, `document.querySelector('.filters').innerText`),
+        /Google Takeout \(3\)/,
+      );
 
       // Remembered after a reload, marked as from Takeout.
       await stand.ev(page, 'location.reload()');

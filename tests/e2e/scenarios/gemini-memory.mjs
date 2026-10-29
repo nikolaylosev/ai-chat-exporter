@@ -32,6 +32,24 @@ export default {
         /61 chats from the list, 0 found by search, 0 from Takeout, 1 saved before/,
       );
 
+      // The Gem filter: the one Gem chat, then back to all.
+      const pickGem = (value) =>
+        stand.ev(
+          page,
+          `(() => {
+            const gem = [...document.querySelectorAll('.filters select')].find((s) =>
+              [...s.options].some((o) => o.value === '='),
+            );
+            gem.value = ${JSON.stringify(value)} ?? [...gem.options].find((o) => o.value.length > 1).value;
+            gem.dispatchEvent(new Event('change', { bubbles: true }));
+            return gem.value;
+          })()`,
+        );
+      await pickGem(null);
+      await waitFor(async () => (await rows()) === 1, 5000, 'the Gem chat');
+      await pickGem('*');
+      await waitFor(async () => (await rows()) === 62, 5000, 'all chats again');
+
       // The next visit reads only the first page: its chats are known and unchanged.
       await stand.ev(page, 'location.reload()');
       await sleep(1500);
