@@ -61,6 +61,12 @@ describe('remembered search results', () => {
       ['b', 'B'],
       ['c', 'Renamed'],
     ]);
+    // A search hit's snippet time gives way to the chat's own once it is saved.
+    await refreshFound('gemini', 'b', { title: 'B', updatedAt: '2026-10-20T08:00:00.000Z' });
+    expect((await loadFound('gemini')).find((c) => c.id === 'b')).toMatchObject({
+      title: 'B',
+      updatedAt: '2026-10-20T08:00:00.000Z',
+    });
     await forgetFound('gemini');
     expect(await loadFound('gemini')).toEqual([]);
   });
