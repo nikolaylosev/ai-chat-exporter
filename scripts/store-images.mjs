@@ -1,5 +1,5 @@
-// Makes the Chrome Web Store images in store/: four 1280×800 screenshots of the
-// real extension on a stand with made-up chats, and the 440×280 promo tile.
+// Makes the Chrome Web Store images in store/: five 1280×800 screenshots of the
+// real extension on a stand with made-up chats, and the promo tiles.
 // Run: node scripts/store-images.mjs
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -30,6 +30,66 @@ const TITLES = [
   ['Birthday party ideas for a 7-year-old', null],
 ];
 
+/** What each made-up chat says: the question and the reply, so the archive search finds something. */
+const CONTENT = {
+  'Trip plan for Lisbon in May': [
+    'Plan four days in Lisbon in May on a budget of 900 euros, with one day trip.',
+    'Day 1: Alfama and the castle. Day 2: Belém. Day 3: a day trip to Sintra. Day 4: LX Factory. Keep about 150 euros of the budget for food.',
+  ],
+  'Kitchen layout options': [
+    'Our kitchen is 3.2 × 4 m with a window on the long wall. Which layouts work?',
+    'An L-shape along the window wall, a galley if the door is on the short side, or a U-shape if you give up the table.',
+  ],
+  'Python script to clean a CSV': [
+    'Write a Python script that drops empty rows and trims spaces in a CSV.',
+    'Use pandas: read the file, strip the text columns, drop rows where every cell is empty, and write it back.',
+  ],
+  'Literature review outline': [
+    'Outline a literature review on remote work and productivity.',
+    'Five parts: definitions, measures of productivity, evidence before 2020, the pandemic shift, and open questions.',
+  ],
+  'Weekly meal plan with shopping list': [
+    'Make a weekly meal plan for two with a grocery budget of 80 euros.',
+    'Seven dinners built on lentils, chicken thighs and seasonal vegetables, and a shopping list that stays within the budget.',
+  ],
+  'Tile and paint budget': [
+    'How much budget do I need for tiles and paint in a 6 m² bathroom?',
+    'Tiles at 30 €/m² for walls and floor come to about 600 €; paint and primer for the ceiling add 60 €. Plan a budget of 750 € with a margin.',
+  ],
+  'Explain Rust lifetimes with examples': [
+    'Explain Rust lifetimes with a short example.',
+    "A lifetime says how long a reference is valid; fn longest<'a>(x: &'a str, y: &'a str) -> &'a str returns a reference that lives as long as both inputs.",
+  ],
+  'Survey questions for chapter 3': [
+    'Draft ten survey questions about working from home for chapter 3.',
+    'Questions on hours, interruptions, tools, meetings, focus time and how people judge their own productivity.',
+  ],
+  'Cover letter for a data analyst role': [
+    'Write a short cover letter for a junior data analyst role.',
+    'Three paragraphs: why this company, one project with SQL and dashboards, and what you would do in the first months.',
+  ],
+  'Marathon training schedule': [
+    'A 16-week marathon plan for someone who runs 30 km a week now.',
+    'Build to 60 km a week, with one long run each Sunday growing to 32 km, and three easier weeks along the way.',
+  ],
+  'SQL query for monthly revenue': [
+    'SQL for monthly revenue against the budget table.',
+    'Group the orders by month, sum the amounts and join the budget table on the month to show the difference.',
+  ],
+  'Garden watering system': [
+    'Design a drip watering system for six raised beds.',
+    'A 16 mm main line, one tap timer and drip lines of 2 l/h, about 40 minutes every second morning in summer.',
+  ],
+  'Summary of the interview notes': [
+    'Summarize the main themes of these interview notes.',
+    'Flexibility matters most, meetings cost the most focus, and most people want two office days a week.',
+  ],
+  'Birthday party ideas for a 7-year-old': [
+    'Party ideas for a 7-year-old who loves dinosaurs, on a small budget.',
+    'A dinosaur dig in a sandbox, a fossil cookie hunt and paper-plate masks, all for under 50 euros.',
+  ],
+};
+
 function standData() {
   const base = JSON.stringify(fixture('claude', 'conversation-branches.json'));
   const listItem = fixture('claude', 'conversations-list-v2.json').data[4];
@@ -40,6 +100,18 @@ function standData() {
     const day = String(20 - i).padStart(2, '0');
     const chat = JSON.parse(base.replaceAll(id(3), uuid));
     chat.name = title;
+    // The visible branch: the edited question and its reply, on the chat's own day.
+    const [question, answer] = CONTENT[title];
+    const created = `2026-10-${day}T09:${String(10 + i).padStart(2, '0')}:00.000000Z`;
+    chat.created_at = created;
+    chat.updated_at = `2026-10-${day}T11:${String(20 + i).padStart(2, '0')}:00.000000Z`;
+    for (const m of chat.chat_messages) {
+      const text = m.sender === 'human' ? question : answer;
+      m.text = text;
+      for (const c of m.content ?? []) if (c.type === 'text') c.text = text;
+      m.created_at =
+        m.sender === 'human' ? created : created.replace(/:00\.000000Z$/, ':40.000000Z');
+    }
     chats[uuid] = chat;
     list.push({
       ...listItem,
@@ -226,7 +298,17 @@ try {
   const stand = await startStand({ extDir: build, ...fakeClaude(data) });
   try {
     const ext = `chrome-extension://${stand.extensionId}/src/ui`;
-    await stand.settings({ delayBetweenChatsMs: 0 });
+    await stand.settings({ delayBetweenChatsMs: 0, destination: 'folder' });
+    // "A folder you choose": a folder in the extension's private file system,
+    // stored where the options page and the search page keep their folders.
+    await stand.inExtension(`(async () => {
+      const root = await navigator.storage.getDirectory();
+      const dir = await root.getDirectoryHandle('AI Chats', { create: true });
+      const db = await new Promise((ok, no) => { const r = indexedDB.open('ai-chat-exporter', 1); r.onupgradeneeded = () => r.result.createObjectStore('handles'); r.onsuccess = () => ok(r.result); r.onerror = () => no(r.error); });
+      await new Promise((ok, no) => { const tx = db.transaction('handles', 'readwrite'); tx.objectStore('handles').put(dir, 'export-folder'); tx.objectStore('handles').put(dir, 'search-folder'); tx.oncomplete = ok; tx.onerror = () => no(tx.error); });
+      db.close();
+      return 'ok';
+    })()`);
     const icon = dataUrl(join(ROOT, 'assets/logo.png'));
 
     // 1. The popup on a chat inside a project: its active tab is that chat.
@@ -277,24 +359,71 @@ try {
       join(OUT, 'screenshot-1-popup.png'),
     );
 
-    // 2. The export page with the list, some chats ticked.
     const page = await stand.openTab(`${ext}/export-page/index.html?platform=claude`);
-    await waitFor(
-      () => stand.ev(page, `document.querySelectorAll('tbody tr').length === ${TITLES.length}`),
-      60000,
-      'the list',
+    const rows = () => stand.ev(page, `document.querySelectorAll('tbody tr').length`);
+    const exported = async () => {
+      const before = (await stand.job())?.started;
+      await stand.ev(page, `document.querySelector('.actions button.primary').click()`);
+      await waitFor(
+        async () => {
+          const job = await stand.job();
+          return job && job.started !== before && job.status === 'finished';
+        },
+        120000,
+        'the export',
+      );
+      await sleep(1500);
+    };
+    await waitFor(async () => (await rows()) === TITLES.length, 60000, 'the list');
+
+    // 4. Five chats saved: progress and statuses.
+    await stand.ev(
+      page,
+      `[...document.querySelectorAll('tbody input[type=checkbox]')].slice(0, 5).forEach((c) => c.click())`,
+    );
+    await exported();
+    await stand.ev(page, `window.scrollTo(0, 0)`);
+    await shot(stand, page, 1160, 640, join(work, 'done.png'));
+    await htmlShot(
+      stand,
+      work,
+      'frame4',
+      frame(
+        'Hundreds of chats in the background, <b>with a report</b>',
+        `<img src="${dataUrl(join(work, 'done.png'))}">`,
+      ),
+      1280,
+      800,
+      join(OUT, 'screenshot-4-progress.png'),
+    );
+
+    // 2. The next visit: only the chats not saved yet, all ticked.
+    await stand.ev(page, 'location.reload()');
+    await sleep(1500);
+    await waitFor(async () => (await rows()) === TITLES.length, 60000, 'the list again');
+    await stand.ev(
+      page,
+      `[...document.querySelectorAll('.progress button')].find((b) => /Hide/.test(b.innerText))?.click()`,
     );
     await stand.ev(
       page,
-      `[...document.querySelectorAll('tbody input[type=checkbox]')].slice(0, 6).forEach((c) => c.click())`,
+      `(() => {
+        const status = [...document.querySelectorAll('.filters select')].find((s) =>
+          [...s.options].some((o) => o.value === 'new'),
+        );
+        status.value = 'new';
+        status.dispatchEvent(new Event('change', { bubbles: true }));
+      })()`,
     );
+    await waitFor(async () => (await rows()) === TITLES.length - 5, 10000, 'the chats not saved');
+    await stand.ev(page, `document.querySelector('thead input[type=checkbox]').click()`);
     await shot(stand, page, 1160, 640, join(work, 'list.png'));
     await htmlShot(
       stand,
       work,
       'frame2',
       frame(
-        'Pick chats by date, project or title — <b>or all of them</b>',
+        'See what is left to save — <b>and pick it all</b>',
         `<img src="${dataUrl(join(work, 'list.png'))}">`,
       ),
       1280,
@@ -302,45 +431,62 @@ try {
       join(OUT, 'screenshot-2-choose.png'),
     );
 
-    // 3. The same page after the export: progress and statuses.
-    await stand.ev(page, `document.querySelector('.actions button.primary').click()`);
+    // 3. Everything saved, then searched: every chat of every service at once.
+    await exported();
+    const search = await stand.openTab(`${ext}/search/index.html`);
+    const box = `document.querySelector('input[type=search]')`;
+    await waitFor(() => stand.ev(search, `Boolean(${box})`), 60000, 'the archive');
+    await stand.ev(
+      search,
+      `(() => { const box = ${box}; box.value = 'budget'; box.dispatchEvent(new Event('input', { bubbles: true })); })()`,
+    );
     await waitFor(
-      async () => {
-        const job = await stand.job();
-        return job && job.status === 'finished';
-      },
-      120000,
-      'the export',
+      () => stand.ev(search, `document.querySelectorAll('.hits li').length > 3`),
+      10000,
+      'the hits',
+    );
+    await stand.ev(
+      search,
+      `[...document.querySelectorAll('.hits li')].find((li) => /Tile and paint/.test(li.innerText)).click()`,
+    );
+    await waitFor(
+      () =>
+        stand.ev(
+          search,
+          `Boolean(document.querySelector('.viewer iframe')?.contentDocument?.querySelector('mark'))`,
+        ),
+      10000,
+      'the note',
     );
     await sleep(800);
-    await stand.ev(page, `window.scrollTo(0, 0)`);
-    await shot(stand, page, 1160, 640, join(work, 'done.png'));
+    await stand.ev(search, `window.scrollTo(0, 0)`);
+    await shot(stand, search, 1160, 640, join(work, 'search.png'));
     await htmlShot(
       stand,
       work,
       'frame3',
       frame(
-        'Hundreds of chats in the background, <b>with a report</b>',
-        `<img src="${dataUrl(join(work, 'done.png'))}">`,
+        'Search every saved chat at once — <b>on your computer</b>',
+        `<img src="${dataUrl(join(work, 'search.png'))}">`,
       ),
       1280,
       800,
-      join(OUT, 'screenshot-3-progress.png'),
+      join(OUT, 'screenshot-3-search.png'),
     );
 
-    // 4. A saved note and its folder.
+    // 5. A saved note and its folder.
     await htmlShot(stand, work, 'note', savedNote(), 1160, 640, join(work, 'note.png'));
     await htmlShot(
       stand,
       work,
-      'frame4',
+      'frame5',
       frame(
         'Markdown notes with <b>every file</b>, ready for Obsidian',
         `<img src="${dataUrl(join(work, 'note.png'))}">`,
       ),
       1280,
       800,
-      join(OUT, 'screenshot-4-note.png'),
+      join(OUT, 'screenshot-5-note.png'),
     );
 
     // The small promo tile.

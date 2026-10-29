@@ -8,20 +8,20 @@ Upload `ai-chat-exporter-<version>.zip` from the [release](https://github.com/ni
 
 ## Store listing tab
 
-| Field                  | Value                                                                                                                                       |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Name                   | From the package: "CodingCat AI Chat Exporter" (both languages)                                                                             |
-| Summary                | From the package: `extDescription` in `scripts/locales.py` (English, Russian) and `LISTING` there for the other languages                   |
-| Description            | `description.<language>.txt`: en, ru, de, es, fr, pt_BR, ja, zh_CN                                                                          |
-| Category               | Productivity › Tools (a category is chosen inside a group; Workflow & Planning would be the second choice)                                  |
-| Language               | English first; then add Russian, German, Spanish, French, Portuguese (Brazil), Japanese and Chinese (Simplified), each with its description |
-| Store icon             | `store-icon-128.png`: the package's `icons/icon-128.png`, 96×96 artwork in 16 px of padding with a faint glow                               |
-| Screenshots (1280×800) | `screenshot-1-popup.png`, `screenshot-2-choose.png`, `screenshot-3-progress.png`, `screenshot-4-note.png`, in this order                    |
-| Small promo tile       | `promo-small-440x280.png` (required)                                                                                                        |
-| Marquee promo tile     | `promo-marquee-1400x560.png` (optional: shown only if the store features the extension)                                                     |
-| Homepage URL           | https://github.com/nikolaylosev/ai-chat-exporter                                                                                            |
-| Support URL            | https://github.com/nikolaylosev/ai-chat-exporter/issues                                                                                     |
-| Mature content         | No                                                                                                                                          |
+| Field                  | Value                                                                                                                                                                            |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Name                   | From the package: "CodingCat AI Chat Exporter" (both languages)                                                                                                                  |
+| Summary                | From the package: `extDescription` in `scripts/locales.py` (English, Russian) and `LISTING` there for the other languages                                                        |
+| Description            | `description.<language>.txt`: en, ru, de, es, fr, pt_BR, ja, zh_CN                                                                                                               |
+| Category               | Productivity › Tools (a category is chosen inside a group; Workflow & Planning would be the second choice)                                                                       |
+| Language               | English first; then add Russian, German, Spanish, French, Portuguese (Brazil), Japanese and Chinese (Simplified), each with its description                                      |
+| Store icon             | `store-icon-128.png`: the package's `icons/icon-128.png`, 96×96 artwork in 16 px of padding with a faint glow                                                                    |
+| Screenshots (1280×800) | `screenshot-1-popup.png`, `screenshot-2-choose.png`, `screenshot-3-search.png`, `screenshot-4-progress.png`, `screenshot-5-note.png`, in this order (the store takes up to five) |
+| Small promo tile       | `promo-small-440x280.png` (required)                                                                                                                                             |
+| Marquee promo tile     | `promo-marquee-1400x560.png` (optional: shown only if the store features the extension)                                                                                          |
+| Homepage URL           | https://github.com/nikolaylosev/ai-chat-exporter                                                                                                                                 |
+| Support URL            | https://github.com/nikolaylosev/ai-chat-exporter/issues                                                                                                                          |
+| Mature content         | No                                                                                                                                                                               |
 
 The screenshots are in English; the same ones serve every language. The interface itself is in English and Russian; in the other languages Chrome shows it in English, and only the name and the summary are translated.
 
