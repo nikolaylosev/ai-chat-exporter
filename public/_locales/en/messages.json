@@ -1312,6 +1312,36 @@
   "searchTo": {
     "message": "To"
   },
+  "searchWithin": {
+    "message": "In chats that also mention…"
+  },
+  "searchWithinHint": {
+    "message": "Words that must also be somewhere in the chat, in any message or file. -word leaves out the chats that have it."
+  },
+  "searchWhere": {
+    "message": "Where"
+  },
+  "searchWhereAll": {
+    "message": "In messages and files"
+  },
+  "searchWhereMessages": {
+    "message": "Only in messages"
+  },
+  "searchWhereFiles": {
+    "message": "Only in files"
+  },
+  "searchSort": {
+    "message": "Order"
+  },
+  "searchSortNewest": {
+    "message": "Newest chats first"
+  },
+  "searchSortOldest": {
+    "message": "Oldest chats first"
+  },
+  "searchSortMatches": {
+    "message": "Most matches first"
+  },
   "searchFound": {
     "message": "Found in $ARG1$ messages of $ARG2$ chats.",
     "placeholders": {

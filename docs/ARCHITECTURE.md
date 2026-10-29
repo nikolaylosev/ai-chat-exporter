@@ -129,7 +129,7 @@ src/
   search/                   searching the saved archive (the search page)
     notes.ts                every note format read back into its properties and messages; the text of chats' files
     archive.ts              the search folder walked, .zip exports read inside, notes and files' text kept in IndexedDB
-    query.ts                words and "phrases" in every message, with filters (pure)
+    query.ts                words and "phrases" in every message, with filters, narrowing to chats that also hold (or lack) words, order (pure)
   sinks/
     types.ts                ExportSink interface
     downloads-sink.ts       separate files into Downloads (chrome.downloads)
