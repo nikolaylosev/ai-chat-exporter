@@ -118,12 +118,36 @@ export async function discoverSignature(
   return null;
 }
 
-/** Words that start a search; both languages, since chats mix them. */
-export const SEED_WORDS = [
-  ...['и', 'в', 'не', 'на', 'что', 'как', 'это', 'можно', 'нужно', 'сделай', 'напиши'],
-  ...['помоги', 'объясни', 'план', 'код', 'вопрос', 'пример', 'список', 'задача', 'почему'],
-  ...['the', 'a', 'to', 'is', 'how', 'what', 'write', 'help', 'explain', 'test', 'error'],
-];
+/** Words that start a search: common words and the verbs prompts start with, by language. */
+const SEEDS: Record<string, readonly string[]> = {
+  ru: [
+    ...['и', 'в', 'не', 'на', 'что', 'как', 'это', 'можно', 'нужно', 'сделай', 'напиши'],
+    ...['помоги', 'объясни', 'план', 'код', 'вопрос', 'пример', 'список', 'задача', 'почему'],
+  ],
+  en: ['the', 'a', 'to', 'is', 'how', 'what', 'write', 'help', 'explain', 'test', 'error'],
+  de: ['und', 'der', 'die', 'das', 'nicht', 'wie', 'was', 'ist', 'bitte', 'schreibe', 'erkläre'],
+  es: ['que', 'de', 'el', 'la', 'no', 'cómo', 'qué', 'para', 'escribe', 'explica', 'ayuda'],
+  fr: ['le', 'la', 'les', 'et', 'de', 'pas', 'comment', 'que', 'pour', 'écris', 'explique'],
+  pt: ['que', 'de', 'o', 'a', 'não', 'como', 'para', 'escreva', 'explique', 'ajuda', 'exemplo'],
+  it: ['che', 'di', 'il', 'la', 'non', 'come', 'cosa', 'per', 'scrivi', 'spiega', 'aiuta'],
+  uk: ['і', 'в', 'не', 'на', 'що', 'як', 'це', 'можна', 'напиши', 'поясни', 'допоможи'],
+  ja: ['の', 'は', 'を', 'に', 'です', 'ください', '方法', '書いて', '説明', '教えて', 'エラー'],
+  zh: ['的', '是', '我', '怎么', '什么', '如何', '请', '写', '解释', '代码', '错误'],
+};
+
+/** Russian and English, the default: chats mix them, and they are what was tried most. */
+export const SEED_WORDS = [...SEEDS.ru!, ...SEEDS.en!];
+
+/**
+ * The seed words for the language of the Gemini page (`de-DE`, `ja`): its words
+ * first, then the Russian and English ones, which stay whatever the page's
+ * language, since the interface's language need not be the chats'.
+ */
+export function seedWords(language?: string): string[] {
+  const code = (language ?? '').toLowerCase().split(/[-_]/)[0] ?? '';
+  const words = code === 'ru' || code === 'en' ? [] : (SEEDS[code] ?? []);
+  return [...new Set([...words, ...SEED_WORDS])];
+}
 const STOP_WORDS = new Set([
   'the',
   'and',
@@ -176,6 +200,8 @@ export interface SweepOptions {
   known: ReadonlySet<string>;
   /** Where an earlier search stopped. */
   resume?: SweepState;
+  /** The words to start with (`seedWords`); Russian and English by default. */
+  seeds?: readonly string[];
   maxQueries?: number;
   /** Stop once `window` queries in a row found fewer than `minNew` new chats. */
   stall?: { window: number; minNew: number };
@@ -207,6 +233,7 @@ export async function sweepSearch(
   {
     known,
     resume,
+    seeds = SEED_WORDS,
     maxQueries = 1500,
     stall = { window: 50, minNew: 5 },
     delayMs = 250,
@@ -217,7 +244,7 @@ export async function sweepSearch(
 ): Promise<{ hits: SearchHit[]; queries: number; end: SweepEnd; state: SweepState }> {
   const asked = new Set(resume?.asked);
   const seen = new Set(resume?.seen);
-  const queue = SEED_WORDS.filter((w) => !asked.has(w));
+  const queue = seeds.filter((w) => !asked.has(w));
   /** Words of the chats found, not asked yet, with their worth. */
   const words = new Map(resume?.words.filter(([w]) => !asked.has(w)));
   const next = (): string | undefined => {
