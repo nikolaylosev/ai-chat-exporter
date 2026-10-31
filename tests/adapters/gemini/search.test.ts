@@ -5,6 +5,7 @@ import {
   readSearchAnswer,
   SEARCH_SIGNATURE,
   SEED_WORDS,
+  seedWords,
   signatureIn,
   searchCoverage,
   searchWords,
@@ -337,5 +338,28 @@ describe('GeminiAdapter.searchConversations', () => {
       },
     ]);
     expect(urls.some((u) => u.includes(encodeURIComponent('2/RENAMED=')))).toBe(true);
+  });
+});
+
+describe('seed words', () => {
+  it("keep Russian and English, with the page language's words first", () => {
+    expect(seedWords('de-DE').slice(0, 3)).toEqual(['und', 'der', 'die']);
+    expect(seedWords('de-DE')).toEqual(expect.arrayContaining(['и', 'the']));
+    expect(seedWords('en')).toEqual(SEED_WORDS);
+    expect(seedWords('ru')).toEqual(SEED_WORDS);
+    expect(seedWords(undefined)).toEqual(SEED_WORDS);
+    expect(seedWords('ja')[0]).toBe('の');
+  });
+
+  it('start the search', async () => {
+    const asked: string[] = [];
+    await sweepSearch(
+      (query) => {
+        asked.push(query);
+        return Promise.resolve([]);
+      },
+      { known: new Set(), seeds: ['eins', 'zwei'], sleep: () => Promise.resolve() },
+    );
+    expect(asked).toEqual(['eins', 'zwei']);
   });
 });

@@ -34,6 +34,7 @@ if (!window.__aiChatExporterGeminiAlive?.()) {
       return coded(() =>
         adapter.searchConversations(new Set(knownIds), {
           ...(resume ? { resume } : {}),
+          language: document.documentElement.lang || navigator.language,
           shouldStop: () => searchStopped,
           // Each query's new chats go to the page at once, so a stop or a failure keeps them.
           onProgress: ({ found, queries, conversations, state }) => {

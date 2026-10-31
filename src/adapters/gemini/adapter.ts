@@ -20,6 +20,7 @@ import {
   GEMINI_SCRIPT_ORIGINS,
   readSearchAnswer,
   SEARCH_SIGNATURE,
+  seedWords,
   sweepSearch,
   type SearchHit,
   type SweepEnd,
@@ -80,6 +81,8 @@ export class GeminiAdapter implements PlatformAdapter {
       maxQueries?: number;
       /** Where an earlier search stopped. */
       resume?: SweepState;
+      /** The Gemini page's language (`de-DE`): its seed words start the search. */
+      language?: string;
       /** After each query; `conversations` are the new chats it found. */
       onProgress?: (progress: {
         found: number;
@@ -142,6 +145,7 @@ export class GeminiAdapter implements PlatformAdapter {
       known,
       sleep: this.sleep,
       ...(options.resume ? { resume: options.resume } : {}),
+      seeds: seedWords(options.language),
       ...(options.maxQueries ? { maxQueries: options.maxQueries } : {}),
       ...(onProgress
         ? {
