@@ -19,6 +19,8 @@ export interface ExportRecord {
   folder: string;
   /** Files that failed to download in that export; the chat is then not "unchanged". */
   missingFiles?: number;
+  /** Saved without its oldest messages; the chat is then not "unchanged" either. */
+  incomplete?: true;
   /** Files written (paths from the export root), so the next overwrite can drop stale ones. */
   files?: string[];
 }
@@ -102,7 +104,13 @@ export class Registry {
    */
   async isUnchanged(platform: Platform, id: string, updatedAt: string | null): Promise<boolean> {
     const record = await this.record(platform, id);
-    return Boolean(record && updatedAt && record.updatedAt === updatedAt && !record.missingFiles);
+    return Boolean(
+      record &&
+      updatedAt &&
+      record.updatedAt === updatedAt &&
+      !record.missingFiles &&
+      !record.incomplete,
+    );
   }
 
   /**
@@ -133,9 +141,15 @@ export class Registry {
    * the latest export of each, with the title its folder was named after and the
    * files it missed.
    */
-  async chats(
-    platform: Platform,
-  ): Promise<{ id: string; title: string; updatedAt: string | null; missingFiles?: number }[]> {
+  async chats(platform: Platform): Promise<
+    {
+      id: string;
+      title: string;
+      updatedAt: string | null;
+      missingFiles?: number;
+      incomplete?: true;
+    }[]
+  > {
     const latest = new Map<string, ExportRecord>();
     for (const [key, record] of Object.entries((await this.read()).records)) {
       if (!key.startsWith(`${platform}:`)) continue;
@@ -149,6 +163,7 @@ export class Registry {
       title: titleFromFolder(r.folder),
       updatedAt: r.updatedAt,
       ...(r.missingFiles ? { missingFiles: r.missingFiles } : {}),
+      ...(r.incomplete ? { incomplete: true as const } : {}),
     }));
   }
 

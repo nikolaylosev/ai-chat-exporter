@@ -19,6 +19,8 @@ export interface ReportLabels {
   saved: string;
   /** After a Gemini export's missing files: where Google Takeout's copies can be added from. */
   takeout: string;
+  /** A chat saved without its oldest messages. */
+  incomplete: string;
 }
 
 export const REPORTS_DIR = '_reports';
@@ -77,7 +79,11 @@ export function renderReport(
     ),
     ...section(labels.warnings, by('warning'), (i) =>
       [
-        `${link(i)} — ${labels.failedFiles(i.failedFiles ?? 0)}`,
+        [
+          link(i),
+          ...(i.incomplete ? [labels.incomplete] : []),
+          ...(i.failedFiles ? [labels.failedFiles(i.failedFiles)] : []),
+        ].join(' — '),
         ...(i.failures ?? []).map(
           (f) => `  - ${escapeLinkText(f.name)}${f.reason ? ` — ${f.reason}` : ''}`,
         ),

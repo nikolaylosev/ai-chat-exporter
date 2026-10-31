@@ -116,6 +116,9 @@ describe('saved status', () => {
       'changed',
     );
     expect(savedStatus(chat('y', 'Chat', null, null), { updatedAt: null })).toBe('changed');
+    expect(savedStatus(now, { updatedAt: '2026-10-05T10:00:00Z', incomplete: true })).toBe(
+      'changed',
+    );
   });
 
   it('filters the list by it', () => {

@@ -119,6 +119,7 @@ export function requeueLostPart(job: JobState, current: JobItem | null, archive:
     delete item.savedFiles;
     delete item.failedFiles;
     delete item.failures;
+    delete item.incomplete;
     // The project's note was in the lost part too, or will be written after this chat.
     const progress = item.projectId ? job.projects?.[item.projectId] : undefined;
     if (progress) progress.written = false;
@@ -354,7 +355,9 @@ async function exportConversationItem(
       updatedAt: conversation.updatedAt,
     });
     await refreshListed(job.platform, item.id, { title: conversation.title });
-    item.status = outcome.failedFiles ? 'warning' : 'done';
+    item.status = outcome.failedFiles || conversation.incomplete ? 'warning' : 'done';
+    if (conversation.incomplete) item.incomplete = true;
+    else delete item.incomplete;
     item.savedFiles = outcome.savedFiles;
     item.failedFiles = outcome.failedFiles;
     if (outcome.failures.length) item.failures = outcome.failures;

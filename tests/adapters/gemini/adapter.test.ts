@@ -216,6 +216,64 @@ describe('GeminiAdapter.listConversations with chats known from before', () => {
   });
 });
 
+describe('GeminiAdapter.getConversation when Gemini fails partway', () => {
+  /** The fake server, with history pages failing (status 13) while `fails(token)` says so. */
+  const failing = (fails: (token: unknown) => boolean) => {
+    const server = geminiServer(all);
+    let tries = 0;
+    const fetchFn: FetchLike = (url, init) => {
+      const form = new URLSearchParams(typeof init?.body === 'string' ? init.body : '');
+      const request = JSON.parse(form.get('f.req') ?? '[[[]]]') as [[[string, string]]];
+      if (request[0][0][0] === 'hNvQHb') {
+        const args = JSON.parse(request[0][0][1]) as unknown[];
+        if (fails(args[2])) {
+          tries++;
+          return Promise.resolve(
+            new Response(
+              `)]}'\n\n${JSON.stringify([['wrb.fr', 'hNvQHb', null, null, null, [13], 'generic']])}`,
+            ),
+          );
+        }
+      }
+      return server.fetchFn(url, init);
+    };
+    const gemini = new GeminiAdapter(
+      fetchFn,
+      () => `${ORIGIN}/app`,
+      ORIGIN,
+      () => Promise.resolve(),
+    );
+    return { gemini, tries: () => tries };
+  };
+
+  it('keeps the newest turns read and marks the chat incomplete when an older page keeps failing', async () => {
+    const whole = await adapter().gemini.getConversation('0000000000000006');
+    const { gemini, tries } = failing((token) => token !== null);
+    const c = await gemini.getConversation('0000000000000006');
+    expect(c.incomplete).toBe(true);
+    // The first page's ten turns, the newest: the oldest one is missing.
+    expect(c.messages).toHaveLength(whole.messages.length - 2);
+    expect(c.messages.at(-1)?.id).toBe(whole.messages.at(-1)?.id);
+    // Each pause gives the page another go, each with the request's own retries.
+    expect(tries()).toBeGreaterThan(3);
+  });
+
+  it('asks a failing page again and reads on when it passes', async () => {
+    let failures = 2;
+    const { gemini } = failing((token) => token !== null && failures-- > 0);
+    const c = await gemini.getConversation('0000000000000006');
+    expect(c.incomplete).toBeUndefined();
+    expect(c.messages).toHaveLength(22);
+  });
+
+  it('fails the chat when not even its first page comes', async () => {
+    const { gemini } = failing(() => true);
+    await expect(gemini.getConversation('0000000000000006')).rejects.toBeInstanceOf(
+      PlatformBusyError,
+    );
+  });
+});
+
 describe('GeminiAdapter.lookupConversations', () => {
   it('gives the entries of the ids asked, in their order, and names those Gemini has not', async () => {
     const whole = (await adapter().gemini.listConversations()).conversations;

@@ -163,6 +163,10 @@ STRINGS = {
     "exportGemNone": ("Without a Gem ($1)", "Без Gem ($1)"),
     "exportFoundBySearch": ("found by search", "найден поиском"),
     "exportFromTakeout": ("from Takeout", "из Takeout"),
+    "exportIncomplete": (
+        "saved without its oldest messages: the service stopped answering",
+        "сохранён без самых старых сообщений: сервис перестал отвечать",
+    ),
     "exportSavedBefore": ("saved before", "сохранён раньше"),
     "exportArchived": ("archived", "в архиве"),
     "exportLoadingCount": (
@@ -249,6 +253,10 @@ STRINGS = {
     "reportStopped": ("The export stopped: $1", "Экспорт остановлен: $1"),
     "reportErrors": ("Errors", "Ошибки"),
     "reportWarnings": ("Saved with missing files", "Сохранены не со всеми файлами"),
+    "reportIncomplete": (
+        "the oldest messages are missing: the service stopped answering; save it again later",
+        "нет самых старых сообщений: сервис перестал отвечать; сохраните ещё раз позже",
+    ),
     "reportTakeout": (
         "Google Takeout may have these files: Gemini's history leaves some out. The extension's \"Complete from Google Takeout\" page adds them to the saved chats: $1 (also linked from Gemini's tab of the export page).",
         "Эти файлы могут быть в Google Takeout: история Gemini отдаёт не все. Страница расширения «Дополнить из Google Takeout» добавит их к сохранённым чатам: $1 (ссылка есть и на вкладке Gemini страницы экспорта).",
@@ -401,6 +409,10 @@ STRINGS = {
     "mdBranchAfter": ("Branch $1, after message $2", "Ветка $1, после сообщения $2"),
     "mdBranchAfterIn": ("Branch $1, after message $2 of branch $3", "Ветка $1, после сообщения $2 ветки $3"),
     "mdSelection": ("$1 of the chat's $2 messages", "$1 из $2 сообщений чата"),
+    "mdIncomplete": (
+        "The service stopped answering while this chat was read: its oldest messages are missing. Save it again later to get them.",
+        "Сервис перестал отвечать, пока читался этот чат: самых старых сообщений нет. Сохраните его ещё раз позже, чтобы получить их.",
+    ),
     # Options
     "optionsTitle": ("CodingCat AI Chat Exporter settings", "Настройки CodingCat AI Chat Exporter"),
     "optionsSectionSaving": ("Saving", "Сохранение"),

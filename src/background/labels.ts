@@ -33,6 +33,7 @@ export function renderLabels(platform: Platform): RenderLabels {
           ? t('mdBranchAfter', [String(number), String(fork.position)])
           : t('mdBranchAfterIn', [String(number), String(fork.position), String(fork.branch)]),
     selection: (chosen, total) => t('mdSelection', [String(chosen), String(total)]),
+    incomplete: t('mdIncomplete'),
   };
 }
 
@@ -76,5 +77,6 @@ export function reportLabels(): ReportLabels {
     notReached: t('reportNotReached'),
     saved: t('reportSaved'),
     takeout: t('reportTakeout', chrome.runtime.getURL('src/ui/takeout/index.html')),
+    incomplete: t('reportIncomplete'),
   };
 }
