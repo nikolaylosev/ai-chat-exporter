@@ -30,6 +30,8 @@ export function projectCounts(list: readonly ConversationSummary[]): [string, nu
 export interface SavedRecord {
   updatedAt: string | null;
   missingFiles?: number;
+  /** Saved without its oldest messages. */
+  incomplete?: true;
 }
 
 export interface ListFilter {
@@ -91,7 +93,10 @@ export function withKept(filter: ListFilter, stored: unknown): ListFilter {
  */
 export function savedStatus(c: ConversationSummary, record: SavedRecord | undefined): SavedStatus {
   if (!record) return 'new';
-  return c.updatedAt && record.updatedAt === c.updatedAt && !record.missingFiles
+  return c.updatedAt &&
+    record.updatedAt === c.updatedAt &&
+    !record.missingFiles &&
+    !record.incomplete
     ? 'saved'
     : 'changed';
 }

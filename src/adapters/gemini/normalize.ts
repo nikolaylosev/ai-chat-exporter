@@ -53,12 +53,24 @@ export interface GeminiMeta {
   /** The Gem's name, when the chat is with a Gem. */
   gem?: string;
   url: string;
+  /** The history ended early: Gemini stopped answering before the oldest turns. */
+  incomplete?: boolean;
 }
 
 /** Turns, oldest first, into the shared model. Gemini keeps only the visible branch. */
 export function toConversation(turns: RawTurn[], meta: GeminiMeta): Conversation {
   const messages: Message[] = [];
   for (const turn of turns) {
+    if (turn.unreadable) {
+      messages.push({
+        id: turn.responseId,
+        role: 'assistant',
+        createdAt: turn.createdAt,
+        blocks: [{ type: 'unreadable', kind: 'a turn in a format not known yet' }],
+        attachments: [],
+      });
+      continue;
+    }
     messages.push({
       id: `${turn.responseId}:user`,
       role: 'user',
@@ -90,6 +102,7 @@ export function toConversation(turns: RawTurn[], meta: GeminiMeta): Conversation
     url: meta.url,
     ...(meta.gem ? { project: meta.gem } : {}),
     ...(model ? { model } : {}),
+    ...(meta.incomplete ? { incomplete: true } : {}),
     messages,
     branches: [],
   };

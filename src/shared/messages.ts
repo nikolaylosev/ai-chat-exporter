@@ -138,7 +138,13 @@ interface Contract {
     /** The platform's chats the registry has, with the title read from each folder. */
     'registry:chats': {
       request: { platform: Platform };
-      response: { id: string; title: string; updatedAt: string | null; missingFiles?: number }[];
+      response: {
+        id: string;
+        title: string;
+        updatedAt: string | null;
+        missingFiles?: number;
+        incomplete?: true;
+      }[];
     };
     'registry:clear': { request: Empty; response: null };
     /** Pages a content script cannot open itself. */

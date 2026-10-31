@@ -26,6 +26,8 @@ export interface JobItem {
   status: JobItemStatus;
   savedFiles?: number;
   failedFiles?: number;
+  /** Saved without its oldest messages: the service stopped answering partway. */
+  incomplete?: true;
   /** Names of the files that were not saved, with the reason (at most MAX_LISTED_FAILURES). */
   failures?: FileFailure[];
   /** Why the conversation failed, in the UI language. */

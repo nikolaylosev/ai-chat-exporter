@@ -94,6 +94,8 @@ export interface RawTurn {
   /** Display name, e.g. `3.8 Flash`. */
   model?: string;
   createdAt: string | null;
+  /** The turn could not be read: kept as a mark in its place, the chat goes on. */
+  unreadable?: true;
 }
 
 /** One turn of `hNvQHb`; `where` names it in errors. */
@@ -105,7 +107,11 @@ export function readTurn(turn: unknown, where: string): RawTurn {
     .filter((f): f is RawFile => f !== null);
   const candidates = need(at(turn, 3, 0), isArray, `${where}[3][0]`, 'a list of answers');
   const chosenId = asString(at(turn, 3, 3));
-  const chosen = candidates.find((c) => at(c, 0) === chosenId) ?? candidates[0];
+  // The answer shown; else the first with text (an empty one may come first).
+  const chosen =
+    candidates.find((c) => at(c, 0) === chosenId) ??
+    candidates.find((c) => asString(at(c, 1, 0))) ??
+    candidates[0];
   const answer = asString(at(chosen, 1, 0)) ?? '';
   const generated = findFiles(at(chosen, 12)).filter((f) => f.kind === 1 && f.url);
   const model = asString(at(turn, 3, 21));
@@ -128,7 +134,23 @@ export function readHistoryPage(
   const turns = need(at(page, 0), isArray, `${where}[0]`, 'a list of turns');
   const next = at(page, 1);
   return {
-    turns: turns.map((turn, i) => readTurn(turn, `${where}[0][${i}]`)),
+    turns: turns.map((turn, i) => {
+      // One turn in a shape not known does not cost the chat: it is marked where it was.
+      try {
+        return readTurn(turn, `${where}[0][${i}]`);
+      } catch (error) {
+        if (!(error instanceof PlatformFormatError)) throw error;
+        return {
+          responseId: `${where}[0][${i}]`,
+          prompt: '',
+          uploads: [],
+          answer: '',
+          generated: [],
+          createdAt: timestamp(at(turn, 4)),
+          unreadable: true,
+        };
+      }
+    }),
     next: typeof next === 'string' && next ? next : null,
   };
 }

@@ -265,3 +265,11 @@ describe('code fences a reply leaves open', () => {
     expect(md).toMatch(/ls\n```\n\n## /);
   });
 });
+
+describe('a chat read only partly', () => {
+  it('says at the top that its oldest messages are missing', () => {
+    const md = renderMarkdown({ ...conversation, incomplete: true }, base);
+    expect(md).toMatch(/\n# How to "export" chats\n\n> ⚠️ The oldest messages are missing\.\n/);
+    expect(renderMarkdown(conversation, base)).not.toContain('oldest messages');
+  });
+});

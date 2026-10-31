@@ -1047,6 +1047,7 @@ function ChatsTab({ platform, settings, updateSettings, job, showJob, onStarted 
                         {c.fromTakeout && <small class="hint"> {t('exportFromTakeout')}</small>}
                         {c.savedBefore && <small class="hint"> {t('exportSavedBefore')}</small>}
                         {c.archived && <small class="hint"> {t('exportArchived')}</small>}
+                        {item?.incomplete && <small class="hint"> {t('exportIncomplete')}</small>}
                         <FailedFiles failures={item?.failures} total={item?.failedFiles} />
                       </td>
                       {hasCreated && <td class="date">{formatDate(c.createdAt)}</td>}

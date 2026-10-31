@@ -24,6 +24,7 @@ const labels: ReportLabels = {
   notReached: 'Not reached',
   saved: 'Saved',
   takeout: 'Google Takeout may have these files.',
+  incomplete: 'the oldest messages are missing',
 };
 
 const item = (id: string, status: JobItem['status'], extra: Partial<JobItem> = {}): JobItem => ({
@@ -99,6 +100,13 @@ describe('renderReport', () => {
         '- [Chat 1](../Chat%201%20-%202026-10-13%20%28Claude%29/Chat%201%20-%202026-10-13%20%28Claude%29.md)',
         '',
       ].join('\n'),
+    );
+  });
+
+  it('says which chats were saved without their oldest messages', () => {
+    const partial = item('2', 'warning', { path: 'B/B.md', incomplete: true });
+    expect(renderReport(job([partial]), 'Gemini', labels, 'UTC')).toContain(
+      '- [Chat 2](../B/B.md) — the oldest messages are missing\n',
     );
   });
 

@@ -436,6 +436,9 @@
   "exportFromTakeout": {
     "message": "из Takeout"
   },
+  "exportIncomplete": {
+    "message": "сохранён без самых старых сообщений: сервис перестал отвечать"
+  },
   "exportSavedBefore": {
     "message": "сохранён раньше"
   },
@@ -728,6 +731,9 @@
   },
   "reportWarnings": {
     "message": "Сохранены не со всеми файлами"
+  },
+  "reportIncomplete": {
+    "message": "нет самых старых сообщений: сервис перестал отвечать; сохраните ещё раз позже"
   },
   "reportTakeout": {
     "message": "Эти файлы могут быть в Google Takeout: история Gemini отдаёт не все. Страница расширения «Дополнить из Google Takeout» добавит их к сохранённым чатам: $ARG1$ (ссылка есть и на вкладке Gemini страницы экспорта).",
@@ -1087,6 +1093,9 @@
         "content": "$2"
       }
     }
+  },
+  "mdIncomplete": {
+    "message": "Сервис перестал отвечать, пока читался этот чат: самых старых сообщений нет. Сохраните его ещё раз позже, чтобы получить их."
   },
   "optionsTitle": {
     "message": "Настройки CodingCat AI Chat Exporter"

@@ -147,6 +147,8 @@ export function fakeGemini({
   image,
   documents = {},
   notebooks = null,
+  /** `(chatId, pageToken) => true` to answer that history page with status 13. */
+  historyFails = () => false,
 } = {}) {
   const state = { listPages: 0, searches: 0, queries: [], lh3: 0, contribution: 0, history: 0 };
   const handler = (req, res, url) => {
@@ -197,6 +199,12 @@ export function fakeGemini({
         const args = JSON.parse(JSON.parse(form.get('f.req'))[0][0][1]);
         let payload = null;
         let delay = 0;
+        if (rpc === 'hNvQHb' && historyFails(args[0].slice(2), args[2])) {
+          state.history++;
+          const line = JSON.stringify([['wrb.fr', rpc, null, null, null, [13], 'generic']]);
+          res.writeHead(200, { 'content-type': 'application/json' });
+          return res.end(`)]}'\n\n${line.length}\n${line}\n`);
+        }
         if (rpc === 'hNvQHb') {
           state.history++;
           const history = chats[args[0].slice(2)]?.history ?? [];
