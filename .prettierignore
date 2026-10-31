@@ -4,3 +4,4 @@ node_modules/
 package-lock.json
 docs/spec.md
 tests/fixtures/
+docs/gemini-export-findings.md
