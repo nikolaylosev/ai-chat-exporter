@@ -13,3 +13,4 @@ coverage/
 # Local-only working docs
 docs/spec.md
 docs/TODO.md
+docs/gemini-export-findings.md

@@ -44,6 +44,11 @@ const LIST_PAGE_SIZE = 100;
  * Gemini spends its 10 seconds on it; the same page may pass on the next try.
  */
 const LIST_WAITS_MS = [0, 2000, 5000, 10000, 15000, 20000];
+/**
+ * Pauses before each try of a history page, on top of the request's own
+ * retries: a busy Gemini fails a page now and then, as it does list pages.
+ */
+const HISTORY_WAITS_MS = [0, 5000, 15000];
 /** One chat's entry takes about half a second whatever its age (2026-10-28). */
 const LOOKUP_AT_ONCE = 4;
 
@@ -298,7 +303,10 @@ export class GeminiAdapter implements PlatformAdapter {
 
   async getConversation(id: string): Promise<Conversation> {
     const sourcePath = `/app/${id}`;
-    const [entry, turns] = await Promise.all([this.listEntry(id), this.history(id, sourcePath)]);
+    const [entry, { turns, incomplete }] = await Promise.all([
+      this.listEntry(id),
+      this.history(id, sourcePath),
+    ]);
     if (turns.length === 0 && !entry) {
       throw new ChatNotFoundError('gemini.google.com', id);
     }
@@ -310,19 +318,48 @@ export class GeminiAdapter implements PlatformAdapter {
       updatedAt: entry?.updatedAt ?? null,
       url: this.chatUrl(id, gemId),
       ...(gem ? { gem } : {}),
+      ...(incomplete ? { incomplete: true } : {}),
     });
   }
 
-  /** All turns, oldest first: pages come newest first, 10 turns each. */
-  private async history(id: string, sourcePath: string): Promise<RawTurn[]> {
+  /**
+   * All turns, oldest first: pages come newest first, 10 turns each. A page
+   * Gemini fails on is asked again after pauses, as list pages are; when it
+   * keeps failing after the first page, the turns read so far come back and the
+   * history is marked incomplete (the oldest turns are missing).
+   */
+  private async history(
+    id: string,
+    sourcePath: string,
+  ): Promise<{ turns: RawTurn[]; incomplete: boolean }> {
     const pages: RawTurn[][] = [];
     let token: string | null = null;
     for (let page = 0; page < MAX_HISTORY_PAGES; page++) {
-      const raw = await this.rpc.call(
-        'hNvQHb',
-        [`c_${id}`, 10, token, 1, [1], [4], null, 1],
-        sourcePath,
-      );
+      let raw: unknown = null;
+      let busy: PlatformBusyError | null = null;
+      for (const wait of HISTORY_WAITS_MS) {
+        if (wait) await this.sleep(wait);
+        try {
+          raw = await this.rpc.call(
+            'hNvQHb',
+            [`c_${id}`, 10, token, 1, [1], [4], null, 1],
+            sourcePath,
+          );
+          busy = null;
+          break;
+        } catch (error) {
+          if (error instanceof HttpError && !error.isAuth) {
+            busy = new PlatformBusyError('gemini.google.com', error.message);
+            continue;
+          }
+          if (!(error instanceof PlatformBusyError)) throw error;
+          busy = error;
+        }
+      }
+      if (busy) {
+        if (page === 0) throw busy;
+        return { turns: pages.flat().reverse(), incomplete: true };
+      }
       // No payload: nothing more (or no such chat, decided by the caller).
       if (raw === null) break;
       const { turns, next } = readHistoryPage(raw, `hNvQHb[${page}]`);
@@ -330,7 +367,7 @@ export class GeminiAdapter implements PlatformAdapter {
       if (!next || turns.length === 0) break;
       token = next;
     }
-    return pages.flat().reverse();
+    return { turns: pages.flat().reverse(), incomplete: false };
   }
 
   private async listEntry(id: string) {

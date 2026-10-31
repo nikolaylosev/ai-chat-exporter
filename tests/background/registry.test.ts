@@ -119,6 +119,21 @@ describe('normalizeRegistry', () => {
     ]);
   });
 
+  it('does not count a chat saved without its oldest messages as unchanged', async () => {
+    const registry = new Registry(memoryStore().store);
+    await registry.remember('gemini', 'aaaa', {
+      updatedAt: 'u',
+      exportedAt: '2026-10-02T00:00:00Z',
+      destination: 'folder',
+      folder: 'Plan - 2026-10-01 (Gemini)',
+      incomplete: true,
+    });
+    expect(await registry.isUnchanged('gemini', 'aaaa', 'u')).toBe(false);
+    expect(await registry.chats('gemini')).toEqual([
+      { id: 'aaaa', title: 'Plan', updatedAt: 'u', incomplete: true },
+    ]);
+  });
+
   it("says how many files a chat's latest export missed", async () => {
     const registry = new Registry(memoryStore().store);
     await registry.remember('claude', 'aaaa', {

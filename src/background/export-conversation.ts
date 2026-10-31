@@ -134,6 +134,7 @@ export async function exportConversation(
     destination,
     folder: outcome.plan.folderPath,
     ...(outcome.missingFiles ? { missingFiles: outcome.missingFiles } : {}),
+    ...(conversation.incomplete ? { incomplete: true } : {}),
     ...(destination !== 'zip' && outcome.writtenFiles.length
       ? { files: outcome.writtenFiles }
       : {}),
@@ -153,7 +154,9 @@ export function reusedFolder(
   previous: ExportRecord | undefined,
 ): string | null {
   if (!previous || destination === 'zip' || previous.destination !== destination) return null;
-  return settings.onFolderExists === 'overwrite' || previous.missingFiles ? previous.folder : null;
+  return settings.onFolderExists === 'overwrite' || previous.missingFiles || previous.incomplete
+    ? previous.folder
+    : null;
 }
 
 /** Name of a bulk export's archive, e.g. `Claude - 2026-10-13 15-40.zip`. */

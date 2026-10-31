@@ -43,6 +43,8 @@ export interface Conversation extends ConversationSummary {
   branches: Branch[];
   /** Only some messages were chosen (selectMessages): how many the chat has. */
   selection?: { total: number };
+  /** The platform stopped answering partway: the oldest messages are missing. */
+  incomplete?: true;
 }
 
 /**

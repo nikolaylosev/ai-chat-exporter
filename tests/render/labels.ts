@@ -25,4 +25,5 @@ export const LABELS: RenderLabels = {
         ? `Branch ${n}, after message ${fork.position}`
         : `Branch ${n}, after message ${fork.position} of branch ${fork.branch}`,
   selection: (chosen, total) => `${chosen} of the chat's ${total} messages`,
+  incomplete: 'The oldest messages are missing.',
 };

@@ -436,6 +436,9 @@
   "exportFromTakeout": {
     "message": "from Takeout"
   },
+  "exportIncomplete": {
+    "message": "saved without its oldest messages: the service stopped answering"
+  },
   "exportSavedBefore": {
     "message": "saved before"
   },
@@ -728,6 +731,9 @@
   },
   "reportWarnings": {
     "message": "Saved with missing files"
+  },
+  "reportIncomplete": {
+    "message": "the oldest messages are missing: the service stopped answering; save it again later"
   },
   "reportTakeout": {
     "message": "Google Takeout may have these files: Gemini's history leaves some out. The extension's \"Complete from Google Takeout\" page adds them to the saved chats: $ARG1$ (also linked from Gemini's tab of the export page).",
@@ -1087,6 +1093,9 @@
         "content": "$2"
       }
     }
+  },
+  "mdIncomplete": {
+    "message": "The service stopped answering while this chat was read: its oldest messages are missing. Save it again later to get them."
   },
   "optionsTitle": {
     "message": "CodingCat AI Chat Exporter settings"
