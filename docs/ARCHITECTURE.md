@@ -57,7 +57,7 @@ This document describes how the extension is built and why. It is meant for anyo
 3. **Validate what the platform returns, and fail small.** The internal APIs are undocumented and change without notice. Every response is parsed with a zod schema. The conversation needs only ids; anything else that is missing or odd is filled in or skipped (a message of an unknown role, a malformed file entry). A content block in an unexpected shape becomes a ⚠️ line in the note instead of failing the chat. When the conversation itself cannot be read, the error names the platform and the field, and the UI shows that field, so a report can be acted on.
 4. **Never guess the platform format.** Parsers are written against real, anonymized responses stored in `tests/fixtures/`.
 5. **One failure does not stop the rest.** A failed attachment does not stop its chat. A failed chat does not stop a bulk export.
-6. **No external servers.** No analytics, no telemetry. The extension talks only to the hosts listed in `host_permissions`.
+6. **No external servers.** No analytics, no telemetry. The extension talks only to the hosts listed in `host_permissions` and `optional_host_permissions`.
 
 ## 3. Source layout
 
@@ -71,6 +71,7 @@ src/
     outline.ts              a chat's messages as the messages page lists them (pure)
     export-conversation.ts  one conversation: sink choice, registry, write
     tabs.ts                 content script injection, background platform tab for bulk work
+    optional-scripts.ts     content scripts of platforms allowed later (DeepSeek), registered once allowed
     report.ts               bulk export report (pure)
     project-export.ts       project folder plan and project note (pure)
     project-job.ts          a project in a bulk job: knowledge files, its chats, the note
@@ -90,7 +91,8 @@ src/
     common.ts               shared by the content scripts: error codes, liveness check
     grok.ts                 content script for grok.com (isolated world)
     chatgpt.ts              content script for chatgpt.com (isolated world)
-    deepseek.ts             content script for chat.deepseek.com (isolated world): reads the page's token
+    deepseek.ts             content script for chat.deepseek.com (isolated world): reads the page's token;
+                            registered at run time, not in the manifest (optional-scripts.ts)
   adapters/
     types.ts                PlatformAdapter interface
     errors.ts               PlatformFormatError (the field that changed), PlatformBusyError
@@ -157,6 +159,7 @@ src/
     job.ts                  bulk export state shared by the worker and the export page
     location.ts             "Saved to …" labels
     platform.ts             platform detection by URL
+    optional-hosts.ts       platforms read only once the user allows them (DeepSeek): hosts, check, request
     list-cache.ts           Gemini's chat list as last read, remembered between visits
     search-cache.ts         chats found by Gemini's search and where it stopped, remembered between visits
     i18n.ts, logger.ts
@@ -418,6 +421,7 @@ Discovery ([`docs/platforms-deepseek.md`](platforms-deepseek.md)) found a JSON A
 - **Conversation** `chat/history_messages`: the whole tree at once. The visible branch is the path to the session's `current_message_id`; every other leaf becomes a branch. Editing the first prompt makes a second root, so a chat can have several.
 - **Messages** are made of typed fragments: `REQUEST` and `RESPONSE` are Markdown, `THINK` a thinking block, `SEARCH` one web search block per message, `FILE` the uploads, `TEMPLATE_RESPONSE` (the server's "busy" notice) its text in italics, `TIP` (a hint of the web app) is left out, any other type is noted as unreadable. `[citation:N]` in an answer becomes links to the results whose `cite_index` is N. A message with status `INCOMPLETE` is marked as stopped. DeepSeek names no model, so the note's `model` says what the chat ran with: the session's `model_type` when it is not `default`, then DeepThink and Search when an answer of the branch had them on.
 - **Files** from `files.deepseeksvc.com` through `signed_path`, without the token and without CORS headers (the offscreen document reads them with the host permission): a document by `ty=r`, byte for byte; an image only as its preview by `ty=p&fmt=jpeg` (JPEG, which Word notes show), named `.jpg` and marked `preview`, since the original of an image is refused. Old uploads have no `signed_path`: they are named in the note as files the service does not provide. A refused link is asked again through `file/fetch_files`.
+- **Access asked for.** DeepSeek came after the extension was published, so its hosts are `optional_host_permissions` (section 13): the content script is not in the manifest, and nothing works there until the user allows it from the popup or the export page.
 - **Scope:** chats only; DeepSeek has no projects. Shared links and the official export are described in the platform notes and not used.
 - **Temporary chats** are not in the list; "Save this chat" on the open page saves one. Custom GPTs are not exported.
 
@@ -551,7 +555,8 @@ The queue lives in the service worker.
 
 - `permissions` are added phase by phase, only when code starts using them. Current set: `downloads`, `storage`, `offscreen`, `activeTab`, `scripting`, `notifications`, `clipboardWrite` (the popup copies a chat's Markdown once the worker has read the chat, which can take longer than a click's activation lasts; the page button's copy goes through the offscreen document, created with the `CLIPBOARD` reason as well as `BLOBS`). `tabs` is not needed: `activeTab` and the platforms' host permissions give access to the tab URL. The README lists each permission with the reason.
 - `commands` for the keyboard shortcut. Users can rebind it in `chrome://extensions/shortcuts`; the options page shows the current binding.
-- `host_permissions`: `https://claude.ai/*`, `https://gemini.google.com/*`, and Gemini's file hosts `https://lh3.googleusercontent.com/*`, `https://lh3.google.com/*` (where the first one redirects some images) and `https://contribution.usercontent.google.com/*`, Gemini's script hosts `https://www.gstatic.com/*` and `https://gemini.gstatic.com/*` (read only to find the search query again, see [Gemini](#gemini)), `https://grok.com/*` with its file host `https://assets.grok.com/*`, `https://chatgpt.com/*`, whose signed file links are on the same host, and `https://chat.deepseek.com/*` with its file host `https://files.deepseeksvc.com/*`. The file hosts are needed only when the offscreen document fetches files for a chosen folder or a ZIP, since `chrome.downloads` needs no permission. The list is kept minimal and each entry is justified in the README.
+- `host_permissions`: `https://claude.ai/*`, `https://gemini.google.com/*`, and Gemini's file hosts `https://lh3.googleusercontent.com/*`, `https://lh3.google.com/*` (where the first one redirects some images) and `https://contribution.usercontent.google.com/*`, Gemini's script hosts `https://www.gstatic.com/*` and `https://gemini.gstatic.com/*` (read only to find the search query again, see [Gemini](#gemini)), `https://grok.com/*` with its file host `https://assets.grok.com/*`, and `https://chatgpt.com/*`, whose signed file links are on the same host. The file hosts are needed only when the offscreen document fetches files for a chosen folder or a ZIP, since `chrome.downloads` needs no permission. The list is kept minimal and each entry is justified in the README.
+- `optional_host_permissions`: `https://chat.deepseek.com/*` and its file host `https://files.deepseeksvc.com/*`. A host added to `host_permissions` in an update makes Chrome turn the extension off for every user until they accept it, so a platform added after the first release is optional (`shared/optional-hosts.ts`). The manifest cannot list its content script either, since a content script's sites count as required access. The popup and the export page show **Allow access** while the hosts are not granted and call `chrome.permissions.request` from that click (the worker cannot ask). The worker registers the content script with `chrome.scripting.registerContentScripts` when access is there, on every start (a new version's file has another name, so a kept registration is updated) and on `permissions.onAdded`, when the open tabs of the platform get the script at once; on `onRemoved` it unregisters it. Work started without access (the shortcut, a job) stops with the `platform-access` error. The e2e stand cannot answer Chrome's dialog, so its build turns the optional hosts into required ones (`buildExtension`); the registration is still the extension's.
 - No external servers. All data stays on the user's machine.
 - Test fixtures contain only anonymized data: message text, names, emails and organization ids are replaced.
 
@@ -660,3 +665,4 @@ Every new dependency is justified in its commit message.
 | 75  | DeepSeek's token read from the page's storage for each request, not kept                                                       | The API wants it as a Bearer header; the web app keeps it in `localStorage`, which a content script can read                                                                       |
 | 76  | DeepSeek images saved as their JPEG preview and marked so; documents by `ty=r`                                                 | The file host refuses an image's original; WebP would not show in Word notes                                                                                                       |
 | 77  | A note `preview` beside `recompressed`                                                                                         | "Re-encoded, full size" would be wrong for a smaller copy                                                                                                                          |
+| 78  | DeepSeek's hosts optional, asked for from a button; its content script registered once allowed                                 | A new required host in an update turns the extension off for every user until they accept it, also those who never use DeepSeek                                                    |

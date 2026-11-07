@@ -171,3 +171,12 @@ label.check {
   font-size: 12px;
   color: var(--muted);
 }
+
+/* The request for a platform's sites (DeepSeek), before anything else works there. */
+.access {
+  margin: 12px 0;
+}
+
+.access p {
+  margin: 0 0 8px;
+}

@@ -1,7 +1,9 @@
 import { CodedError } from '../shared/errors';
 import { log } from '../shared/logger';
 import { sendToTab } from '../shared/messages';
-import type { Platform } from '../shared/platform';
+import { hasPlatformAccess } from '../shared/optional-hosts';
+import { PLATFORM_LABEL, type Platform } from '../shared/platform';
+import { optionalScriptFiles } from './optional-scripts';
 
 const PLATFORM_ORIGIN: Record<Platform, string> = {
   claude: 'https://claude.ai',
@@ -11,8 +13,10 @@ const PLATFORM_ORIGIN: Record<Platform, string> = {
   deepseek: 'https://chat.deepseek.com',
 };
 
-/** Content script files for a platform, as listed in the built manifest. */
+/** Content script files for a platform, as listed in the built manifest or registered later. */
 function contentScriptFiles(platform: Platform): string[] {
+  const registered = optionalScriptFiles(platform);
+  if (registered) return registered;
   const host = new URL(PLATFORM_ORIGIN[platform]).host;
   const entry = chrome.runtime
     .getManifest()
@@ -22,11 +26,18 @@ function contentScriptFiles(platform: Platform): string[] {
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+/** A platform the user has not allowed yet (shared/optional-hosts.ts) stops the work here. */
+async function requireAccess(platform: Platform): Promise<void> {
+  if (await hasPlatformAccess(platform)) return;
+  throw new CodedError('platform-access', `No access to ${PLATFORM_LABEL[platform]} yet`);
+}
+
 /**
  * Tabs opened before the extension was installed or reloaded have no content
  * script yet; inject it on demand.
  */
 export async function ensureContentScript(tabId: number, platform: Platform): Promise<void> {
+  await requireAccess(platform);
   try {
     await sendToTab(tabId, 'ping', {});
     return;
@@ -103,6 +114,8 @@ export class WorkerTab {
     if (this.state.tabId !== undefined && (await this.isUsable(this.state.tabId))) {
       return this.state.tabId;
     }
+    // Before a tab is opened for nothing.
+    await requireAccess(this.platform);
     const origin = PLATFORM_ORIGIN[this.platform];
     const [open] = await chrome.tabs.query({ url: `${origin}/*`, discarded: false });
     let tabId = open?.id;

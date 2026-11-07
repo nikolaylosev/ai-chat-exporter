@@ -47,6 +47,7 @@ import { WorkerTab } from './tabs';
 const STOP_CODES = new Set<ErrorCode>([
   'archive-lost',
   'not-signed-in',
+  'platform-access',
   // Asking again at once only prolongs the limit; a later run continues (skip unchanged).
   'rate-limited',
   'save-dialog',

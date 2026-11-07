@@ -1,5 +1,7 @@
-import { defineManifest } from '@crxjs/vite-plugin';
+import { defineDynamicResource, defineManifest } from '@crxjs/vite-plugin';
 import pkg from '../package.json' with { type: 'json' };
+// With its extension: Vite loads this file outside the bundler.
+import { OPTIONAL_HOSTS } from './shared/optional-hosts.ts';
 
 const icons = {
   16: 'icons/icon-16.png',
@@ -39,8 +41,7 @@ export default defineManifest({
     // The popup copies a chat's Markdown once the chat is read, which can outlast the click.
     'clipboardWrite',
   ],
-  // Gemini files come from Google's content hosts, Grok files from assets.grok.com,
-  // DeepSeek uploads from files.deepseeksvc.com;
+  // Gemini files come from Google's content hosts, Grok files from assets.grok.com;
   // they are fetched there only when saving into a chosen folder or a ZIP
   // (chrome.downloads needs no permission).
   host_permissions: [
@@ -57,9 +58,11 @@ export default defineManifest({
     'https://assets.grok.com/*',
     // ChatGPT's signed file links are on chatgpt.com itself.
     'https://chatgpt.com/*',
-    'https://chat.deepseek.com/*',
-    'https://files.deepseeksvc.com/*',
   ],
+  // Platforms added later, read only once the user allows them (shared/optional-hosts.ts):
+  // a new required host would turn the extension off for everyone until they accept it.
+  // Their content scripts are registered when the access is given (background/optional-scripts.ts).
+  optional_host_permissions: Object.values(OPTIONAL_HOSTS).flat(),
   content_scripts: [
     {
       matches: ['https://claude.ai/*'],
@@ -81,12 +84,9 @@ export default defineManifest({
       js: ['src/content/chatgpt.ts'],
       run_at: 'document_idle',
     },
-    {
-      matches: ['https://chat.deepseek.com/*'],
-      js: ['src/content/deepseek.ts'],
-      run_at: 'document_idle',
-    },
   ],
+  // The parts the registered content scripts import, readable on those platforms only.
+  web_accessible_resources: [defineDynamicResource({ matches: ['https://chat.deepseek.com/*'] })],
   commands: {
     'export-current-chat': {
       suggested_key: { default: 'Alt+Shift+S', mac: 'Alt+Shift+S' },

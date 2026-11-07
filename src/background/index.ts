@@ -6,6 +6,7 @@ import { writeClipboard } from './offscreen-client';
 import { cancelJob, resumeJob, startJob } from './queue';
 import { detectPlatform } from '../shared/platform';
 import { registry } from './registry';
+import { watchOptionalAccess } from './optional-scripts';
 import { ensureContentScript, WorkerTab } from './tabs';
 
 export const EXPORT_COMMAND = 'export-current-chat';
@@ -111,6 +112,9 @@ chrome.runtime.onInstalled.addListener(({ reason }) => {
   // Up to 0.2.16 the popup kept warning about a past Save As dialog; the flag is gone.
   void chrome.storage.local.remove('saveDialogSeen').catch(() => undefined);
 });
+
+// DeepSeek's content script, registered once the user allows the site.
+watchOptionalAccess(ensureContentScript);
 
 // A bulk export outlives the service worker: pick it up when the worker starts again.
 void resumeJob().catch((error: unknown) => log.error('Could not resume the bulk export', error));

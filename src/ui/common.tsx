@@ -5,7 +5,8 @@ import { t } from '../shared/i18n';
 import { JOB_KEY, type JobState } from '../shared/job';
 import { locationLabel } from '../shared/location';
 import { send, type ExportResult, type FileFailure, type JobStartItem } from '../shared/messages';
-import type { Platform } from '../shared/platform';
+import { hasPlatformAccess, optionalHosts, requestPlatformAccess } from '../shared/optional-hosts';
+import { PLATFORM_LABEL, type Platform } from '../shared/platform';
 import { loadSettings, saveSettings, type Settings } from '../shared/settings';
 import { canUseFolders, loadFolderHandle, requestFolderAccess } from '../sinks/folder-handle';
 
@@ -31,6 +32,55 @@ export function useShortcut(): string | undefined {
     return () => window.removeEventListener('focus', load);
   }, []);
   return shortcut;
+}
+
+/**
+ * Whether the extension may read the platform (shared/optional-hosts.ts);
+ * undefined while checking. Follows access given or taken back elsewhere.
+ */
+export function usePlatformAccess(platform: Platform | null | undefined): boolean | undefined {
+  const [known, setKnown] = useState<{ platform: Platform; allowed: boolean } | null>(null);
+  const needs = Boolean(platform && optionalHosts(platform).length);
+  useEffect(() => {
+    if (!platform || !needs) return;
+    let live = true;
+    const check = () =>
+      void hasPlatformAccess(platform).then(
+        (allowed) => live && setKnown({ platform, allowed }),
+        () => live && setKnown({ platform, allowed: false }),
+      );
+    check();
+    chrome.permissions.onAdded.addListener(check);
+    chrome.permissions.onRemoved.addListener(check);
+    return () => {
+      live = false;
+      chrome.permissions.onAdded.removeListener(check);
+      chrome.permissions.onRemoved.removeListener(check);
+    };
+  }, [platform, needs]);
+  if (!platform) return undefined;
+  if (!needs) return true;
+  return known?.platform === platform ? known.allowed : undefined;
+}
+
+/** Why the extension asks for a platform's sites, and the button that asks (from the click). */
+export function AccessRequest({ platform }: { platform: Platform }) {
+  const [denied, setDenied] = useState(false);
+  const label = PLATFORM_LABEL[platform];
+  const ask = () =>
+    void requestPlatformAccess(platform).then(
+      (yes) => setDenied(!yes),
+      () => setDenied(true),
+    );
+  return (
+    <section class="access">
+      <p>{t('accessNeeded', label)}</p>
+      <button type="button" class="primary" onClick={ask}>
+        {t('accessAllow')}
+      </button>
+      {denied && <p class="error result">{t('accessDenied', label)}</p>}
+    </section>
+  );
 }
 
 export const EXPORT_PAGE = 'src/ui/export-page/index.html';

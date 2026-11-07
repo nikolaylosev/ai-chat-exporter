@@ -18,7 +18,7 @@
     "noUnusedParameters": true,
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
-    "types": ["chrome", "vite/client"],
+    "types": ["chrome", "vite/client", "@crxjs/vite-plugin/client"],
     "skipLibCheck": true
   },
   "include": ["src", "vite.config.ts", "vitest.config.ts"]

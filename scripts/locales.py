@@ -56,6 +56,15 @@ STRINGS = {
     ),
     "popupCopying": ("Copying…", "Копирую…"),
     "popupCopied": ("Copied to the clipboard: $1 messages.", "Скопировано в буфер обмена: сообщений $1."),
+    "accessNeeded": (
+        "Allow the extension to read $1: your chats there and the files in them. Chrome asks once.",
+        "Разрешите расширению читать $1: ваши чаты там и файлы в них. Chrome спросит один раз.",
+    ),
+    "accessAllow": ("Allow access", "Разрешить доступ"),
+    "accessDenied": (
+        "Access was not given. Without it the extension cannot read $1.",
+        "Доступ не выдан. Без него расширение не может читать $1.",
+    ),
     "panelClose": ("Close", "Закрыть"),
     "popupChooseChats": ("Choose chats…", "Выбрать чаты…"),
     "popupChooseProjects": ("Choose projects…", "Выбрать проекты…"),
@@ -345,6 +354,10 @@ STRINGS = {
     "error_folder_not_chosen": (
         "No folder is chosen. Choose one in the extension settings.",
         "Папка для сохранения не выбрана. Выберите её в настройках расширения.",
+    ),
+    "error_platform_access": (
+        "The extension has no access to this site yet. Open the extension's window on the site and click “Allow access”.",
+        "У расширения пока нет доступа к этому сайту. Откройте окно расширения на этом сайте и нажмите «Разрешить доступ».",
     ),
     "error_folder_permission": (
         "No access to the chosen folder. Click “Save chat” in the extension window and allow access.",

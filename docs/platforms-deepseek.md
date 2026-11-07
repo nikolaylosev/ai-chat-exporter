@@ -88,6 +88,8 @@ A file in a `FILE` fragment: `id`, `file_name`, `file_size`, `is_image`, `status
 
 `fmt=jpeg` turns a preview or a thumbnail into JPEG; an unknown `fmt` is ignored. The answers carry no `Content-Disposition` and no `Access-Control-Allow-Origin`, so a page cannot read them, while the extension can with a host permission for `files.deepseeksvc.com`. Cookies and the token are not needed. `history_messages` gave the same signature minutes apart and it still worked; `fetch_files` gives a new one.
 
+The extension asks for `chat.deepseek.com` and `files.deepseeksvc.com` as optional host permissions, from a button, the first time DeepSeek is used.
+
 The adapter saves a document by `ty=r` and an image by `ty=p&fmt=jpeg`, named `.jpg` and marked as a preview in the note (Word notes cannot show WebP).
 
 **Old uploads have no `signed_path`**, `fetch_files` returns nothing for them, and the web app shows them as a card that cannot be opened: the server keeps only their name and size. The note names them as files the service does not provide.

@@ -119,6 +119,25 @@
       }
     }
   },
+  "accessNeeded": {
+    "message": "Allow the extension to read $ARG1$: your chats there and the files in them. Chrome asks once.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "accessAllow": {
+    "message": "Allow access"
+  },
+  "accessDenied": {
+    "message": "Access was not given. Without it the extension cannot read $ARG1$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
   "panelClose": {
     "message": "Close"
   },
@@ -893,6 +912,9 @@
   },
   "error_folder_not_chosen": {
     "message": "No folder is chosen. Choose one in the extension settings."
+  },
+  "error_platform_access": {
+    "message": "The extension has no access to this site yet. Open the extension's window on the site and click “Allow access”."
   },
   "error_folder_permission": {
     "message": "No access to the chosen folder. Click “Save chat” in the extension window and allow access."

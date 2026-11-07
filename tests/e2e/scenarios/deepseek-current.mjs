@@ -1,4 +1,5 @@
-// DeepSeek: chats saved through its API with the page's token; a document byte for
+// DeepSeek: its content script registered by the worker once access is given (the
+// stand has it given, see buildExtension); chats saved through its API with the page's token; a document byte for
 // byte by `ty=r`, an image as its JPEG preview by `ty=p` (marked so in the note),
 // from a file host that sends no CORS headers; citations as links; an edited
 // prompt's other version as a branch; old uploads named without a file; then every
@@ -29,6 +30,23 @@ export default {
     });
     const stand = await startStand({ extDir, ...fake });
     try {
+      // DeepSeek is allowed later, so its script is registered by the worker, not listed.
+      const scripts = await waitFor(
+        () =>
+          stand.inExtension(
+            `chrome.scripting.getRegisteredContentScripts().then((s) => s.length && s.map((c) => [c.id, c.matches.join()]))`,
+          ),
+        10000,
+        'the registered content script',
+      );
+      assert.deepEqual(scripts, [['deepseek', 'https://chat.deepseek.com/*']]);
+      assert.equal(
+        await stand.inExtension(
+          `chrome.runtime.getManifest().content_scripts.some((c) => c.matches.some((m) => m.includes('deepseek')))`,
+        ),
+        false,
+        'not in the manifest',
+      );
       for (const n of [1, 2, 4, 6, 7]) {
         const result = await stand.exportTab(`https://chat.deepseek.com/a/chat/s/${uuid(n)}`);
         assert.equal(result.ok, true, `chat ${n}`);

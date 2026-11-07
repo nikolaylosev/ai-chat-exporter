@@ -76,12 +76,26 @@ export function findChrome() {
   );
 }
 
-/** Builds the extension into a fresh folder (never into dist/, which may be in use). */
+/**
+ * Builds the extension into a fresh folder (never into dist/, which may be in use).
+ * The stand plays a user who has allowed every platform: Chrome's dialog for
+ * optional access cannot be answered here, so those hosts become required ones in
+ * the built manifest. The content scripts are still registered the way the
+ * extension does it once access is given.
+ */
 export function buildExtension(root, outDir) {
   execFileSync('npx', ['vite', 'build', '--outDir', outDir, '--emptyOutDir'], {
     cwd: root,
     stdio: 'ignore',
   });
+  const path = join(outDir, 'manifest.json');
+  const manifest = JSON.parse(readFileSync(path, 'utf8'));
+  manifest.host_permissions = [
+    ...(manifest.host_permissions ?? []),
+    ...(manifest.optional_host_permissions ?? []),
+  ];
+  delete manifest.optional_host_permissions;
+  writeFileSync(path, JSON.stringify(manifest, null, 2));
   return outDir;
 }
 

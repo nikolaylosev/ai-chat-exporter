@@ -2,6 +2,7 @@
 export type ErrorCode =
   | 'unsupported-page'
   | 'platform-not-ready'
+  | 'platform-access'
   | 'not-a-chat'
   | 'not-signed-in'
   | 'format-changed'

@@ -7,7 +7,7 @@ npm run e2e                 # every scenario
 npm run e2e -- gemini list  # scenarios whose name contains "gemini" or "list"
 ```
 
-Needs Chrome for Testing (`npx playwright install chromium`, or `CHROME_PATH=/path/to/chrome`) and `openssl` for a throwaway certificate. The extension is built into a temporary folder, never into `dist/`. The stands are not part of CI, which has no Chrome; run them before a release. All of them take about ten minutes.
+Needs Chrome for Testing (`npx playwright install chromium`, or `CHROME_PATH=/path/to/chrome`) and `openssl` for a throwaway certificate. The extension is built into a temporary folder, never into `dist/`. In that build the optional hosts (DeepSeek's) are required ones: Chrome's dialog that grants them cannot be answered on a stand, so the stand plays a user who has allowed them; the asking itself is covered by the UI tests. The stands are not part of CI, which has no Chrome; run them before a release. All of them take about ten minutes.
 
 | Scenario            | What it checks                                                                                                                                                                                                                        |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

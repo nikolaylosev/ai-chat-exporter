@@ -9,10 +9,12 @@ import type { ProjectSummary } from '../../model/project';
 import { PLATFORM_LABEL, type Platform } from '../../shared/platform';
 import type { Settings } from '../../shared/settings';
 import {
+  AccessRequest,
   errorText,
   FailedFiles,
   startExportJob,
   useJob,
+  usePlatformAccess,
   useSettings,
   FilesCheckbox,
 } from '../common';
@@ -1333,6 +1335,8 @@ export function ExportPage() {
   // Gemini's projects are its notebooks; DeepSeek has none.
   const tabs: Tab[] = platform === 'deepseek' ? ['chats'] : ['chats', 'projects'];
   const shown: Tab = tabs.includes(tab) ? tab : 'chats';
+  // A platform the user allows later (DeepSeek): its list waits for the access.
+  const access = usePlatformAccess(platform);
 
   const showJob = Boolean(job && job.id !== dismissedJob);
   const props: TabProps = {
@@ -1382,7 +1386,9 @@ export function ExportPage() {
         ))}
       </div>
 
-      {shown === 'chats' ? (
+      {access === false ? (
+        <AccessRequest platform={platform} />
+      ) : access === undefined ? null : shown === 'chats' ? (
         <ChatsTab key={platform} {...props} />
       ) : (
         <ProjectsTab key={platform} {...props} />
