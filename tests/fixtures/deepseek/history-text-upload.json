@@ -1,0 +1,98 @@
+{
+ "code": 0,
+ "msg": "",
+ "data": {
+  "biz_code": 0,
+  "biz_msg": "",
+  "biz_data": {
+   "chat_session": {
+    "id": "00000000-0000-4000-8000-000000000004",
+    "title": "Synthetic chat text-upload",
+    "title_type": "SYSTEM",
+    "model_type": "default",
+    "pinned": false,
+    "updated_at": 1794072654.377,
+    "seq_id": 216235854,
+    "agent": "chat",
+    "version": 2,
+    "is_empty": false,
+    "current_message_id": 2,
+    "inserted_at": 1794072158.511
+   },
+   "chat_messages": [
+    {
+     "message_id": 1,
+     "parent_id": null,
+     "model": "",
+     "role": "USER",
+     "thinking_enabled": false,
+     "ban_edit": false,
+     "ban_regenerate": false,
+     "status": "FINISHED",
+     "incomplete_message": null,
+     "accumulated_token_usage": 179,
+     "feedback": null,
+     "inserted_at": 1794072653.221,
+     "search_enabled": true,
+     "fragments": [
+      {
+       "id": 1,
+       "type": "FILE",
+       "files": [
+        {
+         "id": "00000000-0000-4000-8000-000000000005",
+         "status": "SUCCESS",
+         "file_name": "notes-1.txt",
+         "from_share": false,
+         "file_size": 293,
+         "model_kind": "VISION",
+         "token_usage": 116,
+         "error_code": null,
+         "inserted_at": 1794072652.563,
+         "updated_at": 1794072652.563,
+         "signed_path": "/file?file_id=00000000-0000-4000-8000-000000000005&state=TEST-STATE-1",
+         "is_image": false,
+         "audit_result": null
+        }
+       ]
+      }
+     ],
+     "has_pending_fragment": false,
+     "auto_continue": false,
+     "search_triggered": false,
+     "extra_search_providers": []
+    },
+    {
+     "message_id": 2,
+     "parent_id": 1,
+     "model": "",
+     "role": "ASSISTANT",
+     "thinking_enabled": false,
+     "ban_edit": false,
+     "ban_regenerate": false,
+     "status": "FINISHED",
+     "incomplete_message": null,
+     "accumulated_token_usage": 329,
+     "feedback": null,
+     "inserted_at": 1794072653.218,
+     "search_enabled": true,
+     "fragments": [
+      {
+       "id": 2,
+       "type": "RESPONSE",
+       "content": "Synthetic answer 3.\n\n- item one\n- item two\n\n```js\nconsole.log(1);\n```",
+       "references": [],
+       "stage_id": 1
+      }
+     ],
+     "has_pending_fragment": false,
+     "auto_continue": false,
+     "search_triggered": false,
+     "extra_search_providers": []
+    }
+   ],
+   "cache_control": "REPLACE",
+   "cache_reset_at": 1794075155
+  }
+ }
+}

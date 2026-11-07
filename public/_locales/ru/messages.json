@@ -3,7 +3,7 @@
     "message": "CodingCat AI Chat Exporter"
   },
   "extDescription": {
-    "message": "Сохраняет чаты и проекты Claude, Gemini, Grok и ChatGPT в Markdown со всеми файлами. Без аккаунта и сервера, открытый код."
+    "message": "Сохраняет чаты и проекты Claude, Gemini, Grok, ChatGPT и DeepSeek в Markdown со всеми файлами. Без аккаунта и сервера, открытый код."
   },
   "commandExportCurrent": {
     "message": "Сохранить текущий чат"
@@ -18,7 +18,7 @@
     "message": "Блокнот без названия"
   },
   "popupUnsupported": {
-    "message": "Откройте чат на claude.ai, gemini.google.com, grok.com или chatgpt.com, чтобы сохранить его."
+    "message": "Откройте чат на claude.ai, gemini.google.com, grok.com, chatgpt.com или chat.deepseek.com, чтобы сохранить его."
   },
   "popupDetected": {
     "message": "Открыт чат $ARG1$.",
@@ -800,7 +800,7 @@
     }
   },
   "error_unsupported_page": {
-    "message": "Сначала откройте чат Claude, Gemini, Grok или ChatGPT."
+    "message": "Сначала откройте чат Claude, Gemini, Grok, ChatGPT или DeepSeek."
   },
   "error_tab_not_loaded": {
     "message": "Сайт не открылся в фоновой вкладке. Откройте его во вкладке, дождитесь загрузки и повторите."
@@ -995,6 +995,9 @@
   },
   "mdRecompressed": {
     "message": "пережато сервисом, полный размер"
+  },
+  "mdPreview": {
+    "message": "уменьшенная копия: оригинал сервис не отдаёт"
   },
   "mdUnreadable": {
     "message": "Часть этого сообщения не удалось прочитать ($ARG1$). Остальной чат сохранён.",
@@ -1700,7 +1703,7 @@
     "message": "С входными данными и результатом"
   },
   "optionsClaudeBranches": {
-    "message": "Ветки (Claude, Grok, ChatGPT)"
+    "message": "Ветки (Claude, Grok, ChatGPT, DeepSeek)"
   },
   "optionsClaudeBranchesActive": {
     "message": "Только видимая ветка"

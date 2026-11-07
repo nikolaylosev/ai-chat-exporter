@@ -1,9 +1,9 @@
-AI との会話を、含まれるすべてのファイルごと自分のパソコンに保存できます。Claude・Gemini・Grok・ChatGPT のチャットは Markdown ノートになり、各チャットのファイルは元の形式のままノートの隣に保存されます。
+AI との会話を、含まれるすべてのファイルごと自分のパソコンに保存できます。Claude・Gemini・Grok・ChatGPT・DeepSeek のチャットは Markdown ノートになり、各チャットのファイルは元の形式のままノートの隣に保存されます。
 
 選ばれる理由
 • テキストだけでなくすべてのファイル：アップロードしたファイル、モデルが作成したドキュメントやコード、Claude のアーティファクト、ChatGPT のキャンバス、生成画像をそのまま保存。
 • Claude・ChatGPT・Grok のプロジェクトを指示・ファイル・チャットごと、Gemini のノートブックをチャットごと保存。
-• Claude・Gemini・ChatGPT に加えて Grok にも対応。
+• Claude・Gemini・ChatGPT に加えて Grok と DeepSeek にも対応。
 • 数百件のチャットをまとめてバックグラウンドで保存し、保存済みのものはスキップ。
 • アカウント不要、サーバーなし、トラッキングなし。無料でオープンソース。
 
@@ -33,6 +33,6 @@ AI との会話を、含まれるすべてのファイルごと自分のパソ�
 • オープンソース（MIT）：https://github.com/nikolaylosev/ai-chat-exporter
 
 対応サービス
-claude.ai、gemini.google.com、grok.com、chatgpt.com。画面表示は英語とロシア語です。
+claude.ai、gemini.google.com、grok.com、chatgpt.com、chat.deepseek.com。画面表示は英語とロシア語です。
 
-これは非公式の独立したプロジェクトです。Anthropic、Google、xAI、OpenAI とは提携しておらず、承認や支援も受けていません。Claude、Gemini、Grok、ChatGPT は各社の商標です。拡張機能は各サービスの内部 Web インターフェースを利用しており、これはいつでも変更される可能性があります。各サービスの利用規約に沿って使用する責任は利用者にあります。
+これは非公式の独立したプロジェクトです。Anthropic、Google、xAI、OpenAI、DeepSeek とは提携しておらず、承認や支援も受けていません。Claude、Gemini、Grok、ChatGPT、DeepSeek は各社の商標です。拡張機能は各サービスの内部 Web インターフェースを利用しており、これはいつでも変更される可能性があります。各サービスの利用規約に沿って使用する責任は利用者にあります。

@@ -1,10 +1,11 @@
-export type Platform = 'claude' | 'gemini' | 'grok' | 'chatgpt';
+export type Platform = 'claude' | 'gemini' | 'grok' | 'chatgpt' | 'deepseek';
 
 export const PLATFORM_LABEL: Record<Platform, string> = {
   claude: 'Claude',
   gemini: 'Gemini',
   grok: 'Grok',
   chatgpt: 'ChatGPT',
+  deepseek: 'DeepSeek',
 };
 
 const PLATFORM_HOSTS: Record<string, Platform> = {
@@ -12,6 +13,7 @@ const PLATFORM_HOSTS: Record<string, Platform> = {
   'gemini.google.com': 'gemini',
   'grok.com': 'grok',
   'chatgpt.com': 'chatgpt',
+  'chat.deepseek.com': 'deepseek',
 };
 
 export function detectPlatform(url: string | undefined): Platform | null {

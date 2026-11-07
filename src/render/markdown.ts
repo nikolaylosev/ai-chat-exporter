@@ -21,6 +21,8 @@ export interface RenderLabels {
   rebuiltFromChat: string;
   /** Suffix for an image the platform keeps re-encoded (full size, not the original bytes). */
   recompressed: string;
+  /** Suffix for an image the platform gives only as a smaller preview. */
+  preview: string;
   otherBranches: string;
   /** A part of a message the extension could not read; `kind` is the platform's block type. */
   unreadable: (kind: string) => string;
@@ -170,7 +172,9 @@ function renderAttachments(attachments: Attachment[], o: RenderOptions): string 
             ? ` (${o.labels.rebuiltFromChat})`
             : a.note === 'recompressed'
               ? ` (${o.labels.recompressed})`
-              : '';
+              : a.note === 'preview'
+                ? ` (${o.labels.preview})`
+                : '';
     if (path) {
       const name = path.slice(path.lastIndexOf('/') + 1);
       return `- [${escapeLinkText(name)}](${linkTarget(path)})${note}`;

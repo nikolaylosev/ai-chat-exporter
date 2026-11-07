@@ -39,7 +39,8 @@ export default defineManifest({
     // The popup copies a chat's Markdown once the chat is read, which can outlast the click.
     'clipboardWrite',
   ],
-  // Gemini files come from Google's content hosts, Grok files from assets.grok.com;
+  // Gemini files come from Google's content hosts, Grok files from assets.grok.com,
+  // DeepSeek uploads from files.deepseeksvc.com;
   // they are fetched there only when saving into a chosen folder or a ZIP
   // (chrome.downloads needs no permission).
   host_permissions: [
@@ -56,6 +57,8 @@ export default defineManifest({
     'https://assets.grok.com/*',
     // ChatGPT's signed file links are on chatgpt.com itself.
     'https://chatgpt.com/*',
+    'https://chat.deepseek.com/*',
+    'https://files.deepseeksvc.com/*',
   ],
   content_scripts: [
     {
@@ -76,6 +79,11 @@ export default defineManifest({
     {
       matches: ['https://chatgpt.com/*'],
       js: ['src/content/chatgpt.ts'],
+      run_at: 'document_idle',
+    },
+    {
+      matches: ['https://chat.deepseek.com/*'],
+      js: ['src/content/deepseek.ts'],
       run_at: 'document_idle',
     },
   ],

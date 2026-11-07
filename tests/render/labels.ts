@@ -16,6 +16,7 @@ export const LABELS: RenderLabels = {
   extractedPartial: 'beginning of the extracted text only',
   rebuiltFromChat: 'rebuilt from the chat',
   recompressed: 're-encoded by the service',
+  preview: 'preview only',
   otherBranches: 'Other branches',
   unreadable: (kind) => `A part of this message could not be read (${kind})`,
   branch: (n, fork) =>

@@ -24,6 +24,7 @@ export function renderLabels(platform: Platform): RenderLabels {
     extractedPartial: t('mdExtractedPartial'),
     rebuiltFromChat: t('mdRebuiltFromChat'),
     recompressed: t('mdRecompressed'),
+    preview: t('mdPreview'),
     otherBranches: t('mdOtherBranches'),
     unreadable: (kind) => t('mdUnreadable', kind),
     branch: (number, fork) =>

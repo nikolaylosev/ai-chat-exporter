@@ -2,6 +2,7 @@ import { useEffect, useState } from 'preact/hooks';
 import { conversationIdFromUrl, projectIdFromUrl } from '../../adapters/claude/urls';
 import { geminiConversationId, geminiNotebookId } from '../../adapters/gemini/urls';
 import { chatgptConversationId, chatgptProjectId } from '../../adapters/chatgpt/urls';
+import { deepseekConversationId } from '../../adapters/deepseek/urls';
 import { grokConversationId, grokProjectId } from '../../adapters/grok/urls';
 import { codeText } from '../../shared/error-text';
 import { t } from '../../shared/i18n';
@@ -47,7 +48,8 @@ function useActiveTab(): ActiveTab | null | undefined {
         (platform === 'claude' && conversationIdFromUrl(active.url) !== null) ||
         (platform === 'gemini' && geminiConversationId(active.url) !== null) ||
         (platform === 'grok' && grokConversationId(active.url) !== null) ||
-        (platform === 'chatgpt' && chatgptConversationId(active.url) !== null);
+        (platform === 'chatgpt' && chatgptConversationId(active.url) !== null) ||
+        (platform === 'deepseek' && deepseekConversationId(active.url) !== null);
       // A project's page; a chat inside a project counts as a chat (its project is asked for).
       const isProject =
         !isChat &&

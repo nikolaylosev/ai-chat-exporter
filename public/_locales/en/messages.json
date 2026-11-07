@@ -3,7 +3,7 @@
     "message": "CodingCat AI Chat Exporter"
   },
   "extDescription": {
-    "message": "Save Claude, Gemini, Grok and ChatGPT chats and projects as Markdown with every file. No account, no server, open source."
+    "message": "Save Claude, Gemini, Grok, ChatGPT and DeepSeek chats and projects as Markdown with every file. No account, no server, open source."
   },
   "commandExportCurrent": {
     "message": "Save the current chat"
@@ -18,7 +18,7 @@
     "message": "Untitled notebook"
   },
   "popupUnsupported": {
-    "message": "Open a chat on claude.ai, gemini.google.com, grok.com or chatgpt.com to export it."
+    "message": "Open a chat on claude.ai, gemini.google.com, grok.com, chatgpt.com or chat.deepseek.com to export it."
   },
   "popupDetected": {
     "message": "$ARG1$ chat is open.",
@@ -800,7 +800,7 @@
     }
   },
   "error_unsupported_page": {
-    "message": "Open a Claude, Gemini, Grok or ChatGPT chat first."
+    "message": "Open a Claude, Gemini, Grok, ChatGPT or DeepSeek chat first."
   },
   "error_tab_not_loaded": {
     "message": "The site did not open in a background tab. Open it in a tab, wait until it loads, and try again."
@@ -995,6 +995,9 @@
   },
   "mdRecompressed": {
     "message": "re-encoded by the service, full size"
+  },
+  "mdPreview": {
+    "message": "a smaller preview: the service does not give the original"
   },
   "mdUnreadable": {
     "message": "A part of this message could not be read ($ARG1$). The rest of the chat is saved.",
@@ -1700,7 +1703,7 @@
     "message": "With input and output"
   },
   "optionsClaudeBranches": {
-    "message": "Branches (Claude, Grok, ChatGPT)"
+    "message": "Branches (Claude, Grok, ChatGPT, DeepSeek)"
   },
   "optionsClaudeBranchesActive": {
     "message": "Only the branch you see"

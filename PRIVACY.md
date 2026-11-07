@@ -1,6 +1,6 @@
 # Privacy policy
 
-CodingCat AI Chat Exporter is a Chrome extension that saves your conversations from claude.ai, gemini.google.com, grok.com and chatgpt.com to your own computer. This policy says what it does with your data. In short: everything stays on your computer.
+CodingCat AI Chat Exporter is a Chrome extension that saves your conversations from claude.ai, gemini.google.com, grok.com, chatgpt.com and chat.deepseek.com to your own computer. This policy says what it does with your data. In short: everything stays on your computer.
 
 ## What the extension reads
 
@@ -17,7 +17,7 @@ It reads them through your existing session on that service, with the same reque
 
 - **Only to your computer.** Notes and files are saved into your Downloads folder, into a folder you choose, or into a .zip archive there. With **Copy**, the note goes to your clipboard.
 - **Nowhere else.** The extension has no server. It does not send your conversations, files, account details or anything about how you use it to the developer or to anyone else. There is no analytics, tracking or advertising.
-- The extension talks only to the services above, their file hosts (lh3.googleusercontent.com, lh3.google.com, contribution.usercontent.google.com, assets.grok.com) and Gemini's script hosts (www.gstatic.com, gemini.gstatic.com, read as text only), all listed in its permissions.
+- The extension talks only to the services above, their file hosts (lh3.googleusercontent.com, lh3.google.com, contribution.usercontent.google.com, assets.grok.com, files.deepseeksvc.com) and Gemini's script hosts (www.gstatic.com, gemini.gstatic.com, read as text only), all listed in its permissions.
 
 ## What the extension stores in Chrome
 

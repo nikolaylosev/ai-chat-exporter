@@ -1,6 +1,6 @@
 # Security policy
 
-The extension runs with your signed-in sessions on claude.ai, gemini.google.com, grok.com and chatgpt.com, so a flaw in it could expose your conversations. Please report one privately.
+The extension runs with your signed-in sessions on claude.ai, gemini.google.com, grok.com, chatgpt.com and chat.deepseek.com, so a flaw in it could expose your conversations. Please report one privately.
 
 ## Reporting a vulnerability
 

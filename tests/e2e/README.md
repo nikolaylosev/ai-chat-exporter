@@ -1,6 +1,6 @@
 # Stands (end-to-end tests)
 
-Each stand runs the built extension in Chrome for Testing against a fake platform: a local HTTPS server answers as claude.ai, chatgpt.com, gemini.google.com or grok.com from `tests/fixtures/`, and Chrome is pointed at it with `--host-resolver-rules`. The extension is driven over the DevTools protocol the way a user would: a chat tab and the shortcut's export, or the export page and its buttons. Each scenario asserts what was saved: names, bytes, folders, the job's counts, what the page shows.
+Each stand runs the built extension in Chrome for Testing against a fake platform: a local HTTPS server answers as claude.ai, chatgpt.com, gemini.google.com, grok.com or chat.deepseek.com from `tests/fixtures/`, and Chrome is pointed at it with `--host-resolver-rules`. The extension is driven over the DevTools protocol the way a user would: a chat tab and the shortcut's export, or the export page and its buttons. Each scenario asserts what was saved: names, bytes, folders, the job's counts, what the page shows.
 
 ```sh
 npm run e2e                 # every scenario
@@ -30,5 +30,6 @@ Needs Chrome for Testing (`npx playwright install chromium`, or `CHROME_PATH=/pa
 | `gemini-notebook`   | A notebook from the Notebooks tab: its sources listed by name, its four chats in `chats/`                                                                                                                                             |
 | `list-stop`         | A slow list stopped halfway keeps what it read; "Load the whole list" brings the rest                                                                                                                                                 |
 | `grok-current`      | Grok chats; uploads and a generated image from assets.grok.com byte for byte                                                                                                                                                          |
+| `deepseek-current`  | DeepSeek chats with the page's token; a document byte for byte, an image as its JPEG preview, from a host without CORS; citations as links; old uploads named; every chat from the export page                                        |
 
 The Claude stand has no sandbox or timeline stream: chats whose files are only in the sandbox are covered by unit tests on recorded responses.

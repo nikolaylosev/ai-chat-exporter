@@ -8,6 +8,7 @@ const PLATFORM_ORIGIN: Record<Platform, string> = {
   gemini: 'https://gemini.google.com',
   grok: 'https://grok.com',
   chatgpt: 'https://chatgpt.com',
+  deepseek: 'https://chat.deepseek.com',
 };
 
 /** Content script files for a platform, as listed in the built manifest. */

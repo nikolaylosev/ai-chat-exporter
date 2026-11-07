@@ -1,10 +1,10 @@
 # Architecture
 
-CodingCat AI Chat Exporter is a Chrome extension (Manifest V3) that saves conversations from **claude.ai**, **gemini.google.com**, **grok.com** and **chatgpt.com** to the local disk. Each conversation becomes a folder with a Markdown file and all of its attachments in their original formats. Projects are exported with their instructions, files and chats on every platform (Gemini's are its notebooks).
+CodingCat AI Chat Exporter is a Chrome extension (Manifest V3) that saves conversations from **claude.ai**, **gemini.google.com**, **grok.com**, **chatgpt.com** and **chat.deepseek.com** to the local disk. Each conversation becomes a folder with a Markdown file and all of its attachments in their original formats. Projects are exported with their instructions, files and chats on every platform that has them (Gemini's are its notebooks; DeepSeek has none).
 
 This document describes how the extension is built and why. It is meant for anyone who reads or changes the code.
 
-> **Status:** all four platforms are built; version 1.0 is being stabilized. This document describes the code as it is. What each platform's internal API returns is recorded, from real traffic, in [`platforms-claude.md`](platforms-claude.md), [`platforms-gemini.md`](platforms-gemini.md), [`platforms-grok.md`](platforms-grok.md) and [`platforms-chatgpt.md`](platforms-chatgpt.md).
+> **Status:** all five platforms are built; version 1.0 is being stabilized. This document describes the code as it is. What each platform's internal API returns is recorded, from real traffic, in [`platforms-claude.md`](platforms-claude.md), [`platforms-gemini.md`](platforms-gemini.md), [`platforms-grok.md`](platforms-grok.md), [`platforms-chatgpt.md`](platforms-chatgpt.md) and [`platforms-deepseek.md`](platforms-deepseek.md).
 
 ## Contents
 
@@ -37,7 +37,7 @@ This document describes how the extension is built and why. It is meant for anyo
 - Show progress, allow cancellation, and write an error report for bulk exports.
 - A keyboard shortcut (`Alt+Shift+S`, `Option+Shift+S` on macOS) exports the current chat.
 - A settings page.
-- Platforms: claude.ai, gemini.google.com, grok.com and chatgpt.com.
+- Platforms: claude.ai, gemini.google.com, grok.com, chatgpt.com and chat.deepseek.com.
 
 ### Not in version 1.0
 
@@ -90,6 +90,7 @@ src/
     common.ts               shared by the content scripts: error codes, liveness check
     grok.ts                 content script for grok.com (isolated world)
     chatgpt.ts              content script for chatgpt.com (isolated world)
+    deepseek.ts             content script for chat.deepseek.com (isolated world): reads the page's token
   adapters/
     types.ts                PlatformAdapter interface
     errors.ts               PlatformFormatError (the field that changed), PlatformBusyError
@@ -118,6 +119,11 @@ src/
       pacer.ts              gap between API requests, widened after a 429
       urls.ts               conversation id from a URL
       adapter.ts            PlatformAdapter for chatgpt.com: access token, list, signed file links
+    deepseek/
+      schema.ts             zod schemas of biz_data: only ids are strict
+      normalize.ts          message tree -> model: current branch, fragments, citations, files
+      urls.ts               conversation id from a URL, file links by ty
+      adapter.ts            PlatformAdapter for chat.deepseek.com: envelope, token, list cursor, file links
   model/
     conversation.ts         normalized data model
     project.ts              Claude Project: instructions, knowledge base, chats
@@ -240,7 +246,7 @@ For every platform the adapter runs in a platform tab: an open one, or one the e
 
 ```ts
 interface PlatformAdapter {
-  platform: 'claude' | 'gemini' | 'grok' | 'chatgpt';
+  platform: 'claude' | 'gemini' | 'grok' | 'chatgpt' | 'deepseek';
   getCurrentConversationId(): string | null;
   // onProgress: chats read so far, for a list that loads slowly
   listConversations(onProgress?: (loaded: number) => void): Promise<ConversationList>;
@@ -278,7 +284,7 @@ Every adapter has project methods (`listProjects`, `getProject` with instruction
 ```ts
 interface ConversationSummary {
   id: string;
-  platform: 'claude' | 'gemini' | 'grok' | 'chatgpt';
+  platform: 'claude' | 'gemini' | 'grok' | 'chatgpt' | 'deepseek';
   title: string;
   createdAt: string | null; // ISO 8601; null if the platform does not provide it
   updatedAt: string | null;
@@ -315,7 +321,8 @@ interface Attachment {
     | 'extracted-text-partial' // only the beginning of it (ChatGPT)
     | 'rebuilt-from-chat' // an artifact or canvas rebuilt from the model's edits
     | 'unavailable'
-    | 'recompressed'; // re-encoded by the platform (Gemini images)
+    | 'recompressed' // re-encoded by the platform (Gemini images)
+    | 'preview'; // only a smaller re-encoded copy is given (DeepSeek images)
   unavailableReason?: string; // the platform's own words, when it gives them
 }
 ```
@@ -400,6 +407,17 @@ Discovery ([`docs/platforms-chatgpt.md`](platforms-chatgpt.md)) found a JSON RES
 - **Files ChatGPT no longer gives.** A long pasted text (`is_big_paste`) and old uploads answer 404. When the model read the file, its text is in a hidden tool message (`Use ref_id "turn<N>file<M>"`, lines marked `[L<n>]`, cut at 16,384 characters); that text is saved as `<name>.extracted.txt`, marked "extracted text only" or, when cut, "only the beginning". Files a tool attached to its result (`container.open_image`) are saved with the answer.
 - **Rate limit.** ChatGPT answers 429 to a run of quick requests and sends no `Retry-After`. The adapter keeps 0.5 s between its API requests (`pacer.ts`), doubles that gap after each 429 up to 16 s and halves it again after 20 calm answers; a refused request waits 15, 30, 60 and 120 s. A 429 that outlasts that (on any platform) is the `rate-limited` error, which stops a bulk export: the next run with "skip unchanged" goes on from there. A 429 while asking for a file link is never taken for a missing file.
 - **Projects** are exported like Claude's: `gizmos/{id}` gives the name, description, instructions and the project's own files (signed links through `files/download` without a conversation; their shape is unverified), `gizmos/{id}/conversations` the chats. A project chat's note names its project (from its `gizmo_id`). The popup finds the project from `/g/g-p-…/` in the URL, or from the open chat's `gizmo_id`.
+
+### DeepSeek
+
+Discovery ([`docs/platforms-deepseek.md`](platforms-deepseek.md)) found a JSON API under `/api/v0/`, so the adapter works like Grok's and ChatGPT's: same-origin `fetch` from the content script, zod schemas.
+
+- **Token and envelope.** Every call needs `Authorization: Bearer <token>`, where the token is `value` in the page's `localStorage.userToken`. The content script reads it for each request (a content script shares the page's storage) and never keeps, logs or sends it anywhere else. Every answer is HTTP 200 with `{ code, data: { biz_code, biz_msg, biz_data } }`: `code` 40003 is the `401` of the other platforms ("sign in"), 40029 is waited out (2, 4, 8, 16 s) and then the `429` of the others; a `biz_code` other than 0 is a refusal, and "invalid chat session id" is a chat not found.
+- **List** `chat_session/fetch_page?count=100`, pinned chats first, then newest first. The next page starts from the last chat's `pinned` and `updated_at`, inclusive, so the repeated chat is skipped. The list has no creation date, so the export page filters by the last update, as for Gemini. Pinning or unpinning moves `updated_at`, so such a chat counts as changed for "skip unchanged".
+- **Conversation** `chat/history_messages`: the whole tree at once. The visible branch is the path to the session's `current_message_id`; every other leaf becomes a branch. Editing the first prompt makes a second root, so a chat can have several.
+- **Messages** are made of typed fragments: `REQUEST` and `RESPONSE` are Markdown, `THINK` a thinking block, `SEARCH` one web search block per message, `FILE` the uploads, `TEMPLATE_RESPONSE` (the server's "busy" notice) its text in italics, `TIP` (a hint of the web app) is left out, any other type is noted as unreadable. `[citation:N]` in an answer becomes links to the results whose `cite_index` is N.
+- **Files** from `files.deepseeksvc.com` through `signed_path`, without the token and without CORS headers (the offscreen document reads them with the host permission): a document by `ty=r`, byte for byte; an image only as its preview by `ty=p&fmt=jpeg` (JPEG, which Word notes show), named `.jpg` and marked `preview`, since the original of an image is refused. Old uploads have no `signed_path`: they are named in the note as files the service does not provide. A refused link is asked again through `file/fetch_files`.
+- **Scope:** chats only; DeepSeek has no projects. Shared links and the official export are described in the platform notes and not used.
 - **Temporary chats** are not in the list; "Save this chat" on the open page saves one. Custom GPTs are not exported.
 
 ## 8. Output layout and naming
@@ -417,6 +435,7 @@ Downloads/
     <Title> - <YYYY-MM-DD> (Gemini)/
     <Title> - <YYYY-MM-DD> (Grok)/
     <Title> - <YYYY-MM-DD> (ChatGPT)/
+    <Title> - <YYYY-MM-DD> (DeepSeek)/
     Projects/
       <Project name> (Claude)/                   also (ChatGPT) and (Grok)
         <Project name> (Claude).md               description, instructions, file and chat links
@@ -473,7 +492,7 @@ The output targets Obsidian but stays plain Markdown.
 
 - YAML frontmatter with `title`, `platform`, `conversation_id`, `url`, `created`, `updated`, `created_source`, `exported`, `model`, `project`, `message_count`, `attachments`, `tags`. Obsidian reads it as Properties.
 - One `##` heading per message: role and local time.
-- Model replies keep the platform's original Markdown (code blocks with languages, tables, lists, `$…$` / `$$…$$` math); all four platforms give Markdown. Platform marks that mean nothing outside its page are removed or replaced: Gemini's `[cite: N]`, Grok's `<grok:render>` cards, ChatGPT's `<Cite>`, `<Entity>`, `<FileCite>` and `<WritingBlock>`.
+- Model replies keep the platform's original Markdown (code blocks with languages, tables, lists, `$…$` / `$$…$$` math); all five platforms give Markdown. Platform marks that mean nothing outside its page are removed or replaced: Gemini's `[cite: N]`, Grok's `<grok:render>` cards, DeepSeek's `[citation:N]`, ChatGPT's `<Cite>`, `<Entity>`, `<FileCite>` and `<WritingBlock>`.
 - A code fence a message leaves open (a reply that stopped inside a code block) is closed at the end of the message's text (`closeFences`); left open, it would turn the rest of the note into code. The archive search, reading notes saved before this, ends such a fence at the next message heading with its time or at a section heading of the note.
 - Thinking, web search results and tool calls become collapsible Obsidian callouts (`> [!note]-`, `> [!info]-`, `> [!abstract]-`). Each type can be turned off in settings.
 - Attachments are relative links into `files/`, with a note when the file is not the original (extracted text, rebuilt, re-encoded). An attachment that could not be saved is listed as `⚠️ name — <reason>`.
@@ -530,7 +549,7 @@ The queue lives in the service worker.
 
 - `permissions` are added phase by phase, only when code starts using them. Current set: `downloads`, `storage`, `offscreen`, `activeTab`, `scripting`, `notifications`, `clipboardWrite` (the popup copies a chat's Markdown once the worker has read the chat, which can take longer than a click's activation lasts; the page button's copy goes through the offscreen document, created with the `CLIPBOARD` reason as well as `BLOBS`). `tabs` is not needed: `activeTab` and the platforms' host permissions give access to the tab URL. The README lists each permission with the reason.
 - `commands` for the keyboard shortcut. Users can rebind it in `chrome://extensions/shortcuts`; the options page shows the current binding.
-- `host_permissions`: `https://claude.ai/*`, `https://gemini.google.com/*`, and Gemini's file hosts `https://lh3.googleusercontent.com/*`, `https://lh3.google.com/*` (where the first one redirects some images) and `https://contribution.usercontent.google.com/*`, Gemini's script hosts `https://www.gstatic.com/*` and `https://gemini.gstatic.com/*` (read only to find the search query again, see [Gemini](#gemini)), `https://grok.com/*` with its file host `https://assets.grok.com/*`, and `https://chatgpt.com/*`, whose signed file links are on the same host. The file hosts are needed only when the offscreen document fetches files for a chosen folder or a ZIP, since `chrome.downloads` needs no permission. The list is kept minimal and each entry is justified in the README.
+- `host_permissions`: `https://claude.ai/*`, `https://gemini.google.com/*`, and Gemini's file hosts `https://lh3.googleusercontent.com/*`, `https://lh3.google.com/*` (where the first one redirects some images) and `https://contribution.usercontent.google.com/*`, Gemini's script hosts `https://www.gstatic.com/*` and `https://gemini.gstatic.com/*` (read only to find the search query again, see [Gemini](#gemini)), `https://grok.com/*` with its file host `https://assets.grok.com/*`, `https://chatgpt.com/*`, whose signed file links are on the same host, and `https://chat.deepseek.com/*` with its file host `https://files.deepseeksvc.com/*`. The file hosts are needed only when the offscreen document fetches files for a chosen folder or a ZIP, since `chrome.downloads` needs no permission. The list is kept minimal and each entry is justified in the README.
 - No external servers. All data stays on the user's machine.
 - Test fixtures contain only anonymized data: message text, names, emails and organization ids are replaced.
 
@@ -575,7 +594,7 @@ Every new dependency is justified in its commit message.
 | 11  | Heuristic detection of the "ask where to save" setting                                                                         | No API exposes it                                                                                                                                                                  |
 | 12  | Queue state in `chrome.storage.session`                                                                                        | The service worker is stopped when idle                                                                                                                                            |
 | 13  | No MAIN-world script for Gemini                                                                                                | Discovery showed `batchexecute` can be called directly; intercepting the page is not needed                                                                                        |
-| 14  | APIs for every platform: REST for Claude, Grok and ChatGPT, `batchexecute` for Gemini                                          | Replies come as Markdown with dates and models; reading the page would be slower and break on every redesign                                                                       |
+| 14  | APIs for every platform: REST for Claude, Grok, ChatGPT and DeepSeek, `batchexecute` for Gemini                                | Replies come as Markdown with dates and models; reading the page would be slower and break on every redesign                                                                       |
 | 15  | Offscreen blob URLs only, no data URL path                                                                                     | One code path for every size; data URLs would need a size limit                                                                                                                    |
 | 16  | UI strings through `chrome.i18n`, English default, Russian included                                                            | Public project; Chrome picks the language from the browser                                                                                                                         |
 | 17  | Settings in `chrome.storage.local`, validated on every read                                                                    | Old or corrupted stored values fall back to defaults instead of breaking                                                                                                           |
@@ -636,3 +655,6 @@ Every new dependency is justified in its commit message.
 | 72  | Chosen messages on an extension page fed by the adapter, saved as a copy the registry does not record                          | No page selectors on four sites; a partial copy must not count as the chat's export for "skip unchanged" or overwriting                                                            |
 | 73  | The chosen folder only where the browser has the File System Access API, checked, with Brave's flag named                      | Brave turns the API off by default; without a check the folder option failed with an unclear error                                                                                 |
 | 74  | Archive search over a folder the user picks (read only), .zip exports read inside, no index but a cache of each message's text | Exports into Downloads are zips, so the export folder alone would leave most archives out; scanning tens of megabytes of text is fast and finds any part of a word in any language |
+| 75  | DeepSeek's token read from the page's storage for each request, not kept                                                       | The API wants it as a Bearer header; the web app keeps it in `localStorage`, which a content script can read                                                                       |
+| 76  | DeepSeek images saved as their JPEG preview and marked so; documents by `ty=r`                                                 | The file host refuses an image's original; WebP would not show in Word notes                                                                                                       |
+| 77  | A note `preview` beside `recompressed`                                                                                         | "Re-encoded, full size" would be wrong for a smaller copy                                                                                                                          |

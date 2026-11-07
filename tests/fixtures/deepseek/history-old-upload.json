@@ -1,0 +1,116 @@
+{
+ "code": 0,
+ "msg": "",
+ "data": {
+  "biz_code": 0,
+  "biz_msg": "",
+  "biz_data": {
+   "chat_session": {
+    "id": "00000000-0000-4000-8000-000000000007",
+    "title": "Synthetic chat old-upload",
+    "title_type": "SYSTEM",
+    "model_type": "default",
+    "pinned": false,
+    "updated_at": 1752312343.193,
+    "seq_id": 1000256,
+    "agent": "chat",
+    "version": 2,
+    "is_empty": false,
+    "current_message_id": 2,
+    "inserted_at": 1752312319.364
+   },
+   "chat_messages": [
+    {
+     "message_id": 1,
+     "parent_id": null,
+     "model": "",
+     "role": "USER",
+     "thinking_enabled": false,
+     "ban_edit": false,
+     "ban_regenerate": false,
+     "status": "FINISHED",
+     "incomplete_message": null,
+     "accumulated_token_usage": 364,
+     "feedback": null,
+     "inserted_at": 1752312320.623,
+     "search_enabled": false,
+     "fragments": [
+      {
+       "id": 2,
+       "type": "FILE",
+       "files": [
+        {
+         "id": "00000000-0000-4000-8000-000000000008",
+         "status": "SUCCESS",
+         "file_name": "picture-1.png",
+         "from_share": false,
+         "file_size": 193367,
+         "model_kind": null,
+         "token_usage": 121,
+         "error_code": null,
+         "inserted_at": 1765257005.241,
+         "updated_at": 1765257005.241,
+         "is_image": true,
+         "audit_result": null
+        },
+        {
+         "id": "00000000-0000-4000-8000-000000000009",
+         "status": "SUCCESS",
+         "file_name": "picture-2.png",
+         "from_share": false,
+         "file_size": 211827,
+         "model_kind": null,
+         "token_usage": 154,
+         "error_code": null,
+         "inserted_at": 1765257005.241,
+         "updated_at": 1765257005.241,
+         "is_image": true,
+         "audit_result": null
+        }
+       ]
+      },
+      {
+       "id": 3,
+       "type": "REQUEST",
+       "content": "Synthetic question 6."
+      }
+     ],
+     "has_pending_fragment": false,
+     "auto_continue": false,
+     "search_triggered": false,
+     "extra_search_providers": []
+    },
+    {
+     "message_id": 2,
+     "parent_id": 1,
+     "model": "",
+     "role": "ASSISTANT",
+     "thinking_enabled": false,
+     "ban_edit": false,
+     "ban_regenerate": false,
+     "status": "FINISHED",
+     "incomplete_message": null,
+     "accumulated_token_usage": 688,
+     "feedback": null,
+     "inserted_at": 1752312320.628,
+     "search_enabled": false,
+     "fragments": [
+      {
+       "id": 1,
+       "type": "RESPONSE",
+       "content": "Synthetic answer 7.\n\n- item one\n- item two\n\n```js\nconsole.log(1);\n```",
+       "references": [],
+       "stage_id": 0
+      }
+     ],
+     "has_pending_fragment": false,
+     "auto_continue": false,
+     "search_triggered": false,
+     "extra_search_providers": []
+    }
+   ],
+   "cache_control": "REPLACE",
+   "cache_reset_at": 1794075161
+  }
+ }
+}

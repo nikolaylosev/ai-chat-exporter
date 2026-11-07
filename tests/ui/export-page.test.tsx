@@ -64,6 +64,23 @@ describe('export page: the chat list', () => {
   });
 });
 
+describe('export page: DeepSeek', () => {
+  it('has no Projects tab, even when the address asks for it', async () => {
+    history.replaceState(null, '', '?platform=deepseek&tab=projects');
+    const { sentToTabs } = stubChrome({
+      background: (type) => (type === 'platform:tab' ? { tabId: 7, opened: false } : null),
+      tab: (type) =>
+        type === 'conversations:list'
+          ? { conversations: [{ ...chat('a'), platform: 'deepseek', createdAt: null }] }
+          : null,
+    });
+    render(<ExportPage />);
+    await waitFor(() => expect(rows()).toBe(1));
+    expect(screen.queryByRole('tab', { name: 'exportTabProjects' })).toBeNull();
+    expect(sentToTabs.map((m) => m.type)).not.toContain('projects:list');
+  });
+});
+
 describe('export page: saved status', () => {
   it('counts the chats by saved status and shows only those asked for', async () => {
     history.replaceState(null, '', '?');

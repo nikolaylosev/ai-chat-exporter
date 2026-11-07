@@ -1,9 +1,9 @@
-Salve suas conversas com IA no seu próprio computador, com todos os arquivos delas. Chats do Claude, Gemini, Grok e ChatGPT viram notas em Markdown, e os arquivos de cada chat são salvos ao lado da nota no formato original.
+Salve suas conversas com IA no seu próprio computador, com todos os arquivos delas. Chats do Claude, Gemini, Grok, ChatGPT e DeepSeek viram notas em Markdown, e os arquivos de cada chat são salvos ao lado da nota no formato original.
 
 POR QUE ESTA
 • Todos os arquivos, não só o texto: seus envios, documentos e código criados pelo modelo, artefatos do Claude, canvas do ChatGPT e imagens geradas, do jeito que são.
 • Projetos do Claude, ChatGPT e Grok com instruções, arquivos e chats, e cadernos do Gemini com seus chats.
-• Grok, além de Claude, Gemini e ChatGPT.
+• Grok e DeepSeek, além de Claude, Gemini e ChatGPT.
 • Centenas de chats de uma vez, em segundo plano, pulando os que já foram salvos.
 • Sem conta, sem servidor, sem rastreamento. Gratuito e de código aberto.
 
@@ -33,6 +33,6 @@ PRIVACIDADE
 • Código aberto (MIT): https://github.com/nikolaylosev/ai-chat-exporter
 
 SERVIÇOS COMPATÍVEIS
-claude.ai, gemini.google.com, grok.com, chatgpt.com. Interface em inglês e russo.
+claude.ai, gemini.google.com, grok.com, chatgpt.com, chat.deepseek.com. Interface em inglês e russo.
 
-Este é um projeto não oficial e independente. Não é afiliado, endossado nem patrocinado pela Anthropic, Google, xAI ou OpenAI. Claude, Gemini, Grok e ChatGPT são marcas de seus proprietários. A extensão usa interfaces web internas dos serviços, que podem mudar a qualquer momento; você é responsável por usá-la de acordo com os termos de cada serviço.
+Este é um projeto não oficial e independente. Não é afiliado, endossado nem patrocinado pela Anthropic, Google, xAI, OpenAI ou DeepSeek. Claude, Gemini, Grok, ChatGPT e DeepSeek são marcas de seus proprietários. A extensão usa interfaces web internas dos serviços, que podem mudar a qualquer momento; você é responsável por usá-la de acordo com os termos de cada serviço.

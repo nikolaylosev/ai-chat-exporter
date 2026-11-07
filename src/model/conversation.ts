@@ -114,13 +114,15 @@ export interface Attachment {
  * - `rebuilt-from-chat`: an artifact rebuilt from the model's edits, not the published file.
  * - `unavailable`: nothing can be downloaded (source is null).
  * - `recompressed`: the platform keeps the image re-encoded, at full size but not byte for byte.
+ * - `preview`: the platform gives only a smaller re-encoded copy of the image, not the original.
  */
 export type AttachmentNote =
   | 'extracted-text-only'
   | 'extracted-text-partial'
   | 'rebuilt-from-chat'
   | 'unavailable'
-  | 'recompressed';
+  | 'recompressed'
+  | 'preview';
 
 export interface ConversationOptions {
   artifactVersions: 'latest' | 'all';

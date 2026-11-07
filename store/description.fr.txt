@@ -1,9 +1,9 @@
-Enregistrez vos conversations avec l'IA sur votre ordinateur, avec tous leurs fichiers. Les chats Claude, Gemini, Grok et ChatGPT deviennent des notes Markdown, et les fichiers de chaque chat sont enregistrés à côté de la note dans leur format d'origine.
+Enregistrez vos conversations avec l'IA sur votre ordinateur, avec tous leurs fichiers. Les chats Claude, Gemini, Grok, ChatGPT et DeepSeek deviennent des notes Markdown, et les fichiers de chaque chat sont enregistrés à côté de la note dans leur format d'origine.
 
 POURQUOI CELLE-CI
 • Tous les fichiers, pas seulement le texte : vos envois, les documents et le code créés par le modèle, les artefacts Claude, les canevas ChatGPT et les images générées, tels quels.
 • Les projets Claude, ChatGPT et Grok avec leurs instructions, fichiers et chats, et les carnets Gemini avec leurs chats.
-• Grok en plus de Claude, Gemini et ChatGPT.
+• Grok et DeepSeek en plus de Claude, Gemini et ChatGPT.
 • Des centaines de chats d'un coup, en arrière-plan, en sautant ceux déjà enregistrés.
 • Sans compte, sans serveur, sans pistage. Gratuit et open source.
 
@@ -33,6 +33,6 @@ CONFIDENTIALITÉ
 • Open source (MIT) : https://github.com/nikolaylosev/ai-chat-exporter
 
 SERVICES PRIS EN CHARGE
-claude.ai, gemini.google.com, grok.com, chatgpt.com. Interface en anglais et en russe.
+claude.ai, gemini.google.com, grok.com, chatgpt.com, chat.deepseek.com. Interface en anglais et en russe.
 
-Ce projet est non officiel et indépendant. Il n'est ni affilié, ni approuvé, ni sponsorisé par Anthropic, Google, xAI ou OpenAI. Claude, Gemini, Grok et ChatGPT sont des marques de leurs propriétaires. L'extension utilise les interfaces web internes des services, qui peuvent changer à tout moment ; vous êtes responsable de l'utiliser conformément aux conditions de chaque service.
+Ce projet est non officiel et indépendant. Il n'est ni affilié, ni approuvé, ni sponsorisé par Anthropic, Google, xAI, OpenAI ou DeepSeek. Claude, Gemini, Grok, ChatGPT et DeepSeek sont des marques de leurs propriétaires. L'extension utilise les interfaces web internes des services, qui peuvent changer à tout moment ; vous êtes responsable de l'utiliser conformément aux conditions de chaque service.
