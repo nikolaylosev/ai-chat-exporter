@@ -1,4 +1,5 @@
 import type { Platform } from '../shared/platform';
+import { formLanguages, wordStems } from './forms';
 import type { NoteMessage } from './notes';
 
 /**
@@ -47,6 +48,10 @@ export interface SearchFilters {
   where?: 'messages' | 'files' | null;
   /** Newest chats first (the default), oldest first, or the chats with most hits first. */
   sort?: 'newest' | 'oldest' | 'matches';
+  /** Word forms: a word finds its other forms too (forms.ts). On unless false. */
+  forms?: boolean;
+  /** The languages of the Latin words' forms; English and the browser's by default. */
+  languages?: readonly string[];
 }
 
 export interface SearchHit {
@@ -65,49 +70,122 @@ export function normalize(text: string): string {
 
 /** The words and quoted phrases of a query, normalized; empty ones dropped. */
 export function queryTerms(query: string): string[] {
-  const terms: string[] = [];
-  for (const m of query.matchAll(/"([^"]*)"|(\S+)/g)) {
-    const term = normalize((m[1] ?? m[2] ?? '').trim());
-    if (term) terms.push(term);
-  }
-  return terms;
+  return queryParts(query, null).map((t) => t.text);
 }
 
 /** The terms of a "within" query: those a chat must hold, and those (`-word`) it must not. */
 export function refineTerms(query: string): { include: string[]; exclude: string[] } {
-  const include: string[] = [];
-  const exclude: string[] = [];
-  for (const m of query.matchAll(/(-?)(?:"([^"]*)"|(\S+))/g)) {
-    const term = normalize((m[2] ?? m[3] ?? '').trim());
-    if (term) (m[1] ? exclude : include).push(term);
+  const { include, exclude } = refineParts(query, null);
+  return { include: include.map((t) => t.text), exclude: exclude.map((t) => t.text) };
+}
+
+/** A word of a query with its stems (word forms), or a "phrase", which has none. */
+export interface Term {
+  text: string;
+  stems: string[];
+}
+
+/** The languages to find word forms in: none when they are off. */
+function formsOf(filters: SearchFilters): readonly string[] | null {
+  return filters.forms === false ? null : (filters.languages ?? formLanguages());
+}
+
+function termsOf(
+  matches: Iterable<RegExpMatchArray>,
+  word: (m: RegExpMatchArray) => string | undefined,
+  phrase: (m: RegExpMatchArray) => string | undefined,
+  languages: readonly string[] | null,
+): Term[] {
+  const terms: Term[] = [];
+  for (const m of matches) {
+    const quoted = phrase(m);
+    const text = normalize((quoted ?? word(m) ?? '').trim());
+    if (!text) continue;
+    terms.push({
+      text,
+      stems: quoted === undefined && languages ? wordStems(text, languages) : [],
+    });
   }
-  return { include, exclude };
+  return terms;
+}
+
+/** The words and quoted phrases of a query, with the words' stems when `languages` are given. */
+export function queryParts(query: string, languages: readonly string[] | null): Term[] {
+  return termsOf(
+    query.matchAll(/"([^"]*)"|(\S+)/g),
+    (m) => m[2],
+    (m) => m[1],
+    languages,
+  );
+}
+
+/** `refineTerms` with stems. */
+export function refineParts(
+  query: string,
+  languages: readonly string[] | null,
+): { include: Term[]; exclude: Term[] } {
+  const all = [...query.matchAll(/(-?)(?:"([^"]*)"|(\S+))/g)];
+  const of = (exclude: boolean) =>
+    termsOf(
+      all.filter((m) => Boolean(m[1]) === exclude),
+      (m) => m[3],
+      (m) => m[2],
+      languages,
+    );
+  return { include: of(false), exclude: of(true) };
+}
+
+/** A letter or digit right before `at`: the match is inside a word, not at its start. */
+const LETTER = /[\p{L}\p{N}]/u;
+const atWordStart = (text: string, at: number) => at === 0 || !LETTER.test(text[at - 1]!);
+
+/** The term in a normalized text: the word anywhere, or a word that starts with a stem of it. */
+export function holdsTerm(text: string, term: Term): boolean {
+  if (text.includes(term.text)) return true;
+  for (const stem of term.stems) {
+    for (let i = text.indexOf(stem); i >= 0; i = text.indexOf(stem, i + 1)) {
+      if (atWordStart(text, i)) return true;
+    }
+  }
+  return false;
+}
+
+const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/е/g, '[её]');
+
+/**
+ * What to mark for the terms in a text (case and ё aside): each word or phrase
+ * as it is, and each word starting with a stem, whole.
+ */
+export function markPattern(terms: readonly Term[]): RegExp | null {
+  const parts = terms.flatMap((t) => [
+    escape(t.text),
+    ...t.stems.map((s) => `(?<![\\p{L}\\p{N}])${escape(s)}[\\p{L}\\p{N}]*`),
+  ]);
+  return parts.length ? new RegExp(parts.join('|'), 'giu') : null;
 }
 
 const SNIPPET_BEFORE = 60;
 const SNIPPET_LENGTH = 220;
 
 /** The message's text around its first match, with every term marked. */
-export function snippet(text: string, terms: readonly string[]): SearchHit['snippet'] {
+export function snippet(text: string, terms: readonly (string | Term)[]): SearchHit['snippet'] {
+  const parts = terms.map((t) => (typeof t === 'string' ? { text: t, stems: [] } : t));
+  const pattern = markPattern(parts);
   const flat = text.replace(/\s+/g, ' ');
   const lower = normalize(flat);
-  const first = Math.min(...terms.map((t) => lower.indexOf(t)).filter((i) => i >= 0), flat.length);
+  const first = pattern ? (lower.search(pattern) + 1 || flat.length + 1) - 1 : flat.length;
   const start = Math.max(0, first - SNIPPET_BEFORE);
   const end = Math.min(flat.length, start + SNIPPET_LENGTH);
   const part = flat.slice(start, end);
   const partLower = lower.slice(start, end);
-  // Ranges of every term in the part, merged.
-  const ranges: [number, number][] = [];
-  for (const term of terms) {
-    for (let i = partLower.indexOf(term); i >= 0; i = partLower.indexOf(term, i + term.length)) {
-      ranges.push([i, i + term.length]);
-    }
-  }
-  ranges.sort((a, b) => a[0] - b[0]);
+  // Ranges of every term in the part, in order (the pattern's matches do not overlap).
+  const ranges: [number, number][] = pattern
+    ? [...partLower.matchAll(pattern)].map((m) => [m.index ?? 0, (m.index ?? 0) + m[0].length])
+    : [];
   const out: SearchHit['snippet'] = [];
   let at = 0;
   for (const [from, to] of ranges) {
-    if (to <= at) continue;
+    if (to <= at || to === from) continue;
     if (from > at) out.push({ text: part.slice(at, from), match: false });
     out.push({ text: part.slice(Math.max(from, at), to), match: true });
     at = to;
@@ -140,11 +218,12 @@ function noteText(note: IndexedNote): string {
   return text;
 }
 
-function holds(note: IndexedNote, within: ReturnType<typeof refineTerms>): boolean {
+function holds(note: IndexedNote, within: ReturnType<typeof refineParts>): boolean {
   if (!within.include.length && !within.exclude.length) return true;
   const text = noteText(note);
   return (
-    within.include.every((t) => text.includes(t)) && !within.exclude.some((t) => text.includes(t))
+    within.include.every((t) => holdsTerm(text, t)) &&
+    !within.exclude.some((t) => holdsTerm(text, t))
   );
 }
 
@@ -177,9 +256,9 @@ export function search(
   filters: SearchFilters = {},
   limit = 200,
 ): { hits: SearchHit[]; total: number; chats: number } {
-  const terms = queryTerms(query);
+  const terms = queryParts(query, formsOf(filters));
   if (!terms.length) return { hits: [], total: 0, chats: 0 };
-  const within = refineTerms(filters.within ?? '');
+  const within = refineParts(filters.within ?? '', formsOf(filters));
   type Found = { message: number | null; file: number | null; text: string };
   const groups: { note: IndexedNote; found: Found[] }[] = [];
   for (const note of notes) {
@@ -189,7 +268,7 @@ export function search(
       note.messages.forEach((m, index) => {
         if (filters.role && m.role !== filters.role) return;
         const text = lowerText(m);
-        if (terms.every((t) => text.includes(t)))
+        if (terms.every((t) => holdsTerm(text, t)))
           found.push({ message: index, file: null, text: m.text });
       });
     }
@@ -197,7 +276,7 @@ export function search(
     if (!filters.role && filters.where !== 'messages') {
       note.files.forEach((f, index) => {
         const text = lowerText(f);
-        if (terms.every((t) => text.includes(t)))
+        if (terms.every((t) => holdsTerm(text, t)))
           found.push({ message: null, file: index, text: f.text });
       });
     }
@@ -237,20 +316,20 @@ export function searchCounts(
   query: string,
   filters: SearchFilters = {},
 ): SearchCounts {
-  const terms = queryTerms(query);
+  const terms = queryParts(query, formsOf(filters));
   const found: { platform: Platform | null; role: NoteMessage['role'] | null }[] = [];
   if (terms.length) {
-    const within = refineTerms(filters.within ?? '');
+    const within = refineParts(filters.within ?? '', formsOf(filters));
     for (const note of notes) {
       if (!inFilters(note, { ...filters, platform: null }) || !holds(note, within)) continue;
       for (const m of note.messages) {
         const text = lowerText(m);
-        if (terms.every((t) => text.includes(t)))
+        if (terms.every((t) => holdsTerm(text, t)))
           found.push({ platform: note.platform, role: m.role });
       }
       for (const f of note.files) {
         const text = lowerText(f);
-        if (terms.every((t) => text.includes(t)))
+        if (terms.every((t) => holdsTerm(text, t)))
           found.push({ platform: note.platform, role: null });
       }
     }

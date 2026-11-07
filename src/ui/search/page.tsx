@@ -19,9 +19,11 @@ import {
   scanArchive,
   type ScanProgress,
 } from '../../search/archive';
+import { formLanguages } from '../../search/forms';
 import { headingRole, noteFormatOf } from '../../search/notes';
 import {
-  queryTerms,
+  markPattern,
+  queryParts,
   search,
   searchCounts,
   type IndexedNote,
@@ -127,7 +129,7 @@ function scrollInside(doc: Document, el: Element, center: boolean) {
  * (from its heading to the next one), or with no index the whole page, at its
  * first mark.
  */
-function showHit(frame: HTMLIFrameElement, index: number | null, terms: string[]) {
+function showHit(frame: HTMLIFrameElement, index: number | null, pattern: RegExp | null) {
   const doc = frame.contentDocument;
   if (!doc) return;
   const headings = [...doc.querySelectorAll('h2, h4')].filter((h) =>
@@ -140,7 +142,7 @@ function showHit(frame: HTMLIFrameElement, index: number | null, terms: string[]
   // Dark text on the mark: the note may be shown in a dark theme.
   style.textContent = 'mark { background: #fde68a; color: #1d1d1f; }';
   doc.head.append(style);
-  if (!terms.length) return;
+  if (!pattern) return;
   const next = index === null ? null : (headings[index + 1] ?? null);
   const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
   const texts: Text[] = [];
@@ -152,12 +154,6 @@ function showHit(frame: HTMLIFrameElement, index: number | null, terms: string[]
     if (next && next.compareDocumentPosition(node) & Node.DOCUMENT_POSITION_FOLLOWING) break;
     if (inside) texts.push(node as Text);
   }
-  const pattern = new RegExp(
-    terms
-      .map((term) => term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/е/g, '[её]'))
-      .join('|'),
-    'gi',
-  );
   for (const text of texts) {
     const value = text.nodeValue ?? '';
     if (!pattern.test(value)) continue;
@@ -255,7 +251,11 @@ export function SearchPage() {
   };
 
   const onShown = (iframe: HTMLIFrameElement, hit: SearchHit) => {
-    showHit(iframe, hit.message, queryTerms(query));
+    showHit(
+      iframe,
+      hit.message,
+      markPattern(queryParts(query, filters.forms === false ? null : formLanguages())),
+    );
     for (const url of imageUrls.current.splice(0)) URL.revokeObjectURL(url);
     const doc = iframe.contentDocument;
     if (doc && hit.file === null && folder.kind === 'ready') {
@@ -409,6 +409,14 @@ export function SearchPage() {
               <option value="oldest">{t('searchSortOldest')}</option>
               <option value="matches">{t('searchSortMatches')}</option>
             </select>
+            <label class="check" title={t('searchFormsHint')}>
+              <input
+                type="checkbox"
+                checked={filters.forms !== false}
+                onChange={(e) => update({ forms: e.currentTarget.checked })}
+              />
+              {t('searchForms')}
+            </label>
           </div>
           {query.trim() && (
             <p class="muted">
