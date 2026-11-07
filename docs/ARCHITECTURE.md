@@ -304,8 +304,9 @@ interface Message {
   id: string;
   role: 'user' | 'assistant';
   createdAt: string | null;
-  blocks: Block[]; // text, thinking, tool-call, web-search, unreadable
+  blocks: Block[]; // text, thinking (with `seconds` when known), tool-call, web-search, unreadable
   attachments: Attachment[];
+  incomplete?: true; // the answer stopped before it was finished (DeepSeek's INCOMPLETE)
 }
 
 interface Attachment {
@@ -415,7 +416,7 @@ Discovery ([`docs/platforms-deepseek.md`](platforms-deepseek.md)) found a JSON A
 - **Token and envelope.** Every call needs `Authorization: Bearer <token>`, where the token is `value` in the page's `localStorage.userToken`. The content script reads it for each request (a content script shares the page's storage) and never keeps, logs or sends it anywhere else. Every answer is HTTP 200 with `{ code, data: { biz_code, biz_msg, biz_data } }`: `code` 40003 is the `401` of the other platforms ("sign in"), 40029 is waited out (2, 4, 8, 16 s) and then the `429` of the others; a `biz_code` other than 0 is a refusal, and "invalid chat session id" is a chat not found.
 - **List** `chat_session/fetch_page?count=100`, pinned chats first, then newest first. The next page starts from the last chat's `pinned` and `updated_at`, inclusive, so the repeated chat is skipped. The list has no creation date, so the export page filters by the last update, as for Gemini. Pinning or unpinning moves `updated_at`, so such a chat counts as changed for "skip unchanged".
 - **Conversation** `chat/history_messages`: the whole tree at once. The visible branch is the path to the session's `current_message_id`; every other leaf becomes a branch. Editing the first prompt makes a second root, so a chat can have several.
-- **Messages** are made of typed fragments: `REQUEST` and `RESPONSE` are Markdown, `THINK` a thinking block, `SEARCH` one web search block per message, `FILE` the uploads, `TEMPLATE_RESPONSE` (the server's "busy" notice) its text in italics, `TIP` (a hint of the web app) is left out, any other type is noted as unreadable. `[citation:N]` in an answer becomes links to the results whose `cite_index` is N.
+- **Messages** are made of typed fragments: `REQUEST` and `RESPONSE` are Markdown, `THINK` a thinking block, `SEARCH` one web search block per message, `FILE` the uploads, `TEMPLATE_RESPONSE` (the server's "busy" notice) its text in italics, `TIP` (a hint of the web app) is left out, any other type is noted as unreadable. `[citation:N]` in an answer becomes links to the results whose `cite_index` is N. A message with status `INCOMPLETE` is marked as stopped. DeepSeek names no model, so the note's `model` says what the chat ran with: the session's `model_type` when it is not `default`, then DeepThink and Search when an answer of the branch had them on.
 - **Files** from `files.deepseeksvc.com` through `signed_path`, without the token and without CORS headers (the offscreen document reads them with the host permission): a document by `ty=r`, byte for byte; an image only as its preview by `ty=p&fmt=jpeg` (JPEG, which Word notes show), named `.jpg` and marked `preview`, since the original of an image is refused. Old uploads have no `signed_path`: they are named in the note as files the service does not provide. A refused link is asked again through `file/fetch_files`.
 - **Scope:** chats only; DeepSeek has no projects. Shared links and the official export are described in the platform notes and not used.
 - **Temporary chats** are not in the list; "Save this chat" on the open page saves one. Custom GPTs are not exported.
@@ -494,7 +495,8 @@ The output targets Obsidian but stays plain Markdown.
 - One `##` heading per message: role and local time.
 - Model replies keep the platform's original Markdown (code blocks with languages, tables, lists, `$…$` / `$$…$$` math); all five platforms give Markdown. Platform marks that mean nothing outside its page are removed or replaced: Gemini's `[cite: N]`, Grok's `<grok:render>` cards, DeepSeek's `[citation:N]`, ChatGPT's `<Cite>`, `<Entity>`, `<FileCite>` and `<WritingBlock>`.
 - A code fence a message leaves open (a reply that stopped inside a code block) is closed at the end of the message's text (`closeFences`); left open, it would turn the rest of the note into code. The archive search, reading notes saved before this, ends such a fence at the next message heading with its time or at a section heading of the note.
-- Thinking, web search results and tool calls become collapsible Obsidian callouts (`> [!note]-`, `> [!info]-`, `> [!abstract]-`). Each type can be turned off in settings.
+- Thinking, web search results and tool calls become collapsible Obsidian callouts (`> [!note]-`, `> [!info]-`, `> [!abstract]-`). Each type can be turned off in settings. The thinking callout says how long the model thought when the platform tells: Claude from the block's `start_timestamp` and `stop_timestamp`, Grok from the response's `thinkingStartTime` and `thinkingEndTime`, ChatGPT from the turn's `reasoning_recap` (`finished_duration_sec`), DeepSeek from `elapsed_secs`; Gemini does not tell.
+- An answer that stopped before it was finished ends with a line in italics saying so.
 - Attachments are relative links into `files/`, with a note when the file is not the original (extracted text, rebuilt, re-encoded). An attachment that could not be saved is listed as `⚠️ name — <reason>`.
 - Other branches follow the main one under "Other branches", each saying where it forks.
 

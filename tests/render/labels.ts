@@ -6,6 +6,8 @@ export const LABELS: RenderLabels = {
   assistant: 'Claude',
   untitled: 'Untitled',
   thinking: 'Thinking',
+  thinkingFor: (seconds) => `Thinking, ${seconds} s`,
+  stopped: 'The answer stopped before it was finished.',
   webSearch: (q) => `Web search: “${q}”`,
   noResults: 'No results',
   tools: (n) => `Tools (${n})`,

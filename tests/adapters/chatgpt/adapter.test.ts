@@ -329,6 +329,8 @@ describe('ChatgptAdapter.getConversation', () => {
     expect(blocksOf(answer, 'thinking')[0]?.markdown).toBe(
       'Inspecting stripe image dimensions and pixels',
     );
+    // From the turn's reasoning_recap ("Worked for 10s").
+    expect(blocksOf(answer, 'thinking')[0]?.seconds).toBe(10);
     // The files' extracted text is the model's context, not part of the chat.
     expect(JSON.stringify(answer)).not.toMatch(/PARSED TEXT/);
     expect(text(answer)).toMatch(/plums 5\.\n- \*\*meeting-notes/);

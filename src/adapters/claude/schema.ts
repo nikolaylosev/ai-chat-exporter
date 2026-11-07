@@ -181,6 +181,8 @@ export const thinkingBlockSchema = z.looseObject({
     .string()
     .nullish()
     .transform((v) => v ?? ''),
+  start_timestamp: z.string().nullish().catch(null),
+  stop_timestamp: z.string().nullish().catch(null),
 });
 
 export const toolUseBlockSchema = z.looseObject({

@@ -7,6 +7,8 @@ export interface RenderLabels {
   assistant: string;
   untitled: string;
   thinking: string;
+  /** The thinking heading with how long it took, e.g. "Thinking, 2 min 42 s". */
+  thinkingFor: (seconds: number) => string;
   webSearch: (query: string) => string;
   noResults: string;
   tools: (count: number) => string;
@@ -26,6 +28,8 @@ export interface RenderLabels {
   otherBranches: string;
   /** A part of a message the extension could not read; `kind` is the platform's block type. */
   unreadable: (kind: string) => string;
+  /** Under an answer that stopped before it was finished. */
+  stopped: string;
   /**
    * Heading of another branch. `fork` says where it starts: null for the beginning of
    * the conversation, otherwise the 1-based message position in branch `fork.branch`
@@ -134,7 +138,10 @@ function renderBlocks(blocks: Block[], o: RenderOptions): string[] {
         parts.push(closeFences(block.markdown.replace(/\s+$/, '')));
         break;
       case 'thinking':
-        if (o.includeThinking) parts.push(callout('note', o.labels.thinking, block.markdown));
+        if (o.includeThinking) {
+          const title = block.seconds ? o.labels.thinkingFor(block.seconds) : o.labels.thinking;
+          parts.push(callout('note', title, block.markdown));
+        }
         break;
       case 'web-search': {
         if (!o.includeToolCalls) break;
@@ -188,6 +195,7 @@ function renderAttachments(attachments: Attachment[], o: RenderOptions): string 
 
 function renderMessage(message: Message, level: number, o: RenderOptions): string {
   const parts = [heading(level, message, o), ...renderBlocks(message.blocks, o)];
+  if (message.incomplete) parts.push(`*${o.labels.stopped}*`);
   const attachments = renderAttachments(message.attachments, o);
   if (attachments) parts.push(attachments);
   return parts.join('\n\n');

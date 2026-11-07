@@ -74,6 +74,9 @@ export const messageSchema = z.looseObject({
   role: text,
   status: optionalText,
   inserted_at: seconds,
+  /** The DeepThink and Search switches of the web app, as they were for this message. */
+  thinking_enabled: z.boolean().catch(false),
+  search_enabled: z.boolean().catch(false),
   fragments: list(fragmentSchema),
 });
 

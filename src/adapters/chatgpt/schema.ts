@@ -114,6 +114,8 @@ const metadataSchema = z.looseObject({
   content_references: list(contentReferenceSchema),
   writing_blocks: z.record(z.string(), writingBlockSchema).nullish().catch(null),
   image_gen_title: optionalText,
+  /** On a `reasoning_recap` ("Worked for 10s"): how long the model thought. */
+  finished_duration_sec: z.number().nullish().catch(null),
 });
 
 export const messageSchema = z.looseObject({

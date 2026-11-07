@@ -73,11 +73,14 @@ export interface Message {
   createdAt: string | null;
   blocks: Block[];
   attachments: Attachment[];
+  /** The answer stopped before it was finished (stopped by the user, or cut off). */
+  incomplete?: true;
 }
 
 export type Block =
   | { type: 'text'; markdown: string }
-  | { type: 'thinking'; markdown: string }
+  /** `seconds`: how long the model thought, when the platform says. */
+  | { type: 'thinking'; markdown: string; seconds?: number }
   | {
       type: 'tool-call';
       name: string;

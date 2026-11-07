@@ -68,3 +68,13 @@ export function isoWithOffset(value: string | Date, timeZone?: string): string {
   const mm = String(abs % 60).padStart(2, '0');
   return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}:${p.second}${sign}${hh}:${mm}`;
 }
+
+/** Seconds from `start` to `end` (ISO 8601), or undefined when either is missing or bad. */
+export function secondsBetween(
+  start: string | null | undefined,
+  end: string | null | undefined,
+): number | undefined {
+  if (!start || !end) return undefined;
+  const ms = Date.parse(end) - Date.parse(start);
+  return Number.isFinite(ms) && ms > 0 ? ms / 1000 : undefined;
+}

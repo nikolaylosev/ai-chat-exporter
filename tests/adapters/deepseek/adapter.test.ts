@@ -132,6 +132,12 @@ describe('DeepseekAdapter.listConversations', () => {
 });
 
 describe('DeepseekAdapter.getConversation', () => {
+  it('names the switches the chat ran with as its model', async () => {
+    const { deepseek } = adapter();
+    expect((await deepseek.getConversation(SEARCH)).model).toBe('DeepThink, Search');
+    expect((await deepseek.getConversation(EDITED)).model).toBe('Search');
+  });
+
   it('follows the current branch and keeps the others', async () => {
     const c = await adapter().deepseek.getConversation(EDITED);
     // The prompt was edited (a second root) and its answer regenerated.
@@ -150,6 +156,7 @@ describe('DeepseekAdapter.getConversation', () => {
     const c = await adapter().deepseek.getConversation(SEARCH);
     const answer = c.messages[1];
     expect(types(answer)).toEqual(['web-search', 'thinking', 'text']);
+    expect(answer?.blocks[1]).toMatchObject({ type: 'thinking', seconds: 162 });
     const search = answer?.blocks[0] as Extract<Block, { type: 'web-search' }>;
     expect(search.results.length).toBeGreaterThan(5);
     expect(search.results[0]?.url).toMatch(/^https:\/\/example\.com\/(source|uncited)-\d+$/);
@@ -159,8 +166,10 @@ describe('DeepseekAdapter.getConversation', () => {
 
   it('shows the busy notice as such, and an empty stopped answer as nothing', async () => {
     const c = await adapter().deepseek.getConversation(SEARCH);
-    // The current answer was stopped before it said anything.
-    expect(c.messages.at(-1)).toMatchObject({ id: '7', role: 'assistant', blocks: [] });
+    // The current answer was stopped before it said anything; the first one was cut off.
+    expect(c.messages.at(-1)).toMatchObject({ id: '7', blocks: [], incomplete: true });
+    expect(c.messages[1]?.incomplete).toBe(true);
+    expect(c.messages[0]?.incomplete).toBeUndefined();
     const busy = c.branches.flatMap((b) => b.messages).find((m) => m.id === '5');
     expect(text(busy)).toBe('*The server is busy. Please try again later.*');
   });

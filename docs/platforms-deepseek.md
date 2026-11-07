@@ -66,7 +66,9 @@ The web app also knows `TOOL_SEARCH`, `TOOL_OPEN`, `TOOL_FIND` and `READ_LINK`; 
 
 **Citations** are `[citation:N]` in an answer, where N is the `cite_index` of a result in the same message's `SEARCH` fragment. Results without `cite_index` were found but not cited. The adapter turns a run of marks into `([Site](url), …)` and lists every result in a web search block.
 
-An answer stopped before it said anything is an `ASSISTANT` message with status `INCOMPLETE` and no fragments.
+An answer stopped before it said anything is an `ASSISTANT` message with status `INCOMPLETE` and no fragments; an answer cut off partway is `INCOMPLETE` with its fragments. The adapter marks both as stopped in the note.
+
+The adapter writes `elapsed_secs` into the thinking block's heading, and, since no model is named, the switches the chat ran with (`thinking_enabled` as DeepThink, `search_enabled` as Search, and `model_type` when it is not `default`) as the note's `model`.
 
 ## 4. Branches
 

@@ -362,6 +362,10 @@ STRINGS = {
     # Markdown
     "mdUser": ("User", "Пользователь"),
     "mdThinking": ("Thinking", "Рассуждения"),
+    "mdThinkingFor": ("Thinking, $1", "Рассуждения, $1"),
+    "mdStopped": ("The answer stopped before it was finished.", "Ответ остановлен, не дописан до конца."),
+    "mdSeconds": ("$1 s", "$1 с"),
+    "mdMinutesSeconds": ("$1 min $2 s", "$1 мин $2 с"),
     "mdWebSearch": ("Web search: “$1”", "Веб-поиск: «$1»"),
     "mdWebSearchNoQuery": ("Web search", "Веб-поиск"),
     "mdNoResults": ("No results", "Нет результатов"),

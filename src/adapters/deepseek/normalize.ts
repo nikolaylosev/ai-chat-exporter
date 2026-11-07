@@ -126,7 +126,14 @@ function toMessage(raw: RawMessage, filesOrigin: string): Message {
         break;
       }
       case 'THINK':
-        if (content.trim()) blocks.push({ type: 'thinking', markdown: content.trim() });
+        if (content.trim()) {
+          const seconds = f.elapsed_secs ?? undefined;
+          blocks.push({
+            type: 'thinking',
+            markdown: content.trim(),
+            ...(seconds ? { seconds } : {}),
+          });
+        }
         break;
       case 'SEARCH': {
         // One block for all of a message's searches, where the first one was.
@@ -153,6 +160,7 @@ function toMessage(raw: RawMessage, filesOrigin: string): Message {
     createdAt: isoFromSeconds(raw.inserted_at),
     blocks,
     attachments,
+    ...(assistant && raw.status === 'INCOMPLETE' ? { incomplete: true as const } : {}),
   };
 }
 
@@ -222,6 +230,10 @@ export function toConversation(
     }
   }
 
+  const model = modeOf(
+    session,
+    active.map((id) => byId.get(id) as RawMessage),
+  );
   return {
     id: session.id,
     platform: 'deepseek',
@@ -231,5 +243,20 @@ export function toConversation(
     url: ctx.url,
     messages: active.map(convert),
     branches,
+    ...(model ? { model } : {}),
   };
+}
+
+/**
+ * What the chat ran with, for the note's `model`: DeepSeek names no model, only
+ * the session's `model_type` (`default`, `expert`, `vision`) and the DeepThink and
+ * Search switches of each message. For example "DeepThink, Search".
+ */
+function modeOf(session: RawSession, path: RawMessage[]): string | undefined {
+  const parts: string[] = [];
+  if (session.model_type && session.model_type !== 'default') parts.push(session.model_type);
+  const answers = path.filter((m) => m.role === 'ASSISTANT');
+  if (answers.some((m) => m.thinking_enabled)) parts.push('DeepThink');
+  if (answers.some((m) => m.search_enabled)) parts.push('Search');
+  return parts.length ? parts.join(', ') : undefined;
 }

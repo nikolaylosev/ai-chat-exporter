@@ -917,6 +917,36 @@
   "mdThinking": {
     "message": "Thinking"
   },
+  "mdThinkingFor": {
+    "message": "Thinking, $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdStopped": {
+    "message": "The answer stopped before it was finished."
+  },
+  "mdSeconds": {
+    "message": "$ARG1$ s",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdMinutesSeconds": {
+    "message": "$ARG1$ min $ARG2$ s",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
   "mdWebSearch": {
     "message": "Web search: “$ARG1$”",
     "placeholders": {

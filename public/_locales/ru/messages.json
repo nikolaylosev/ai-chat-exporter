@@ -917,6 +917,36 @@
   "mdThinking": {
     "message": "Рассуждения"
   },
+  "mdThinkingFor": {
+    "message": "Рассуждения, $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdStopped": {
+    "message": "Ответ остановлен, не дописан до конца."
+  },
+  "mdSeconds": {
+    "message": "$ARG1$ с",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdMinutesSeconds": {
+    "message": "$ARG1$ мин $ARG2$ с",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
   "mdWebSearch": {
     "message": "Веб-поиск: «$ARG1$»",
     "placeholders": {

@@ -89,6 +89,20 @@ describe('normalizeConversation: uploads', () => {
     expect(user?.attachments[0]?.size).toBe(961);
   });
 
+  it('times a thinking block from its timestamps', () => {
+    // The fixtures' thinking is empty (Claude returned it so); give one block text.
+    const json = fixtureJson('conversation-artifact.json') as {
+      chat_messages: { content: { type: string; thinking?: string }[] }[];
+    };
+    const block = json.chat_messages.flatMap((m) => m.content).find((b) => b.type === 'thinking');
+    if (block) block.thinking = 'Plan the page.';
+    const c = normalizeConversation(conversationSchema.parse(json), ctx);
+    const thinking = [...c.messages, ...c.branches.flatMap((b) => b.messages)]
+      .flatMap((m) => m.blocks)
+      .find((b): b is Extract<Block, { type: 'thinking' }> => b.type === 'thinking');
+    expect(thinking?.seconds).toBeCloseTo(0.741, 3);
+  });
+
   it('drops empty thinking and keeps tool calls with labels', () => {
     const assistant = c.messages[1]!;
     expect(assistant.blocks.some((b) => b.type === 'thinking')).toBe(false);
