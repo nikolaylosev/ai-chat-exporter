@@ -64,6 +64,69 @@ describe('export page: the chat list', () => {
   });
 });
 
+describe('export page: DeepSeek', () => {
+  it('has no Projects tab, even when the address asks for it', async () => {
+    history.replaceState(null, '', '?platform=deepseek&tab=projects');
+    const { sentToTabs } = stubChrome({
+      background: (type) => (type === 'platform:tab' ? { tabId: 7, opened: false } : null),
+      tab: (type) =>
+        type === 'conversations:list'
+          ? { conversations: [{ ...chat('a'), platform: 'deepseek', createdAt: null }] }
+          : null,
+    });
+    render(<ExportPage />);
+    await waitFor(() => expect(rows()).toBe(1));
+    expect(screen.queryByRole('tab', { name: 'exportTabProjects' })).toBeNull();
+    expect(sentToTabs.map((m) => m.type)).not.toContain('projects:list');
+  });
+
+  it('asks for access first, and lists the chats once it is given', async () => {
+    history.replaceState(null, '', '?platform=deepseek');
+    const opened: string[] = [];
+    const { sentToTabs, requested } = stubChrome({
+      granted: false,
+      background: (type) => {
+        opened.push(type);
+        return type === 'platform:tab' ? { tabId: 7, opened: false } : null;
+      },
+      tab: (type) =>
+        type === 'conversations:list'
+          ? { conversations: [{ ...chat('a'), platform: 'deepseek', createdAt: null }] }
+          : null,
+    });
+    render(<ExportPage />);
+    await screen.findByText('accessNeeded(DeepSeek)');
+    // No platform tab is opened for a list that cannot be read.
+    expect(opened).not.toContain('platform:tab');
+    expect(sentToTabs).toEqual([]);
+
+    fireEvent.click(screen.getByRole('button', { name: 'accessAllow' }));
+    await waitFor(() => expect(rows()).toBe(1));
+    expect(requested).toEqual([['https://chat.deepseek.com/*', 'https://files.deepseeksvc.com/*']]);
+    expect(screen.queryByText('accessNeeded(DeepSeek)')).toBeNull();
+  });
+
+  it('says so when the user does not allow it', async () => {
+    history.replaceState(null, '', '?platform=deepseek');
+    stubChrome({ granted: false, grants: false });
+    render(<ExportPage />);
+    fireEvent.click(await screen.findByRole('button', { name: 'accessAllow' }));
+    await screen.findByText('accessDenied(DeepSeek)');
+  });
+
+  it('does not ask on the other platforms', async () => {
+    history.replaceState(null, '', '?platform=grok');
+    stubChrome({
+      granted: false,
+      background: (type) => (type === 'platform:tab' ? { tabId: 7, opened: false } : null),
+      tab: (type) => (type === 'conversations:list' ? { conversations: [chat('a')] } : null),
+    });
+    render(<ExportPage />);
+    await waitFor(() => expect(rows()).toBe(1));
+    expect(screen.queryByText(/accessNeeded/)).toBeNull();
+  });
+});
+
 describe('export page: saved status', () => {
   it('counts the chats by saved status and shows only those asked for', async () => {
     history.replaceState(null, '', '?');

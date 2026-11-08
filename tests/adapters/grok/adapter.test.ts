@@ -3,7 +3,7 @@ import { PlatformFormatError } from '../../../src/adapters/errors';
 import { GrokAdapter } from '../../../src/adapters/grok/adapter';
 import { cleanAnswer } from '../../../src/adapters/grok/normalize';
 import { grokConversationId, grokProjectId, parseGrokUrl } from '../../../src/adapters/grok/urls';
-import type { Message } from '../../../src/model/conversation';
+import type { Block, Message } from '../../../src/model/conversation';
 import { fixture, grokServer, loadConversations, ORIGIN, WORKSPACE } from './server';
 
 const id = (n: number) => `00000000-0000-4000-8000-${n.toString(16).padStart(12, '0')}`;
@@ -124,11 +124,14 @@ describe('GrokAdapter.getConversation', () => {
   it('keeps reasoning steps as a thinking block', async () => {
     const { grok } = adapter();
     const c = await grok.getConversation(BASIC);
-    expect(c.messages[1]?.blocks[0]).toEqual({
+    expect(c.messages[1]?.blocks[0]).toMatchObject({
       type: 'thinking',
       markdown:
         '**Thinking about your request**\n\n**Generating the requested response with formatting**',
     });
+    // thinkingStartTime to thinkingEndTime.
+    const thinking = c.messages[1]?.blocks[0] as Extract<Block, { type: 'thinking' }>;
+    expect(thinking.seconds).toBeCloseTo(2.611, 3);
   });
 
   it('downloads uploads from assets.grok.com by key', async () => {

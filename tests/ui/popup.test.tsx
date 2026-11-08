@@ -25,6 +25,35 @@ describe('popup', () => {
   });
 });
 
+describe('popup on DeepSeek before access is given', () => {
+  const url = 'https://chat.deepseek.com/a/chat/s/00000000-0000-4000-8000-000000000001';
+
+  it('asks for access and keeps Save and Copy off until then', async () => {
+    const { requested } = stubChrome({ activeTab: { id: 3, url }, granted: false });
+    render(<Popup />);
+    await screen.findByText('accessNeeded(DeepSeek)');
+    const save = screen.getByRole<HTMLButtonElement>('button', { name: 'popupSaveChat' });
+    const copy = screen.getByRole<HTMLButtonElement>('button', { name: /popupCopyChat/ });
+    expect(save.disabled).toBe(true);
+    expect(copy.disabled).toBe(true);
+
+    fireEvent.click(screen.getByRole('button', { name: 'accessAllow' }));
+    await vi.waitFor(() => expect(save.disabled).toBe(false));
+    expect(copy.disabled).toBe(false);
+    expect(requested).toHaveLength(1);
+    expect(screen.queryByText('accessNeeded(DeepSeek)')).toBeNull();
+  });
+
+  it('says nothing about access once it is given', async () => {
+    stubChrome({ activeTab: { id: 3, url } });
+    render(<Popup />);
+    await screen.findByText('popupDetected(DeepSeek)');
+    const save = screen.getByRole<HTMLButtonElement>('button', { name: 'popupSaveChat' });
+    await vi.waitFor(() => expect(save.disabled).toBe(false));
+    expect(screen.queryByText(/accessNeeded/)).toBeNull();
+  });
+});
+
 describe('popup on a Gemini notebook', () => {
   it('offers to save the notebook with its chats', async () => {
     stubChrome({

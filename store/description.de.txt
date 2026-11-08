@@ -1,9 +1,9 @@
-Speichern Sie Ihre KI-Unterhaltungen auf Ihrem eigenen Computer, mit allen Dateien darin. Chats aus Claude, Gemini, Grok und ChatGPT werden zu Markdown-Notizen, und die Dateien jedes Chats landen neben der Notiz in ihrem Originalformat.
+Speichern Sie Ihre KI-Unterhaltungen auf Ihrem eigenen Computer, mit allen Dateien darin. Chats aus Claude, Gemini, Grok, ChatGPT und DeepSeek werden zu Markdown-Notizen, und die Dateien jedes Chats landen neben der Notiz in ihrem Originalformat.
 
 WARUM DIESE ERWEITERUNG
 • Alle Dateien, nicht nur der Text: Ihre Uploads, vom Modell erstellte Dokumente und Code, Claude-Artefakte, ChatGPT-Canvas und generierte Bilder, unverändert gespeichert.
 • Projekte aus Claude, ChatGPT und Grok mit Anweisungen, Dateien und Chats sowie Gemini-Notizbücher mit ihren Chats.
-• Grok ebenso wie Claude, Gemini und ChatGPT.
+• Grok und DeepSeek ebenso wie Claude, Gemini und ChatGPT.
 • Hunderte Chats auf einmal, im Hintergrund, bereits gespeicherte werden übersprungen.
 • Kein Konto, kein Server, kein Tracking. Kostenlos und Open Source.
 
@@ -33,6 +33,6 @@ DATENSCHUTZ
 • Open Source (MIT): https://github.com/nikolaylosev/ai-chat-exporter
 
 UNTERSTÜTZTE DIENSTE
-claude.ai, gemini.google.com, grok.com, chatgpt.com. Oberfläche auf Englisch und Russisch.
+claude.ai, gemini.google.com, grok.com, chatgpt.com, chat.deepseek.com. Oberfläche auf Englisch und Russisch.
 
-Dies ist ein inoffizielles, unabhängiges Projekt. Es steht in keiner Verbindung zu Anthropic, Google, xAI oder OpenAI und wird von diesen weder unterstützt noch gesponsert. Claude, Gemini, Grok und ChatGPT sind Marken ihrer Inhaber. Die Erweiterung nutzt interne Webschnittstellen der Dienste, die sich jederzeit ändern können; Sie sind dafür verantwortlich, sie im Einklang mit den Nutzungsbedingungen jedes Dienstes zu verwenden.
+Dies ist ein inoffizielles, unabhängiges Projekt. Es steht in keiner Verbindung zu Anthropic, Google, xAI, OpenAI oder DeepSeek und wird von diesen weder unterstützt noch gesponsert. Claude, Gemini, Grok, ChatGPT und DeepSeek sind Marken ihrer Inhaber. Die Erweiterung nutzt interne Webschnittstellen der Dienste, die sich jederzeit ändern können; Sie sind dafür verantwortlich, sie im Einklang mit den Nutzungsbedingungen jedes Dienstes zu verwenden.

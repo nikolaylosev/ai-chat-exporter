@@ -3,7 +3,7 @@
     "message": "CodingCat AI Chat Exporter"
   },
   "extDescription": {
-    "message": "Save Claude, Gemini, Grok and ChatGPT chats and projects as Markdown with every file. No account, no server, open source."
+    "message": "Save Claude, Gemini, Grok, ChatGPT and DeepSeek chats and projects as Markdown with every file. No account, no server, open source."
   },
   "commandExportCurrent": {
     "message": "Save the current chat"
@@ -18,7 +18,7 @@
     "message": "Untitled notebook"
   },
   "popupUnsupported": {
-    "message": "Open a chat on claude.ai, gemini.google.com, grok.com or chatgpt.com to export it."
+    "message": "Open a chat on claude.ai, gemini.google.com, grok.com, chatgpt.com or chat.deepseek.com to export it."
   },
   "popupDetected": {
     "message": "$ARG1$ chat is open.",
@@ -113,6 +113,25 @@
   },
   "popupCopied": {
     "message": "Copied to the clipboard: $ARG1$ messages.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "accessNeeded": {
+    "message": "Allow the extension to read $ARG1$: your chats there and the files in them. Chrome asks once.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "accessAllow": {
+    "message": "Allow access"
+  },
+  "accessDenied": {
+    "message": "Access was not given. Without it the extension cannot read $ARG1$.",
     "placeholders": {
       "arg1": {
         "content": "$1"
@@ -800,7 +819,7 @@
     }
   },
   "error_unsupported_page": {
-    "message": "Open a Claude, Gemini, Grok or ChatGPT chat first."
+    "message": "Open a Claude, Gemini, Grok, ChatGPT or DeepSeek chat first."
   },
   "error_tab_not_loaded": {
     "message": "The site did not open in a background tab. Open it in a tab, wait until it loads, and try again."
@@ -894,6 +913,9 @@
   "error_folder_not_chosen": {
     "message": "No folder is chosen. Choose one in the extension settings."
   },
+  "error_platform_access": {
+    "message": "The extension has no access to this site yet. Open the extension's window on the site and click “Allow access”."
+  },
   "error_folder_permission": {
     "message": "No access to the chosen folder. Click “Save chat” in the extension window and allow access."
   },
@@ -916,6 +938,36 @@
   },
   "mdThinking": {
     "message": "Thinking"
+  },
+  "mdThinkingFor": {
+    "message": "Thinking, $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdStopped": {
+    "message": "The answer stopped before it was finished."
+  },
+  "mdSeconds": {
+    "message": "$ARG1$ s",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdMinutesSeconds": {
+    "message": "$ARG1$ min $ARG2$ s",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
   },
   "mdWebSearch": {
     "message": "Web search: “$ARG1$”",
@@ -995,6 +1047,9 @@
   },
   "mdRecompressed": {
     "message": "re-encoded by the service, full size"
+  },
+  "mdPreview": {
+    "message": "a smaller preview: the service does not give the original"
   },
   "mdUnreadable": {
     "message": "A part of this message could not be read ($ARG1$). The rest of the chat is saved.",
@@ -1706,7 +1761,7 @@
     "message": "With input and output"
   },
   "optionsClaudeBranches": {
-    "message": "Branches (Claude, Grok, ChatGPT)"
+    "message": "Branches (Claude, Grok, ChatGPT, DeepSeek)"
   },
   "optionsClaudeBranchesActive": {
     "message": "Only the branch you see"

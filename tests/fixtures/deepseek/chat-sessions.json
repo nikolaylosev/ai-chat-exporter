@@ -1,0 +1,53 @@
+{
+ "code": 0,
+ "msg": "",
+ "data": {
+  "biz_code": 0,
+  "biz_msg": "",
+  "biz_data": {
+   "chat_sessions": [
+    {
+     "id": "00000000-0000-4000-8000-000000000001",
+     "title": "Synthetic chat search-think",
+     "title_type": "SYSTEM",
+     "model_type": "default",
+     "pinned": false,
+     "updated_at": 1739631675.306
+    },
+    {
+     "id": "00000000-0000-4000-8000-000000000002",
+     "title": "Synthetic chat image-upload",
+     "title_type": "SYSTEM",
+     "model_type": "default",
+     "pinned": true,
+     "updated_at": 1794073887.687
+    },
+    {
+     "id": "00000000-0000-4000-8000-000000000004",
+     "title": "Synthetic chat text-upload",
+     "title_type": "SYSTEM",
+     "model_type": "default",
+     "pinned": false,
+     "updated_at": 1794072654.377
+    },
+    {
+     "id": "00000000-0000-4000-8000-000000000006",
+     "title": "France capital test",
+     "title_type": "SYSTEM",
+     "model_type": "default",
+     "pinned": false,
+     "updated_at": 1794073531.876
+    },
+    {
+     "id": "00000000-0000-4000-8000-000000000007",
+     "title": "Synthetic chat old-upload",
+     "title_type": "SYSTEM",
+     "model_type": "default",
+     "pinned": false,
+     "updated_at": 1752312343.193
+    }
+   ],
+   "has_more": false
+  }
+ }
+}

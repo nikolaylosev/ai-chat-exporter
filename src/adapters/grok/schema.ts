@@ -96,6 +96,8 @@ export const responseSchema = z.looseObject({
   createTime: optionalText,
   model: optionalText,
   query: optionalText,
+  thinkingStartTime: optionalText,
+  thinkingEndTime: optionalText,
   steps: list(stepSchema),
   webSearchResults: list(searchResultSchema),
   citedWebSearchResults: list(searchResultSchema),

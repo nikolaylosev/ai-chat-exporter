@@ -1,9 +1,9 @@
-Save your AI conversations to your own computer, with every file in them. Claude, Gemini, Grok and ChatGPT chats become Markdown notes, and the files of each chat are saved next to the note in their original format.
+Save your AI conversations to your own computer, with every file in them. Claude, Gemini, Grok, ChatGPT and DeepSeek chats become Markdown notes, and the files of each chat are saved next to the note in their original format.
 
 WHY THIS ONE
 • Every file, not only the text: your uploads, documents and code the model wrote, Claude artifacts, ChatGPT canvases and generated images, saved as they are.
 • Projects of Claude, ChatGPT and Grok with their instructions, files and chats, and Gemini notebooks with their chats.
-• Grok as well as Claude, Gemini and ChatGPT.
+• Grok and DeepSeek as well as Claude, Gemini and ChatGPT.
 • Hundreds of chats at once, in the background, skipping the ones already saved.
 • No account, no server, no tracking. Free and open source.
 
@@ -33,6 +33,6 @@ PRIVACY
 • Open source (MIT): https://github.com/nikolaylosev/ai-chat-exporter
 
 SUPPORTED SERVICES
-claude.ai, gemini.google.com, grok.com, chatgpt.com. Interface in English and Russian.
+claude.ai, gemini.google.com, grok.com, chatgpt.com, chat.deepseek.com. Interface in English and Russian.
 
-This is an unofficial, independent project. It is not affiliated with, endorsed by, or sponsored by Anthropic, Google, xAI or OpenAI. Claude, Gemini, Grok and ChatGPT are trademarks of their owners. The extension uses the services' internal web interfaces, which can change at any time; you are responsible for using it in line with each service's terms.
+This is an unofficial, independent project. It is not affiliated with, endorsed by, or sponsored by Anthropic, Google, xAI, OpenAI or DeepSeek. Claude, Gemini, Grok, ChatGPT and DeepSeek are trademarks of their owners. The extension uses the services' internal web interfaces, which can change at any time; you are responsible for using it in line with each service's terms.

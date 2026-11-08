@@ -1,4 +1,5 @@
 import type { Attachment, Block, Branch, Conversation, Message } from '../../model/conversation';
+import { secondsBetween } from '../../util/dates';
 import {
   fileEntrySchema,
   knowledgeItemSchema,
@@ -183,7 +184,10 @@ export function normalizeMessage(
       }
       case 'thinking': {
         const b = parseOrThrow(thinkingBlockSchema, raw, at);
-        if (b.thinking.trim()) blocks.push({ type: 'thinking', markdown: b.thinking });
+        const seconds = secondsBetween(b.start_timestamp, b.stop_timestamp);
+        if (b.thinking.trim()) {
+          blocks.push({ type: 'thinking', markdown: b.thinking, ...(seconds ? { seconds } : {}) });
+        }
         break;
       }
       case 'tool_use': {

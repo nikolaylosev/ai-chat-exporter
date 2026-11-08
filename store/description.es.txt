@@ -1,9 +1,9 @@
-Guarda tus conversaciones con IA en tu propio ordenador, con todos sus archivos. Los chats de Claude, Gemini, Grok y ChatGPT se convierten en notas Markdown, y los archivos de cada chat se guardan junto a la nota en su formato original.
+Guarda tus conversaciones con IA en tu propio ordenador, con todos sus archivos. Los chats de Claude, Gemini, Grok, ChatGPT y DeepSeek se convierten en notas Markdown, y los archivos de cada chat se guardan junto a la nota en su formato original.
 
 POR QUÉ ESTA
 • Todos los archivos, no solo el texto: tus subidas, documentos y código que creó el modelo, artefactos de Claude, canvas de ChatGPT e imágenes generadas, tal como son.
 • Proyectos de Claude, ChatGPT y Grok con sus instrucciones, archivos y chats, y cuadernos de Gemini con sus chats.
-• Grok además de Claude, Gemini y ChatGPT.
+• Grok y DeepSeek además de Claude, Gemini y ChatGPT.
 • Cientos de chats a la vez, en segundo plano, saltando los que ya están guardados.
 • Sin cuenta, sin servidor, sin rastreo. Gratis y de código abierto.
 
@@ -33,6 +33,6 @@ PRIVACIDAD
 • Código abierto (MIT): https://github.com/nikolaylosev/ai-chat-exporter
 
 SERVICIOS COMPATIBLES
-claude.ai, gemini.google.com, grok.com, chatgpt.com. Interfaz en inglés y ruso.
+claude.ai, gemini.google.com, grok.com, chatgpt.com, chat.deepseek.com. Interfaz en inglés y ruso.
 
-Este es un proyecto no oficial e independiente. No está afiliado, respaldado ni patrocinado por Anthropic, Google, xAI ni OpenAI. Claude, Gemini, Grok y ChatGPT son marcas de sus propietarios. La extensión usa interfaces web internas de los servicios, que pueden cambiar en cualquier momento; eres responsable de usarla de acuerdo con los términos de cada servicio.
+Este es un proyecto no oficial e independiente. No está afiliado, respaldado ni patrocinado por Anthropic, Google, xAI, OpenAI ni DeepSeek. Claude, Gemini, Grok, ChatGPT y DeepSeek son marcas de sus propietarios. La extensión usa interfaces web internas de los servicios, que pueden cambiar en cualquier momento; eres responsable de usarla de acuerdo con los términos de cada servicio.

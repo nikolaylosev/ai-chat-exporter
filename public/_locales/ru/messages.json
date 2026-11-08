@@ -3,7 +3,7 @@
     "message": "CodingCat AI Chat Exporter"
   },
   "extDescription": {
-    "message": "Сохраняет чаты и проекты Claude, Gemini, Grok и ChatGPT в Markdown со всеми файлами. Без аккаунта и сервера, открытый код."
+    "message": "Сохраняет чаты и проекты Claude, Gemini, Grok, ChatGPT и DeepSeek в Markdown со всеми файлами. Без аккаунта и сервера, открытый код."
   },
   "commandExportCurrent": {
     "message": "Сохранить текущий чат"
@@ -18,7 +18,7 @@
     "message": "Блокнот без названия"
   },
   "popupUnsupported": {
-    "message": "Откройте чат на claude.ai, gemini.google.com, grok.com или chatgpt.com, чтобы сохранить его."
+    "message": "Откройте чат на claude.ai, gemini.google.com, grok.com, chatgpt.com или chat.deepseek.com, чтобы сохранить его."
   },
   "popupDetected": {
     "message": "Открыт чат $ARG1$.",
@@ -113,6 +113,25 @@
   },
   "popupCopied": {
     "message": "Скопировано в буфер обмена: сообщений $ARG1$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "accessNeeded": {
+    "message": "Разрешите расширению читать $ARG1$: ваши чаты там и файлы в них. Chrome спросит один раз.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "accessAllow": {
+    "message": "Разрешить доступ"
+  },
+  "accessDenied": {
+    "message": "Доступ не выдан. Без него расширение не может читать $ARG1$.",
     "placeholders": {
       "arg1": {
         "content": "$1"
@@ -800,7 +819,7 @@
     }
   },
   "error_unsupported_page": {
-    "message": "Сначала откройте чат Claude, Gemini, Grok или ChatGPT."
+    "message": "Сначала откройте чат Claude, Gemini, Grok, ChatGPT или DeepSeek."
   },
   "error_tab_not_loaded": {
     "message": "Сайт не открылся в фоновой вкладке. Откройте его во вкладке, дождитесь загрузки и повторите."
@@ -894,6 +913,9 @@
   "error_folder_not_chosen": {
     "message": "Папка для сохранения не выбрана. Выберите её в настройках расширения."
   },
+  "error_platform_access": {
+    "message": "У расширения пока нет доступа к этому сайту. Откройте окно расширения на этом сайте и нажмите «Разрешить доступ»."
+  },
   "error_folder_permission": {
     "message": "Нет доступа к выбранной папке. Нажмите «Сохранить чат» в окне расширения и разрешите доступ."
   },
@@ -916,6 +938,36 @@
   },
   "mdThinking": {
     "message": "Рассуждения"
+  },
+  "mdThinkingFor": {
+    "message": "Рассуждения, $ARG1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdStopped": {
+    "message": "Ответ остановлен, не дописан до конца."
+  },
+  "mdSeconds": {
+    "message": "$ARG1$ с",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "mdMinutesSeconds": {
+    "message": "$ARG1$ мин $ARG2$ с",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
   },
   "mdWebSearch": {
     "message": "Веб-поиск: «$ARG1$»",
@@ -995,6 +1047,9 @@
   },
   "mdRecompressed": {
     "message": "пережато сервисом, полный размер"
+  },
+  "mdPreview": {
+    "message": "уменьшенная копия: оригинал сервис не отдаёт"
   },
   "mdUnreadable": {
     "message": "Часть этого сообщения не удалось прочитать ($ARG1$). Остальной чат сохранён.",
@@ -1706,7 +1761,7 @@
     "message": "С входными данными и результатом"
   },
   "optionsClaudeBranches": {
-    "message": "Ветки (Claude, Grok, ChatGPT)"
+    "message": "Ветки (Claude, Grok, ChatGPT, DeepSeek)"
   },
   "optionsClaudeBranchesActive": {
     "message": "Только видимая ветка"

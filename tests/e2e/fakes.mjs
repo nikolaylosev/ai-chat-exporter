@@ -397,3 +397,67 @@ export function grokChats(names) {
   }
   return chats;
 }
+
+/**
+ * chat.deepseek.com and files.deepseeksvc.com: the page keeps the token in
+ * localStorage (`userToken`), the API wants it as a Bearer header and wraps every
+ * answer in `{ code, data: { biz_code, biz_data } }`. Files answer without CORS
+ * headers, as the real host does: a document by `ty=r`, an image only by `ty=p`.
+ */
+export function fakeDeepseek({ histories = {}, files = {} } = {}) {
+  const TOKEN = 'stand-token';
+  const state = { noAuth: 0, fileRequests: [], tokenOnFiles: 0 };
+  const wrap = (bizData, bizCode = 0, bizMsg = '') => ({
+    code: 0,
+    msg: '',
+    data: { biz_code: bizCode, biz_msg: bizMsg, biz_data: bizData },
+  });
+  const handler = (req, res, url) => {
+    if (url.hostname === 'files.deepseeksvc.com') {
+      if (req.headers.authorization) state.tokenOnFiles++;
+      const id = url.searchParams.get('file_id');
+      const ty = url.searchParams.get('ty');
+      state.fileRequests.push(`${id}:${ty}:${url.searchParams.get('fmt') ?? ''}`);
+      const file = files[id];
+      const bytes = file && (file.image ? ty === 'p' && file.preview : ty === 'r' && file.bytes);
+      if (!bytes) {
+        res.writeHead(400, { 'content-type': 'application/octet-stream' });
+        return res.end();
+      }
+      res.writeHead(200, {
+        'content-type': file.image ? 'image/jpeg' : 'application/octet-stream',
+      });
+      return res.end(bytes);
+    }
+    if (url.pathname.startsWith('/api/')) {
+      if (req.headers.authorization !== `Bearer ${TOKEN}`) {
+        state.noAuth++;
+        return json(res, { code: 40003, msg: 'INVALID_TOKEN', data: null });
+      }
+      if (url.pathname === '/api/v0/chat_session/fetch_page') {
+        const sessions = Object.values(histories).map((h) => h.data.biz_data.chat_session);
+        return json(res, wrap({ chat_sessions: sessions, has_more: false }));
+      }
+      if (url.pathname === '/api/v0/chat/history_messages') {
+        const h = histories[url.searchParams.get('chat_session_id')];
+        return json(res, h ?? wrap(null, 1, 'invalid chat session id'));
+      }
+      return json(res, wrap(null, 1, 'unknown'));
+    }
+    res.writeHead(200, { 'content-type': 'text/html' });
+    res.end(
+      `<!doctype html><title>DeepSeek</title><script>localStorage.setItem('userToken', JSON.stringify({ value: '${TOKEN}', __version: '0' }));</script><p>stand`,
+    );
+  };
+  return { hosts: ['chat.deepseek.com', 'files.deepseeksvc.com'], handler, state };
+}
+
+/** The DeepSeek fixture chats by id. */
+export function deepseekHistories(names) {
+  const out = {};
+  for (const name of names) {
+    const h = fixture('deepseek', `history-${name}.json`);
+    out[h.data.biz_data.chat_session.id] = h;
+  }
+  return out;
+}

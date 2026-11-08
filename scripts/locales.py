@@ -15,8 +15,8 @@ from pathlib import Path
 STRINGS = {
     "extName": ("CodingCat AI Chat Exporter", "CodingCat AI Chat Exporter"),
     "extDescription": (
-        "Save Claude, Gemini, Grok and ChatGPT chats and projects as Markdown with every file. No account, no server, open source.",
-        "Сохраняет чаты и проекты Claude, Gemini, Grok и ChatGPT в Markdown со всеми файлами. Без аккаунта и сервера, открытый код.",
+        "Save Claude, Gemini, Grok, ChatGPT and DeepSeek chats and projects as Markdown with every file. No account, no server, open source.",
+        "Сохраняет чаты и проекты Claude, Gemini, Grok, ChatGPT и DeepSeek в Markdown со всеми файлами. Без аккаунта и сервера, открытый код.",
     ),
     "commandExportCurrent": ("Save the current chat", "Сохранить текущий чат"),
     "untitledChat": ("Untitled", "Без названия"),
@@ -24,8 +24,8 @@ STRINGS = {
     "untitledNotebook": ("Untitled notebook", "Блокнот без названия"),
     # Popup
     "popupUnsupported": (
-        "Open a chat on claude.ai, gemini.google.com, grok.com or chatgpt.com to export it.",
-        "Откройте чат на claude.ai, gemini.google.com, grok.com или chatgpt.com, чтобы сохранить его.",
+        "Open a chat on claude.ai, gemini.google.com, grok.com, chatgpt.com or chat.deepseek.com to export it.",
+        "Откройте чат на claude.ai, gemini.google.com, grok.com, chatgpt.com или chat.deepseek.com, чтобы сохранить его.",
     ),
     "popupDetected": ("$1 chat is open.", "Открыт чат $1."),
     "popupNotAChat": (
@@ -56,6 +56,15 @@ STRINGS = {
     ),
     "popupCopying": ("Copying…", "Копирую…"),
     "popupCopied": ("Copied to the clipboard: $1 messages.", "Скопировано в буфер обмена: сообщений $1."),
+    "accessNeeded": (
+        "Allow the extension to read $1: your chats there and the files in them. Chrome asks once.",
+        "Разрешите расширению читать $1: ваши чаты там и файлы в них. Chrome спросит один раз.",
+    ),
+    "accessAllow": ("Allow access", "Разрешить доступ"),
+    "accessDenied": (
+        "Access was not given. Without it the extension cannot read $1.",
+        "Доступ не выдан. Без него расширение не может читать $1.",
+    ),
     "panelClose": ("Close", "Закрыть"),
     "popupChooseChats": ("Choose chats…", "Выбрать чаты…"),
     "popupChooseProjects": ("Choose projects…", "Выбрать проекты…"),
@@ -276,8 +285,8 @@ STRINGS = {
     ),
     # Errors (error_<code>, see src/shared/errors.ts)
     "error_unsupported_page": (
-        "Open a Claude, Gemini, Grok or ChatGPT chat first.",
-        "Сначала откройте чат Claude, Gemini, Grok или ChatGPT.",
+        "Open a Claude, Gemini, Grok, ChatGPT or DeepSeek chat first.",
+        "Сначала откройте чат Claude, Gemini, Grok, ChatGPT или DeepSeek.",
     ),
     "error_tab_not_loaded": (
         "The site did not open in a background tab. Open it in a tab, wait until it loads, and try again.",
@@ -346,6 +355,10 @@ STRINGS = {
         "No folder is chosen. Choose one in the extension settings.",
         "Папка для сохранения не выбрана. Выберите её в настройках расширения.",
     ),
+    "error_platform_access": (
+        "The extension has no access to this site yet. Open the extension's window on the site and click “Allow access”.",
+        "У расширения пока нет доступа к этому сайту. Откройте окно расширения на этом сайте и нажмите «Разрешить доступ».",
+    ),
     "error_folder_permission": (
         "No access to the chosen folder. Click “Save chat” in the extension window and allow access.",
         "Нет доступа к выбранной папке. Нажмите «Сохранить чат» в окне расширения и разрешите доступ.",
@@ -362,6 +375,10 @@ STRINGS = {
     # Markdown
     "mdUser": ("User", "Пользователь"),
     "mdThinking": ("Thinking", "Рассуждения"),
+    "mdThinkingFor": ("Thinking, $1", "Рассуждения, $1"),
+    "mdStopped": ("The answer stopped before it was finished.", "Ответ остановлен, не дописан до конца."),
+    "mdSeconds": ("$1 s", "$1 с"),
+    "mdMinutesSeconds": ("$1 min $2 s", "$1 мин $2 с"),
     "mdWebSearch": ("Web search: “$1”", "Веб-поиск: «$1»"),
     "mdWebSearchNoQuery": ("Web search", "Веб-поиск"),
     "mdNoResults": ("No results", "Нет результатов"),
@@ -383,6 +400,10 @@ STRINGS = {
     "failOther": ("$1", "$1"),
     "mdOtherBranches": ("Other branches", "Другие ветки"),
     "mdRecompressed": ("re-encoded by the service, full size", "пережато сервисом, полный размер"),
+    "mdPreview": (
+        "a smaller preview: the service does not give the original",
+        "уменьшенная копия: оригинал сервис не отдаёт",
+    ),
     "mdUnreadable": (
         "A part of this message could not be read ($1). The rest of the chat is saved.",
         "Часть этого сообщения не удалось прочитать ($1). Остальной чат сохранён.",
@@ -662,7 +683,7 @@ STRINGS = {
     "optionsToolCallDetail": ("Tool calls", "Вызовы инструментов"),
     "optionsToolCallDetailCompact": ("One line per call", "Одна строка на вызов"),
     "optionsToolCallDetailFull": ("With input and output", "С входными данными и результатом"),
-    "optionsClaudeBranches": ("Branches (Claude, Grok, ChatGPT)", "Ветки (Claude, Grok, ChatGPT)"),
+    "optionsClaudeBranches": ("Branches (Claude, Grok, ChatGPT, DeepSeek)", "Ветки (Claude, Grok, ChatGPT, DeepSeek)"),
     "optionsClaudeBranchesActive": ("Only the branch you see", "Только видимая ветка"),
     "optionsClaudeBranchesAll": ("All branches", "Все ветки"),
     "optionsSectionShortcut": ("Keyboard shortcut", "Горячая клавиша"),
@@ -693,12 +714,12 @@ def entry(text: str) -> dict:
 
 # The store listing's other languages: the summary only (at most 132 characters).
 LISTING = {
-    "de": "Speichert Chats und Projekte aus Claude, Gemini, Grok und ChatGPT als Markdown mit allen Dateien. Ohne Konto, Open Source.",
-    "es": "Guarda chats y proyectos de Claude, Gemini, Grok y ChatGPT en Markdown con todos sus archivos. Sin cuenta ni servidor.",
-    "fr": "Enregistre les chats et projets Claude, Gemini, Grok et ChatGPT en Markdown avec tous les fichiers. Sans compte ni serveur.",
-    "pt_BR": "Salva chats e projetos do Claude, Gemini, Grok e ChatGPT em Markdown com todos os arquivos. Sem conta nem servidor.",
-    "ja": "Claude・Gemini・Grok・ChatGPT のチャットとプロジェクトを、すべてのファイルごと Markdown で保存。アカウント不要、サーバーなし、オープンソース。",
-    "zh_CN": "将 Claude、Gemini、Grok 和 ChatGPT 的聊天与项目连同所有文件保存为 Markdown。无需账号，无服务器，开源。",
+    "de": "Speichert Chats und Projekte aus Claude, Gemini, Grok, ChatGPT und DeepSeek als Markdown mit allen Dateien. Ohne Konto, Open Source.",
+    "es": "Guarda chats y proyectos de Claude, Gemini, Grok, ChatGPT y DeepSeek en Markdown con todos sus archivos. Sin cuenta ni servidor.",
+    "fr": "Enregistre les chats et projets Claude, Gemini, Grok, ChatGPT et DeepSeek en Markdown avec leurs fichiers. Sans compte ni serveur.",
+    "pt_BR": "Salva chats e projetos do Claude, Gemini, Grok, ChatGPT e DeepSeek em Markdown com todos os arquivos. Sem conta nem servidor.",
+    "ja": "Claude・Gemini・Grok・ChatGPT・DeepSeek のチャットとプロジェクトを、すべてのファイルごと Markdown で保存。アカウント不要、サーバーなし、オープンソース。",
+    "zh_CN": "将 Claude、Gemini、Grok、ChatGPT 和 DeepSeek 的聊天与项目连同所有文件保存为 Markdown。无需账号，无服务器，开源。",
 }
 
 

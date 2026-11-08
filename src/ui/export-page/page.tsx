@@ -9,10 +9,12 @@ import type { ProjectSummary } from '../../model/project';
 import { PLATFORM_LABEL, type Platform } from '../../shared/platform';
 import type { Settings } from '../../shared/settings';
 import {
+  AccessRequest,
   errorText,
   FailedFiles,
   startExportJob,
   useJob,
+  usePlatformAccess,
   useSettings,
   FilesCheckbox,
 } from '../common';
@@ -1300,7 +1302,7 @@ function ProjectsTab({ platform, settings, updateSettings, job, showJob, onStart
 type Tab = 'chats' | 'projects';
 
 /** Platforms the export page lists; Claude has projects and Gemini notebooks besides chats. */
-const PLATFORMS: Platform[] = ['claude', 'gemini', 'grok', 'chatgpt'];
+const PLATFORMS: Platform[] = ['claude', 'gemini', 'grok', 'chatgpt', 'deepseek'];
 
 /** The platform in `?platform=`; Claude when it is missing or unknown. */
 function platformFromQuery(value: string | null): Platform {
@@ -1330,8 +1332,11 @@ export function ExportPage() {
   useEffect(() => {
     document.title = t('exportTitle', PLATFORM_LABEL[platform]);
   }, [platform]);
-  // Every platform has projects; Gemini's are its notebooks.
-  const tabs: Tab[] = ['chats', 'projects'];
+  // Gemini's projects are its notebooks; DeepSeek has none.
+  const tabs: Tab[] = platform === 'deepseek' ? ['chats'] : ['chats', 'projects'];
+  const shown: Tab = tabs.includes(tab) ? tab : 'chats';
+  // A platform the user allows later (DeepSeek): its list waits for the access.
+  const access = usePlatformAccess(platform);
 
   const showJob = Boolean(job && job.id !== dismissedJob);
   const props: TabProps = {
@@ -1370,8 +1375,8 @@ export function ExportPage() {
             key={name}
             type="button"
             role="tab"
-            aria-selected={tab === name}
-            class={tab === name ? 'active' : ''}
+            aria-selected={shown === name}
+            class={shown === name ? 'active' : ''}
             onClick={() => setTab(name)}
           >
             {name === 'chats'
@@ -1381,7 +1386,9 @@ export function ExportPage() {
         ))}
       </div>
 
-      {tab === 'chats' ? (
+      {access === false ? (
+        <AccessRequest platform={platform} />
+      ) : access === undefined ? null : shown === 'chats' ? (
         <ChatsTab key={platform} {...props} />
       ) : (
         <ProjectsTab key={platform} {...props} />

@@ -73,11 +73,14 @@ export interface Message {
   createdAt: string | null;
   blocks: Block[];
   attachments: Attachment[];
+  /** The answer stopped before it was finished (stopped by the user, or cut off). */
+  incomplete?: true;
 }
 
 export type Block =
   | { type: 'text'; markdown: string }
-  | { type: 'thinking'; markdown: string }
+  /** `seconds`: how long the model thought, when the platform says. */
+  | { type: 'thinking'; markdown: string; seconds?: number }
   | {
       type: 'tool-call';
       name: string;
@@ -114,13 +117,15 @@ export interface Attachment {
  * - `rebuilt-from-chat`: an artifact rebuilt from the model's edits, not the published file.
  * - `unavailable`: nothing can be downloaded (source is null).
  * - `recompressed`: the platform keeps the image re-encoded, at full size but not byte for byte.
+ * - `preview`: the platform gives only a smaller re-encoded copy of the image, not the original.
  */
 export type AttachmentNote =
   | 'extracted-text-only'
   | 'extracted-text-partial'
   | 'rebuilt-from-chat'
   | 'unavailable'
-  | 'recompressed';
+  | 'recompressed'
+  | 'preview';
 
 export interface ConversationOptions {
   artifactVersions: 'latest' | 'all';

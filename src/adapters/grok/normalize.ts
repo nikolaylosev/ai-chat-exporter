@@ -1,4 +1,5 @@
 import type { Attachment, Block, Branch, Conversation, Message } from '../../model/conversation';
+import { secondsBetween } from '../../util/dates';
 import type { RawConversationMeta, RawResponse, RawResponseNode } from './schema';
 
 /** `<grok:render card_id="…" card_type="…" type="…"></grok:render>`: a card in an answer. */
@@ -169,7 +170,9 @@ function toMessage(response: RawResponse, assetsOrigin: string): Message {
   const blocks: Block[] = [];
   if (response.sender === 'assistant') {
     const reasoning = thinking(response);
-    if (reasoning) blocks.push({ type: 'thinking', markdown: reasoning });
+    const seconds = secondsBetween(response.thinkingStartTime, response.thinkingEndTime);
+    if (reasoning)
+      blocks.push({ type: 'thinking', markdown: reasoning, ...(seconds ? { seconds } : {}) });
     const search = webSearch(response);
     if (search) blocks.push(search);
     const { markdown, unknownCards } = cleanAnswer(response.message);

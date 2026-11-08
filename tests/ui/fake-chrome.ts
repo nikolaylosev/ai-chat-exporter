@@ -17,7 +17,17 @@ export function stubChrome({
   background = () => null,
   tab = () => null,
   activeTab,
-}: { background?: Handler; tab?: Handler; activeTab?: { id: number; url: string } } = {}) {
+  granted = true,
+  grants = true,
+}: {
+  background?: Handler;
+  tab?: Handler;
+  activeTab?: { id: number; url: string };
+  /** Whether the optional hosts (DeepSeek's) are allowed already. */
+  granted?: boolean;
+  /** What the user answers in Chrome's dialog. */
+  grants?: boolean;
+} = {}) {
   const listeners = new Set<Listener>();
   const storageListeners = new Set<StorageListener>();
   const area = (name: string) => {
@@ -56,7 +66,26 @@ export function stubChrome({
   const local = area('local');
   const session = area('session');
   const sentToTabs: { tabId: number; type: string; payload: unknown }[] = [];
+  let allowed = granted;
+  const permissionListeners = new Set<() => void>();
+  const requested: string[][] = [];
   const chrome = {
+    permissions: {
+      contains: () => Promise.resolve(allowed),
+      request: vi.fn(({ origins }: { origins: string[] }) => {
+        requested.push(origins);
+        if (grants && !allowed) {
+          allowed = true;
+          permissionListeners.forEach((l) => l());
+        }
+        return Promise.resolve(grants);
+      }),
+      onAdded: {
+        addListener: (l: () => void) => permissionListeners.add(l),
+        removeListener: (l: () => void) => permissionListeners.delete(l),
+      },
+      onRemoved: { addListener: () => undefined, removeListener: () => undefined },
+    },
     i18n: {
       getMessage: (key: string, subs?: string | string[]) =>
         subs === undefined ? key : `${key}(${([] as string[]).concat(subs).join(',')})`,
@@ -94,6 +123,8 @@ export function stubChrome({
   return {
     local: local.data,
     sentToTabs,
+    /** The origins each permission request asked for. */
+    requested,
     /** A message to extension pages, as a content script sends `ui` progress. */
     toPages: (type: string, payload: unknown) =>
       listeners.forEach((l) => l({ target: 'ui', type, payload }, {}, () => undefined)),

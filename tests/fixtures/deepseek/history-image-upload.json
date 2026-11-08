@@ -1,0 +1,105 @@
+{
+ "code": 0,
+ "msg": "",
+ "data": {
+  "biz_code": 0,
+  "biz_msg": "",
+  "biz_data": {
+   "chat_session": {
+    "id": "00000000-0000-4000-8000-000000000002",
+    "title": "Synthetic chat image-upload",
+    "title_type": "SYSTEM",
+    "model_type": "default",
+    "pinned": false,
+    "updated_at": 1794073887.687,
+    "seq_id": 216235365,
+    "agent": "chat",
+    "version": 2,
+    "is_empty": false,
+    "current_message_id": 2,
+    "inserted_at": 1794071155.481
+   },
+   "chat_messages": [
+    {
+     "message_id": 1,
+     "parent_id": null,
+     "model": "",
+     "role": "USER",
+     "thinking_enabled": false,
+     "ban_edit": false,
+     "ban_regenerate": false,
+     "status": "FINISHED",
+     "incomplete_message": null,
+     "accumulated_token_usage": 1036,
+     "feedback": null,
+     "inserted_at": 1794072160.908,
+     "search_enabled": true,
+     "fragments": [
+      {
+       "id": 1,
+       "type": "FILE",
+       "files": [
+        {
+         "id": "00000000-0000-4000-8000-000000000003",
+         "status": "SUCCESS",
+         "file_name": "picture-1.png",
+         "from_share": false,
+         "file_size": 5461986,
+         "model_kind": "VISION",
+         "token_usage": 990,
+         "error_code": null,
+         "inserted_at": 1794072159.581,
+         "updated_at": 1794072159.581,
+         "signed_path": "/file?file_id=00000000-0000-4000-8000-000000000003&state=TEST-STATE-1",
+         "is_image": true,
+         "audit_result": "pass",
+         "width": 2340,
+         "height": 1632
+        }
+       ]
+      },
+      {
+       "id": 2,
+       "type": "REQUEST",
+       "content": "Synthetic question 3."
+      }
+     ],
+     "has_pending_fragment": false,
+     "auto_continue": false,
+     "search_triggered": false,
+     "extra_search_providers": []
+    },
+    {
+     "message_id": 2,
+     "parent_id": 1,
+     "model": "",
+     "role": "ASSISTANT",
+     "thinking_enabled": false,
+     "ban_edit": false,
+     "ban_regenerate": false,
+     "status": "FINISHED",
+     "incomplete_message": null,
+     "accumulated_token_usage": 1665,
+     "feedback": null,
+     "inserted_at": 1794072160.902,
+     "search_enabled": true,
+     "fragments": [
+      {
+       "id": 2,
+       "type": "RESPONSE",
+       "content": "Synthetic answer 2.",
+       "references": [],
+       "stage_id": 1
+      }
+     ],
+     "has_pending_fragment": false,
+     "auto_continue": false,
+     "search_triggered": false,
+     "extra_search_providers": []
+    }
+   ],
+   "cache_control": "REPLACE",
+   "cache_reset_at": 1794075152
+  }
+ }
+}

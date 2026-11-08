@@ -6,6 +6,14 @@ import { FileWriteError } from '../sinks/source';
 import { HttpError } from '../util/http';
 import { PLATFORM_LABEL, type Platform } from '../shared/platform';
 
+/** A thinking time: "42 s", or "2 min 5 s" from a minute on; never "0 s". */
+export function duration(seconds: number): string {
+  const total = Math.max(1, Math.round(seconds));
+  return total < 60
+    ? t('mdSeconds', String(total))
+    : t('mdMinutesSeconds', [String(Math.floor(total / 60)), String(total % 60)]);
+}
+
 /** Markdown labels in the browser's UI language. */
 export function renderLabels(platform: Platform): RenderLabels {
   return {
@@ -13,6 +21,7 @@ export function renderLabels(platform: Platform): RenderLabels {
     assistant: PLATFORM_LABEL[platform],
     untitled: t('untitledChat'),
     thinking: t('mdThinking'),
+    thinkingFor: (seconds) => t('mdThinkingFor', duration(seconds)),
     // ChatGPT does not always say what it searched for.
     webSearch: (query) => (query ? t('mdWebSearch', query) : t('mdWebSearchNoQuery')),
     noResults: t('mdNoResults'),
@@ -24,8 +33,10 @@ export function renderLabels(platform: Platform): RenderLabels {
     extractedPartial: t('mdExtractedPartial'),
     rebuiltFromChat: t('mdRebuiltFromChat'),
     recompressed: t('mdRecompressed'),
+    preview: t('mdPreview'),
     otherBranches: t('mdOtherBranches'),
     unreadable: (kind) => t('mdUnreadable', kind),
+    stopped: t('mdStopped'),
     branch: (number, fork) =>
       fork === null
         ? t('mdBranchFromStart', String(number))

@@ -1,9 +1,9 @@
-把与 AI 的对话连同其中的所有文件保存到你自己的电脑上。Claude、Gemini、Grok 和 ChatGPT 的聊天会变成 Markdown 笔记，每个聊天中的文件以原始格式保存在笔记旁边。
+把与 AI 的对话连同其中的所有文件保存到你自己的电脑上。Claude、Gemini、Grok、ChatGPT 和 DeepSeek 的聊天会变成 Markdown 笔记，每个聊天中的文件以原始格式保存在笔记旁边。
 
 为什么选它
 • 保存所有文件，而不只是文字：你上传的文件、模型生成的文档和代码、Claude 的 Artifacts、ChatGPT 的 Canvas 以及生成的图片，原样保存。
 • Claude、ChatGPT 和 Grok 的项目连同指令、文件和聊天一起保存；Gemini 的笔记本连同其聊天一起保存。
-• 除了 Claude、Gemini 和 ChatGPT，也支持 Grok。
+• 除了 Claude、Gemini 和 ChatGPT，也支持 Grok 和 DeepSeek。
 • 一次保存数百个聊天，在后台进行，自动跳过已保存的内容。
 • 无需账号，没有服务器，不做跟踪。免费且开源。
 
@@ -33,6 +33,6 @@
 • 开源（MIT）：https://github.com/nikolaylosev/ai-chat-exporter
 
 支持的服务
-claude.ai、gemini.google.com、grok.com、chatgpt.com。界面语言为英语和俄语。
+claude.ai、gemini.google.com、grok.com、chatgpt.com、chat.deepseek.com。界面语言为英语和俄语。
 
-这是一个非官方的独立项目，与 Anthropic、Google、xAI 或 OpenAI 无任何关联，也未获得其认可或赞助。Claude、Gemini、Grok 和 ChatGPT 是其各自所有者的商标。本扩展使用各服务的内部网页接口，这些接口随时可能变化；你需自行负责按照各服务的条款使用。
+这是一个非官方的独立项目，与 Anthropic、Google、xAI、OpenAI 或 DeepSeek 无任何关联，也未获得其认可或赞助。Claude、Gemini、Grok、ChatGPT 和 DeepSeek 是其各自所有者的商标。本扩展使用各服务的内部网页接口，这些接口随时可能变化；你需自行负责按照各服务的条款使用。

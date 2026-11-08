@@ -117,6 +117,39 @@ console.log(1)
 `);
   });
 
+  it('says how long the model thought when the platform says', () => {
+    const timed: Conversation = {
+      ...conversation,
+      messages: [
+        {
+          id: 't',
+          role: 'assistant',
+          createdAt: null,
+          blocks: [{ type: 'thinking', markdown: 'Hmm.', seconds: 162 }],
+          attachments: [],
+        },
+      ],
+    };
+    expect(renderMarkdown(timed, base)).toContain('> [!note]- Thinking, 162 s');
+  });
+
+  it('says when an answer stopped before it was finished', () => {
+    const stopped: Conversation = {
+      ...conversation,
+      messages: [
+        {
+          id: 's',
+          role: 'assistant',
+          createdAt: null,
+          blocks: [],
+          attachments: [],
+          incomplete: true,
+        },
+      ],
+    };
+    expect(renderMarkdown(stopped, base)).toContain('*The answer stopped before it was finished.*');
+  });
+
   it('leaves out thinking and tool calls when they are turned off', () => {
     const md = renderMarkdown(conversation, {
       ...base,

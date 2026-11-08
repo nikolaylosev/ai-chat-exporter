@@ -204,6 +204,8 @@ class Builder {
       }
     }
     let queries: string[] = [];
+    /** From the turn's `reasoning_recap`, put on its thinking after the loop. */
+    let thoughtFor: number | null = null;
     const addThinking = (markdown: string) => {
       const previous = blocks.at(-1);
       if (previous?.type === 'thinking') previous.markdown += `\n\n${markdown}`;
@@ -217,6 +219,9 @@ class Builder {
         this.toolResult(m, blocks, attachments, queries);
         if (m.metadata.search_result_groups.length) queries = [];
         continue;
+      }
+      if (type === 'reasoning_recap' && m.metadata.finished_duration_sec) {
+        thoughtFor = m.metadata.finished_duration_sec;
       }
       if (SILENT_TYPES.has(type)) continue;
       if (type === 'thoughts') {
@@ -279,6 +284,8 @@ class Builder {
       }
       blocks.push({ type: 'unreadable', kind: type || 'unknown' });
     }
+    const thinking = blocks.find((b) => b.type === 'thinking');
+    if (thinking && thoughtFor) thinking.seconds = thoughtFor;
     return {
       id: last.id,
       role: 'assistant',

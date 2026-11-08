@@ -2,6 +2,7 @@ import { useEffect, useState } from 'preact/hooks';
 import { conversationIdFromUrl, projectIdFromUrl } from '../../adapters/claude/urls';
 import { geminiConversationId, geminiNotebookId } from '../../adapters/gemini/urls';
 import { chatgptConversationId, chatgptProjectId } from '../../adapters/chatgpt/urls';
+import { deepseekConversationId } from '../../adapters/deepseek/urls';
 import { grokConversationId, grokProjectId } from '../../adapters/grok/urls';
 import { codeText } from '../../shared/error-text';
 import { t } from '../../shared/i18n';
@@ -11,12 +12,14 @@ import { locationLabel } from '../../shared/location';
 import { send, type ExportResult } from '../../shared/messages';
 import { detectPlatform, PLATFORM_LABEL, type Platform } from '../../shared/platform';
 import {
+  AccessRequest,
   ensureFolderAccess,
   ExportResultView,
   FilesCheckbox,
   openExportPage,
   startExportJob,
   useJob,
+  usePlatformAccess,
   useSettings,
   useShortcut,
 } from '../common';
@@ -47,7 +50,8 @@ function useActiveTab(): ActiveTab | null | undefined {
         (platform === 'claude' && conversationIdFromUrl(active.url) !== null) ||
         (platform === 'gemini' && geminiConversationId(active.url) !== null) ||
         (platform === 'grok' && grokConversationId(active.url) !== null) ||
-        (platform === 'chatgpt' && chatgptConversationId(active.url) !== null);
+        (platform === 'chatgpt' && chatgptConversationId(active.url) !== null) ||
+        (platform === 'deepseek' && deepseekConversationId(active.url) !== null);
       // A project's page; a chat inside a project counts as a chat (its project is asked for).
       const isProject =
         !isChat &&
@@ -135,7 +139,10 @@ export function Popup() {
   const [settings, updateSettings] = useSettings();
   const job = useJob();
   const [state, setState] = useState<ExportState>({ status: 'idle' });
-  const project = useTabProject(tab);
+  // A platform the user allows later (DeepSeek): nothing works until they do.
+  const access = usePlatformAccess(tab?.platform);
+  const locked = access === false;
+  const project = useTabProject(locked ? null : tab);
   // The export page opens on the platform of the open tab.
   const pagePlatform = tab?.platform ?? 'claude';
   // Gemini's notebooks are its projects: the same buttons, other words.
@@ -211,6 +218,8 @@ export function Popup() {
       {tab && <p class="muted">{statusText(tab)}</p>}
       {tab === null && <p class="muted">{t('popupUnsupported')}</p>}
 
+      {locked && tab?.platform && <AccessRequest platform={tab.platform} />}
+
       {settings && (
         <>
           <FilesCheckbox settings={settings} update={updateSettings} />
@@ -221,7 +230,7 @@ export function Popup() {
         <button
           type="button"
           class="primary"
-          disabled={!tab?.isChat || !settings || state.status === 'running'}
+          disabled={!tab?.isChat || !settings || locked || state.status === 'running'}
           onClick={() => tab && void exportChat(tab.id)}
         >
           {state.status === 'running' && !state.copying ? t('popupSaving') : t('popupSaveChat')}
@@ -230,14 +239,14 @@ export function Popup() {
           type="button"
           class="copy"
           title={t('popupCopyHint')}
-          disabled={!tab?.isChat || !settings || state.status === 'running'}
+          disabled={!tab?.isChat || !settings || locked || state.status === 'running'}
           onClick={() => tab && void copyChat(tab.id)}
         >
           <CopyIcon />
           {state.status === 'running' && state.copying ? t('popupCopying') : t('popupCopyChat')}
         </button>
       </div>
-      {tab?.isChat && (
+      {tab?.isChat && !locked && (
         <p class="choose">
           <button
             type="button"
