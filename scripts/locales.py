@@ -605,6 +605,11 @@ STRINGS = {
     "searchWhereAll": ("In messages and files", "В сообщениях и файлах"),
     "searchWhereMessages": ("Only in messages", "Только в сообщениях"),
     "searchWhereFiles": ("Only in files", "Только в файлах"),
+    "searchForms": ("Word forms", "Формы слов"),
+    "searchFormsHint": (
+        "A word finds its other forms too: \"tickets\" finds \"ticket\", \"билеты\" finds \"билетов\". Russian and English, and the browser's language when it is German, Spanish, French, Portuguese or Italian. A \"phrase\" in quotes is found as it is.",
+        "Слово находит и другие свои формы: «билеты» находит «билет» и «билетов». Русский и английский, а также язык браузера, если это немецкий, испанский, французский, португальский или итальянский. «Фраза» в кавычках ищется как есть.",
+    ),
     "searchSort": ("Order", "Порядок"),
     "searchSortNewest": ("Newest chats first", "Сначала новые чаты"),
     "searchSortOldest": ("Oldest chats first", "Сначала старые чаты"),
