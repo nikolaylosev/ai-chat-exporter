@@ -7,7 +7,8 @@ import { chatgptChats, chatgptFile, chatgptFiles, fakeChatgpt, uuid } from '../f
 
 const SLOW_MS = 1500;
 const root = `document.getElementById('ai-chat-exporter-page-button')?.shadowRoot`;
-const panel = `document.getElementById('ai-chat-exporter-panel')?.shadowRoot?.textContent ?? ''`;
+// In parentheses: `a ?? ''.includes(x)` would test the empty string, not the panel.
+const panel = `(document.getElementById('ai-chat-exporter-panel')?.shadowRoot?.textContent ?? '')`;
 
 export default {
   name: 'faster-files',
