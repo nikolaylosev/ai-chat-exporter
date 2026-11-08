@@ -5,3 +5,4 @@ package-lock.json
 docs/spec.md
 tests/fixtures/
 docs/gemini-export-findings.md
+src/search/snowball/

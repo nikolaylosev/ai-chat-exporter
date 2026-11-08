@@ -1589,6 +1589,12 @@
   "searchWhereFiles": {
     "message": "Only in files"
   },
+  "searchForms": {
+    "message": "Word forms"
+  },
+  "searchFormsHint": {
+    "message": "A word finds its other forms too: \"tickets\" finds \"ticket\", \"билеты\" finds \"билетов\". Russian and English, and the browser's language when it is German, Spanish, French, Portuguese or Italian. A \"phrase\" in quotes is found as it is."
+  },
   "searchSort": {
     "message": "Order"
   },

@@ -105,6 +105,9 @@ export default {
         services.join(', '),
       );
       assert.deepEqual(await find('banana', 'user'), [], 'not in the user messages');
+      // Word forms: the plural finds the word.
+      const plural = await find('bananas');
+      assert.ok(plural.length >= 1 && plural.length === banana.length, plural.join('\n'));
       const fence = await find('fence');
       assert.ok(
         fence.some((h) => /File Summaries/.test(h)),

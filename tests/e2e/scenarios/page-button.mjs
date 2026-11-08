@@ -8,7 +8,8 @@ const CHAT = `https://grok.com/c/${uuid(6)}`;
 const root = `document.getElementById('ai-chat-exporter-page-button')?.shadowRoot`;
 const button = `${root}?.querySelector('button.round')`;
 const items = `[...(${root}?.querySelectorAll('.menu button') ?? [])]`;
-const panel = `document.getElementById('ai-chat-exporter-panel')?.shadowRoot?.textContent ?? ''`;
+// In parentheses: `a ?? ''.includes(x)` would test the empty string, not the panel.
+const panel = `(document.getElementById('ai-chat-exporter-panel')?.shadowRoot?.textContent ?? '')`;
 
 export default {
   name: 'page-button',
