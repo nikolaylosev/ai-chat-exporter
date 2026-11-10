@@ -27,6 +27,8 @@ export interface ServerOptions {
   listItems?: unknown[];
   /** File ids ChatGPT no longer has. */
   missingFiles?: string[];
+  /** File ids whose link ChatGPT refuses with HTTP 403 (a PDF page rendered as an image). */
+  refusedFiles?: string[];
   /** The first request with the token answers 401, as for an expired one. */
   expireTokenOnce?: boolean;
   /** Archived chats (`is_archived=true`); none by default. */
@@ -115,6 +117,9 @@ export function chatgptServer(conversations: Record<string, unknown>, opts: Serv
     m = /^\/backend-api\/files\/download\/([^/]+)$/.exec(u.pathname);
     if (m?.[1] && opts.fileLinksRateLimited) return json({ detail: 'Too many requests' }, 429);
     if (m?.[1]) {
+      if (opts.refusedFiles?.includes(decodeURIComponent(m[1]))) {
+        return json({ detail: 'Forbidden' }, 403);
+      }
       if (opts.missingFiles?.includes(m[1])) {
         return json({ status: 'error', error_code: 'file_not_found' });
       }

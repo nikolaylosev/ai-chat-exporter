@@ -431,8 +431,11 @@ export class ChatgptAdapter implements PlatformAdapter {
     try {
       raw = await this.get(path);
     } catch (error) {
-      // A rate limit is not a missing file: it stops the export instead.
-      if (error instanceof HttpError && !error.isAuth && error.status !== 429) {
+      // A rate limit is not a missing file, and a 401 after a new token means the
+      // user is signed out: both stop the export. A 403 refuses only this file (seen
+      // 2026-11-10 for a PDF page ChatGPT showed as an image), since the chat itself
+      // was just read with the same token.
+      if (error instanceof HttpError && error.status !== 401 && error.status !== 429) {
         log.info('ChatGPT file link not given', error.status);
         return null;
       }
