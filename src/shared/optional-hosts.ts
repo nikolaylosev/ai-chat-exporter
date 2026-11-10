@@ -12,6 +12,17 @@ export const OPTIONAL_HOSTS: Partial<Record<Platform, readonly string[]>> = {
   deepseek: ['https://chat.deepseek.com/*', 'https://files.deepseeksvc.com/*'],
 };
 
+/**
+ * Where Obsidian's Local REST API plugin listens: this computer, on any port (a
+ * match pattern has none). Asked for from the options page, for the address typed there.
+ */
+export const OBSIDIAN_HOSTS: readonly string[] = [
+  'https://127.0.0.1/*',
+  'http://127.0.0.1/*',
+  'https://localhost/*',
+  'http://localhost/*',
+];
+
 /** Hosts the user may still have to allow for the platform; empty when it needs none. */
 export function optionalHosts(platform: Platform): readonly string[] {
   return OPTIONAL_HOSTS[platform] ?? [];

@@ -4,7 +4,13 @@ import type { ErrorCode } from '../shared/errors';
 import { t } from '../shared/i18n';
 import { JOB_KEY, type JobState } from '../shared/job';
 import { locationLabel } from '../shared/location';
-import { send, type ExportResult, type FileFailure, type JobStartItem } from '../shared/messages';
+import {
+  send,
+  type ExportResult,
+  type FileFailure,
+  type JobStartItem,
+  type SavedLocation,
+} from '../shared/messages';
 import { hasPlatformAccess, optionalHosts, requestPlatformAccess } from '../shared/optional-hosts';
 import { PLATFORM_LABEL, type Platform } from '../shared/platform';
 import { loadSettings, saveSettings, type Settings } from '../shared/settings';
@@ -160,6 +166,39 @@ export async function ensureFolderAccess(): Promise<ErrorCode | null> {
   return access === 'not-chosen' ? 'folder-not-chosen' : 'folder-permission';
 }
 
+/**
+ * Opens a note saved into a vault: an `obsidian://` link for the vault folder, a
+ * request to the plugin for a note saved through it.
+ */
+export function OpenInObsidian({ location }: { location: SavedLocation }) {
+  const [error, setError] = useState('');
+  if (location.kind === 'folder' && location.obsidian) {
+    return (
+      <>
+        <br />
+        <a class="link" href={location.obsidian}>
+          {t('openInObsidian')}
+        </a>
+      </>
+    );
+  }
+  if (location.kind !== 'obsidian') return null;
+  const open = () =>
+    void send('background', 'obsidian:open', { path: location.path }).then(
+      () => setError(''),
+      (e: unknown) => setError(errorText(e)),
+    );
+  return (
+    <>
+      <br />
+      <button type="button" class="link" onClick={open}>
+        {t('openInObsidian')}
+      </button>
+      {error && <span class="error"> {error}</span>}
+    </>
+  );
+}
+
 /** Stops that are the user's own doing (a cancelled dialog or download): shown in grey. */
 const QUIET = new Set<string>(['save-cancelled', 'save-dialog', 'download-cancelled']);
 
@@ -179,14 +218,7 @@ export function ExportResultView({ result }: { result: ExportResult }) {
           {locationLabel(result.location)}
           <br />
           <span class="path">{result.location.path}</span>
-          {result.location.kind === 'folder' && result.location.obsidian && (
-            <>
-              <br />
-              <a class="link" href={result.location.obsidian}>
-                {t('openInObsidian')}
-              </a>
-            </>
-          )}
+          <OpenInObsidian location={result.location} />
         </p>
       ) : (
         <p class={`${QUIET.has(result.code) ? 'muted' : 'error'} result`}>{result.message}</p>

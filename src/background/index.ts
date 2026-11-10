@@ -8,6 +8,8 @@ import { detectPlatform } from '../shared/platform';
 import { registry } from './registry';
 import { watchOptionalAccess } from './optional-scripts';
 import { ensureContentScript, WorkerTab } from './tabs';
+import { obsidianRest } from './vault';
+import { loadSettings } from '../shared/settings';
 
 export const EXPORT_COMMAND = 'export-current-chat';
 
@@ -92,6 +94,15 @@ handle('background', {
   'open:options': async () => {
     await chrome.runtime.openOptionsPage();
     return null;
+  },
+  'obsidian:open': async ({ path }) => {
+    await obsidianRest(await loadSettings()).open(path);
+    return null;
+  },
+  'obsidian:check': async () => {
+    const rest = obsidianRest(await loadSettings());
+    await rest.check();
+    return { config: (await rest.readConfig()) !== null };
   },
 });
 

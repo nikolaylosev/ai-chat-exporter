@@ -12,5 +12,7 @@ export function locationLabel(location: SavedLocation): string {
       return t('savedToArchive', location.archive);
     case 'absolute':
       return t('savedTo');
+    case 'obsidian':
+      return t('savedToObsidian');
   }
 }

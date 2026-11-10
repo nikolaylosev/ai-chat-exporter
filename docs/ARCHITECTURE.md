@@ -41,7 +41,7 @@ This document describes how the extension is built and why. It is meant for anyo
 
 ### Not in version 1.0
 
-- Export to Obsidian: into the vault folder (built), through the Local REST API plugin (planned), see [section 14](#14-obsidian).
+- Export to Obsidian: into the vault folder or through the Local REST API plugin, see [section 14](#14-obsidian).
 - Perplexity and other platforms.
 - Grok inside x.com: its chats were not visible on grok.com during discovery.
 - Downloading the sources of Gemini notebooks: they live in NotebookLM, which Gemini gives no download for.
@@ -136,6 +136,7 @@ src/
     docx.ts                 the Markdown as a Word document (marked tokens to WordprocessingML, packed by fflate)
   obsidian/
     vault.ts                a vault's settings, attachment places, links, merging with the user's additions (pure)
+    rest.ts                 the Local REST API plugin: check, read, write, delete, open
   search/                   searching the saved archive (the search page)
     notes.ts                every note format read back into its properties and messages; the text of chats' files
     archive.ts              the search folder walked, .zip exports read inside, notes and files' text kept in IndexedDB
@@ -566,7 +567,7 @@ The queue lives in the service worker.
 
 ## 14. Obsidian
 
-The Obsidian phase writes into a vault in two ways, with the same paths, links and merging. The first is built; the second is planned.
+The Obsidian phase writes into a vault in two ways, with the same paths, links and merging: into the vault folder, and through Obsidian's Local REST API plugin.
 
 ### The vault folder (built)
 
@@ -580,9 +581,16 @@ The destination is "a folder you choose" with **Write the notes for Obsidian** o
 - **Open in Obsidian.** The result in the popup and the page's panel has a link `obsidian://open?vault=<folder name>&file=<path>`. Chrome asks once whether the site or the popup may open Obsidian.
 - The clipboard copy is a plain note in any mode.
 
-### Local REST API (planned)
+### Local REST API (built)
 
-A second sink through the [Local REST API](https://github.com/coddingtonbear/obsidian-local-rest-api) plugin, with the same plan and links: `PUT /vault/{path}` writes any bytes, `GET` reads the note to merge, `POST /open/{path}` opens it, `Authorization: Bearer <key>` (the key typed by the user in the options page). CORS is open (`*`). What stands in the way: the HTTPS server (port 27124) uses a certificate from the plugin's own authority, which Chrome refuses until the user trusts it in the system; plain HTTP (27123) must be turned on in the plugin. Obsidian must be running, `.obsidian/` is closed to the API by default (so the vault's settings would be asked of the user), and `http://127.0.0.1:27123/*` would be an optional host permission. Its use: browsers without the File System Access API (Firefox, Brave by default).
+The destination "Obsidian, through the Local REST API plugin" (`destination: 'obsidian'`) writes into the vault open in Obsidian through the [Local REST API](https://github.com/coddingtonbear/obsidian-local-rest-api) plugin, with the same plan, links and merging as the vault folder. It needs no File System Access API, so it works where that is missing (Firefox later, Brave by default), and Obsidian must be running.
+
+- **Requests** (`obsidian/rest.ts`) go from the service worker with `Authorization: Bearer <key>`: `PUT /vault/{path}` writes any bytes (the plugin makes the folders), `GET` reads the note being replaced, `DELETE` removes a file the chat no longer has (into Obsidian's trash, as the user set), `POST /open/{path}` shows the note, `GET /` checks the key (`authenticated`). Each path segment is encoded on its own. A chat's files are fetched in the worker with the user's cookies (`ObsidianRestSink`, two at a time) and sent on.
+- **The vault's settings.** The plugin refuses `.obsidian/` unless the user allows it in its advanced settings, which the extension does not ask for (that folder holds the plugin's key and code). Then the attachment folder and link style typed in the options page stand in (`obsidianAttachments`, `obsidianMarkdownLinks`, in Obsidian's own notation); the check says which applies.
+- **Access.** `https://127.0.0.1/*`, `http://127.0.0.1/*` and the same for `localhost` are optional host permissions (a match pattern has no port), asked for from **Check the connection** for the address typed. The HTTPS server (`https://127.0.0.1:27124`, the default) uses a certificate from the plugin's own authority, which Chrome refuses until the user trusts it in the system; the options page says how, or to use the plugin's HTTP server (`http://127.0.0.1:27123`).
+- **Errors.** No answer is `obsidian-offline` (Obsidian closed, the plugin off, or the certificate not trusted), a refused key is `obsidian-key`; both stop a bulk export and are what the user has to fix, not failures of the extension.
+- **The key** is kept in `chrome.storage.local` with the other settings and sent only to the address typed.
+- **Open in Obsidian** asks the plugin (`obsidian:open`), so Chrome shows no prompt.
 
 ## 15. Tech stack
 

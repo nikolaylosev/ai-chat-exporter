@@ -122,6 +122,22 @@ function ResultView({ result }: { result: ExportResult }) {
             </a>
           </>
         )}
+        {result.location.kind === 'obsidian' && (
+          <>
+            <br />
+            <button
+              type="button"
+              class="link"
+              onClick={() =>
+                void send('background', 'obsidian:open', { path: result.location.path }).catch(
+                  () => undefined,
+                )
+              }
+            >
+              {t('openInObsidian')}
+            </button>
+          </>
+        )}
       </p>
     </>
   );

@@ -22,8 +22,11 @@ export function exportsAsZip(
 }
 
 export interface Settings {
-  /** downloads: through chrome.downloads; folder: into the folder the user picked (File System Access). */
-  destination: 'downloads' | 'folder';
+  /**
+   * downloads: through chrome.downloads; folder: into the folder the user picked
+   * (File System Access); obsidian: into a vault through Obsidian's Local REST API plugin.
+   */
+  destination: 'downloads' | 'folder' | 'obsidian';
   /** Subfolder inside Downloads. Empty string means the Downloads root. Not used for `folder`. */
   rootFolder: string;
   /**
@@ -34,6 +37,16 @@ export interface Settings {
   obsidian: boolean;
   /** Folder inside the vault for the chats, one folder per platform under it. */
   obsidianFolder: string;
+  /** The Local REST API plugin's address (`obsidian` destination). */
+  obsidianUrl: string;
+  /** Its API key, typed by the user; sent only to `obsidianUrl`. */
+  obsidianKey: string;
+  /**
+   * The vault's attachment folder and link style, as in Obsidian's settings, for
+   * when the plugin does not let the extension read `.obsidian/app.json` (its default).
+   */
+  obsidianAttachments: string;
+  obsidianMarkdownLinks: boolean;
   includePlatformInFolderName: boolean;
   /** The note: Markdown, an HTML page (opens anywhere, prints to PDF) or JSON. */
   noteFormat: NoteFormat;
@@ -58,6 +71,10 @@ export const DEFAULT_SETTINGS: Settings = {
   rootFolder: 'AI Chats',
   obsidian: false,
   obsidianFolder: 'AI Chats',
+  obsidianUrl: 'https://127.0.0.1:27124',
+  obsidianKey: '',
+  obsidianAttachments: '',
+  obsidianMarkdownLinks: false,
   includePlatformInFolderName: true,
   noteFormat: 'markdown',
   saveAttachments: true,
@@ -77,7 +94,7 @@ export const DEFAULT_SETTINGS: Settings = {
 const STORAGE_KEY = 'settings';
 
 const ALLOWED_VALUES: Partial<Record<keyof Settings, readonly unknown[]>> = {
-  destination: ['downloads', 'folder'],
+  destination: ['downloads', 'folder', 'obsidian'],
   noteFormat: ['markdown', 'html', 'json', 'docx'],
   toolCallDetail: ['compact', 'full'],
   claudeBranches: ['active', 'all'],
@@ -116,9 +133,11 @@ export async function saveSettings(patch: Partial<Settings>): Promise<Settings> 
   return next;
 }
 
-/** Notes written for Obsidian: the setting is on and the destination is the chosen folder. */
+/** Notes written for Obsidian: into a vault through its plugin, or into the chosen folder as a vault. */
 export function obsidianMode(settings: Pick<Settings, 'obsidian' | 'destination'>): boolean {
-  return settings.obsidian && settings.destination === 'folder';
+  return (
+    settings.destination === 'obsidian' || (settings.obsidian && settings.destination === 'folder')
+  );
 }
 
 /**
@@ -131,7 +150,7 @@ export function effectiveSettings(settings: Settings): Settings {
     : settings;
 }
 
-/** Export root relative to the destination: the chosen folder is the root itself. */
+/** Export root relative to the destination: the chosen folder or the vault is the root itself. */
 export function exportRootFolder(settings: Settings): string {
-  return settings.destination === 'folder' ? '' : settings.rootFolder;
+  return settings.destination === 'downloads' ? settings.rootFolder : '';
 }

@@ -2,7 +2,7 @@ import { render } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { t } from '../shared/i18n';
 import { send } from '../shared/messages';
-import { loadSettings, NOTE_EXTENSION, type Settings } from '../shared/settings';
+import { effectiveSettings, loadSettings, NOTE_EXTENSION, type Settings } from '../shared/settings';
 import { showPanel } from './panel';
 
 /**
@@ -69,7 +69,7 @@ function SaveIcon() {
 function savedAs(settings: Settings, withFiles: boolean): string {
   return withFiles && settings.destination === 'downloads'
     ? '.zip'
-    : `.${NOTE_EXTENSION[settings.noteFormat]}`;
+    : `.${NOTE_EXTENSION[effectiveSettings(settings).noteFormat]}`;
 }
 
 async function save(withFiles: boolean): Promise<void> {

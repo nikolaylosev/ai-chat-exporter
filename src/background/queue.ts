@@ -22,6 +22,8 @@ import {
 } from '../shared/settings';
 import { DownloadsSink } from '../sinks/downloads-sink';
 import { FolderSink, ZipArchive } from '../sinks/offscreen-sinks';
+import { ObsidianRestSink } from '../sinks/obsidian-rest-sink';
+import { obsidianRest } from './vault';
 import { sanitizeRelativeDir } from '../util/filename';
 import { refreshListed } from '../shared/list-cache';
 import { refreshFound } from '../shared/search-cache';
@@ -53,6 +55,9 @@ const STOP_CODES = new Set<ErrorCode>([
   'archive-lost',
   'not-signed-in',
   'platform-access',
+  // Obsidian closed, or its plugin refuses the key: every chat would fail the same way.
+  'obsidian-offline',
+  'obsidian-key',
   // Asking again at once only prolongs the limit; a later run continues (skip unchanged).
   'rate-limited',
   'save-dialog',
@@ -514,6 +519,8 @@ async function finish(
 
 function reportSink(job: JobState, root: string[]) {
   if (job.settings.destination === 'folder') return new FolderSink(offscreenFiles, true);
+  if (job.settings.destination === 'obsidian')
+    return new ObsidianRestSink(obsidianRest(job.settings));
   return new DownloadsSink(
     { download: (request) => downloadAndWait(request), createBlobUrl, revokeBlobUrl },
     { root, conflictAction: 'uniquify' },

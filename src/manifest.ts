@@ -1,7 +1,7 @@
 import { defineDynamicResource, defineManifest } from '@crxjs/vite-plugin';
 import pkg from '../package.json' with { type: 'json' };
 // With its extension: Vite loads this file outside the bundler.
-import { OPTIONAL_HOSTS } from './shared/optional-hosts.ts';
+import { OBSIDIAN_HOSTS, OPTIONAL_HOSTS } from './shared/optional-hosts.ts';
 
 const icons = {
   16: 'icons/icon-16.png',
@@ -62,7 +62,8 @@ export default defineManifest({
   // Platforms added later, read only once the user allows them (shared/optional-hosts.ts):
   // a new required host would turn the extension off for everyone until they accept it.
   // Their content scripts are registered when the access is given (background/optional-scripts.ts).
-  optional_host_permissions: Object.values(OPTIONAL_HOSTS).flat(),
+  // Obsidian's Local REST API plugin on this computer, asked for when the user sets it up.
+  optional_host_permissions: [...Object.values(OPTIONAL_HOSTS).flat(), ...OBSIDIAN_HOSTS],
   content_scripts: [
     {
       matches: ['https://claude.ai/*'],

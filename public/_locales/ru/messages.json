@@ -76,6 +76,9 @@
   "savedTo": {
     "message": "Сохранено:"
   },
+  "savedToObsidian": {
+    "message": "Сохранено в Obsidian:"
+  },
   "savedToArchive": {
     "message": "В архиве «$ARG1$»:",
     "placeholders": {
@@ -919,6 +922,12 @@
   "error_platform_access": {
     "message": "У расширения пока нет доступа к этому сайту. Откройте окно расширения на этом сайте и нажмите «Разрешить доступ»."
   },
+  "error_obsidian_offline": {
+    "message": "Obsidian не отвечает. Проверьте, что Obsidian открыт, плагин Local REST API включён, а Chrome доверяет сертификату плагина (или используйте его HTTP-адрес). Связь можно проверить на странице настроек."
+  },
+  "error_obsidian_key": {
+    "message": "Плагин Local REST API не принял ключ. Скопируйте ключ из настроек плагина в настройки расширения."
+  },
   "error_folder_permission": {
     "message": "Нет доступа к выбранной папке. Нажмите «Сохранить чат» в окне расширения и разрешите доступ."
   },
@@ -1201,6 +1210,48 @@
   },
   "optionsFolderNotChosen": {
     "message": "Папка ещё не выбрана."
+  },
+  "optionsDestinationObsidian": {
+    "message": "Obsidian, через плагин Local REST API"
+  },
+  "optionsDestinationObsidianHint": {
+    "message": "Заметки попадают в хранилище, открытое в Obsidian, пока он запущен. Доступ к папкам не нужен, поэтому работает в любом браузере."
+  },
+  "optionsObsidianSteps": {
+    "message": "В Obsidian: Настройки › Сторонние плагины, установите и включите «Local REST API», скопируйте его ключ API. Chrome должен доверять собственному сертификату плагина: откройте https://127.0.0.1:27124/obsidian-local-rest-api.crt, добавьте его в связку ключей системы и отметьте как доверенный. Или включите в плагине незашифрованный (HTTP) сервер и используйте http://127.0.0.1:27123."
+  },
+  "optionsObsidianUrl": {
+    "message": "Адрес"
+  },
+  "optionsObsidianUrlHint": {
+    "message": "https://127.0.0.1:27124 или http://127.0.0.1:27123 для HTTP-сервера плагина."
+  },
+  "optionsObsidianKey": {
+    "message": "Ключ API"
+  },
+  "optionsObsidianKeyHint": {
+    "message": "Из настроек плагина. Хранится в этом браузере и отправляется только на адрес выше."
+  },
+  "optionsObsidianCheck": {
+    "message": "Проверить связь"
+  },
+  "optionsObsidianNoAccess": {
+    "message": "Chrome не дал доступ к этому адресу. Адрес должен быть на этом компьютере: 127.0.0.1 или localhost."
+  },
+  "optionsObsidianOk": {
+    "message": "Связь есть. Плагин не даёт читать настройки хранилища, поэтому используются папка вложений и вид ссылок ниже."
+  },
+  "optionsObsidianOkConfig": {
+    "message": "Связь есть. Файлы и ссылки следуют настройкам хранилища."
+  },
+  "optionsObsidianAttachments": {
+    "message": "Папка вложений"
+  },
+  "optionsObsidianAttachmentsHint": {
+    "message": "Как в Obsidian: Настройки › Файлы и ссылки › Место для новых вложений. Пусто — корень хранилища (тогда используется своя папка «files» у чата), ./ — рядом с заметкой, ./имя — папка рядом с ней, или путь к папке хранилища."
+  },
+  "optionsObsidianMarkdownLinks": {
+    "message": "Markdown-ссылки вместо вики-ссылок"
   },
   "optionsObsidian": {
     "message": "Эта папка — хранилище Obsidian: сохранять заметки для Obsidian"

@@ -12,7 +12,9 @@ import {
   saveFolderHandle,
   type FolderAccess,
 } from '../../sinks/folder-handle';
+import { originPattern } from '../../obsidian/rest';
 import { parseVaultRules, type VaultRules } from '../../obsidian/vault';
+import { errorText } from '../../shared/error-text';
 import { openShortcutSettings, useShortcut } from '../common';
 import '../styles.css';
 import './options.css';
@@ -237,6 +239,113 @@ function ObsidianOptions({
   );
 }
 
+type Connection =
+  | { state: 'idle' }
+  | { state: 'checking' }
+  | { state: 'ok'; config: boolean }
+  | { state: 'error'; message: string };
+
+/**
+ * Obsidian through its Local REST API plugin: the address and key, a check that
+ * also asks Chrome for access to the address, and the vault's attachment folder
+ * and link style for when the plugin keeps the vault's settings closed.
+ */
+function ObsidianRestOptions({
+  settings,
+  update,
+}: {
+  settings: Settings;
+  update: (patch: Partial<Settings>) => void;
+}) {
+  const [connection, setConnection] = useState<Connection>({ state: 'idle' });
+  const check = async () => {
+    setConnection({ state: 'checking' });
+    const pattern = originPattern(settings.obsidianUrl);
+    // From the click: Chrome asks only from a user's action.
+    const allowed = pattern
+      ? await chrome.permissions.request({ origins: [pattern] }).catch(() => false)
+      : false;
+    if (!allowed) {
+      setConnection({ state: 'error', message: t('optionsObsidianNoAccess') });
+      return;
+    }
+    try {
+      const { config } = await send('background', 'obsidian:check', {});
+      setConnection({ state: 'ok', config });
+    } catch (error) {
+      setConnection({ state: 'error', message: errorText(error) });
+    }
+  };
+  return (
+    <div class="obsidian">
+      <p class="hint">{t('optionsObsidianSteps')}</p>
+      <label class="field">
+        <span>{t('optionsObsidianUrl')}</span>
+        <input
+          type="url"
+          value={settings.obsidianUrl}
+          placeholder="https://127.0.0.1:27124"
+          onChange={(e) => update({ obsidianUrl: e.currentTarget.value })}
+        />
+        <small class="hint">{t('optionsObsidianUrlHint')}</small>
+      </label>
+      <label class="field">
+        <span>{t('optionsObsidianKey')}</span>
+        <input
+          type="password"
+          autocomplete="off"
+          value={settings.obsidianKey}
+          onChange={(e) => update({ obsidianKey: e.currentTarget.value.trim() })}
+        />
+        <small class="hint">{t('optionsObsidianKeyHint')}</small>
+      </label>
+      <p>
+        <button
+          type="button"
+          disabled={connection.state === 'checking'}
+          onClick={() => void check()}
+        >
+          {t('optionsObsidianCheck')}
+        </button>
+      </p>
+      {connection.state === 'ok' && (
+        <p class="ok">{t(connection.config ? 'optionsObsidianOkConfig' : 'optionsObsidianOk')}</p>
+      )}
+      {connection.state === 'error' && <p class="error">{connection.message}</p>}
+      <label class="field">
+        <span>{t('optionsObsidianFolder')}</span>
+        <input
+          type="text"
+          value={settings.obsidianFolder}
+          placeholder="AI Chats"
+          onChange={(e) => update({ obsidianFolder: e.currentTarget.value })}
+        />
+        <small class="hint">{t('optionsObsidianFolderHint')}</small>
+      </label>
+      {!(connection.state === 'ok' && connection.config) && (
+        <>
+          <label class="field">
+            <span>{t('optionsObsidianAttachments')}</span>
+            <input
+              type="text"
+              value={settings.obsidianAttachments}
+              placeholder="Attachments"
+              onChange={(e) => update({ obsidianAttachments: e.currentTarget.value })}
+            />
+            <small class="hint">{t('optionsObsidianAttachmentsHint')}</small>
+          </label>
+          <Check
+            settings={settings}
+            update={update}
+            name="obsidianMarkdownLinks"
+            label={t('optionsObsidianMarkdownLinks')}
+          />
+        </>
+      )}
+    </div>
+  );
+}
+
 function Section({ title, children }: { title: string; children: ComponentChildren }) {
   return (
     <section>
@@ -301,6 +410,18 @@ function Options() {
               <small class="hint">{t('optionsDestinationFolderHint')}</small>
             </span>
           </label>
+          <label class="check">
+            <input
+              type="radio"
+              name="destination"
+              checked={settings.destination === 'obsidian'}
+              onChange={() => update({ destination: 'obsidian' })}
+            />
+            <span>
+              {t('optionsDestinationObsidian')}
+              <small class="hint">{t('optionsDestinationObsidianHint')}</small>
+            </span>
+          </label>
         </fieldset>
         {!canUseFolders() && (
           <p class="warn">
@@ -308,7 +429,9 @@ function Options() {
             {'brave' in navigator && <> {t('optionsFolderBrave')}</>}
           </p>
         )}
-        {settings.destination === 'folder' && canUseFolders() ? (
+        {settings.destination === 'obsidian' ? (
+          <ObsidianRestOptions {...common} />
+        ) : settings.destination === 'folder' && canUseFolders() ? (
           <>
             <FolderPicker
               onChosen={() => update({ destination: 'folder' })}

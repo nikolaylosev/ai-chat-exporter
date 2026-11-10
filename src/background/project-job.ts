@@ -7,7 +7,7 @@ import { MAX_LISTED_FAILURES, type FileFailure, type SavedLocation } from '../sh
 import type { ZipArchive } from '../sinks/offscreen-sinks';
 import { keepLine, mergeNote } from '../obsidian/vault';
 import { obsidianMode } from '../shared/settings';
-import { loadVaultRules } from './offscreen-client';
+import { vaultRules } from './vault';
 import { recordDestination, sinkFactory, type ExportOptions } from './export-conversation';
 import { describeFailure } from './labels';
 import {
@@ -62,7 +62,7 @@ export async function exportProject(
 ): Promise<SavedLocation> {
   const { settings } = job;
   const labels = projectLabels(project.platform);
-  const vault = obsidianMode(settings) && !archive ? await loadVaultRules() : undefined;
+  const vault = obsidianMode(settings) && !archive ? await vaultRules(settings) : undefined;
   let plan = planProjectExport(project, settings, labels.untitled, vault);
 
   // A project goes through a bulk job: an archive into Downloads, files into a chosen folder.
