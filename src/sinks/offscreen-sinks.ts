@@ -16,6 +16,7 @@ export interface OffscreenFiles {
   ): Promise<{ folder: string; folderPath: string }>;
   writeToFolder(path: string, source: TransferableSource): Promise<WriteReply>;
   removeFromFolder(path: string): Promise<WriteReply>;
+  readFromFolder(path: string): Promise<string | null>;
   openZip(): Promise<string>;
   addToZip(id: string, path: string, source: TransferableSource): Promise<WriteReply>;
   closeZipToUrl(id: string): Promise<string>;
@@ -63,6 +64,10 @@ export class FolderSink {
 
   async removeFile(path: string): Promise<void> {
     check(await this.api.removeFromFolder(path));
+  }
+
+  readText(path: string): Promise<string | null> {
+    return this.api.readFromFolder(path);
   }
 
   finish(markdownPath: string): Promise<SavedLocation> {

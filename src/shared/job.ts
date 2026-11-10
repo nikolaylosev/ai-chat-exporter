@@ -1,4 +1,5 @@
 import type { ProjectNote } from '../background/project-export';
+import type { VaultRules } from '../obsidian/vault';
 import type { ErrorCode } from './errors';
 import type { FileFailure, SavedLocation } from './messages';
 import type { Platform } from './platform';
@@ -79,6 +80,8 @@ export interface ProjectProgress {
   /** Folders (relative to the export root) where its chats go. */
   chatParents: string[];
   written: boolean;
+  /** The vault the project is written into (obsidian/vault.ts), for the note's links. */
+  vault?: VaultRules;
 }
 
 export interface JobCounts {

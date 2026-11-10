@@ -1,6 +1,7 @@
 import type { Attachment, Conversation } from '../model/conversation';
+import { obsidianUri } from '../obsidian/vault';
 import { localDateTime } from '../util/dates';
-import { exportsAsZip, type Settings } from '../shared/settings';
+import { exportsAsZip, obsidianMode, type Settings } from '../shared/settings';
 import { exportedMessages } from './conversation-export';
 import { DownloadsSink } from '../sinks/downloads-sink';
 import type { ZipArchive } from '../sinks/offscreen-sinks';
@@ -16,6 +17,8 @@ import {
   sniffImageType,
 } from './offscreen-client';
 import type { ExportRecord, RecordDestination, Registry } from './registry';
+import { ObsidianRestSink } from '../sinks/obsidian-rest-sink';
+import { obsidianRest, vaultRules } from './vault';
 import { writeConversation, type WritableSink, type WriteOutcome } from './write-conversation';
 
 export function recordDestination(settings: Settings, zip: boolean): RecordDestination {
@@ -49,6 +52,7 @@ export function sinkFactory(
     if (archive) return new ZipSink(archive);
     if (zip) return new ZipSink(offscreenFiles, zipTarget(settings, root));
     if (settings.destination === 'folder') return new FolderSink(offscreenFiles, overwrite);
+    if (settings.destination === 'obsidian') return new ObsidianRestSink(obsidianRest(settings));
     return new DownloadsSink(
       {
         download: (request) => downloadWithRetry(request),
@@ -108,8 +112,15 @@ export async function exportConversation(
   const chosen = Boolean(conversation.selection);
   const previous = chosen ? undefined : await registry.record(conversation.platform, recordId);
   const reuse = reusedFolder(settings, destination, previous);
+  // Read for each chat: the user may change the vault's settings during a long export.
+  const vault = obsidianMode(settings) && !archive ? await vaultRules(settings) : undefined;
   // Writing into the earlier folder means replacing what is there, whatever the setting.
-  const effective: Settings = reuse ? { ...settings, onFolderExists: 'overwrite' } : settings;
+  // Chosen messages never replace the chat's note, not even in a vault.
+  const effective: Settings = reuse
+    ? { ...settings, onFolderExists: 'overwrite' }
+    : chosen
+      ? { ...settings, onFolderExists: 'copy' }
+      : settings;
 
   const outcome = await writeConversation(
     conversation,
@@ -118,6 +129,7 @@ export async function exportConversation(
       now,
       labels: renderLabels(conversation.platform),
       describeFailure,
+      ...(vault ? { vault } : {}),
       ...(options.parents ? { parents: options.parents } : {}),
       ...(reuse ? { folderOverride: reuse } : {}),
       ...(reuse && previous?.files ? { previousFiles: previous.files } : {}),
@@ -127,6 +139,13 @@ export async function exportConversation(
     sinkFactory(effective, registry, archive, zip),
   );
 
+  // The note opens in Obsidian from the result.
+  if (vault && outcome.location.kind === 'folder') {
+    outcome.location = {
+      ...outcome.location,
+      obsidian: obsidianUri(vault.name, outcome.markdownPath),
+    };
+  }
   if (chosen) return outcome;
   await registry.remember(conversation.platform, recordId, {
     updatedAt: options.listUpdatedAt ?? conversation.updatedAt,

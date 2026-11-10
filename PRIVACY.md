@@ -15,15 +15,15 @@ It reads them through your existing session on that service, with the same reque
 
 ## Where your data goes
 
-- **Only to your computer.** Notes and files are saved into your Downloads folder, into a folder you choose, or into a .zip archive there. With **Copy**, the note goes to your clipboard.
+- **Only to your computer.** Notes and files are saved into your Downloads folder, into a folder you choose, into a .zip archive there, or, if you set it up, into your Obsidian vault through Obsidian's Local REST API plugin running on your computer. With **Copy**, the note goes to your clipboard.
 - **Nowhere else.** The extension has no server. It does not send your conversations, files, account details or anything about how you use it to the developer or to anyone else. There is no analytics, tracking or advertising.
-- The extension talks only to the services above, their file hosts (lh3.googleusercontent.com, lh3.google.com, contribution.usercontent.google.com, assets.grok.com, files.deepseeksvc.com) and Gemini's script hosts (www.gstatic.com, gemini.gstatic.com, read as text only), all listed in its permissions.
+- The extension talks only to the services above, their file hosts (lh3.googleusercontent.com, lh3.google.com, contribution.usercontent.google.com, assets.grok.com, files.deepseeksvc.com) and Gemini's script hosts (www.gstatic.com, gemini.gstatic.com, read as text only), all listed in its permissions. If you set up the Local REST API plugin, it also talks to the address you type for it, which must be on your own computer (127.0.0.1 or localhost).
 
 ## What the extension stores in Chrome
 
 In Chrome's extension storage, on your computer only:
 
-- your settings;
+- your settings, including the Local REST API plugin's key if you type one (it is sent only to the plugin's address);
 - the state of a running export, so it can continue after Chrome restarts its background process;
 - a record of what was exported (chat ids, update times, folder and file names), to skip unchanged chats and to tidy a chat's folder when it is saved again;
 - for Gemini, the chats found by search, to show them again on your next visit.

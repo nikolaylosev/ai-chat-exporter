@@ -42,6 +42,7 @@ STRINGS = {
     "savedToDownloads": ("Saved to Downloads:", "Сохранено в Загрузки:"),
     "savedToFolder": ("Saved to the folder “$1”:", "Сохранено в папку «$1»:"),
     "savedTo": ("Saved to:", "Сохранено:"),
+    "savedToObsidian": ("Saved to Obsidian:", "Сохранено в Obsidian:"),
     "savedToArchive": ("In the archive “$1”:", "В архиве «$1»:"),
     "saveWithFiles": ("Save with files", "Сохранять с файлами"),
     "noteFormat": ("Note format", "Формат заметки"),
@@ -65,6 +66,7 @@ STRINGS = {
         "Access was not given. Without it the extension cannot read $1.",
         "Доступ не выдан. Без него расширение не может читать $1.",
     ),
+    "openInObsidian": ("Open in Obsidian", "Открыть в Obsidian"),
     "panelClose": ("Close", "Закрыть"),
     "popupChooseChats": ("Choose chats…", "Выбрать чаты…"),
     "popupChooseProjects": ("Choose projects…", "Выбрать проекты…"),
@@ -359,6 +361,14 @@ STRINGS = {
         "The extension has no access to this site yet. Open the extension's window on the site and click “Allow access”.",
         "У расширения пока нет доступа к этому сайту. Откройте окно расширения на этом сайте и нажмите «Разрешить доступ».",
     ),
+    "error_obsidian_offline": (
+        "No answer from Obsidian. Check that Obsidian is open, its Local REST API plugin is on, and Chrome trusts the plugin's certificate (or use its HTTP address). The settings page can check the connection.",
+        "Obsidian не отвечает. Проверьте, что Obsidian открыт, плагин Local REST API включён, а Chrome доверяет сертификату плагина (или используйте его HTTP-адрес). Связь можно проверить на странице настроек.",
+    ),
+    "error_obsidian_key": (
+        "The Local REST API plugin did not accept the key. Copy the key from the plugin's settings into the extension's settings.",
+        "Плагин Local REST API не принял ключ. Скопируйте ключ из настроек плагина в настройки расширения.",
+    ),
     "error_folder_permission": (
         "No access to the chosen folder. Click “Save chat” in the extension window and allow access.",
         "Нет доступа к выбранной папке. Нажмите «Сохранить чат» в окне расширения и разрешите доступ.",
@@ -376,6 +386,11 @@ STRINGS = {
     "mdUser": ("User", "Пользователь"),
     "mdThinking": ("Thinking", "Рассуждения"),
     "mdThinkingFor": ("Thinking, $1", "Рассуждения, $1"),
+    "mdMyNotes": ("My notes", "Мои заметки"),
+    "mdKeepNotes": (
+        "Write below this line: it is kept when the chat is saved again.",
+        "Пишите ниже этой строки: это сохранится, когда чат будет сохранён снова.",
+    ),
     "mdStopped": ("The answer stopped before it was finished.", "Ответ остановлен, не дописан до конца."),
     "mdSeconds": ("$1 s", "$1 с"),
     "mdMinutesSeconds": ("$1 min $2 s", "$1 мин $2 с"),
@@ -456,6 +471,83 @@ STRINGS = {
     "optionsChangeFolder": ("Choose another folder…", "Выбрать другую папку…"),
     "optionsFolderChosen": ("Folder: $1", "Папка: $1"),
     "optionsFolderNotChosen": ("No folder chosen yet.", "Папка ещё не выбрана."),
+    "optionsDestinationObsidian": (
+        "Obsidian, through the Local REST API plugin",
+        "Obsidian, через плагин Local REST API",
+    ),
+    "optionsDestinationObsidianHint": (
+        "Notes go into the vault open in Obsidian while it runs. Needs no access to folders, so it works in any browser.",
+        "Заметки попадают в хранилище, открытое в Obsidian, пока он запущен. Доступ к папкам не нужен, поэтому работает в любом браузере.",
+    ),
+    "optionsObsidianSteps": (
+        "In Obsidian: Settings › Community plugins, install and turn on “Local REST API”, and copy its API key. Chrome must trust the plugin's own certificate: open https://127.0.0.1:27124/obsidian-local-rest-api.crt, add it to the system's keychain and mark it as trusted. Or turn on the plugin's non-encrypted (HTTP) server and use http://127.0.0.1:27123.",
+        "В Obsidian: Настройки › Сторонние плагины, установите и включите «Local REST API», скопируйте его ключ API. Chrome должен доверять собственному сертификату плагина: откройте https://127.0.0.1:27124/obsidian-local-rest-api.crt, добавьте его в связку ключей системы и отметьте как доверенный. Или включите в плагине незашифрованный (HTTP) сервер и используйте http://127.0.0.1:27123.",
+    ),
+    "optionsObsidianUrl": ("Address", "Адрес"),
+    "optionsObsidianUrlHint": (
+        "https://127.0.0.1:27124, or http://127.0.0.1:27123 for the plugin's HTTP server.",
+        "https://127.0.0.1:27124 или http://127.0.0.1:27123 для HTTP-сервера плагина.",
+    ),
+    "optionsObsidianKey": ("API key", "Ключ API"),
+    "optionsObsidianKeyHint": (
+        "From the plugin's settings. Kept in this browser and sent only to the address above.",
+        "Из настроек плагина. Хранится в этом браузере и отправляется только на адрес выше.",
+    ),
+    "optionsObsidianCheck": ("Check the connection", "Проверить связь"),
+    "optionsObsidianNoAccess": (
+        "Chrome gave no access to this address. It must be on this computer: 127.0.0.1 or localhost.",
+        "Chrome не дал доступ к этому адресу. Адрес должен быть на этом компьютере: 127.0.0.1 или localhost.",
+    ),
+    "optionsObsidianOk": (
+        "Connected. The plugin keeps the vault's settings closed, so the attachment folder and link style below are used.",
+        "Связь есть. Плагин не даёт читать настройки хранилища, поэтому используются папка вложений и вид ссылок ниже.",
+    ),
+    "optionsObsidianOkConfig": (
+        "Connected. Files and links follow the vault's settings.",
+        "Связь есть. Файлы и ссылки следуют настройкам хранилища.",
+    ),
+    "optionsObsidianAttachments": ("Attachment folder", "Папка вложений"),
+    "optionsObsidianAttachmentsHint": (
+        "As in Obsidian's Settings › Files and links › Default location for new attachments: empty for the vault's root (the chat's own “files” is used then), ./ for next to the note, ./name for a folder next to it, or the path of a vault folder.",
+        "Как в Obsidian: Настройки › Файлы и ссылки › Место для новых вложений. Пусто — корень хранилища (тогда используется своя папка «files» у чата), ./ — рядом с заметкой, ./имя — папка рядом с ней, или путь к папке хранилища.",
+    ),
+    "optionsObsidianMarkdownLinks": (
+        "Markdown links instead of wikilinks",
+        "Markdown-ссылки вместо вики-ссылок",
+    ),
+    "optionsObsidian": (
+        "This folder is an Obsidian vault: write the notes for Obsidian",
+        "Эта папка — хранилище Obsidian: сохранять заметки для Obsidian",
+    ),
+    "optionsObsidianHint": (
+        "Files and links follow the vault's settings and images show in the note. Each chat keeps one note: saving it again updates it and keeps your own properties and what you write under “My notes”.",
+        "Файлы и ссылки следуют настройкам хранилища, картинки видны в заметке. У каждого чата одна заметка: новое сохранение обновляет её и оставляет ваши свойства и то, что вы написали под «Мои заметки».",
+    ),
+    "optionsVaultMissing": (
+        "There is no .obsidian folder here. Choose the vault's own folder, not a folder inside it.",
+        "Здесь нет папки .obsidian. Выберите саму папку хранилища, а не папку внутри него.",
+    ),
+    "optionsObsidianFolder": ("Folder in the vault", "Папка в хранилище"),
+    "optionsObsidianFolderHint": (
+        "Each service gets its own folder inside it: “AI Chats/Claude”, “AI Chats/Gemini”.",
+        "Внутри у каждого сервиса своя папка: «AI Chats/Claude», «AI Chats/Gemini».",
+    ),
+    "optionsVaultRules": ("Vault “$1”:", "Хранилище «$1»:"),
+    "optionsVaultFilesBeside": ("files go next to the note;", "файлы кладутся рядом с заметкой;"),
+    "optionsVaultFilesBesideSub": (
+        "files go into “$1” next to the note;",
+        "файлы кладутся в «$1» рядом с заметкой;",
+    ),
+    "optionsVaultFilesShared": (
+        "files go into “$1”, in a folder for each chat;",
+        "файлы кладутся в «$1», в папку для каждого чата;",
+    ),
+    "optionsVaultFilesChat": (
+        "files go into “files” next to the note, since the vault keeps attachments in its root;",
+        "файлы кладутся в «files» рядом с заметкой, потому что хранилище держит вложения в корне;",
+    ),
+    "optionsVaultWikilinks": ("links are wikilinks.", "ссылки — вики-ссылки."),
+    "optionsVaultMarkdownLinks": ("links are Markdown links.", "ссылки — Markdown-ссылки."),
     "optionsFolderPickerHint": (
         "Chrome may not let you pick Documents, Downloads or Desktop themselves: create a folder inside them, for example “AI Chats”.",
         "Chrome может не дать выбрать сами «Документы», «Загрузки» или рабочий стол: создайте внутри отдельную папку, например «AI Chats».",

@@ -16,6 +16,7 @@ import { HttpError } from '../util/http';
 import { DownloadInterruptedError } from './downloader';
 import { FILE_CONCURRENCY, forEachLimit } from '../util/pool';
 import { embedsInWord } from '../render/docx';
+import { mergeNote } from '../obsidian/vault';
 import type { FileSource } from '../sinks/types';
 
 export interface WritableSink extends ExportSink {
@@ -31,6 +32,8 @@ export interface WritableSink extends ExportSink {
   abort?(): Promise<void>;
   /** Deletes a file written by an earlier export; a sink that cannot leaves it. */
   removeFile?(path: string): Promise<void>;
+  /** A text file already there, e.g. the note about to be replaced; null when missing. */
+  readText?(path: string): Promise<string | null>;
 }
 
 export interface WriteContext extends BuildContext {
@@ -186,7 +189,12 @@ export async function writeConversation(
       ctx.onFileDone?.(++filesDone, plan.files.length);
     });
 
-    const note = renderNote(conversation, settings, ctx, plan, { saved, failed });
+    const fresh = renderNote(conversation, settings, ctx, plan, { saved, failed });
+    // In a vault, the note it replaces may hold the user's own properties and notes.
+    const note =
+      ctx.vault && sink.readText
+        ? mergeNote(fresh, await sink.readText(plan.markdownPath).catch(() => null))
+        : fresh;
     try {
       if (word) {
         const title = conversation.title || ctx.labels.untitled;

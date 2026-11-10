@@ -3,6 +3,8 @@ export type ErrorCode =
   | 'unsupported-page'
   | 'platform-not-ready'
   | 'platform-access'
+  | 'obsidian-offline'
+  | 'obsidian-key'
   | 'not-a-chat'
   | 'not-signed-in'
   | 'format-changed'

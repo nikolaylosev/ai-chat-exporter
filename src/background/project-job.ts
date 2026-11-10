@@ -5,6 +5,9 @@ import type { JobItem, JobState, ProjectProgress } from '../shared/job';
 import { log } from '../shared/logger';
 import { MAX_LISTED_FAILURES, type FileFailure, type SavedLocation } from '../shared/messages';
 import type { ZipArchive } from '../sinks/offscreen-sinks';
+import { keepLine, mergeNote } from '../obsidian/vault';
+import { obsidianMode } from '../shared/settings';
+import { vaultRules } from './vault';
 import { recordDestination, sinkFactory, type ExportOptions } from './export-conversation';
 import { describeFailure } from './labels';
 import {
@@ -59,7 +62,8 @@ export async function exportProject(
 ): Promise<SavedLocation> {
   const { settings } = job;
   const labels = projectLabels(project.platform);
-  let plan = planProjectExport(project, settings, labels.untitled);
+  const vault = obsidianMode(settings) && !archive ? await vaultRules(settings) : undefined;
+  let plan = planProjectExport(project, settings, labels.untitled, vault);
 
   // A project goes through a bulk job: an archive into Downloads, files into a chosen folder.
   const destination = archive ? 'zip' : recordDestination(settings, false);
@@ -133,6 +137,7 @@ export async function exportProject(
     markdownPath: plan.markdownPath,
     chatParents: chatParents(plan),
     written: false,
+    ...(vault ? { vault } : {}),
   };
   job.projects = { ...job.projects, [project.id]: progress };
   await registry.remember(project.platform, projectRecordId(project.id), {
@@ -216,12 +221,27 @@ async function writeProjectNote(
 ): Promise<void> {
   const progress = job.projects?.[projectId];
   if (!progress || progress.written) return;
-  const text = renderProjectMarkdown(
+  const vault = progress.vault
+    ? {
+        rules: progress.vault,
+        markdownPath: progress.markdownPath,
+        keepLine: keepLine(t('mdKeepNotes')),
+        myNotes: t('mdMyNotes'),
+      }
+    : undefined;
+  const fresh = renderProjectMarkdown(
     progress.note,
     projectLabels(progress.note.platform),
     new Date(),
+    undefined,
+    vault,
   );
   const sink = sinkFactory(job.settings, registry, archive)(progress.root);
+  // In a vault, the note it replaces may hold the user's own properties and notes.
+  const text =
+    vault && sink.readText
+      ? mergeNote(fresh, await sink.readText(progress.markdownPath).catch(() => null))
+      : fresh;
   await sink.writeText(progress.markdownPath, text);
   progress.written = true;
 }

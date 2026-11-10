@@ -21,7 +21,7 @@ This document describes how the extension is built and why. It is meant for anyo
 11. [Manifest V3 constraints](#11-manifest-v3-constraints)
 12. [Error handling](#12-error-handling)
 13. [Permissions and privacy](#13-permissions-and-privacy)
-14. [Extending: Obsidian sinks](#14-extending-obsidian-sinks)
+14. [Obsidian](#14-obsidian)
 15. [Tech stack](#15-tech-stack)
 16. [Decision log](#16-decision-log)
 
@@ -41,7 +41,7 @@ This document describes how the extension is built and why. It is meant for anyo
 
 ### Not in version 1.0
 
-- Export to Obsidian (designed now, built after the stabilization of 1.0, see [section 14](#14-extending-obsidian-sinks)).
+- Export to Obsidian: into the vault folder or through the Local REST API plugin, see [section 14](#14-obsidian).
 - Perplexity and other platforms.
 - Grok inside x.com: its chats were not visible on grok.com during discovery.
 - Downloading the sources of Gemini notebooks: they live in NotebookLM, which Gemini gives no download for.
@@ -134,6 +134,9 @@ src/
     html.ts                 the Markdown as an HTML page (marked; the chat's HTML escaped, links checked)
     json.ts                 Conversation -> JSON, without download links
     docx.ts                 the Markdown as a Word document (marked tokens to WordprocessingML, packed by fflate)
+  obsidian/
+    vault.ts                a vault's settings, attachment places, links, merging with the user's additions (pure)
+    rest.ts                 the Local REST API plugin: check, read, write, delete, open
   search/                   searching the saved archive (the search page)
     notes.ts                every note format read back into its properties and messages; the text of chats' files
     archive.ts              the search folder walked, .zip exports read inside, notes and files' text kept in IndexedDB
@@ -562,14 +565,32 @@ The queue lives in the service worker.
 - No external servers. All data stays on the user's machine.
 - Test fixtures contain only anonymized data: message text, names, emails and organization ids are replaced.
 
-## 14. Extending: Obsidian sinks
+## 14. Obsidian
 
-The Obsidian phase (after the stabilization of 1.0) adds new `ExportSink` implementations without changing adapters, rendering or the queue:
+The Obsidian phase writes into a vault in two ways, with the same paths, links and merging: into the vault folder, and through Obsidian's Local REST API plugin.
 
-- **ObsidianRestSink** writes through the Local REST API plugin (`PUT /vault/{path}`, API key in settings). It needs Obsidian to be running.
-- **Writing into the vault folder** already works: pick the vault (or a folder inside it) as the destination. `FolderSink` writes through the File System Access API and works with Obsidian closed. The Obsidian phase adds the vault-specific options below on top of it.
+### The vault folder (built)
 
-Planned Obsidian options: a target folder inside the vault, attachments next to the note or in the vault's attachment folder, wikilinks (`![[file.pdf]]`), and updating a note when its chat changes.
+The destination is "a folder you choose" with **Write the notes for Obsidian** on (`settings.obsidian`; `obsidianMode()` in `shared/settings.ts`). The chosen folder is the vault's root: an extension page cannot walk up from a folder inside a vault, and the vault's settings are in its `.obsidian/`. The options page says so when `.obsidian` is missing, and shows what the vault's settings mean for the notes. Obsidian may be closed; no plugin is needed.
+
+- **The vault's settings.** For each chat the offscreen document reads `.obsidian/app.json` (`vault:rules`) and `obsidian/vault.ts` turns it into `VaultRules`: where attachments go (`attachmentFolderPath`), wikilinks or Markdown links (`useMarkdownLinks`) and the link format (`newLinkFormat`). A missing or broken file means Obsidian's defaults.
+- **Where things go.** Chats go into `<Folder in the vault>/<Platform>/` (`AI Chats/Claude/…` by default; `vaultBase()`), projects into `…/<Platform>/Projects/…`. A chat's files follow the vault: beside the note (`./`), in a folder beside it (`./name`), or in the vault's attachment folder in a folder named after the chat (`Attachments/<Chat - date (Platform)>/`, so names stay as they were and a chat's files stay together). When the vault keeps attachments in its root, which is Obsidian's default, the chat's own `files/` is used instead of filling the root. Names drop the characters that break a wikilink (`# ^ [ ] |`).
+- **Links.** Wikilinks name the path from the vault root, which Obsidian resolves whatever the link format; an image is embedded (`![[…]]`), another file is `[[path|name]]`, a project's chat note is linked without `.md`. Markdown links are relative when the vault asks for relative links, and from the vault root otherwise. Images are shown in Markdown links too (`![name](…)`).
+- **One note per chat.** Obsidian mode saves Markdown and overwrites (`effectiveSettings()`): a chat saved again goes into its recorded folder and replaces its note; files it no longer has are deleted (`previousFiles`). Chosen messages still go into a copy beside it.
+- **The user's additions survive.** A note in a vault ends with "My notes" and a keep line (`%% ai-chat-exporter:keep … %%`). Before the note is replaced, the old one is read (`folder:read`) and `mergeNote()` keeps the properties the extension does not write, the user's tags beside the extension's, and everything after the keep line. The chat itself is the new one. Project notes do the same.
+- **Open in Obsidian.** The result in the popup and the page's panel has a link `obsidian://open?vault=<folder name>&file=<path>`. Chrome asks once whether the site or the popup may open Obsidian.
+- The clipboard copy is a plain note in any mode.
+
+### Local REST API (built)
+
+The destination "Obsidian, through the Local REST API plugin" (`destination: 'obsidian'`) writes into the vault open in Obsidian through the [Local REST API](https://github.com/coddingtonbear/obsidian-local-rest-api) plugin, with the same plan, links and merging as the vault folder. It needs no File System Access API, so it works where that is missing (Firefox later, Brave by default), and Obsidian must be running.
+
+- **Requests** (`obsidian/rest.ts`) go from the service worker with `Authorization: Bearer <key>`: `PUT /vault/{path}` writes any bytes (the plugin makes the folders), `GET` reads the note being replaced, `DELETE` removes a file the chat no longer has (into Obsidian's trash, as the user set), `POST /open/{path}` shows the note, `GET /` checks the key (`authenticated`). Each path segment is encoded on its own. A chat's files are fetched in the worker with the user's cookies (`ObsidianRestSink`, two at a time) and sent on.
+- **The vault's settings.** The plugin refuses `.obsidian/` unless the user allows it in its advanced settings, which the extension does not ask for (that folder holds the plugin's key and code). Then the attachment folder and link style typed in the options page stand in (`obsidianAttachments`, `obsidianMarkdownLinks`, in Obsidian's own notation); the check says which applies.
+- **Access.** `https://127.0.0.1/*`, `http://127.0.0.1/*` and the same for `localhost` are optional host permissions (a match pattern has no port), asked for from **Check the connection** for the address typed. The HTTPS server (`https://127.0.0.1:27124`, the default) uses a certificate from the plugin's own authority, which Chrome refuses until the user trusts it in the system; the options page says how, or to use the plugin's HTTP server (`http://127.0.0.1:27123`).
+- **Errors.** No answer is `obsidian-offline` (Obsidian closed, the plugin off, or the certificate not trusted), a refused key is `obsidian-key`; both stop a bulk export and are what the user has to fix, not failures of the extension.
+- **The key** is kept in `chrome.storage.local` with the other settings and sent only to the address typed.
+- **Open in Obsidian** asks the plugin (`obsidian:open`), so Chrome shows no prompt.
 
 ## 15. Tech stack
 

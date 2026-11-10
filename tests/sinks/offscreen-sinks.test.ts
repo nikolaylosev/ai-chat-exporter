@@ -25,6 +25,10 @@ function fakeApi(overrides: Partial<OffscreenFiles> = {}) {
       calls.push(`remove ${path}`);
       return Promise.resolve({ ok: true });
     },
+    readFromFolder: (path) => {
+      calls.push(`read ${path}`);
+      return Promise.resolve(null);
+    },
     openZip: () => {
       calls.push('open');
       return Promise.resolve('z1');

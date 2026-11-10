@@ -33,8 +33,11 @@ export const MAX_LISTED_FAILURES = 50;
 /** Where the export went: `path` is relative to Downloads or to the chosen folder, or absolute. */
 export type SavedLocation =
   | { kind: 'downloads'; path: string }
-  | { kind: 'folder'; folder: string; path: string }
+  /** `obsidian`: an `obsidian://open` link to the note, when the folder is a vault. */
+  | { kind: 'folder'; folder: string; path: string; obsidian?: string }
   | { kind: 'absolute'; path: string }
+  /** In a vault through the Local REST API plugin; `path` from the vault root. */
+  | { kind: 'obsidian'; path: string }
   /** A conversation inside an archive that is still being built (bulk export). */
   | { kind: 'archive'; archive: string; path: string };
 
@@ -149,6 +152,13 @@ interface Contract {
     'registry:clear': { request: Empty; response: null };
     /** Pages a content script cannot open itself. */
     'open:options': { request: Empty; response: null };
+    /** Shows a note saved through the Local REST API plugin in Obsidian. */
+    'obsidian:open': { request: { path: string }; response: null };
+    /**
+     * Whether the plugin answers at the saved address with the saved key, and
+     * whether it lets the extension read the vault's settings.
+     */
+    'obsidian:check': { request: Empty; response: { config: boolean } };
   };
   content: {
     ping: { request: Empty; response: { platform: Platform } };
@@ -216,6 +226,10 @@ interface Contract {
     };
     'folder:write': { request: { path: string; source: TransferableSource }; response: WriteReply };
     'folder:remove': { request: { path: string }; response: WriteReply };
+    /** A text file of the chosen folder (a note about to be replaced); null when missing. */
+    'folder:read': { request: { path: string }; response: { text: string | null } };
+    /** The chosen folder's name and its `.obsidian/app.json`, null when it has none. */
+    'vault:rules': { request: Empty; response: { name: string; appJson: string | null } };
     'zip:open': { request: Empty; response: { id: string } };
     'zip:add': {
       request: { id: string; path: string; source: TransferableSource };

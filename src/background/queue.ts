@@ -14,9 +14,16 @@ import { log } from '../shared/logger';
 import { setBadge as setIconBadge, type BadgeState } from './badge';
 import { sendToTab, type JobStartItem, type SavedLocation } from '../shared/messages';
 import { PLATFORM_LABEL, type Platform } from '../shared/platform';
-import { exportRootFolder, exportsAsZip, loadSettings } from '../shared/settings';
+import {
+  effectiveSettings,
+  exportRootFolder,
+  exportsAsZip,
+  loadSettings,
+} from '../shared/settings';
 import { DownloadsSink } from '../sinks/downloads-sink';
 import { FolderSink, ZipArchive } from '../sinks/offscreen-sinks';
+import { ObsidianRestSink } from '../sinks/obsidian-rest-sink';
+import { obsidianRest } from './vault';
 import { sanitizeRelativeDir } from '../util/filename';
 import { refreshListed } from '../shared/list-cache';
 import { refreshFound } from '../shared/search-cache';
@@ -48,6 +55,9 @@ const STOP_CODES = new Set<ErrorCode>([
   'archive-lost',
   'not-signed-in',
   'platform-access',
+  // Obsidian closed, or its plugin refuses the key: every chat would fail the same way.
+  'obsidian-offline',
+  'obsidian-key',
   // Asking again at once only prolongs the limit; a later run continues (skip unchanged).
   'rate-limited',
   'save-dialog',
@@ -138,7 +148,7 @@ export async function startJob(platform: Platform, items: JobStartItem[]): Promi
     throw new CodedError('busy', 'Another bulk export is running');
   }
   if (items.length === 0) throw new Error('No conversations selected');
-  const settings = await loadSettings();
+  const settings = effectiveSettings(await loadSettings());
   const startedAt = new Date();
   // One project gets an archive named after it; anything else a dated bulk archive.
   const only = items.length === 1 ? items[0] : undefined;
@@ -509,6 +519,8 @@ async function finish(
 
 function reportSink(job: JobState, root: string[]) {
   if (job.settings.destination === 'folder') return new FolderSink(offscreenFiles, true);
+  if (job.settings.destination === 'obsidian')
+    return new ObsidianRestSink(obsidianRest(job.settings));
   return new DownloadsSink(
     { download: (request) => downloadAndWait(request), createBlobUrl, revokeBlobUrl },
     { root, conflictAction: 'uniquify' },

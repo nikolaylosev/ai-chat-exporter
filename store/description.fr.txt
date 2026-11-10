@@ -22,6 +22,7 @@ UTILISATION
 • Seulement certains messages : « Choose messages… » liste les messages du chat ; cochez ceux que vous voulez (ou seulement les vôtres, ou seulement les réponses de l'IA) et enregistrez ou copiez-les seuls.
 • Beaucoup de chats ou de projets : ouvrez la page d'export, filtrez par date, projet ou titre, cochez ceux que vous voulez ou tous, et enregistrez. L'export tourne en arrière-plan, peut être annulé et écrit un rapport de ce qui a échoué.
 • Dans Téléchargements, un chat avec ses fichiers arrive en une seule archive .zip, et son texte seul en un fichier. Ou directement dans un dossier de votre choix, fichier par fichier.
+• Directement dans Obsidian : choisissez votre coffre comme dossier ou connectez le plugin Local REST API d'Obsidian. Les notes suivent les réglages du coffre pour les pièces jointes et les liens, les images s'affichent dans la note, et enregistrer à nouveau un chat met à jour sa note en gardant les propriétés et notes que vous avez ajoutées.
 • Recherche dans vos chats enregistrés : « Search the archive » cherche dans tous les chats enregistrés de tous les services à la fois, sur votre ordinateur, y compris dans le texte de leurs fichiers.
 • Tout un long historique Gemini : sa liste s’arrête vers 1 000 chats ; la recherche de Gemini ou un fichier Google Takeout ajoute les plus anciens.
 • Voir ce qui reste à enregistrer : la page d’export filtre les chats selon qu’ils ont été enregistrés (pas encore, modifiés depuis, inchangés), par projet ou Gem et, pour Gemini, par provenance, et retient vos choix.

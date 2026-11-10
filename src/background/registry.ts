@@ -8,7 +8,7 @@ import { titleFromFolder } from '../util/filename';
  */
 
 /** Where the recorded folder lives. A ZIP export keeps no folder to overwrite. */
-export type RecordDestination = 'downloads' | 'folder' | 'zip';
+export type RecordDestination = 'downloads' | 'folder' | 'obsidian' | 'zip';
 
 export interface ExportRecord {
   /** The conversation's `updatedAt` when it was exported. */
@@ -49,7 +49,10 @@ function isRecord(value: unknown): value is ExportRecord {
   return (
     (typeof r.updatedAt === 'string' || r.updatedAt === null) &&
     typeof r.exportedAt === 'string' &&
-    (r.destination === 'downloads' || r.destination === 'folder' || r.destination === 'zip') &&
+    (r.destination === 'downloads' ||
+      r.destination === 'folder' ||
+      r.destination === 'obsidian' ||
+      r.destination === 'zip') &&
     typeof r.folder === 'string'
   );
 }

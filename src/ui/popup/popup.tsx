@@ -23,7 +23,7 @@ import {
   useSettings,
   useShortcut,
 } from '../common';
-import type { Settings } from '../../shared/settings';
+import { obsidianMode, type Settings } from '../../shared/settings';
 import '../styles.css';
 import './popup.css';
 
@@ -325,7 +325,9 @@ export function Popup() {
         <label class="note-format">
           <span>{t('noteFormat')}</span>
           <select
-            value={settings.noteFormat}
+            // A vault gets Markdown notes (shared/settings.ts, effectiveSettings).
+            value={obsidianMode(settings) ? 'markdown' : settings.noteFormat}
+            disabled={obsidianMode(settings)}
             onChange={(e) =>
               updateSettings({ noteFormat: e.currentTarget.value as Settings['noteFormat'] })
             }

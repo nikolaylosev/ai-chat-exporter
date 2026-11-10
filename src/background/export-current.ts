@@ -10,7 +10,7 @@ import {
   type PanelView,
 } from '../shared/messages';
 import { detectPlatform } from '../shared/platform';
-import { loadSettings, type Settings } from '../shared/settings';
+import { effectiveSettings, loadSettings, type Settings } from '../shared/settings';
 import { selectMessages } from '../model/conversation';
 import { outline } from './outline';
 import { planConversationExport, renderConversationExport } from './conversation-export';
@@ -93,7 +93,7 @@ async function runExport(
   const shown: { last: Promise<unknown> } = { last: Promise.resolve() };
   try {
     await setBadge(tabId, 'working');
-    const settings = { ...(await loadSettings()), ...overrides };
+    const settings = effectiveSettings({ ...(await loadSettings()), ...overrides });
     const panel = trigger === 'command' && settings.showNotifications;
     if (panel) await showFeedback(tabId, { state: 'running' });
     const onFileDone = panel ? fileProgress(tabId, shown) : undefined;
@@ -196,7 +196,8 @@ export async function copyCurrent(
 ): Promise<CopyResult> {
   try {
     const id = await openConversationId(tabId);
-    const settings = { ...(await loadSettings()), saveAttachments: false };
+    // The clipboard gets a plain note, wherever exports go.
+    const settings = { ...(await loadSettings()), saveAttachments: false, obsidian: false };
     const read = await sendToTab(tabId, 'conversation:get', {
       id,
       options: { artifactVersions: settings.artifactVersions },
