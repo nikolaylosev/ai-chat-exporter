@@ -4,6 +4,7 @@ import { DownloadInterruptedError } from '../../src/background/downloader';
 import { writeConversation, type WritableSink } from '../../src/background/write-conversation';
 import type { Attachment, Conversation } from '../../src/model/conversation';
 import { CodedError } from '../../src/shared/errors';
+import { parseVaultRules } from '../../src/obsidian/vault';
 import { DEFAULT_SETTINGS } from '../../src/shared/settings';
 import type { FileSource } from '../../src/sinks/types';
 import { LABELS } from '../render/labels';
@@ -404,5 +405,54 @@ describe('writeConversation', () => {
       `${folder}/files/report.pdf`,
       `${folder}/files/photo.jpg`,
     ]);
+  });
+});
+
+describe('writeConversation in an Obsidian vault', () => {
+  const settings = {
+    ...DEFAULT_SETTINGS,
+    destination: 'folder' as const,
+    obsidian: true,
+    onFolderExists: 'overwrite' as const,
+  };
+  const vault = parseVaultRules('Notes', null);
+  const path = 'AI Chats/Claude/Files - 2026-10-13 (Claude)/Files - 2026-10-13 (Claude).md';
+
+  class VaultSink extends FakeSink {
+    constructor(private readonly existing: Record<string, string>) {
+      super();
+    }
+    readText(at: string) {
+      return Promise.resolve(this.existing[at] ?? null);
+    }
+  }
+
+  it("keeps the user's tags and notes from the note it replaces", async () => {
+    const before = [
+      '---',
+      'title: "Files"',
+      'tags: [ai-chat, claude, reading]',
+      'status: done',
+      '---',
+      '# Files',
+      '',
+      '## My notes',
+      '',
+      '%% ai-chat-exporter:keep Write below this line: it is kept when the chat is saved again. %%',
+      'Mine.',
+      '',
+    ].join('\n');
+    const sink = new VaultSink({ [path]: before });
+    await writeConversation(conversation([]), settings, { ...ctx, vault }, () => sink);
+    const note = markdownOf(sink);
+    expect(sink.writes.at(-1)?.path).toBe(path);
+    expect(note).toContain('tags: [ai-chat, claude, reading]\nstatus: done\n---\n\n# Files');
+    expect(note).toMatch(/%%\nMine\.\n$/);
+  });
+
+  it('writes the fresh note when there was none', async () => {
+    const sink = new VaultSink({});
+    await writeConversation(conversation([]), settings, { ...ctx, vault }, () => sink);
+    expect(markdownOf(sink)).toMatch(/## My notes\n\n%% ai-chat-exporter:keep .* %%\n$/);
   });
 });

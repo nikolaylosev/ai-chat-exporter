@@ -65,6 +65,7 @@ STRINGS = {
         "Access was not given. Without it the extension cannot read $1.",
         "Доступ не выдан. Без него расширение не может читать $1.",
     ),
+    "openInObsidian": ("Open in Obsidian", "Открыть в Obsidian"),
     "panelClose": ("Close", "Закрыть"),
     "popupChooseChats": ("Choose chats…", "Выбрать чаты…"),
     "popupChooseProjects": ("Choose projects…", "Выбрать проекты…"),
@@ -376,6 +377,11 @@ STRINGS = {
     "mdUser": ("User", "Пользователь"),
     "mdThinking": ("Thinking", "Рассуждения"),
     "mdThinkingFor": ("Thinking, $1", "Рассуждения, $1"),
+    "mdMyNotes": ("My notes", "Мои заметки"),
+    "mdKeepNotes": (
+        "Write below this line: it is kept when the chat is saved again.",
+        "Пишите ниже этой строки: это сохранится, когда чат будет сохранён снова.",
+    ),
     "mdStopped": ("The answer stopped before it was finished.", "Ответ остановлен, не дописан до конца."),
     "mdSeconds": ("$1 s", "$1 с"),
     "mdMinutesSeconds": ("$1 min $2 s", "$1 мин $2 с"),
@@ -456,6 +462,39 @@ STRINGS = {
     "optionsChangeFolder": ("Choose another folder…", "Выбрать другую папку…"),
     "optionsFolderChosen": ("Folder: $1", "Папка: $1"),
     "optionsFolderNotChosen": ("No folder chosen yet.", "Папка ещё не выбрана."),
+    "optionsObsidian": (
+        "This folder is an Obsidian vault: write the notes for Obsidian",
+        "Эта папка — хранилище Obsidian: сохранять заметки для Obsidian",
+    ),
+    "optionsObsidianHint": (
+        "Files and links follow the vault's settings and images show in the note. Each chat keeps one note: saving it again updates it and keeps your own properties and what you write under “My notes”.",
+        "Файлы и ссылки следуют настройкам хранилища, картинки видны в заметке. У каждого чата одна заметка: новое сохранение обновляет её и оставляет ваши свойства и то, что вы написали под «Мои заметки».",
+    ),
+    "optionsVaultMissing": (
+        "There is no .obsidian folder here. Choose the vault's own folder, not a folder inside it.",
+        "Здесь нет папки .obsidian. Выберите саму папку хранилища, а не папку внутри него.",
+    ),
+    "optionsObsidianFolder": ("Folder in the vault", "Папка в хранилище"),
+    "optionsObsidianFolderHint": (
+        "Each service gets its own folder inside it: “AI Chats/Claude”, “AI Chats/Gemini”.",
+        "Внутри у каждого сервиса своя папка: «AI Chats/Claude», «AI Chats/Gemini».",
+    ),
+    "optionsVaultRules": ("Vault “$1”:", "Хранилище «$1»:"),
+    "optionsVaultFilesBeside": ("files go next to the note;", "файлы кладутся рядом с заметкой;"),
+    "optionsVaultFilesBesideSub": (
+        "files go into “$1” next to the note;",
+        "файлы кладутся в «$1» рядом с заметкой;",
+    ),
+    "optionsVaultFilesShared": (
+        "files go into “$1”, in a folder for each chat;",
+        "файлы кладутся в «$1», в папку для каждого чата;",
+    ),
+    "optionsVaultFilesChat": (
+        "files go into “files” next to the note, since the vault keeps attachments in its root;",
+        "файлы кладутся в «files» рядом с заметкой, потому что хранилище держит вложения в корне;",
+    ),
+    "optionsVaultWikilinks": ("links are wikilinks.", "ссылки — вики-ссылки."),
+    "optionsVaultMarkdownLinks": ("links are Markdown links.", "ссылки — Markdown-ссылки."),
     "optionsFolderPickerHint": (
         "Chrome may not let you pick Documents, Downloads or Desktop themselves: create a folder inside them, for example “AI Chats”.",
         "Chrome может не дать выбрать сами «Документы», «Загрузки» или рабочий стол: создайте внутри отдельную папку, например «AI Chats».",

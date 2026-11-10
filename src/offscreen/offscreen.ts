@@ -118,6 +118,11 @@ handle('offscreen', {
     const target = await folder();
     return attempt(() => target.remove(path));
   },
+  'folder:read': async ({ path }) => ({ text: await (await folder()).readText(path) }),
+  'vault:rules': async () => {
+    const target = await openFolder();
+    return { name: target.name, appJson: await target.readText('.obsidian/app.json') };
+  },
 
   'zip:open': () => ({ id: archives.openArchive() }),
   'zip:add': async ({

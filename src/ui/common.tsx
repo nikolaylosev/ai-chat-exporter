@@ -179,6 +179,14 @@ export function ExportResultView({ result }: { result: ExportResult }) {
           {locationLabel(result.location)}
           <br />
           <span class="path">{result.location.path}</span>
+          {result.location.kind === 'folder' && result.location.obsidian && (
+            <>
+              <br />
+              <a class="link" href={result.location.obsidian}>
+                {t('openInObsidian')}
+              </a>
+            </>
+          )}
         </p>
       ) : (
         <p class={`${QUIET.has(result.code) ? 'muted' : 'error'} result`}>{result.message}</p>

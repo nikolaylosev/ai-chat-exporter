@@ -114,6 +114,14 @@ function ResultView({ result }: { result: ExportResult }) {
         {locationLabel(result.location)}
         <br />
         <span class="path">{result.location.path}</span>
+        {result.location.kind === 'folder' && result.location.obsidian && (
+          <>
+            <br />
+            <a class="link" href={result.location.obsidian}>
+              {t('openInObsidian')}
+            </a>
+          </>
+        )}
       </p>
     </>
   );

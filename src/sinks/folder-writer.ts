@@ -67,6 +67,16 @@ export class FolderWriter {
     }
   }
 
+  /** A text file's content; null when it is not there. */
+  async readText(path: string): Promise<string | null> {
+    const segments = path.split('/');
+    const name = segments.pop() ?? '';
+    const dir = await this.directory(segments, false).catch(ignoreNotFound);
+    if (!dir) return null;
+    const file = await dir.getFileHandle(name).catch(ignoreNotFound);
+    return file ? (await file.getFile()).text() : null;
+  }
+
   /** Deletes a file; one that is not there is fine. */
   async remove(path: string): Promise<void> {
     const segments = path.split('/');

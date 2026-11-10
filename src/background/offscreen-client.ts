@@ -1,3 +1,4 @@
+import { parseVaultRules, type VaultRules } from '../obsidian/vault';
 import { log } from '../shared/logger';
 import { send } from '../shared/messages';
 import type { OffscreenFiles } from '../sinks/offscreen-sinks';
@@ -56,6 +57,12 @@ export async function sniffImageType(url: string, keep = false): Promise<string 
   return (await send('offscreen', 'file:sniff', { url, keep })).mime;
 }
 
+/** The chosen folder's Obsidian settings (obsidian/vault.ts); Obsidian's defaults without them. */
+export async function loadVaultRules(): Promise<VaultRules> {
+  const { name, appJson } = await call(() => send('offscreen', 'vault:rules', {}));
+  return parseVaultRules(name, appJson);
+}
+
 async function call<R>(action: () => Promise<R>): Promise<R> {
   await ensureOffscreenDocument();
   return action();
@@ -67,6 +74,8 @@ export const offscreenFiles: OffscreenFiles = {
     call(() => send('offscreen', 'folder:prepare', { folderPath, overwrite })),
   writeToFolder: (path, source) => call(() => send('offscreen', 'folder:write', { path, source })),
   removeFromFolder: (path) => call(() => send('offscreen', 'folder:remove', { path })),
+  readFromFolder: async (path) =>
+    (await call(() => send('offscreen', 'folder:read', { path }))).text,
   openZip: async () => (await call(() => send('offscreen', 'zip:open', {}))).id,
   addToZip: (id, path, source) => call(() => send('offscreen', 'zip:add', { id, path, source })),
   closeZipToUrl: async (id) =>

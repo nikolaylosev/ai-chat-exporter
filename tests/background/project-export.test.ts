@@ -8,6 +8,7 @@ import {
   type ProjectLabels,
   type ProjectNote,
 } from '../../src/background/project-export';
+import { parseVaultRules } from '../../src/obsidian/vault';
 import { DEFAULT_SETTINGS } from '../../src/shared/settings';
 
 const file = (id: string, name: string): Attachment => ({
@@ -197,5 +198,65 @@ describe('a Gemini notebook', () => {
       '## Sources\n\n- fruit-prices.pdf — only its name is here\n\nIn NotebookLM: https://notebooklm.google.com/notebook/nb1',
     );
     expect(text).not.toContain('⚠️');
+  });
+});
+
+describe('a project in an Obsidian vault', () => {
+  const settings = { ...DEFAULT_SETTINGS, destination: 'folder' as const, obsidian: true };
+  const rules = parseVaultRules('Notes', null);
+
+  it('goes under the vault folder and the platform', () => {
+    const plan = planProjectExport(
+      { name: 'Lens #2', knowledge: [file('a', 'spec.pdf')] },
+      settings,
+      'Untitled project',
+      rules,
+    );
+    expect(plan.folderPath).toBe('AI Chats/Claude/Projects/Lens _2 (Claude)');
+    expect(chatParents(plan)).toEqual([
+      'AI Chats',
+      'Claude',
+      'Projects',
+      'Lens _2 (Claude)',
+      'chats',
+    ]);
+  });
+
+  it('links its files and chats with wikilinks and keeps a part for the user', () => {
+    const folder = 'AI Chats/Claude/Projects/P (Claude)';
+    const md = renderProjectMarkdown(
+      {
+        id: 'p1',
+        name: 'P',
+        description: '',
+        instructions: '',
+        url: 'https://claude.ai/project/p1',
+        createdAt: null,
+        updatedAt: null,
+        knowledge: [{ name: 'spec.pdf', link: 'knowledge/spec.pdf' }],
+        chats: [
+          {
+            id: 'c1',
+            title: 'Plan | v2',
+            url: 'https://claude.ai/chat/c1',
+            link: 'chats/Plan v2 - 2026-10-13 (Claude)/Plan v2 - 2026-10-13 (Claude).md',
+          },
+        ],
+      },
+      labels,
+      new Date('2026-10-20T12:00:00Z'),
+      'UTC',
+      {
+        rules,
+        markdownPath: `${folder}/P (Claude).md`,
+        keepLine: '%% ai-chat-exporter:keep Below. %%',
+        myNotes: 'My notes',
+      },
+    );
+    expect(md).toContain(`- [[${folder}/knowledge/spec.pdf|spec.pdf]]`);
+    expect(md).toContain(
+      `- [[${folder}/chats/Plan v2 - 2026-10-13 (Claude)/Plan v2 - 2026-10-13 (Claude)|Plan   v2]]`,
+    );
+    expect(md).toMatch(/## My notes\n\n%% ai-chat-exporter:keep Below\. %%\n$/);
   });
 });

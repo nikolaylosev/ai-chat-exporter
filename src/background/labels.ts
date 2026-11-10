@@ -45,6 +45,8 @@ export function renderLabels(platform: Platform): RenderLabels {
           : t('mdBranchAfterIn', [String(number), String(fork.position), String(fork.branch)]),
     selection: (chosen, total) => t('mdSelection', [String(chosen), String(total)]),
     incomplete: t('mdIncomplete'),
+    myNotes: t('mdMyNotes'),
+    keepNotes: t('mdKeepNotes'),
   };
 }
 

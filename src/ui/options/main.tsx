@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import { t } from '../../shared/i18n';
 import { errorMessage } from '../../shared/logger';
 import { send } from '../../shared/messages';
-import { loadSettings, saveSettings, type Settings } from '../../shared/settings';
+import { loadSettings, obsidianMode, saveSettings, type Settings } from '../../shared/settings';
 import {
   canUseFolders,
   folderAccess,
@@ -12,6 +12,7 @@ import {
   saveFolderHandle,
   type FolderAccess,
 } from '../../sinks/folder-handle';
+import { parseVaultRules, type VaultRules } from '../../obsidian/vault';
 import { openShortcutSettings, useShortcut } from '../common';
 import '../styles.css';
 import './options.css';
@@ -83,7 +84,7 @@ async function readFolder(): Promise<FolderState> {
 }
 
 /** The folder for the `folder` destination: picked once, kept in IndexedDB. */
-function FolderPicker({ onChosen }: { onChosen: () => void }) {
+function FolderPicker({ onChosen, onChanged }: { onChosen: () => void; onChanged: () => void }) {
   const [folder, setFolder] = useState<FolderState | null>(null);
   const reload = () => void readFolder().then(setFolder, () => setFolder(null));
   useEffect(reload, []);
@@ -97,6 +98,7 @@ function FolderPicker({ onChosen }: { onChosen: () => void }) {
       });
       await saveFolderHandle(handle);
       onChosen();
+      onChanged();
       reload();
     } catch (error) {
       // The user closed the picker.
@@ -111,6 +113,7 @@ function FolderPicker({ onChosen }: { onChosen: () => void }) {
 
   const grant = async () => {
     await requestFolderAccess(await loadFolderHandle()).catch(() => undefined);
+    onChanged();
     reload();
   };
 
@@ -167,6 +170,73 @@ function RegistryControl() {
   );
 }
 
+/** The chosen folder as a vault: null when it has no `.obsidian` or cannot be read yet. */
+async function readVault(): Promise<VaultRules | null> {
+  const handle = await loadFolderHandle();
+  if (!handle || (await folderAccess(handle)) !== 'granted') return null;
+  const config = await handle.getDirectoryHandle('.obsidian').catch(() => null);
+  if (!config) return null;
+  const file = await config.getFileHandle('app.json').catch(() => null);
+  return parseVaultRules(handle.name, file ? await (await file.getFile()).text() : null);
+}
+
+/** Where the vault's rules put a chat's files, in words. */
+function attachmentsText(rules: VaultRules): string {
+  const place = rules.attachments;
+  if (place.kind === 'beside') return t('optionsVaultFilesBeside');
+  if (place.kind === 'beside-sub') return t('optionsVaultFilesBesideSub', place.dir);
+  if (place.kind === 'shared') return t('optionsVaultFilesShared', place.dir);
+  return t('optionsVaultFilesChat');
+}
+
+/** Writing for Obsidian: only with the chosen folder, which should be the vault's root. */
+function ObsidianOptions({
+  settings,
+  update,
+}: {
+  settings: Settings;
+  update: (patch: Partial<Settings>) => void;
+}) {
+  const [vault, setVault] = useState<VaultRules | null | undefined>(undefined);
+  useEffect(() => {
+    const check = () => void readVault().then(setVault, () => setVault(null));
+    check();
+    // The user may change the vault's settings in Obsidian and come back.
+    window.addEventListener('focus', check);
+    return () => window.removeEventListener('focus', check);
+  }, []);
+  return (
+    <div class="obsidian">
+      <Check
+        settings={settings}
+        update={update}
+        name="obsidian"
+        label={t('optionsObsidian')}
+        hint={t('optionsObsidianHint')}
+      />
+      {settings.obsidian && vault === null && <p class="warn">{t('optionsVaultMissing')}</p>}
+      {settings.obsidian && (
+        <label class="field">
+          <span>{t('optionsObsidianFolder')}</span>
+          <input
+            type="text"
+            value={settings.obsidianFolder}
+            placeholder="AI Chats"
+            onChange={(e) => update({ obsidianFolder: e.currentTarget.value })}
+          />
+          <small class="hint">{t('optionsObsidianFolderHint')}</small>
+        </label>
+      )}
+      {settings.obsidian && vault && (
+        <p class="hint">
+          {t('optionsVaultRules', vault.name)} {attachmentsText(vault)}{' '}
+          {vault.wiki ? t('optionsVaultWikilinks') : t('optionsVaultMarkdownLinks')}
+        </p>
+      )}
+    </div>
+  );
+}
+
 function Section({ title, children }: { title: string; children: ComponentChildren }) {
   return (
     <section>
@@ -179,6 +249,8 @@ function Section({ title, children }: { title: string; children: ComponentChildr
 function Options() {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [saved, setSaved] = useState(false);
+  // A new folder or new access: the Obsidian part checks the folder again.
+  const [folderVersion, setFolderVersion] = useState(0);
   const savedTimer = useRef<ReturnType<typeof setTimeout>>();
   const shortcut = useShortcut();
 
@@ -237,7 +309,13 @@ function Options() {
           </p>
         )}
         {settings.destination === 'folder' && canUseFolders() ? (
-          <FolderPicker onChosen={() => update({ destination: 'folder' })} />
+          <>
+            <FolderPicker
+              onChosen={() => update({ destination: 'folder' })}
+              onChanged={() => setFolderVersion((v) => v + 1)}
+            />
+            <ObsidianOptions key={folderVersion} {...common} />
+          </>
         ) : (
           <label class="field">
             <span>{t('optionsRootFolder')}</span>
@@ -302,6 +380,8 @@ function Options() {
           {...common}
           name="onFolderExists"
           label={t('optionsFolderExists')}
+          // In a vault each chat keeps one note, which a later save updates.
+          disabled={obsidianMode(settings)}
           options={[
             ['copy', t('optionsFolderExistsCopy')],
             ['overwrite', t('optionsFolderExistsOverwrite')],

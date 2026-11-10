@@ -1,4 +1,5 @@
 import type { Attachment, Block, Conversation, Message } from '../model/conversation';
+import { isImagePath } from '../obsidian/vault';
 import { isoWithOffset, localDateTime } from '../util/dates';
 
 export interface RenderLabels {
@@ -40,6 +41,10 @@ export interface RenderLabels {
   selection: (chosen: number, total: number) => string;
   /** The platform stopped answering partway: the oldest messages are missing. */
   incomplete: string;
+  /** Heading of the user's own part at the end of a note in an Obsidian vault. */
+  myNotes: string;
+  /** What the keep line says: what follows it stays when the chat is saved again. */
+  keepNotes: string;
 }
 
 export interface RenderOptions {
@@ -56,6 +61,11 @@ export interface RenderOptions {
   /** Attachments that failed to download: id → reason. */
   attachmentErrors?: ReadonlyMap<string, string>;
   timeZone?: string;
+  /**
+   * A note in an Obsidian vault: links in the vault's style, images shown in the
+   * note, and the user's own part at the end, from `keepLine` on.
+   */
+  obsidian?: { wiki: boolean; keepLine: string };
 }
 
 /** YAML scalar: JSON strings are valid YAML double-quoted scalars. */
@@ -166,6 +176,16 @@ function renderBlocks(blocks: Block[], o: RenderOptions): string[] {
   return parts;
 }
 
+/**
+ * A link to a saved file. In a vault an image is shown in the note (`![[…]]`),
+ * and a wikilink names the file by itself.
+ */
+function fileLink(name: string, path: string, o: RenderOptions): string {
+  const image = o.obsidian && isImagePath(path);
+  if (o.obsidian?.wiki) return image ? `![[${path}]]` : `[[${path}|${name}]]`;
+  return `${image ? '!' : ''}[${escapeLinkText(name)}](${linkTarget(path)})`;
+}
+
 function renderAttachments(attachments: Attachment[], o: RenderOptions): string | null {
   if (!attachments.length) return null;
   const lines = attachments.map((a) => {
@@ -184,7 +204,7 @@ function renderAttachments(attachments: Attachment[], o: RenderOptions): string 
                 : '';
     if (path) {
       const name = path.slice(path.lastIndexOf('/') + 1);
-      return `- [${escapeLinkText(name)}](${linkTarget(path)})${note}`;
+      return `- ${fileLink(name, path, o)}${note}`;
     }
     const error = o.attachmentErrors?.get(a.id);
     if (error) return `- ⚠️ ${a.name} — ${o.labels.attachmentFailed(error)}`;
@@ -252,5 +272,6 @@ export function renderMarkdown(c: Conversation, o: RenderOptions): string {
       for (const m of branch.messages) sections.push(renderMessage(m, 4, o));
     });
   }
+  if (o.obsidian) sections.push(`## ${o.labels.myNotes}`, o.obsidian.keepLine);
   return `${sections.join('\n\n')}\n`;
 }

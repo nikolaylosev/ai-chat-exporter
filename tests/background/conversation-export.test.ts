@@ -7,6 +7,7 @@ import {
   renderConversationExport,
 } from '../../src/background/conversation-export';
 import type { Attachment, Conversation } from '../../src/model/conversation';
+import { parseVaultRules } from '../../src/obsidian/vault';
 import { DEFAULT_SETTINGS } from '../../src/shared/settings';
 import { PATH_BUDGET } from '../../src/util/filename';
 import { ORG, ORIGIN, rawConversation } from '../adapters/claude/fixtures';
@@ -205,5 +206,87 @@ describe('the note format', () => {
     expect(moved.markdownPath).toBe(
       `${plan.folderPath} (2)/${plan.folderPath.split('/').at(-1)} (2).html`,
     );
+  });
+});
+
+describe('in an Obsidian vault', () => {
+  const settings = { ...DEFAULT_SETTINGS, destination: 'folder' as const, obsidian: true };
+  const vault = (appJson: object) => parseVaultRules('Notes', JSON.stringify(appJson));
+  const files = [file('a', 'photo #1.png'), file('b', 'report.pdf')];
+  const plan = (appJson: object, c = withAttachments(files, 'C# tips')) =>
+    planConversationExport(c, settings, { ...ctx, vault: vault(appJson) });
+  const folder = 'AI Chats/Claude/C_ tips - 2026-10-13 (Claude)';
+
+  it('puts the chat under the vault folder and the platform, with names safe for wikilinks', () => {
+    const p = plan({});
+    expect(p.root).toEqual([]);
+    expect(p.folderPath).toBe(folder);
+    expect(p.markdownPath).toBe(`${folder}/C_ tips - 2026-10-13 (Claude).md`);
+    // The vault keeps attachments in its root (the default): the chat's own files/.
+    expect(p.files.map((f) => f.path)).toEqual([
+      `${folder}/files/photo _1.png`,
+      `${folder}/files/report.pdf`,
+    ]);
+  });
+
+  it.each([
+    [{ attachmentFolderPath: './' }, `${folder}/report.pdf`],
+    [{ attachmentFolderPath: './assets' }, `${folder}/assets/report.pdf`],
+    [
+      { attachmentFolderPath: 'Attachments' },
+      'Attachments/C_ tips - 2026-10-13 (Claude)/report.pdf',
+    ],
+  ])('places files by attachmentFolderPath %j', (appJson, path) => {
+    expect(plan(appJson).files[1]?.path).toBe(path);
+  });
+
+  it('links from the vault root in wikilinks, and shows images in the note', () => {
+    const c = withAttachments(files, 'C# tips');
+    const p = plan({ attachmentFolderPath: 'Attachments' }, c);
+    const saved = new Map(p.files.map((f) => [f.attachment.id, f.link]));
+    const note = renderConversationExport(
+      c,
+      settings,
+      { ...ctx, vault: vault({ attachmentFolderPath: 'Attachments' }) },
+      p,
+      { saved, failed: new Map() },
+    );
+    expect(note).toContain('- ![[Attachments/C_ tips - 2026-10-13 (Claude)/photo _1.png]]');
+    expect(note).toContain('- [[Attachments/C_ tips - 2026-10-13 (Claude)/report.pdf|report.pdf]]');
+    expect(note).toMatch(
+      /\n## My notes\n\n%% ai-chat-exporter:keep Write below this line: .* %%\n$/,
+    );
+  });
+
+  it('writes relative Markdown links when the vault asks for them', () => {
+    const appJson = {
+      useMarkdownLinks: true,
+      newLinkFormat: 'relative',
+      attachmentFolderPath: 'Attachments',
+    };
+    const c = withAttachments(files, 'C# tips');
+    const p = plan(appJson, c);
+    const saved = new Map(p.files.map((f) => [f.attachment.id, f.link]));
+    const note = renderConversationExport(c, settings, { ...ctx, vault: vault(appJson) }, p, {
+      saved,
+      failed: new Map(),
+    });
+    expect(note).toContain(
+      '- ![photo _1.png](../../../Attachments/C_%20tips%20-%202026-10-13%20%28Claude%29/photo%20_1.png)',
+    );
+  });
+
+  it('moves the files of a shared attachment folder with the chat', () => {
+    const p = plan({ attachmentFolderPath: 'Attachments' });
+    const moved = moveToFolder(p, `${folder} (2)`);
+    expect(moved.files[1]?.path).toBe('Attachments/C_ tips - 2026-10-13 (Claude) (2)/report.pdf');
+    expect(moved.files[1]?.link).toBe(moved.files[1]?.path);
+  });
+
+  it('is a plain note outside a vault', () => {
+    const p = planConversationExport(withAttachments(files, 'C# tips'), settings, ctx);
+    expect(p.folderPath).toBe('C# tips - 2026-10-13 (Claude)');
+    expect(p.files[0]?.link).toBe('files/photo #1.png');
+    expect(render(withAttachments(files))).not.toContain('My notes');
   });
 });

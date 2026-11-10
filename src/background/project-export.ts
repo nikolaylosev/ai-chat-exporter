@@ -1,4 +1,6 @@
 import type { Attachment } from '../model/conversation';
+import { isImagePath, vaultSafeName, type VaultRules } from '../obsidian/vault';
+import { vaultBase, vaultLink } from './conversation-export';
 import type { Project } from '../model/project';
 import { escapeLinkText, linkTarget, yaml } from '../render/markdown';
 import { PLATFORM_LABEL, type Platform } from '../shared/platform';
@@ -45,6 +47,8 @@ export interface ProjectPlan {
   folderPath: string;
   markdownPath: string;
   knowledge: PlannedKnowledgeFile[];
+  /** The vault the project is written into, if any. */
+  vault?: VaultRules;
 }
 
 /** `<Name> (Claude)`, shortened to leave room for files and chat folders inside. */
@@ -62,18 +66,21 @@ export function planProjectExport(
   project: Pick<Project, 'name' | 'knowledge'> & { platform?: Platform },
   settings: Settings,
   fallbackName: string,
+  vault?: VaultRules,
 ): ProjectPlan {
   const platform = project.platform ?? 'claude';
   const { dir, filesDir } = projectKind(platform);
   const root = sanitizeRelativeDir(exportRootFolder(settings));
-  const folder = projectFolderName(project.name, settings, fallbackName, platform);
-  const folderPath = `${dir}/${folder}`;
+  // In a vault, names keep clear of what breaks a wikilink.
+  const named = (name: string) => (vault ? vaultSafeName(name) : name);
+  const folder = projectFolderName(named(project.name), settings, fallbackName, platform);
+  const folderPath = [...vaultBase(settings, platform, vault), dir, folder].join('/');
   const used = (root.length ? root.join('/').length + 1 : 0) + folderPath.length + 1;
   const room = Math.max(MIN_TITLE_LENGTH, PATH_BUDGET - used - filesDir.length - 1);
-  let names = uniqueFileNames(project.knowledge.map((a) => a.name));
+  let names = uniqueFileNames(project.knowledge.map((a) => named(a.name)));
   if (names.some((n) => n.length > room))
     names = fitFileNames(
-      project.knowledge.map((a) => a.name),
+      project.knowledge.map((a) => named(a.name)),
       room,
     );
   return {
@@ -84,6 +91,7 @@ export function planProjectExport(
       const link = `${filesDir}/${names[i] ?? attachment.id}`;
       return { attachment, link, path: `${folderPath}/${link}` };
     }),
+    ...(vault ? { vault } : {}),
   };
 }
 
@@ -139,11 +147,38 @@ export interface ProjectLabels {
   filesElsewhere?: (note: ProjectNote) => string;
 }
 
+/** A project note in a vault: where it is, the vault's rules, and its keep line. */
+export interface ProjectVault {
+  rules: VaultRules;
+  /** The note's path from the vault root. */
+  markdownPath: string;
+  keepLine: string;
+  myNotes: string;
+}
+
+/**
+ * A link from the project note to a file or a chat note (`target` relative to the
+ * project folder), in the vault's style when the note is in one.
+ */
+function projectLink(text: string, target: string, vault?: ProjectVault): string {
+  if (!vault) return `[${escapeLinkText(text)}](${linkTarget(target)})`;
+  const folder = vault.markdownPath.slice(0, vault.markdownPath.lastIndexOf('/'));
+  const path = `${folder}/${target}`;
+  const link = vaultLink(path, vault.markdownPath, vault.rules);
+  if (vault.rules.wiki) {
+    // A note is named without its extension; an image is shown, as in a chat's note.
+    if (isImagePath(path)) return `![[${link}]]`;
+    return `[[${link.replace(/\.md$/, '')}|${text.replace(/[|\]]/g, ' ')}]]`;
+  }
+  return `${isImagePath(path) ? '!' : ''}[${escapeLinkText(text)}](${linkTarget(link)})`;
+}
+
 export function renderProjectMarkdown(
   note: ProjectNote,
   labels: ProjectLabels,
   exportedAt: Date,
   timeZone?: string,
+  vault?: ProjectVault,
 ): string {
   const date = (iso: string | null) => (iso ? isoWithOffset(iso, timeZone) : 'null');
   const name = note.name || labels.untitled;
@@ -165,7 +200,7 @@ export function renderProjectMarkdown(
   const knowledge = note.knowledge.length
     ? note.knowledge.map((f) =>
         f.link
-          ? `- [${escapeLinkText(f.name)}](${linkTarget(f.link)})`
+          ? `- ${projectLink(f.name, f.link, vault)}`
           : f.info
             ? `- ${f.name} — ${f.info}`
             : `- ⚠️ ${f.name} — ${labels.fileFailed(f.error ?? '')}`,
@@ -175,8 +210,9 @@ export function renderProjectMarkdown(
     knowledge.push('', labels.filesElsewhere(note));
   const chats = note.chats.length
     ? note.chats.map((c) => {
-        const title = escapeLinkText(c.title || labels.untitledChat);
-        if (c.link) return `- [${title}](${linkTarget(c.link)})`;
+        const text = c.title || labels.untitledChat;
+        const title = escapeLinkText(text);
+        if (c.link) return `- ${projectLink(text, c.link, vault)}`;
         if (c.error) return `- ⚠️ ${title} — ${labels.chatFailed(c.error)}`;
         return `- [${title}](${c.url})`;
       })
@@ -191,6 +227,7 @@ export function renderProjectMarkdown(
       : []),
     `## ${labels.knowledge}\n\n${knowledge.join('\n')}`,
     `## ${labels.chats}\n\n${chats.join('\n')}`,
+    ...(vault ? [`## ${vault.myNotes}`, vault.keepLine] : []),
   ];
   return `${sections.join('\n\n')}\n`;
 }

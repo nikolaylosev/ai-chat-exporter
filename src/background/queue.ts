@@ -14,7 +14,12 @@ import { log } from '../shared/logger';
 import { setBadge as setIconBadge, type BadgeState } from './badge';
 import { sendToTab, type JobStartItem, type SavedLocation } from '../shared/messages';
 import { PLATFORM_LABEL, type Platform } from '../shared/platform';
-import { exportRootFolder, exportsAsZip, loadSettings } from '../shared/settings';
+import {
+  effectiveSettings,
+  exportRootFolder,
+  exportsAsZip,
+  loadSettings,
+} from '../shared/settings';
 import { DownloadsSink } from '../sinks/downloads-sink';
 import { FolderSink, ZipArchive } from '../sinks/offscreen-sinks';
 import { sanitizeRelativeDir } from '../util/filename';
@@ -138,7 +143,7 @@ export async function startJob(platform: Platform, items: JobStartItem[]): Promi
     throw new CodedError('busy', 'Another bulk export is running');
   }
   if (items.length === 0) throw new Error('No conversations selected');
-  const settings = await loadSettings();
+  const settings = effectiveSettings(await loadSettings());
   const startedAt = new Date();
   // One project gets an archive named after it; anything else a dated bulk archive.
   const only = items.length === 1 ? items[0] : undefined;

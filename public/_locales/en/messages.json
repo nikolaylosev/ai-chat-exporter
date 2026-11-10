@@ -138,6 +138,9 @@
       }
     }
   },
+  "openInObsidian": {
+    "message": "Open in Obsidian"
+  },
   "panelClose": {
     "message": "Close"
   },
@@ -947,6 +950,12 @@
       }
     }
   },
+  "mdMyNotes": {
+    "message": "My notes"
+  },
+  "mdKeepNotes": {
+    "message": "Write below this line: it is kept when the chat is saved again."
+  },
   "mdStopped": {
     "message": "The answer stopped before it was finished."
   },
@@ -1192,6 +1201,57 @@
   },
   "optionsFolderNotChosen": {
     "message": "No folder chosen yet."
+  },
+  "optionsObsidian": {
+    "message": "This folder is an Obsidian vault: write the notes for Obsidian"
+  },
+  "optionsObsidianHint": {
+    "message": "Files and links follow the vault's settings and images show in the note. Each chat keeps one note: saving it again updates it and keeps your own properties and what you write under “My notes”."
+  },
+  "optionsVaultMissing": {
+    "message": "There is no .obsidian folder here. Choose the vault's own folder, not a folder inside it."
+  },
+  "optionsObsidianFolder": {
+    "message": "Folder in the vault"
+  },
+  "optionsObsidianFolderHint": {
+    "message": "Each service gets its own folder inside it: “AI Chats/Claude”, “AI Chats/Gemini”."
+  },
+  "optionsVaultRules": {
+    "message": "Vault “$ARG1$”:",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsVaultFilesBeside": {
+    "message": "files go next to the note;"
+  },
+  "optionsVaultFilesBesideSub": {
+    "message": "files go into “$ARG1$” next to the note;",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsVaultFilesShared": {
+    "message": "files go into “$ARG1$”, in a folder for each chat;",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsVaultFilesChat": {
+    "message": "files go into “files” next to the note, since the vault keeps attachments in its root;"
+  },
+  "optionsVaultWikilinks": {
+    "message": "links are wikilinks."
+  },
+  "optionsVaultMarkdownLinks": {
+    "message": "links are Markdown links."
   },
   "optionsFolderPickerHint": {
     "message": "Chrome may not let you pick Documents, Downloads or Desktop themselves: create a folder inside them, for example “AI Chats”."

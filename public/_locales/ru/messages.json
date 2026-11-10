@@ -138,6 +138,9 @@
       }
     }
   },
+  "openInObsidian": {
+    "message": "Открыть в Obsidian"
+  },
   "panelClose": {
     "message": "Закрыть"
   },
@@ -947,6 +950,12 @@
       }
     }
   },
+  "mdMyNotes": {
+    "message": "Мои заметки"
+  },
+  "mdKeepNotes": {
+    "message": "Пишите ниже этой строки: это сохранится, когда чат будет сохранён снова."
+  },
   "mdStopped": {
     "message": "Ответ остановлен, не дописан до конца."
   },
@@ -1192,6 +1201,57 @@
   },
   "optionsFolderNotChosen": {
     "message": "Папка ещё не выбрана."
+  },
+  "optionsObsidian": {
+    "message": "Эта папка — хранилище Obsidian: сохранять заметки для Obsidian"
+  },
+  "optionsObsidianHint": {
+    "message": "Файлы и ссылки следуют настройкам хранилища, картинки видны в заметке. У каждого чата одна заметка: новое сохранение обновляет её и оставляет ваши свойства и то, что вы написали под «Мои заметки»."
+  },
+  "optionsVaultMissing": {
+    "message": "Здесь нет папки .obsidian. Выберите саму папку хранилища, а не папку внутри него."
+  },
+  "optionsObsidianFolder": {
+    "message": "Папка в хранилище"
+  },
+  "optionsObsidianFolderHint": {
+    "message": "Внутри у каждого сервиса своя папка: «AI Chats/Claude», «AI Chats/Gemini»."
+  },
+  "optionsVaultRules": {
+    "message": "Хранилище «$ARG1$»:",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsVaultFilesBeside": {
+    "message": "файлы кладутся рядом с заметкой;"
+  },
+  "optionsVaultFilesBesideSub": {
+    "message": "файлы кладутся в «$ARG1$» рядом с заметкой;",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsVaultFilesShared": {
+    "message": "файлы кладутся в «$ARG1$», в папку для каждого чата;",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsVaultFilesChat": {
+    "message": "файлы кладутся в «files» рядом с заметкой, потому что хранилище держит вложения в корне;"
+  },
+  "optionsVaultWikilinks": {
+    "message": "ссылки — вики-ссылки."
+  },
+  "optionsVaultMarkdownLinks": {
+    "message": "ссылки — Markdown-ссылки."
   },
   "optionsFolderPickerHint": {
     "message": "Chrome может не дать выбрать сами «Документы», «Загрузки» или рабочий стол: создайте внутри отдельную папку, например «AI Chats»."

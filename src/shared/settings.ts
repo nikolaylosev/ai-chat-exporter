@@ -26,6 +26,14 @@ export interface Settings {
   destination: 'downloads' | 'folder';
   /** Subfolder inside Downloads. Empty string means the Downloads root. Not used for `folder`. */
   rootFolder: string;
+  /**
+   * The chosen folder is an Obsidian vault: notes follow the vault's own settings
+   * (attachments, links), each chat keeps one note that is updated, and the
+   * user's additions to it are kept (obsidian/vault.ts). Only with `folder`.
+   */
+  obsidian: boolean;
+  /** Folder inside the vault for the chats, one folder per platform under it. */
+  obsidianFolder: string;
   includePlatformInFolderName: boolean;
   /** The note: Markdown, an HTML page (opens anywhere, prints to PDF) or JSON. */
   noteFormat: NoteFormat;
@@ -48,6 +56,8 @@ export interface Settings {
 export const DEFAULT_SETTINGS: Settings = {
   destination: 'downloads',
   rootFolder: 'AI Chats',
+  obsidian: false,
+  obsidianFolder: 'AI Chats',
   includePlatformInFolderName: true,
   noteFormat: 'markdown',
   saveAttachments: true,
@@ -104,6 +114,21 @@ export async function saveSettings(patch: Partial<Settings>): Promise<Settings> 
   const next = normalizeSettings({ ...(await loadSettings()), ...patch });
   await chrome.storage.local.set({ [STORAGE_KEY]: next });
   return next;
+}
+
+/** Notes written for Obsidian: the setting is on and the destination is the chosen folder. */
+export function obsidianMode(settings: Pick<Settings, 'obsidian' | 'destination'>): boolean {
+  return settings.obsidian && settings.destination === 'folder';
+}
+
+/**
+ * The settings an export runs with. Writing for Obsidian means Markdown notes,
+ * and one note per chat that a later save updates, whatever those settings say.
+ */
+export function effectiveSettings(settings: Settings): Settings {
+  return obsidianMode(settings)
+    ? { ...settings, noteFormat: 'markdown', onFolderExists: 'overwrite' }
+    : settings;
 }
 
 /** Export root relative to the destination: the chosen folder is the root itself. */
