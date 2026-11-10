@@ -6,7 +6,7 @@ import type {
 } from '../model/conversation';
 import type { Project, ProjectSummary } from '../model/project';
 import type { SweepState } from '../adapters/gemini/search';
-import { errorCode, type ErrorCode } from './errors';
+import { errorCode, isUserOutcome, type ErrorCode } from './errors';
 import { errorMessage, log } from './logger';
 import type { TransferableSource } from '../sinks/source';
 import type { Platform } from './platform';
@@ -330,8 +330,8 @@ export function handle<T extends Target>(target: T, handlers: Handlers<T>): void
       .then(
         (value) => sendResponse({ ok: true, value } satisfies Reply<unknown>),
         (error: unknown) => {
-          log.error(`${target}:${message.type} failed`, error);
           const code = errorCode(error);
+          (isUserOutcome(code) ? log.info : log.error)(`${target}:${message.type} failed`, error);
           sendResponse({
             ok: false,
             error: errorMessage(error),

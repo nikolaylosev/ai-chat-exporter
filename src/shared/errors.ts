@@ -47,8 +47,9 @@ export function userMessage(error: unknown): string {
 }
 
 /**
- * Outcomes of what the user did, not failures: they are logged as information,
- * so Chrome does not list them on the extension's Errors page.
+ * Outcomes of what the user did, or has yet to do, not failures: they are logged
+ * as information, so Chrome does not list them on the extension's Errors page.
+ * The user is told what to do instead.
  */
 const USER_OUTCOMES: ReadonlySet<ErrorCode> = new Set([
   'save-cancelled',
@@ -58,6 +59,11 @@ const USER_OUTCOMES: ReadonlySet<ErrorCode> = new Set([
   'not-a-chat',
   'unsupported-page',
   'busy',
+  // Access the user is asked for: Chrome asks again for the chosen folder after a
+  // restart, and a platform allowed later (DeepSeek) waits for its button.
+  'folder-not-chosen',
+  'folder-permission',
+  'platform-access',
 ]);
 
 export function isUserOutcome(code: ErrorCode): boolean {
