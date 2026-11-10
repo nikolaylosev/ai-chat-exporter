@@ -344,6 +344,14 @@ describe('ChatgptAdapter.getConversation', () => {
     expect(c.messages[0]?.attachments[2]).toMatchObject({ source: null, note: 'unavailable' });
   });
 
+  it('saves the chat when one file link is refused with 403', async () => {
+    const { gpt } = adapter({ refusedFiles: [fileId(1)] });
+    const c = await gpt.getConversation(UPLOADS);
+    expect(c.messages[0]?.attachments[2]).toMatchObject({ source: null, note: 'unavailable' });
+    // The other files still have their links.
+    expect(c.messages[0]?.attachments[0]?.source).toMatchObject({ kind: 'url' });
+  });
+
   it('gives a new link for a file of a conversation it read', async () => {
     const { gpt, server } = adapter();
     const c = await gpt.getConversation(UPLOADS);
