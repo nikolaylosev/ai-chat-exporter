@@ -4,7 +4,7 @@ CodingCat AI Chat Exporter is a Chrome extension (Manifest V3) that saves conver
 
 This document describes how the extension is built and why. It is meant for anyone who reads or changes the code.
 
-> **Status:** version 1.0: all five platforms and writing into Obsidian are built; checks on real accounts go on. This document describes the code as it is. What each platform's internal API returns is recorded, from real traffic, in [`platforms-claude.md`](platforms-claude.md), [`platforms-gemini.md`](platforms-gemini.md), [`platforms-grok.md`](platforms-grok.md), [`platforms-chatgpt.md`](platforms-chatgpt.md) and [`platforms-deepseek.md`](platforms-deepseek.md).
+> **Status:** all five platforms are built; version 1.0 is being stabilized. This document describes the code as it is. What each platform's internal API returns is recorded, from real traffic, in [`platforms-claude.md`](platforms-claude.md), [`platforms-gemini.md`](platforms-gemini.md), [`platforms-grok.md`](platforms-grok.md), [`platforms-chatgpt.md`](platforms-chatgpt.md) and [`platforms-deepseek.md`](platforms-deepseek.md).
 
 ## Contents
 
