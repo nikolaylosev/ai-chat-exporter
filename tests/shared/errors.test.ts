@@ -10,4 +10,11 @@ describe('isUserOutcome', () => {
     expect(isUserOutcome('download-cancelled')).toBe(true);
     expect(isUserOutcome('rate-limited')).toBe(false);
   });
+
+  it('is true for access the user is asked for', () => {
+    expect(isUserOutcome('folder-permission')).toBe(true);
+    expect(isUserOutcome('folder-not-chosen')).toBe(true);
+    expect(isUserOutcome('platform-access')).toBe(true);
+    expect(isUserOutcome('folder-missing')).toBe(false);
+  });
 });
